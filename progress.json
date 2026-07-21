@@ -4,14 +4,8 @@
   "lastCompletedDay": 2,
   "nextDay": 3,
   "lastRunDate": "2026-07-21",
-  "githubPushed": false,
-  "pendingPush": [
-    "index.html",
-    "curriculum.json",
-    "progress.json",
-    "lessons/finance-day-01-why-money-literacy.html",
-    "lessons/finance-day-02-cash-flow.html"
-  ],
+  "githubPushed": true,
+  "pendingPush": [],
   "history": [
     {
       "day": 1,

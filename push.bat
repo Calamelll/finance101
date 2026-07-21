@@ -10,6 +10,8 @@ if not exist ".git" (
   git reset --soft origin/main
 )
 
+git pull --rebase origin main
+
 git add -A
 git diff --cached --quiet && (
   echo Nothing to push - already up to date.
