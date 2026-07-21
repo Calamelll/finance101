@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day 2 — กระแสเงินสด | Finance101</title>
+<style>
+:root{
+  --bg:#fbfaf8; --card:#ffffff; --ink:#1c1b19; --muted:#6b6862;
+  --line:#e6e2db; --accent:#1f6f4a; --accent-soft:#e8f3ed;
+  --warn:#8a4b1e; --warn-soft:#fdf1e6; --code:#f4f2ee;
+  color-scheme: light;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; padding:28px 18px 80px; background:var(--bg); color:var(--ink);
+  font-family:"Sarabun","Noto Sans Thai",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:17px; line-height:1.75; -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:720px;margin:0 auto}
+header{margin-bottom:34px}
+.kicker{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--muted);letter-spacing:.02em}
+.pill{background:var(--accent-soft);color:var(--accent);padding:3px 11px;border-radius:99px;font-weight:600}
+h1{font-size:29px;line-height:1.3;margin:12px 0 6px;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:16px;margin:0}
+h2{font-size:21px;margin:38px 0 12px;letter-spacing:-.005em}
+h3{font-size:17px;margin:26px 0 8px}
+p{margin:0 0 15px}
+ul,ol{margin:0 0 15px;padding-left:22px}
+li{margin-bottom:7px}
+strong{font-weight:600}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin:22px 0}
+.card.accent{background:var(--accent-soft);border-color:#cfe4d9}
+.card.warn{background:var(--warn-soft);border-color:#f0dcc6}
+.card h3{margin-top:0}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15.5px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-weight:600;font-size:13.5px;letter-spacing:.02em}
+td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.calc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;margin:22px 0}
+.calc label{display:block;font-size:14px;color:var(--muted);margin-bottom:6px}
+.calc .row{margin-bottom:18px}
+input[type=range]{width:100%;accent-color:var(--accent);height:24px}
+.val{font-weight:600;color:var(--accent);font-variant-numeric:tabular-nums}
+.bars{margin-top:6px}
+.bar-row{margin-bottom:12px}
+.bar-label{display:flex;justify-content:space-between;font-size:14px;margin-bottom:5px;gap:10px}
+.bar-track{background:#eeece7;border-radius:8px;height:26px;overflow:hidden;position:relative}
+.bar-fill{height:100%;border-radius:8px;transition:width .55s cubic-bezier(.22,.8,.3,1)}
+.bar-principal{background:#b9cfc4}
+.bar-growth{background:var(--accent)}
+.bar-negative{background:#c0553a}
+.legend{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-top:10px;flex-wrap:wrap}
+.swatch{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:middle}
+details{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:12px 16px;margin:10px 0}
+summary{cursor:pointer;font-weight:600;font-size:15.5px;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"▸ ";color:var(--accent)}
+details[open] summary::before{content:"▾ "}
+.ans{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font-size:15.5px;color:#37342f}
+.q{font-weight:600;margin:22px 0 8px}
+pre{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:14px;line-height:1.6}
+code{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+.summary-box{border-left:3px solid var(--accent);padding-left:18px;margin:26px 0}
+.summary-box p{margin-bottom:8px}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
+footer a{color:var(--accent)}
+.disclaimer{font-size:13px;color:var(--muted);margin-top:18px;line-height:1.6}
+.nav{margin-bottom:20px;font-size:14px}
+.nav a{color:var(--accent);text-decoration:none}
+@media(max-width:520px){
+  body{font-size:16px;padding:20px 14px 60px}
+  h1{font-size:25px}
+  .card,.calc{padding:16px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="nav"><a href="../index.html">← สารบัญ</a></div>
+
+<header>
+  <div class="kicker">
+    <span class="pill">Day 2 / 90</span>
+    <span>Phase 1 · พื้นฐานการเงินส่วนบุคคล</span>
+    <span>·</span>
+    <span>อ่าน 8 นาที</span>
+  </div>
+  <h1>กระแสเงินสด (cash flow) และงบการเงินส่วนตัว</h1>
+  <p class="sub">เงินเดือนเข้าบัญชีทุกเดือน แล้วทำไมสิ้นเดือนถึงไม่เหลืออะไร</p>
+</header>
+
+<h2>คำถามที่ตอบไม่ได้คือสัญญาณอันตราย</h2>
+
+<p>ลองถามตัวเองตรงๆ: เดือนที่แล้วเงินเดือนเข้าเท่าไร แล้วรายจ่ายรวมทั้งเดือนเท่าไร ถ้าตอบไม่ได้ทันทีโดยไม่ต้องเปิดแอปธนาคาร นั่นคือปัญหาที่แท้จริง ไม่ใช่เพราะรายได้น้อยหรือมาก แต่เพราะไม่มี<strong>ระบบติดตาม</strong>เงินของตัวเอง</p>
+
+<p><strong>กระแสเงินสด (cash flow)</strong> คือเงินที่ไหลเข้าออกบัญชีคุณในช่วงเวลาหนึ่ง ปกตินับเป็นรายเดือน สูตรง่ายที่สุดในโลกการเงินคือ</p>
+
+<div class="card accent">
+  <p style="margin-bottom:0"><code>กระแสเงินสดสุทธิ (net cash flow) = รายรับ (income) − รายจ่าย (expenses)</code></p>
+</div>
+
+<p>ถ้าเป็นบวก แปลว่าเดือนนั้นคุณมีเงินเหลือไปออมหรือลงทุน ถ้าเป็นลบ แปลว่าคุณกำลังใช้เงินสำรองหรือก่อหนี้เพิ่มโดยไม่รู้ตัว เรื่องนี้ต่างจาก<strong>ความมั่งคั่งสุทธิ (net worth)</strong> ซึ่งเป็นภาพนิ่ง ณ จุดหนึ่ง (Day 3) — cash flow คือภาพเคลื่อนไหวของเดือนนั้นๆ ทั้งสองอย่างต้องดูคู่กัน เพราะ net worth ที่โตขึ้นทุกเดือนคือผลสะสมของ cash flow ที่เป็นบวกซ้ำๆ</p>
+
+<h2>โครงสร้างงบกระแสเงินสดส่วนตัว</h2>
+
+<p>งบการเงินของบริษัทมีงบกำไรขาดทุน งบดุล งบกระแสเงินสด — ฉบับส่วนตัวของคุณก็มีโครงสร้างคล้ายกันแต่เรียบง่ายกว่ามาก แบ่งเป็น 3 ส่วน</p>
+
+<div class="card">
+  <h3>1. รายรับ (income)</h3>
+  <p style="margin-bottom:0">เงินเดือน รายได้เสริม เงินปันผล ดอกเบี้ยเงินฝาก — แยกเป็น <strong>active income</strong> (ต้องแลกด้วยเวลา/แรง เช่น เงินเดือน) กับ <strong>passive income</strong> (ไม่ต้องแลกเวลาโดยตรง เช่น ปันผล ดอกเบี้ย) สัดส่วน passive income ที่เพิ่มขึ้นเรื่อยๆ คือหนึ่งในเป้าหมายระยะยาวของทั้งหลักสูตรนี้</p>
+</div>
+
+<div class="card">
+  <h3>2. รายจ่ายคงที่ (fixed expenses)</h3>
+  <p style="margin-bottom:0">ค่าเช่าห้อง ค่าผ่อนรถ ค่าอินเทอร์เน็ต ประกันสังคม — จำนวนเท่าเดิมทุกเดือน (หรือใกล้เคียง) คาดการณ์ล่วงหน้าได้ง่าย</p>
+</div>
+
+<div class="card">
+  <h3>3. รายจ่ายผันแปร (variable expenses)</h3>
+  <p style="margin-bottom:0">ค่าอาหาร ค่าเดินทาง ช้อปปิ้ง บันเทิง ค่าใช้จ่ายจิปาถะ — เปลี่ยนแปลงได้ทุกเดือน และเป็นจุดที่คนส่วนใหญ่ประเมินตัวเองต่ำกว่าความเป็นจริงมากที่สุด</p>
+</div>
+
+<p>ตัวเลข 2 ตัวที่คุณจดไว้เมื่อวาน (ยอดเงินคงเหลือ + รายจ่ายรวมเดือนที่แล้ว) คือจุดเริ่มต้นของงบนี้ วันนี้เราจะแตกรายจ่ายก้อนนั้นให้ละเอียดขึ้น</p>
+
+<h2>ตัวอย่าง: เด็กจบใหม่สาย SWE เงินเดือน 25,000 บาท</h2>
+
+<div class="card accent">
+  <h3>งบกระแสเงินสดรายเดือน</h3>
+  <table>
+    <tr><th>รายการ</th><th class="num">จำนวน (บาท)</th></tr>
+    <tr><td>เงินเดือน (หลังหักภาษี ณ ที่จ่าย)</td><td class="num">25,000</td></tr>
+    <tr><td>ประกันสังคม (ผู้ประกันตน 5%)</td><td class="num">−750</td></tr>
+    <tr><td>ค่าเช่าห้อง</td><td class="num">−6,000</td></tr>
+    <tr><td>ค่าอาหาร</td><td class="num">−6,500</td></tr>
+    <tr><td>ค่าเดินทาง</td><td class="num">−1,500</td></tr>
+    <tr><td>ค่ามือถือ + อินเทอร์เน็ต</td><td class="num">−700</td></tr>
+    <tr><td>ช้อปปิ้ง / บันเทิง</td><td class="num">−3,000</td></tr>
+    <tr><td>อื่นๆ / เผื่อฉุกเฉินเล็กน้อย</td><td class="num">−1,800</td></tr>
+    <tr><td><strong>รายจ่ายรวม</strong></td><td class="num"><strong>−20,250</strong></td></tr>
+    <tr><td><strong>กระแสเงินสดสุทธิ</strong></td><td class="num"><strong>+4,750</strong></td></tr>
+  </table>
+  <p style="margin-bottom:0">อัตราการออม (savings rate) = 4,750 ÷ 25,000 = <strong>19%</strong> — เก็บไว้เป็นตัวเปรียบเทียบ เราจะพูดถึงเกณฑ์ที่ควรตั้งเป้าใน Day 8 (ระบบ 50/30/20)</p>
+</div>
+
+<h2>ลองคำนวณของตัวเอง</h2>
+<p>ใส่ตัวเลขคร่าวๆ ของคุณเอง เพื่อดูว่ากระแสเงินสดสุทธิและอัตราการออมตอนนี้เป็นเท่าไร</p>
+
+<div class="calc">
+  <div class="row">
+    <label>รายรับต่อเดือน <span class="val" id="incV">25,000</span> บาท</label>
+    <input type="range" id="inc" min="0" max="100000" value="25000" step="500">
+  </div>
+  <div class="row">
+    <label>รายจ่ายคงที่ต่อเดือน <span class="val" id="fixV">7,450</span> บาท</label>
+    <input type="range" id="fix" min="0" max="50000" value="7450" step="250">
+  </div>
+  <div class="row">
+    <label>รายจ่ายผันแปรต่อเดือน <span class="val" id="varV">12,800</span> บาท</label>
+    <input type="range" id="var" min="0" max="50000" value="12800" step="250">
+  </div>
+  <div class="bars" id="bars"></div>
+  <div class="legend">
+    <span><span class="swatch bar-principal"></span>รายจ่ายคงที่</span>
+    <span><span class="swatch bar-growth"></span>รายจ่ายผันแปร</span>
+  </div>
+  <p id="result" style="margin:14px 0 0;font-weight:600"></p>
+</div>
+
+<div class="card warn">
+  <p style="margin-bottom:0"><strong>ถ้าตัวเลขออกมาติดลบ ไม่ได้แปลว่าคุณล้มเหลว</strong> มันแปลว่าคุณเพิ่งเจอปัญหาที่มีอยู่จริงมาตลอด แค่ไม่เคยเห็นเป็นตัวเลข คนจำนวนมากใช้ชีวิตแบบกระแสเงินสดติดลบเป็นปีโดยไม่รู้ตัว เพราะบัตรเครดิตทำให้ผลลบไม่โผล่มาทันที (Day 11) จุดสำคัญของวันนี้คือแค่ <em>เห็น</em> ตัวเลขที่แท้จริงก่อน ยังไม่ต้องแก้อะไร</p>
+</div>
+
+<h2>งานของวันนี้</h2>
+<p>เปิดแอปธนาคาร/แอปบันทึกรายจ่าย แล้วแยกรายจ่ายเดือนที่แล้วออกเป็น 3 กลุ่มตามโครงสร้างข้างบน (รายรับ / รายจ่ายคงที่ / รายจ่ายผันแปร) ไม่ต้องละเอียดเป๊ะ ประมาณเป็นหลักร้อยพอ เก็บตัวเลขนี้ไว้ เพราะพรุ่งนี้เราจะเอามาต่อยอดเป็นความมั่งคั่งสุทธิ</p>
+
+<details>
+  <summary>กล่องโค้ด (ข้ามได้ ไม่นับในเวลาอ่าน)</summary>
+  <div class="ans">
+  <p>สคริปต์คำนวณกระแสเงินสดสุทธิและอัตราการออมจากรายการรายจ่ายแบบละเอียด:</p>
+  <pre><code>income = 25000
+
+fixed_expenses = {
+    "ค่าเช่าห้อง": 6000,
+    "ประกันสังคม": 750,
+    "มือถือ+เน็ต": 700,
+}
+variable_expenses = {
+    "อาหาร": 6500,
+    "เดินทาง": 1500,
+    "ช้อปปิ้ง/บันเทิง": 3000,
+    "อื่นๆ": 1800,
+}
+
+total_expenses = sum(fixed_expenses.values()) + sum(variable_expenses.values())
+net_cash_flow = income - total_expenses
+savings_rate = net_cash_flow / income
+
+print(f"รายจ่ายรวม: {total_expenses:,} บาท")
+print(f"กระแสเงินสดสุทธิ: {net_cash_flow:,} บาท")
+print(f"อัตราการออม: {savings_rate:.1%}")
+# รายจ่ายรวม: 20,250 บาท
+# กระแสเงินสดสุทธิ: 4,750 บาท
+# อัตราการออม: 19.0%</code></pre>
+  <p style="margin-bottom:0">ลองแทนตัวเลขของตัวเองใน dict แล้วรันดู — วิธีนี้ใช้ต่อได้ทุกเดือนแค่แก้ตัวเลข ไม่ต้องเปิดสเปรดชีตใหม่</p>
+  </div>
+</details>
+
+<h2>ทดสอบความเข้าใจ</h2>
+
+<p class="q">1. กระแสเงินสด (cash flow) กับความมั่งคั่งสุทธิ (net worth) ต่างกันอย่างไร?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">Cash flow คือเงินไหลเข้า-ออกในช่วงเวลาหนึ่ง (เช่น รายเดือน) ส่วน net worth คือภาพนิ่งของสินทรัพย์ลบหนี้สิน ณ จุดใดจุดหนึ่ง เปรียบเทียบได้กับวิดีโอ (cash flow) กับภาพถ่าย (net worth) — cash flow ที่เป็นบวกซ้ำๆ ทุกเดือนคือสิ่งที่ทำให้ net worth เติบโตขึ้นเรื่อยๆ</div>
+</details>
+
+<p class="q">2. ทำไมรายจ่ายผันแปร (variable expenses) มักถูกประเมินต่ำกว่าความจริงมากที่สุด?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">เพราะเป็นรายจ่ายที่เกิดเป็นก้อนเล็กๆ กระจายหลายครั้งต่อเดือน (กาแฟ ค่าส่งอาหาร ค่าแท็กซี่) แต่ละครั้งดูไม่มาก จึงไม่ถูกจดจำหรือรู้สึกว่า "มีนัยสำคัญ" ต่างจากรายจ่ายคงที่ที่เป็นก้อนใหญ่ชัดเจน (ค่าเช่า) ที่คนมักจำได้แม่นกว่า ผลคือเมื่อรวมยอดจริงจากแอปธนาคารมักสูงกว่าที่ประเมินในหัว</div>
+</details>
+
+<p class="q">3. ถ้ากระแสเงินสดสุทธิเดือนนี้ติดลบ ขั้นต่อไปที่ควรทำคืออะไร?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">แค่บันทึกและยอมรับตัวเลขจริงก่อน ไม่ต้องรีบตัดสินใจหรือรู้สึกผิด เพราะขั้นตอนแก้ไข (ตัดรายจ่ายตรงไหน ปรับโครงสร้างหนี้ หรือเพิ่มรายรับ) ต้องอาศัยข้อมูลอีกหลายวันข้างหน้า (เงินสำรองฉุกเฉิน Day 7, ระบบจัดสรรเงิน Day 8, หนี้ Day 10-11) การรีบตัดทุกอย่างโดยไม่มีแผนมักทำไม่ได้ต่อเนื่อง</div>
+</details>
+
+<p class="q"><strong>ทวน:</strong> จากบทเรียน Day 1 คนที่เริ่มลงทุนตอนอายุ 20 กับอายุ 30 ด้วยเงินเดือนละ 3,000 บาทเท่ากัน ผลตอบแทน 7% ต่อปี ปลายทางต่างกันเท่าไร และเกิดจากอะไร?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">ต่างกันประมาณ 4.2 ล้านบาท (7,874,000 เทียบกับ 3,660,000) ทั้งที่เงินต้นที่ใส่เองต่างกันแค่ 360,000 บาท ส่วนต่างที่เหลือเกือบทั้งหมดมาจาก<strong>เวลา</strong> — เงินก้อนแรกๆ ของคนที่เริ่มตอน 20 มีเวลาทบต้นมากกว่าถึง 10 ปี<br>ตอบผิดหรือลังเล? → <a href="finance-day-01-why-money-literacy.html">ทบทวน Day 1: ทำไมต้องรู้เรื่องเงิน</a></div>
+</details>
+
+<div class="summary-box">
+  <h2 style="margin-top:0">สรุป 3 บรรทัด</h2>
+  <p>1. กระแสเงินสดสุทธิ = รายรับ − รายจ่าย เป็นบวกคือมีเงินไปต่อยอด เป็นลบคือกำลังกินเงินสำรองหรือก่อหนี้</p>
+  <p>2. แบ่งรายจ่ายเป็นคงที่กับผันแปรเพื่อเห็นว่าตรงไหนควบคุมง่ายและตรงไหนควบคุมยาก</p>
+  <p style="margin-bottom:0">3. ตัวเลขติดลบไม่ใช่ความล้มเหลว แต่เป็นจุดเริ่มต้นที่ต้องเห็นก่อนจะแก้ไขได้</p>
+</div>
+
+<footer>
+  <p><strong>พรุ่งนี้ Day 3 — ความมั่งคั่งสุทธิ (net worth)</strong> เอางบกระแสเงินสดวันนี้มาต่อยอดเป็นภาพนิ่งของสินทรัพย์กับหนี้สินทั้งหมดที่มี</p>
+  <p class="disclaimer">บทเรียนนี้เป็นความรู้เชิงการศึกษา ไม่ใช่คำแนะนำทางการเงินเฉพาะบุคคล ตัวเลขเงินเดือนและรายจ่ายในตัวอย่างเป็นค่ากลมๆ เพื่อประกอบการอธิบายเท่านั้น ไม่ใช่ค่าเฉลี่ยที่อ้างอิงจากแหล่งข้อมูลใด</p>
+</footer>
+
+</div>
+
+<script>
+(function(){
+  var inc=document.getElementById('inc'), fix=document.getElementById('fix'), vr=document.getElementById('var');
+  var incV=document.getElementById('incV'), fixV=document.getElementById('fixV'), varV=document.getElementById('varV');
+  var bars=document.getElementById('bars'), result=document.getElementById('result');
+  function fmt(n){return Math.round(n).toLocaleString('th-TH');}
+
+  function render(){
+    var i=+inc.value, f=+fix.value, v=+vr.value;
+    incV.textContent=fmt(i);
+    fixV.textContent=fmt(f);
+    varV.textContent=fmt(v);
+
+    var totalExp=f+v;
+    var net=i-totalExp;
+    var max=Math.max(i,totalExp,1);
+    var fPct=(f/max*100).toFixed(1);
+    var vPct=(v/max*100).toFixed(1);
+    var iPct=(i/max*100).toFixed(1);
+
+    bars.innerHTML=
+      '<div class="bar-row">'+
+        '<div class="bar-label"><span>รายรับ</span><strong>'+fmt(i)+' บาท</strong></div>'+
+        '<div class="bar-track"><div class="bar-fill bar-growth" style="width:'+iPct+'%"></div></div>'+
+      '</div>'+
+      '<div class="bar-row">'+
+        '<div class="bar-label"><span>รายจ่ายรวม (คงที่ + ผันแปร)</span><strong>'+fmt(totalExp)+' บาท</strong></div>'+
+        '<div class="bar-track">'+
+          '<div class="bar-fill" style="width:'+(fPct+vPct>100?100:(+fPct+ +vPct))+'%">'+
+            '<div class="bar-fill bar-principal" style="width:'+(f/totalExp*100||0).toFixed(1)+'%;border-radius:8px 0 0 8px"></div>'+
+          '</div>'+
+        '</div>'+
+      '</div>';
+
+    var rate = i>0 ? (net/i*100) : 0;
+    if(net>=0){
+      result.style.color='var(--accent)';
+      result.textContent='กระแสเงินสดสุทธิ +'+fmt(net)+' บาท/เดือน (อัตราการออม '+rate.toFixed(1)+'%)';
+    }else{
+      result.style.color='#c0553a';
+      result.textContent='กระแสเงินสดสุทธิ '+fmt(net)+' บาท/เดือน — รายจ่ายมากกว่ารายรับ';
+    }
+  }
+
+  [inc,fix,vr].forEach(function(el){el.addEventListener('input',render);});
+  render();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+{
+  "startDate": "2026-07-21",
+  "totalDays": 90,
+  "lastCompletedDay": 2,
+  "nextDay": 3,
+  "lastRunDate": "2026-07-21",
+  "githubPushed": false,
+  "pendingPush": [
+    "index.html",
+    "curriculum.json",
+    "progress.json",
+    "lessons/finance-day-01-why-money-literacy.html",
+    "lessons/finance-day-02-cash-flow.html"
+  ],
+  "history": [
+    {
+      "day": 1,
+      "date": "2026-07-21",
+      "title": "ทำไมต้องรู้เรื่องเงิน + ภาพรวมหลักสูตร",
+      "file": "lessons/finance-day-01-why-money-literacy.html",
+      "recallFrom": []
+    },
+    {
+      "day": 2,
+      "date": "2026-07-21",
+      "title": "กระแสเงินสด (cash flow) และงบการเงินส่วนตัว",
+      "file": "lessons/finance-day-02-cash-flow.html",
+      "recallFrom": [1]
+    }
+  ],
+  "notesApplied": []
+}

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Finance101 — หลักสูตรการเงิน 90 วัน</title>
+<style>
+:root{
+  --bg:#fbfaf8; --card:#ffffff; --ink:#1c1b19; --muted:#6b6862;
+  --line:#e6e2db; --accent:#1f6f4a; --accent-soft:#e8f3ed; --dim:#b3aea6;
+  color-scheme: light;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;padding:30px 18px 80px;background:var(--bg);color:var(--ink);
+  font-family:"Sarabun","Noto Sans Thai",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:16px;line-height:1.65;-webkit-text-size-adjust:100%;
+}
+.wrap{max-width:720px;margin:0 auto}
+h1{font-size:27px;margin:0 0 4px;letter-spacing:-.01em}
+.sub{color:var(--muted);margin:0 0 26px;font-size:15px}
+.hero{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin-bottom:14px}
+.hero .lead{font-size:13px;color:var(--muted);margin:0 0 4px;letter-spacing:.03em}
+.hero .title{font-size:19px;font-weight:600;margin:0 0 14px}
+.btn{display:inline-block;background:var(--accent);color:#fff;text-decoration:none;padding:10px 20px;border-radius:9px;font-weight:600;font-size:15px}
+.overall{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 22px;margin-bottom:28px}
+.overall .top{display:flex;justify-content:space-between;font-size:14px;margin-bottom:9px}
+.track{background:#eeece7;border-radius:99px;height:9px;overflow:hidden}
+.fill{background:var(--accent);height:100%;border-radius:99px;transition:width .6s ease}
+.phase{margin-bottom:30px}
+.phase-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:8px}
+.phase-name{font-size:17px;font-weight:600}
+.phase-meta{font-size:13px;color:var(--muted);white-space:nowrap}
+.phase .track{height:6px;margin-bottom:14px}
+ol.days{list-style:none;margin:0;padding:0}
+ol.days li{display:flex;gap:12px;align-items:baseline;padding:7px 10px;border-radius:8px;font-size:15px}
+ol.days li.done{background:var(--card);border:1px solid var(--line)}
+ol.days li.next{background:var(--accent-soft);border:1px solid #cfe4d9}
+ol.days li.todo{color:var(--dim)}
+.num{font-variant-numeric:tabular-nums;font-size:13px;color:var(--muted);min-width:28px;flex-shrink:0}
+ol.days li.todo .num{color:var(--dim)}
+ol.days li a{color:var(--ink);text-decoration:none;font-weight:500}
+ol.days li a:hover{color:var(--accent);text-decoration:underline}
+.tag{font-size:11.5px;color:var(--accent);font-weight:600;margin-left:auto;white-space:nowrap;letter-spacing:.03em}
+footer{margin-top:40px;padding-top:18px;border-top:1px solid var(--line);font-size:13px;color:var(--muted);line-height:1.7}
+@media(max-width:520px){
+  body{padding:22px 14px 60px}
+  h1{font-size:23px}
+  ol.days li{font-size:14.5px;padding:6px 8px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>Finance101</h1>
+<p class="sub">หลักสูตรการเงิน การลงทุน และการเทรด 90 วัน · ภาษาไทย · วันละ 5-10 นาที</p>
+
+<div class="hero">
+  <p class="lead">บทล่าสุด</p>
+  <p class="title" id="heroTitle"></p>
+  <a class="btn" id="heroLink" href="#">อ่านบทนี้ →</a>
+</div>
+
+<div class="overall">
+  <div class="top"><span>ความคืบหน้ารวม</span><strong id="overallText"></strong></div>
+  <div class="track"><div class="fill" id="overallFill" style="width:0%"></div></div>
+</div>
+
+<div id="phases"></div>
+
+<footer>
+  <p>บทเรียนใหม่สร้างอัตโนมัติทุกวัน 09:00 · อยากปรับหลักสูตร เขียนลงไฟล์ <code>notes.md</code> ได้เลย</p>
+  <p>เนื้อหาทั้งหมดเป็นความรู้เชิงการศึกษา ไม่ใช่คำแนะนำการลงทุน</p>
+</footer>
+
+</div>
+
+<script>
+// ข้อมูลนี้ถูกเขียนใหม่ทุกวันโดย scheduled task — ไม่ต้องแก้เอง
+var DATA = {
+  totalDays: 90,
+  lastCompletedDay: 2,
+  phases: [
+    { id:1, name:"พื้นฐานการเงินส่วนบุคคล", from:1,  to:14 },
+    { id:2, name:"การลงทุนระยะยาว",         from:15, to:47 },
+    { id:3, name:"การเทรด",                  from:48, to:72 },
+    { id:4, name:"ขั้นสูงและการใช้จริง",      from:73, to:90 }
+  ],
+  days: [
+    {day:1,title:"ทำไมต้องรู้เรื่องเงิน + ภาพรวมหลักสูตร",file:"lessons/finance-day-01-why-money-literacy.html"},
+    {day:2,title:"กระแสเงินสด (cash flow) และงบการเงินส่วนตัว",file:"lessons/finance-day-02-cash-flow.html"},
+    {day:3,title:"ความมั่งคั่งสุทธิ (net worth): สินทรัพย์ vs หนี้สิน"},
+    {day:4,title:"เงินเฟ้อ (inflation) และมูลค่าเงินตามเวลา"},
+    {day:5,title:"ดอกเบี้ยทบต้น (compound interest)"},
+    {day:6,title:"Rule of 72 และการประมาณผลตอบแทนแบบเร็ว"},
+    {day:7,title:"เงินสำรองฉุกเฉิน (emergency fund)"},
+    {day:8,title:"ระบบจัดสรรเงิน 50/30/20 และ pay yourself first"},
+    {day:9,title:"บัญชีธนาคารและดอกเบี้ยเงินฝากในไทย"},
+    {day:10,title:"หนี้ดี vs หนี้เสีย และดอกเบี้ยเงินกู้"},
+    {day:11,title:"บัตรเครดิตและกับดักดอกเบี้ยขั้นบันได"},
+    {day:12,title:"ภาษีเงินได้บุคคลธรรมดา 101"},
+    {day:13,title:"ลดหย่อนภาษีด้วยการลงทุน: RMF, SSF, ThaiESG"},
+    {day:14,title:"เป้าหมายการเงิน SMART + สรุป Phase 1"},
+    {day:15,title:"การลงทุนคืออะไร ต่างจากการออมและการพนัน"},
+    {day:16,title:"ความเสี่ยงกับผลตอบแทน (risk-return tradeoff)"},
+    {day:17,title:"ประเภทสินทรัพย์ (asset classes)"},
+    {day:18,title:"ตราสารหนี้ (bonds): พันธบัตร หุ้นกู้ และ yield"},
+    {day:19,title:"ราคาบอนด์กับอัตราดอกเบี้ย และ duration"},
+    {day:20,title:"หุ้นคืออะไร ผู้ถือหุ้นได้อะไรบ้าง"},
+    {day:21,title:"ตลาดหลักทรัพย์ไทย (SET/mai) และการเปิดพอร์ต"},
+    {day:22,title:"คำสั่งซื้อขาย ค่าคอมมิชชัน ภาษี และ T+2"},
+    {day:23,title:"เงินปันผล (dividend) และ dividend yield"},
+    {day:24,title:"อ่านงบการเงิน 1: งบกำไรขาดทุน"},
+    {day:25,title:"อ่านงบการเงิน 2: งบดุล"},
+    {day:26,title:"อ่านงบการเงิน 3: งบกระแสเงินสด"},
+    {day:27,title:"อัตราส่วนทางการเงิน: P/E, P/BV, ROE, D/E"},
+    {day:28,title:"Valuation เบื้องต้น: DCF อย่างง่ายและ multiple"},
+    {day:29,title:"Growth vs Value investing"},
+    {day:30,title:"วัฏจักรธุรกิจและกลุ่มอุตสาหกรรม (sector)"},
+    {day:31,title:"กองทุนรวมและค่าธรรมเนียม"},
+    {day:32,title:"Index fund และ ETF"},
+    {day:33,title:"Passive vs active investing"},
+    {day:34,title:"DCA vs lump sum"},
+    {day:35,title:"Asset allocation และการปรับพอร์ตตามอายุ"},
+    {day:36,title:"Diversification และ correlation"},
+    {day:37,title:"Rebalancing: ทำเมื่อไร อย่างไร"},
+    {day:38,title:"REITs และการลงทุนอสังหาริมทรัพย์"},
+    {day:39,title:"ทองคำและสินค้าโภคภัณฑ์"},
+    {day:40,title:"คริปโต: เทคโนโลยี ความเสี่ยง และมุมมองพอร์ต"},
+    {day:41,title:"ลงทุนต่างประเทศ: กองทุน FIF และ DR"},
+    {day:42,title:"CAGR, total return และการวัดผลพอร์ต"},
+    {day:43,title:"Sharpe ratio, drawdown และการวัดความเสี่ยง"},
+    {day:44,title:"ค่าธรรมเนียมและภาษีกัดกินผลตอบแทนอย่างไร"},
+    {day:45,title:"อคติทางพฤติกรรม (behavioral biases)"},
+    {day:46,title:"กับดักและมิจฉาชีพทางการเงิน"},
+    {day:47,title:"สรุป Phase 2 + สร้างพอร์ตจำลอง"},
+    {day:48,title:"เทรดกับลงทุนต่างกันอย่างไร + ความจริงเชิงสถิติ"},
+    {day:49,title:"โครงสร้างตลาด: order book, spread, liquidity"},
+    {day:50,title:"ประเภทคำสั่ง: market, limit, stop, stop-limit"},
+    {day:51,title:"กราฟแท่งเทียน (candlestick)"},
+    {day:52,title:"Timeframe และการวิเคราะห์หลาย timeframe"},
+    {day:53,title:"แนวรับแนวต้าน (support/resistance)"},
+    {day:54,title:"เส้นแนวโน้มและ Dow Theory"},
+    {day:55,title:"Moving averages: SMA, EMA, golden/death cross"},
+    {day:56,title:"Momentum indicators: RSI และ Stochastic"},
+    {day:57,title:"MACD และการอ่านสัญญาณ"},
+    {day:58,title:"Bollinger Bands และความผันผวน"},
+    {day:59,title:"Volume และการยืนยันสัญญาณ"},
+    {day:60,title:"รูปแบบราคาคลาสสิก: head & shoulders, triangle, flag"},
+    {day:61,title:"รูปแบบแท่งเทียนสำคัญ: engulfing, hammer, doji"},
+    {day:62,title:"Breakout trading vs mean reversion"},
+    {day:63,title:"Position sizing และกฎความเสี่ยง 1-2% ต่อไม้"},
+    {day:64,title:"Stop loss, take profit และ risk:reward ratio"},
+    {day:65,title:"Expectancy, win rate และคณิตศาสตร์ของระบบเทรด"},
+    {day:66,title:"Trading journal และการวัดผลตัวเอง"},
+    {day:67,title:"Backtesting และกับดัก overfitting"},
+    {day:68,title:"จิตวิทยาการเทรด: FOMO, revenge trading, tilt"},
+    {day:69,title:"Leverage, margin, short selling และการถูก liquidate"},
+    {day:70,title:"อนุพันธ์เบื้องต้น: futures และ TFEX"},
+    {day:71,title:"Algo trading เบื้องต้น (Python + backtesting)"},
+    {day:72,title:"สรุป Phase 3 + ออกแบบระบบเทรดของตัวเอง"},
+    {day:73,title:"ประกันสังคม กองทุนสำรองเลี้ยงชีพ และสวัสดิการพนักงาน"},
+    {day:74,title:"ประกันชีวิตและประกันสุขภาพ"},
+    {day:75,title:"เครดิตบูโรและประวัติเครดิตในไทย"},
+    {day:76,title:"วิธีปลดหนี้: snowball vs avalanche"},
+    {day:77,title:"ค่าเงินและอัตราแลกเปลี่ยน (FX)"},
+    {day:78,title:"เศรษฐกิจมหภาค: GDP, ดอกเบี้ยนโยบาย, ธปท./Fed"},
+    {day:79,title:"Financial independence / FIRE และกฎ 4%"},
+    {day:80,title:"ออปชัน (options) เบื้องต้น"},
+    {day:81,title:"Options strategies: covered call, protective put"},
+    {day:82,title:"Efficient market hypothesis และข้อโต้แย้ง"},
+    {day:83,title:"Factor investing: size, value, momentum, quality"},
+    {day:84,title:"Portfolio theory: efficient frontier และ CAPM"},
+    {day:85,title:"วิกฤตการเงินในประวัติศาสตร์และบทเรียน"},
+    {day:86,title:"อ่านข่าวเศรษฐกิจอย่างไรให้ไม่ถูกหลอก"},
+    {day:87,title:"Startup equity, ESOP และ RSU"},
+    {day:88,title:"แผนการเงินสำหรับวิศวกรซอฟต์แวร์ไทย"},
+    {day:89,title:"เครื่องมือและแหล่งข้อมูลที่ควรติดตาม"},
+    {day:90,title:"สรุปทั้งหลักสูตร + เช็กลิสต์ปฏิบัติจริง 30 ข้อ"}
+  ]
+};
+
+(function(){
+  var done = DATA.lastCompletedDay;
+  var byDay = {};
+  DATA.days.forEach(function(d){ byDay[d.day]=d; });
+
+  var latest = byDay[done];
+  document.getElementById('heroTitle').textContent = 'Day ' + done + ' — ' + latest.title;
+  var link = document.getElementById('heroLink');
+  if(latest.file){ link.href = latest.file; } else { link.style.display='none'; }
+
+  var pct = done / DATA.totalDays * 100;
+  document.getElementById('overallText').textContent = done + ' / ' + DATA.totalDays + ' บท (' + Math.round(pct) + '%)';
+  document.getElementById('overallFill').style.width = pct.toFixed(1) + '%';
+
+  var html = DATA.phases.map(function(ph){
+    var total = ph.to - ph.from + 1;
+    var completed = Math.min(Math.max(done - ph.from + 1, 0), total);
+    var w = completed / total * 100;
+
+    var items = '';
+    for(var i=ph.from; i<=ph.to; i++){
+      var d = byDay[i];
+      var cls = i <= done ? 'done' : (i === done + 1 ? 'next' : 'todo');
+      var label = d.file && i <= done
+        ? '<a href="' + d.file + '">' + d.title + '</a>'
+        : '<span>' + d.title + '</span>';
+      var tag = (i === done + 1) ? '<span class="tag">ถัดไป</span>' : '';
+      items += '<li class="' + cls + '"><span class="num">' + i + '</span>' + label + tag + '</li>';
+    }
+
+    return '<div class="phase">' +
+      '<div class="phase-head"><span class="phase-name">Phase ' + ph.id + ' · ' + ph.name + '</span>' +
+      '<span class="phase-meta">' + completed + '/' + total + '</span></div>' +
+      '<div class="track"><div class="fill" style="width:' + w.toFixed(1) + '%"></div></div>' +
+      '<ol class="days">' + items + '</ol></div>';
+  }).join('');
+
+  document.getElementById('phases').innerHTML = html;
+})();
+</script>
+</body>
+</html>
