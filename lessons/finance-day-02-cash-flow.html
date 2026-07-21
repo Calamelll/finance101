@@ -9,7 +9,7 @@
   --bg:#fbfaf8; --card:#ffffff; --ink:#1c1b19; --muted:#6b6862;
   --line:#e6e2db; --accent:#1f6f4a; --accent-soft:#e8f3ed;
   --warn:#8a4b1e; --warn-soft:#fdf1e6; --code:#f4f2ee;
-  color-scheme: light;
+  color-scheme: light dark;
 }
 *{box-sizing:border-box}
 body{
@@ -72,6 +72,23 @@ footer a{color:var(--accent)}
   body{font-size:16px;padding:20px 14px 60px}
   h1{font-size:25px}
   .card,.calc{padding:16px}
+}
+
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#191816; --card:#211f1d; --ink:#e8e4dd; --muted:#a09a91;
+    --line:#332f2b; --accent:#6cc394; --accent-soft:#1c2f26;
+    --warn:#e0a86f; --warn-soft:#2e2419; --code:#201e1b; --dim:#5c5852;
+  }
+  .card.accent{border-color:#2c4a3c}
+  .card.warn{border-color:#4a3722}
+  .track,.bar-track{background:#2a2724}
+  .bar-principal{background:#3f5c4e}
+  .bar-negative{background:#a34a34}
+  .ans{color:#d6d1c9}
+  details[open]{background:#1d1b19}
+  ol.days li.next{border-color:#2c4a3c}
+  .btn{color:#12130f}
 }
 </style>
 </head>
