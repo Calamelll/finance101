@@ -6,9 +6,9 @@
 <title>Finance101 — หลักสูตรการเงิน 90 วัน</title>
 <style>
 :root{
-  --bg:#fbfaf8; --card:#ffffff; --ink:#1c1b19; --muted:#6b6862;
-  --line:#e6e2db; --accent:#1f6f4a; --accent-soft:#e8f3ed; --dim:#b3aea6;
-  color-scheme: light dark;
+  --bg:#191816; --card:#211f1d; --ink:#e8e4dd; --muted:#a09a91;
+  --line:#332f2b; --accent:#6cc394; --accent-soft:#1c2f26; --dim:#5c5852;
+  color-scheme: dark;
 }
 *{box-sizing:border-box}
 body{
@@ -22,10 +22,10 @@ h1{font-size:27px;margin:0 0 4px;letter-spacing:-.01em}
 .hero{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin-bottom:14px}
 .hero .lead{font-size:13px;color:var(--muted);margin:0 0 4px;letter-spacing:.03em}
 .hero .title{font-size:19px;font-weight:600;margin:0 0 14px}
-.btn{display:inline-block;background:var(--accent);color:#fff;text-decoration:none;padding:10px 20px;border-radius:9px;font-weight:600;font-size:15px}
+.btn{display:inline-block;background:var(--accent);color:#12130f;text-decoration:none;padding:10px 20px;border-radius:9px;font-weight:600;font-size:15px}
 .overall{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 22px;margin-bottom:28px}
 .overall .top{display:flex;justify-content:space-between;font-size:14px;margin-bottom:9px}
-.track{background:#eeece7;border-radius:99px;height:9px;overflow:hidden}
+.track{background:#2a2724;border-radius:99px;height:9px;overflow:hidden}
 .fill{background:var(--accent);height:100%;border-radius:99px;transition:width .6s ease}
 .phase{margin-bottom:30px}
 .phase-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:8px}
@@ -35,7 +35,7 @@ h1{font-size:27px;margin:0 0 4px;letter-spacing:-.01em}
 ol.days{list-style:none;margin:0;padding:0}
 ol.days li{display:flex;gap:12px;align-items:baseline;padding:7px 10px;border-radius:8px;font-size:15px}
 ol.days li.done{background:var(--card);border:1px solid var(--line)}
-ol.days li.next{background:var(--accent-soft);border:1px solid #cfe4d9}
+ol.days li.next{background:var(--accent-soft);border:1px solid #2c4a3c}
 ol.days li.todo{color:var(--dim)}
 .num{font-variant-numeric:tabular-nums;font-size:13px;color:var(--muted);min-width:28px;flex-shrink:0}
 ol.days li.todo .num{color:var(--dim)}
@@ -49,22 +49,6 @@ footer{margin-top:40px;padding-top:18px;border-top:1px solid var(--line);font-si
   ol.days li{font-size:14.5px;padding:6px 8px}
 }
 
-@media (prefers-color-scheme: dark){
-  :root{
-    --bg:#191816; --card:#211f1d; --ink:#e8e4dd; --muted:#a09a91;
-    --line:#332f2b; --accent:#6cc394; --accent-soft:#1c2f26;
-    --warn:#e0a86f; --warn-soft:#2e2419; --code:#201e1b; --dim:#5c5852;
-  }
-  .card.accent{border-color:#2c4a3c}
-  .card.warn{border-color:#4a3722}
-  .track,.bar-track{background:#2a2724}
-  .bar-principal{background:#3f5c4e}
-  .bar-negative{background:#a34a34}
-  .ans{color:#d6d1c9}
-  details[open]{background:#1d1b19}
-  ol.days li.next{border-color:#2c4a3c}
-  .btn{color:#12130f}
-}
 </style>
 </head>
 <body>
@@ -97,7 +81,7 @@ footer{margin-top:40px;padding-top:18px;border-top:1px solid var(--line);font-si
 // ข้อมูลนี้ถูกเขียนใหม่ทุกวันโดย scheduled task — ไม่ต้องแก้เอง
 var DATA = {
   totalDays: 90,
-  lastCompletedDay: 2,
+  lastCompletedDay: 3,
   phases: [
     { id:1, name:"พื้นฐานการเงินส่วนบุคคล", from:1,  to:14 },
     { id:2, name:"การลงทุนระยะยาว",         from:15, to:47 },
@@ -107,7 +91,7 @@ var DATA = {
   days: [
     {day:1,title:"ทำไมต้องรู้เรื่องเงิน + ภาพรวมหลักสูตร",file:"lessons/finance-day-01-why-money-literacy.html"},
     {day:2,title:"กระแสเงินสด (cash flow) และงบการเงินส่วนตัว",file:"lessons/finance-day-02-cash-flow.html"},
-    {day:3,title:"ความมั่งคั่งสุทธิ (net worth): สินทรัพย์ vs หนี้สิน"},
+    {day:3,title:"ความมั่งคั่งสุทธิ (net worth): สินทรัพย์ vs หนี้สิน",file:"lessons/finance-day-03-net-worth.html"},
     {day:4,title:"เงินเฟ้อ (inflation) และมูลค่าเงินตามเวลา"},
     {day:5,title:"ดอกเบี้ยทบต้น (compound interest)"},
     {day:6,title:"Rule of 72 และการประมาณผลตอบแทนแบบเร็ว"},

@@ -6,10 +6,10 @@
 <title>Day 1 — ทำไมต้องรู้เรื่องเงิน | Finance101</title>
 <style>
 :root{
-  --bg:#fbfaf8; --card:#ffffff; --ink:#1c1b19; --muted:#6b6862;
-  --line:#e6e2db; --accent:#1f6f4a; --accent-soft:#e8f3ed;
-  --warn:#8a4b1e; --warn-soft:#fdf1e6; --code:#f4f2ee;
-  color-scheme: light dark;
+  --bg:#191816; --card:#211f1d; --ink:#e8e4dd; --muted:#a09a91;
+  --line:#332f2b; --accent:#6cc394; --accent-soft:#1c2f26;
+  --warn:#e0a86f; --warn-soft:#2e2419; --code:#201e1b; --danger:#e0785c;
+  color-scheme: dark;
 }
 *{box-sizing:border-box}
 body{
@@ -30,8 +30,8 @@ ul,ol{margin:0 0 15px;padding-left:22px}
 li{margin-bottom:7px}
 strong{font-weight:600}
 .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin:22px 0}
-.card.accent{background:var(--accent-soft);border-color:#cfe4d9}
-.card.warn{background:var(--warn-soft);border-color:#f0dcc6}
+.card.accent{background:var(--accent-soft);border-color:#2c4a3c}
+.card.warn{background:var(--warn-soft);border-color:#4a3722}
 .card h3{margin-top:0}
 table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15.5px}
 th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
@@ -45,18 +45,19 @@ input[type=range]{width:100%;accent-color:var(--accent);height:24px}
 .bars{margin-top:6px}
 .bar-row{margin-bottom:12px}
 .bar-label{display:flex;justify-content:space-between;font-size:14px;margin-bottom:5px;gap:10px}
-.bar-track{background:#eeece7;border-radius:8px;height:26px;overflow:hidden;position:relative}
+.bar-track{background:#2a2724;border-radius:8px;height:26px;overflow:hidden;position:relative}
 .bar-fill{height:100%;border-radius:8px;transition:width .55s cubic-bezier(.22,.8,.3,1)}
-.bar-principal{background:#b9cfc4}
+.bar-principal{background:#3f5c4e}
 .bar-growth{background:var(--accent)}
 .legend{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-top:10px;flex-wrap:wrap}
 .swatch{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:middle}
 details{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:12px 16px;margin:10px 0}
+details[open]{background:#1d1b19}
 summary{cursor:pointer;font-weight:600;font-size:15.5px;list-style:none}
 summary::-webkit-details-marker{display:none}
 summary::before{content:"▸ ";color:var(--accent)}
 details[open] summary::before{content:"▾ "}
-.ans{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font-size:15.5px;color:#37342f}
+.ans{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font-size:15.5px;color:#d6d1c9}
 .q{font-weight:600;margin:22px 0 8px}
 pre{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:14px;line-height:1.6}
 code{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
@@ -73,22 +74,6 @@ footer a{color:var(--accent)}
   .card,.calc{padding:16px}
 }
 
-@media (prefers-color-scheme: dark){
-  :root{
-    --bg:#191816; --card:#211f1d; --ink:#e8e4dd; --muted:#a09a91;
-    --line:#332f2b; --accent:#6cc394; --accent-soft:#1c2f26;
-    --warn:#e0a86f; --warn-soft:#2e2419; --code:#201e1b; --dim:#5c5852;
-  }
-  .card.accent{border-color:#2c4a3c}
-  .card.warn{border-color:#4a3722}
-  .track,.bar-track{background:#2a2724}
-  .bar-principal{background:#3f5c4e}
-  .bar-negative{background:#a34a34}
-  .ans{color:#d6d1c9}
-  details[open]{background:#1d1b19}
-  ol.days li.next{border-color:#2c4a3c}
-  .btn{color:#12130f}
-}
 </style>
 </head>
 <body>

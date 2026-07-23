@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day 3 — ความมั่งคั่งสุทธิ | Finance101</title>
+<style>
+:root{
+  --bg:#191816; --card:#211f1d; --ink:#e8e4dd; --muted:#a09a91;
+  --line:#332f2b; --accent:#6cc394; --accent-soft:#1c2f26;
+  --warn:#e0a86f; --warn-soft:#2e2419; --code:#201e1b; --danger:#e0785c;
+  color-scheme: dark;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; padding:28px 18px 80px; background:var(--bg); color:var(--ink);
+  font-family:"Sarabun","Noto Sans Thai",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:17px; line-height:1.75; -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:720px;margin:0 auto}
+header{margin-bottom:34px}
+.kicker{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--muted);letter-spacing:.02em}
+.pill{background:var(--accent-soft);color:var(--accent);padding:3px 11px;border-radius:99px;font-weight:600}
+h1{font-size:29px;line-height:1.3;margin:12px 0 6px;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:16px;margin:0}
+h2{font-size:21px;margin:38px 0 12px;letter-spacing:-.005em}
+h3{font-size:17px;margin:26px 0 8px}
+p{margin:0 0 15px}
+ul,ol{margin:0 0 15px;padding-left:22px}
+li{margin-bottom:7px}
+strong{font-weight:600}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin:22px 0}
+.card.accent{background:var(--accent-soft);border-color:#2c4a3c}
+.card.warn{background:var(--warn-soft);border-color:#4a3722}
+.card h3{margin-top:0}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15.5px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-weight:600;font-size:13.5px;letter-spacing:.02em}
+td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.calc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;margin:22px 0}
+.calc label{display:block;font-size:14px;color:var(--muted);margin-bottom:6px}
+.calc .row{margin-bottom:18px}
+input[type=range]{width:100%;accent-color:var(--accent);height:24px}
+.val{font-weight:600;color:var(--accent);font-variant-numeric:tabular-nums}
+.bars{margin-top:6px}
+.bar-row{margin-bottom:12px}
+.bar-label{display:flex;justify-content:space-between;font-size:14px;margin-bottom:5px;gap:10px}
+.bar-track{background:#2a2724;border-radius:8px;height:26px;overflow:hidden;position:relative}
+.bar-fill{height:100%;border-radius:8px;transition:width .55s cubic-bezier(.22,.8,.3,1)}
+.bar-principal{background:#3f5c4e}
+.bar-growth{background:var(--accent)}
+.bar-negative{background:#a34a34}
+.legend{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-top:10px;flex-wrap:wrap}
+.swatch{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:middle}
+details{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:12px 16px;margin:10px 0}
+details[open]{background:#1d1b19}
+summary{cursor:pointer;font-weight:600;font-size:15.5px;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"▸ ";color:var(--accent)}
+details[open] summary::before{content:"▾ "}
+.ans{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font-size:15.5px;color:#d6d1c9}
+.q{font-weight:600;margin:22px 0 8px}
+pre{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:14px;line-height:1.6}
+code{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+.summary-box{border-left:3px solid var(--accent);padding-left:18px;margin:26px 0}
+.summary-box p{margin-bottom:8px}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
+footer a{color:var(--accent)}
+.disclaimer{font-size:13px;color:var(--muted);margin-top:18px;line-height:1.6}
+.nav{margin-bottom:20px;font-size:14px}
+.nav a{color:var(--accent);text-decoration:none}
+@media(max-width:520px){
+  body{font-size:16px;padding:20px 14px 60px}
+  h1{font-size:25px}
+  .card,.calc{padding:16px}
+}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="nav"><a href="../index.html">← สารบัญ</a></div>
+
+<header>
+  <div class="kicker">
+    <span class="pill">Day 3 / 90</span>
+    <span>Phase 1 · พื้นฐานการเงินส่วนบุคคล</span>
+    <span>·</span>
+    <span>อ่าน 8 นาที</span>
+  </div>
+  <h1>ความมั่งคั่งสุทธิ (net worth): สินทรัพย์ vs หนี้สิน</h1>
+  <p class="sub">ถ้าวันนี้ต้องขายทุกอย่างและใช้หนี้ทุกก้อน คุณจะเหลือเงินเท่าไร</p>
+</header>
+
+<h2>จากวิดีโอสู่ภาพถ่าย</h2>
+
+<p>เมื่อวานเราวัด<strong>กระแสเงินสด (cash flow)</strong> ซึ่งเป็นภาพเคลื่อนไหวของเงินในแต่ละเดือน วันนี้เราจะถ่าย<strong>ภาพนิ่ง</strong>ของฐานะการเงินทั้งหมด ณ วินาทีนี้ เรียกว่า<strong>ความมั่งคั่งสุทธิ (net worth)</strong></p>
+
+<div class="card accent">
+  <p style="margin-bottom:0"><code>ความมั่งคั่งสุทธิ (net worth) = สินทรัพย์รวม (total assets) − หนี้สินรวม (total liabilities)</code></p>
+</div>
+
+<p>ตัวเลขนี้ตอบคำถามเดียว: ถ้าวันนี้ขายทุกอย่างที่มีมูลค่าเป็นเงินสด แล้วเอาไปจ่ายหนี้ทุกก้อนจนหมด จะเหลือเท่าไร ต่างจาก cash flow ตรงที่ cash flow บอกว่า<em>เดือนนี้</em>เงินไหลเข้าออกเท่าไร แต่ net worth บอกว่า<em>สะสม</em>มาถึงตอนนี้เท่าไร — เป็นบวกซ้ำๆ ทุกเดือนของ cash flow คือสิ่งที่ทำให้ net worth ค่อยๆ โตขึ้น</p>
+
+<h2>สินทรัพย์ (assets) แบ่งตามสภาพคล่อง</h2>
+
+<p>ไม่ใช่ทุกสิ่งที่ "มีมูลค่า" จะนับเป็นสินทรัพย์ทางการเงินแบบเดียวกัน แบ่งได้ 3 กลุ่มตามความเร็วในการแปลงเป็นเงินสด (liquidity)</p>
+
+<div class="card">
+  <h3>1. สินทรัพย์สภาพคล่องสูง (liquid assets)</h3>
+  <p style="margin-bottom:0">เงินสด เงินในบัญชีออมทรัพย์ กองทุนตลาดเงิน — ถอนใช้ได้เกือบทันที มูลค่าไม่ผันผวน</p>
+</div>
+
+<div class="card">
+  <h3>2. สินทรัพย์เพื่อการลงทุน (invested assets)</h3>
+  <p style="margin-bottom:0">กองทุนรวม หุ้น พันธบัตร RMF/SSF เงินกองทุนสำรองเลี้ยงชีพ — แปลงเป็นเงินสดได้ในไม่กี่วัน แต่มูลค่าขึ้นลงตามตลาด และบางตัว (RMF/SSF) มีเงื่อนไขเวลาถือครองก่อนขายได้โดยไม่เสียสิทธิ์ลดหย่อน (Day 13)</p>
+</div>
+
+<div class="card">
+  <h3>3. สินทรัพย์เพื่อใช้งาน (personal-use / illiquid assets)</h3>
+  <p style="margin-bottom:0">รถ มือถือ เฟอร์นิเจอร์ — มีมูลค่าจริงแต่ <strong>เสื่อมราคา (depreciate)</strong> ทุกปีและขายออกยาก นักวางแผนการเงินส่วนใหญ่แนะนำให้แยกนับต่างหากหรือไม่รวมในภาพ net worth หลัก เพราะมันไม่ได้ช่วยสร้างความมั่งคั่งเพิ่ม มีไว้เพื่อใช้ ไม่ใช่เพื่อโต</p>
+</div>
+
+<h2>หนี้สิน (liabilities): ไม่ใช่ทุกหนี้เท่ากัน</h2>
+
+<p>หนี้สินคือภาระที่ต้องจ่ายคืน แบ่งคร่าวๆ เป็นหนี้ระยะสั้น (ยอดบัตรเครดิตคงค้าง สินเชื่อส่วนบุคคล) กับหนี้ระยะยาว (ผ่อนบ้าน ผ่อนรถ กยศ.) เราจะแยกละเอียดเรื่อง "หนี้ดีกับหนี้เสีย" ใน Day 10 — วันนี้แค่จำไว้ว่าหนี้ทุกก้อนต้องถูก<strong>นับด้วยยอดคงเหลือปัจจุบัน</strong> ไม่ใช่ยอดกู้ตอนแรก เช่น ผ่อนรถมา 2 ปีจาก 5 ปี ให้ใช้ยอดที่เหลือต้องผ่อนอีก ไม่ใช่ราคารถทั้งคัน</p>
+
+<h2>ตัวอย่าง: เด็กจบใหม่คนเดิม 8 เดือนหลังเริ่มออม</h2>
+
+<p>ต่อจากตัวอย่าง Day 2 (เงินเดือน 25,000 บาท กระแสเงินสดสุทธิ +4,750 บาท/เดือน) สมมติเวลาผ่านไป 8 เดือนแล้วมาเช็กสถานะ</p>
+
+<div class="card accent">
+  <h3>งบดุลส่วนตัว (personal balance sheet)</h3>
+  <table>
+    <tr><th>สินทรัพย์</th><th class="num">มูลค่า (บาท)</th></tr>
+    <tr><td>เงินสดในบัญชีออมทรัพย์</td><td class="num">45,000</td></tr>
+    <tr><td>กองทุนรวม/หุ้น</td><td class="num">60,000</td></tr>
+    <tr><td>กองทุนสำรองเลี้ยงชีพสะสม</td><td class="num">15,000</td></tr>
+    <tr><td><strong>สินทรัพย์รวม</strong></td><td class="num"><strong>120,000</strong></td></tr>
+    <tr><th>หนี้สิน</th><th class="num">ยอดคงเหลือ (บาท)</th></tr>
+    <tr><td>ยอดบัตรเครดิตคงค้าง</td><td class="num">8,000</td></tr>
+    <tr><td>ผ่อนโทรศัพท์ (เหลือ)</td><td class="num">6,000</td></tr>
+    <tr><td><strong>หนี้สินรวม</strong></td><td class="num"><strong>14,000</strong></td></tr>
+    <tr><td><strong>ความมั่งคั่งสุทธิ</strong></td><td class="num"><strong>106,000</strong></td></tr>
+  </table>
+  <p style="margin-bottom:0">120,000 − 14,000 = <strong>106,000 บาท</strong> — นี่คือ "จุดยืน" ทางการเงินของคนคนนี้ ณ วันที่เช็ก ไม่ใช่ตัวเลขที่ตายตัว เพราะกองทุน/หุ้นขึ้นลงทุกวัน และหนี้ก็ลดลงเรื่อยๆ ตามการผ่อน</p>
+</div>
+
+<h2>ลองคำนวณของตัวเอง</h2>
+<p>ใส่ตัวเลขคร่าวๆ ของสินทรัพย์และหนี้สินที่มีตอนนี้ เพื่อดูความมั่งคั่งสุทธิของตัวเอง</p>
+
+<div class="calc">
+  <div class="row">
+    <label>สินทรัพย์สภาพคล่อง (เงินสด/บัญชีออมทรัพย์) <span class="val" id="liqV">45,000</span> บาท</label>
+    <input type="range" id="liq" min="0" max="300000" value="45000" step="1000">
+  </div>
+  <div class="row">
+    <label>สินทรัพย์เพื่อการลงทุน (กองทุน/หุ้น/RMF/SSF) <span class="val" id="invV">75,000</span> บาท</label>
+    <input type="range" id="inv" min="0" max="500000" value="75000" step="1000">
+  </div>
+  <div class="row">
+    <label>หนี้สินรวม (บัตรเครดิต/ผ่อนของ/สินเชื่อ) <span class="val" id="debtV">14,000</span> บาท</label>
+    <input type="range" id="debt" min="0" max="300000" value="14000" step="1000">
+  </div>
+  <div class="bars" id="bars"></div>
+  <div class="legend">
+    <span><span class="swatch bar-growth"></span>สินทรัพย์รวม</span>
+    <span><span class="swatch bar-negative"></span>หนี้สินรวม</span>
+  </div>
+  <p id="result" style="margin:14px 0 0;font-weight:600"></p>
+</div>
+
+<div class="card warn">
+  <p style="margin-bottom:0"><strong>ความมั่งคั่งสุทธิติดลบตอนอายุ 20 ต้นๆ เป็นเรื่องปกติมาก</strong> ถ้ามีหนี้ กยศ. หรือเพิ่งเริ่มทำงาน สิ่งที่สำคัญไม่ใช่ตัวเลขวันนี้ แต่คือ<strong>แนวโน้ม</strong> — ถ้าเช็กทุก 3-6 เดือนแล้วตัวเลขขยับขึ้นเรื่อยๆ แปลว่าระบบการเงินที่วางไว้ (Day 2) กำลังทำงาน</p>
+</div>
+
+<h2>งานของวันนี้</h2>
+<p>รวมยอดสินทรัพย์และหนี้สินจริงของตัวเอง (ประมาณเป็นหลักร้อยพอ) แล้วคำนวณ net worth ปัจจุบัน จดวันที่ไว้ด้วย เพื่อเทียบกับตัวเลขนี้อีกครั้งในอีก 3-6 เดือนข้างหน้า จะเห็นว่าตัวเลขเปลี่ยนทิศทางไปตามพฤติกรรมการออมของ Day 2</p>
+
+<details>
+  <summary>กล่องโค้ด (ข้ามได้ ไม่นับในเวลาอ่าน)</summary>
+  <div class="ans">
+  <p>สคริปต์คำนวณความมั่งคั่งสุทธิจากรายการสินทรัพย์และหนี้สิน:</p>
+  <pre><code>assets = {
+    "เงินสดในบัญชี": 45000,
+    "กองทุนรวม/หุ้น": 60000,
+    "กองทุนสำรองเลี้ยงชีพ": 15000,
+}
+liabilities = {
+    "บัตรเครดิตคงค้าง": 8000,
+    "ผ่อนโทรศัพท์": 6000,
+}
+
+total_assets = sum(assets.values())
+total_liabilities = sum(liabilities.values())
+net_worth = total_assets - total_liabilities
+
+print(f"สินทรัพย์รวม: {total_assets:,} บาท")
+print(f"หนี้สินรวม: {total_liabilities:,} บาท")
+print(f"ความมั่งคั่งสุทธิ: {net_worth:,} บาท")
+# สินทรัพย์รวม: 120,000 บาท
+# หนี้สินรวม: 14,000 บาท
+# ความมั่งคั่งสุทธิ: 106,000 บาท</code></pre>
+  <p style="margin-bottom:0">เก็บสคริปต์นี้ไว้แล้วรันซ้ำทุกเดือน แก้แค่ตัวเลขในสอง dict — จะได้กราฟแนวโน้ม net worth ของตัวเองถ้าบันทึกผลลัพธ์ทุกครั้งลงไฟล์ CSV</p>
+  </div>
+</details>
+
+<h2>ทดสอบความเข้าใจ</h2>
+
+<p class="q">1. ทำไมนักวางแผนการเงินมักไม่นับรถหรือมือถือรวมในภาพ net worth หลัก?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">เพราะเป็นสินทรัพย์เพื่อใช้งานที่เสื่อมราคา (depreciate) ทุกปีและขายออกยาก ไม่ได้ช่วยสร้างความมั่งคั่งเพิ่มเหมือนสินทรัพย์เพื่อการลงทุน การรวมมันเข้าไปอาจทำให้ตัวเลข net worth ดูดีเกินจริงเมื่อเทียบกับความสามารถในการรับมือเหตุฉุกเฉินทางการเงิน</div>
+</details>
+
+<p class="q">2. ทำไมต้องใช้ "ยอดคงเหลือปัจจุบัน" ของหนี้ ไม่ใช่ยอดกู้ตอนแรก?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">เพราะ net worth วัดฐานะ ณ วันนี้ ไม่ใช่ประวัติศาสตร์ ยอดกู้ตอนแรกไม่สะท้อนภาระที่เหลืออยู่จริง เช่น ผ่อนรถมาแล้ว 2 ใน 5 ปี ยอดหนี้ที่ต้องเอามาลบออกจากสินทรัพย์คือส่วนที่เหลือต้องผ่อนอีกเท่านั้น</div>
+</details>
+
+<p class="q">3. ความมั่งคั่งสุทธิ (net worth) กับกระแสเงินสด (cash flow) สัมพันธ์กันอย่างไร?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">Cash flow ที่เป็นบวกซ้ำๆ ทุกเดือนคือกลไกที่ทำให้ net worth ค่อยๆ เพิ่มขึ้น เปรียบได้กับวิดีโอ (cash flow รายเดือน) ที่เมื่อฉายต่อเนื่องหลายเดือนจะกลายเป็นภาพนิ่งใหม่ที่ดีขึ้น (net worth ที่โตขึ้น) ถ้า cash flow ติดลบต่อเนื่อง net worth ก็จะค่อยๆ ลดลงเช่นกัน</div>
+</details>
+
+<p class="q"><strong>ทวน:</strong> จากตัวอย่าง Day 2 เด็กจบใหม่เงินเดือน 25,000 บาท มีกระแสเงินสดสุทธิเท่าไรต่อเดือน และคิดเป็นอัตราการออมกี่เปอร์เซ็นต์?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">กระแสเงินสดสุทธิ +4,750 บาท/เดือน (รายรับ 25,000 − รายจ่ายรวม 20,250) คิดเป็นอัตราการออม 4,750 ÷ 25,000 = 19%<br>ตอบผิดหรือลังเล? → <a href="finance-day-02-cash-flow.html">ทบทวน Day 2: กระแสเงินสด</a></div>
+</details>
+
+<div class="summary-box">
+  <h2 style="margin-top:0">สรุป 3 บรรทัด</h2>
+  <p>1. ความมั่งคั่งสุทธิ (net worth) = สินทรัพย์รวม − หนี้สินรวม เป็นภาพนิ่ง ณ จุดหนึ่ง ต่างจาก cash flow ที่เป็นภาพเคลื่อนไหวรายเดือน</p>
+  <p>2. แยกสินทรัพย์ตามสภาพคล่อง (เงินสด / เพื่อการลงทุน / เพื่อใช้งาน) และนับหนี้ด้วยยอดคงเหลือปัจจุบันเสมอ</p>
+  <p style="margin-bottom:0">3. ตัวเลขติดลบตอนอายุน้อยไม่ใช่เรื่องผิดปกติ สิ่งที่สำคัญคือแนวโน้มเมื่อเช็กซ้ำทุก 3-6 เดือน</p>
+</div>
+
+<footer>
+  <p><strong>พรุ่งนี้ Day 4 — เงินเฟ้อ (inflation) และมูลค่าเงินตามเวลา</strong> ทำไมเงิน 100 บาทวันนี้ไม่เท่ากับเงิน 100 บาทเมื่อ 10 ปีก่อน และมีผลต่อ net worth ที่เพิ่งคำนวณไปอย่างไร</p>
+  <p class="disclaimer">บทเรียนนี้เป็นความรู้เชิงการศึกษา ไม่ใช่คำแนะนำทางการเงินเฉพาะบุคคล ตัวเลขในตัวอย่างเป็นค่ากลมๆ เพื่อประกอบการอธิบายเท่านั้น ไม่ใช่ค่าเฉลี่ยที่อ้างอิงจากแหล่งข้อมูลใด</p>
+</footer>
+
+</div>
+
+<script>
+(function(){
+  var liq=document.getElementById('liq'), inv=document.getElementById('inv'), debt=document.getElementById('debt');
+  var liqV=document.getElementById('liqV'), invV=document.getElementById('invV'), debtV=document.getElementById('debtV');
+  var bars=document.getElementById('bars'), result=document.getElementById('result');
+  function fmt(n){return Math.round(n).toLocaleString('th-TH');}
+
+  function render(){
+    var l=+liq.value, i=+inv.value, d=+debt.value;
+    liqV.textContent=fmt(l);
+    invV.textContent=fmt(i);
+    debtV.textContent=fmt(d);
+
+    var totalAssets=l+i;
+    var net=totalAssets-d;
+    var max=Math.max(totalAssets,d,1);
+    var aPct=(totalAssets/max*100).toFixed(1);
+    var dPct=(d/max*100).toFixed(1);
+
+    bars.innerHTML=
+      '<div class="bar-row">'+
+        '<div class="bar-label"><span>สินทรัพย์รวม</span><strong>'+fmt(totalAssets)+' บาท</strong></div>'+
+        '<div class="bar-track"><div class="bar-fill bar-growth" style="width:'+aPct+'%"></div></div>'+
+      '</div>'+
+      '<div class="bar-row">'+
+        '<div class="bar-label"><span>หนี้สินรวม</span><strong>'+fmt(d)+' บาท</strong></div>'+
+        '<div class="bar-track"><div class="bar-fill bar-negative" style="width:'+dPct+'%"></div></div>'+
+      '</div>';
+
+    if(net>=0){
+      result.style.color='var(--accent)';
+      result.textContent='ความมั่งคั่งสุทธิ +'+fmt(net)+' บาท';
+    }else{
+      result.style.color='var(--danger)';
+      result.textContent='ความมั่งคั่งสุทธิ '+fmt(net)+' บาท — หนี้สินมากกว่าสินทรัพย์';
+    }
+  }
+
+  [liq,inv,debt].forEach(function(el){el.addEventListener('input',render);});
+  render();
+})();
+</script>
+</body>
+</html>

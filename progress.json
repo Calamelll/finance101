@@ -1,9 +1,9 @@
 {
   "startDate": "2026-07-21",
   "totalDays": 90,
-  "lastCompletedDay": 2,
-  "nextDay": 3,
-  "lastRunDate": "2026-07-21",
+  "lastCompletedDay": 3,
+  "nextDay": 4,
+  "lastRunDate": "2026-07-23",
   "githubPushed": true,
   "pendingPush": [],
   "history": [
@@ -20,7 +20,20 @@
       "title": "กระแสเงินสด (cash flow) และงบการเงินส่วนตัว",
       "file": "lessons/finance-day-02-cash-flow.html",
       "recallFrom": [1]
+    },
+    {
+      "day": 3,
+      "date": "2026-07-23",
+      "title": "ความมั่งคั่งสุทธิ (net worth): สินทรัพย์ vs หนี้สิน",
+      "file": "lessons/finance-day-03-net-worth.html",
+      "recallFrom": [2]
     }
   ],
-  "notesApplied": []
+  "notesApplied": [
+    {
+      "date": "2026-07-23",
+      "note": "อยากได้บทเรียนเป็น dark theme",
+      "action": "เปลี่ยนธีมสีเริ่มต้นของทั้งหลักสูตรเป็น dark theme ถาวร (ไม่ใช้ prefers-color-scheme อีกต่อไป) แก้ CSS ย้อนหลังใน Day 1, Day 2 และ index.html ให้ตรงกันหมด พร้อมเพิ่ม --danger สำหรับข้อความค่าติดลบให้อ่านง่ายบนพื้นเข้ม"
+    }
+  ]
 }
