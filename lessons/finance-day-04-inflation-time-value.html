@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day 4 — เงินเฟ้อและมูลค่าเงินตามเวลา | Finance101</title>
+<style>
+:root{
+  --bg:#191816; --card:#211f1d; --ink:#e8e4dd; --muted:#a09a91;
+  --line:#332f2b; --accent:#6cc394; --accent-soft:#1c2f26;
+  --warn:#e0a86f; --warn-soft:#2e2419; --code:#201e1b; --danger:#e0785c;
+  color-scheme: dark;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; padding:28px 18px 80px; background:var(--bg); color:var(--ink);
+  font-family:"Sarabun","Noto Sans Thai",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:17px; line-height:1.75; -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:720px;margin:0 auto}
+header{margin-bottom:34px}
+.kicker{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--muted);letter-spacing:.02em}
+.pill{background:var(--accent-soft);color:var(--accent);padding:3px 11px;border-radius:99px;font-weight:600}
+h1{font-size:29px;line-height:1.3;margin:12px 0 6px;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:16px;margin:0}
+h2{font-size:21px;margin:38px 0 12px;letter-spacing:-.005em}
+h3{font-size:17px;margin:26px 0 8px}
+p{margin:0 0 15px}
+ul,ol{margin:0 0 15px;padding-left:22px}
+li{margin-bottom:7px}
+strong{font-weight:600}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin:22px 0}
+.card.accent{background:var(--accent-soft);border-color:#2c4a3c}
+.card.warn{background:var(--warn-soft);border-color:#4a3722}
+.card h3{margin-top:0}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15.5px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-weight:600;font-size:13.5px;letter-spacing:.02em}
+td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.calc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;margin:22px 0}
+.calc label{display:block;font-size:14px;color:var(--muted);margin-bottom:6px}
+.calc .row{margin-bottom:18px}
+input[type=range]{width:100%;accent-color:var(--accent);height:24px}
+.val{font-weight:600;color:var(--accent);font-variant-numeric:tabular-nums}
+.bars{margin-top:6px}
+.bar-row{margin-bottom:12px}
+.bar-label{display:flex;justify-content:space-between;font-size:14px;margin-bottom:5px;gap:10px}
+.bar-track{background:#2a2724;border-radius:8px;height:26px;overflow:hidden;position:relative}
+.bar-fill{height:100%;border-radius:8px;transition:width .55s cubic-bezier(.22,.8,.3,1)}
+.bar-principal{background:#3f5c4e}
+.bar-growth{background:var(--accent)}
+.bar-negative{background:#a34a34}
+.legend{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-top:10px;flex-wrap:wrap}
+.swatch{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:middle}
+details{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:12px 16px;margin:10px 0}
+details[open]{background:#1d1b19}
+summary{cursor:pointer;font-weight:600;font-size:15.5px;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"▸ ";color:var(--accent)}
+details[open] summary::before{content:"▾ "}
+.ans{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font-size:15.5px;color:#d6d1c9}
+.q{font-weight:600;margin:22px 0 8px}
+pre{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:14px;line-height:1.6}
+code{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+.summary-box{border-left:3px solid var(--accent);padding-left:18px;margin:26px 0}
+.summary-box p{margin-bottom:8px}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
+footer a{color:var(--accent)}
+.disclaimer{font-size:13px;color:var(--muted);margin-top:18px;line-height:1.6}
+.nav{margin-bottom:20px;font-size:14px}
+.nav a{color:var(--accent);text-decoration:none}
+.src{font-size:12.5px;color:var(--muted);margin-top:8px}
+@media(max-width:520px){
+  body{font-size:16px;padding:20px 14px 60px}
+  h1{font-size:25px}
+  .card,.calc{padding:16px}
+}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="nav"><a href="../index.html">← สารบัญ</a></div>
+
+<header>
+  <div class="kicker">
+    <span class="pill">Day 4 / 90</span>
+    <span>Phase 1 · พื้นฐานการเงินส่วนบุคคล</span>
+    <span>·</span>
+    <span>อ่าน 8 นาที</span>
+  </div>
+  <h1>เงินเฟ้อ (inflation) และมูลค่าเงินตามเวลา</h1>
+  <p class="sub">ทำไมเงิน 100 บาทวันนี้ไม่เท่ากับเงิน 100 บาทเมื่อ 10 ปีก่อน — และทำไม net worth ที่คำนวณเมื่อวานถึง "โตช้ากว่าที่คิด"</p>
+</header>
+
+<h2>เงินเฟ้อ (inflation) คืออะไร</h2>
+
+<p><strong>เงินเฟ้อ (inflation)</strong> คือภาวะที่ระดับราคาสินค้าและบริการโดยรวมสูงขึ้นต่อเนื่อง ซึ่งแปลว่าเงินจำนวนเท่าเดิมซื้อของได้น้อยลง วัดจาก<strong>ดัชนีราคาผู้บริโภค (CPI — consumer price index)</strong> ที่กระทรวงพาณิชย์ประกาศทุกเดือน</p>
+
+<div class="card accent">
+  <p style="margin-bottom:0"><strong>ข้อมูลจริง:</strong> เงินเฟ้อทั่วไปของไทยเดือนมิถุนายน 2569 อยู่ที่ <strong>2.42%</strong> เทียบกับปีก่อน ซึ่งเป็นระดับสูงสุดในรอบ 3 เดือน ปัจจัยหลักมาจากราคาน้ำมันและอาหารสำเร็จรูป กระทรวงพาณิชย์คาดการณ์เงินเฟ้อทั้งปี 2569 อยู่ที่กรอบ <strong>1.5–2.5%</strong></p>
+  <p class="src" style="margin-bottom:0">แหล่งข้อมูล: TNN Online, สืบค้น 24 ก.ค. 2569 — <a href="https://www.tnnthailand.com/wealth/investment/240113/" style="color:var(--muted)">tnnthailand.com/wealth/investment/240113</a></p>
+</div>
+
+<p>ตัวเลขนี้จะเปลี่ยนไปทุกเดือนทุกปี บทเรียนนี้จึงใช้ <strong>2.5% ต่อปี</strong> เป็นค่ากลมๆ สำหรับคำนวณตัวอย่าง (อยู่ในกรอบคาดการณ์ปี 2569 ข้างต้น) ไม่ใช่ตัวเลขที่การันตีว่าจะเป็นแบบนี้ตลอดไป</p>
+
+<h2>สูตร: ราคาสินค้าในอนาคต</h2>
+
+<div class="card accent">
+  <p style="margin-bottom:0"><code>ราคาในอนาคต = ราคาวันนี้ × (1 + อัตราเงินเฟ้อ)<sup>จำนวนปี</sup></code></p>
+</div>
+
+<p>ตัวอย่าง: ก๋วยเตี๋ยวชามละ <strong>50 บาท</strong> วันนี้ ถ้าเงินเฟ้อเฉลี่ย 2.5% ต่อปีไปเรื่อยๆ ราคาจะขยับเป็น</p>
+
+<table>
+  <tr><th>อีกกี่ปี</th><th class="num">ราคาก๋วยเตี๋ยว (บาท)</th></tr>
+  <tr><td>5 ปี</td><td class="num">56.57</td></tr>
+  <tr><td>10 ปี</td><td class="num">64.00</td></tr>
+  <tr><td>20 ปี</td><td class="num">81.93</td></tr>
+  <tr><td>30 ปี</td><td class="num">104.88</td></tr>
+</table>
+
+<p>สังเกตว่าราคาไม่ได้ขึ้นแบบเส้นตรง (linear) แต่ทบต้น (compound) เหมือนดอกเบี้ย — เป็นด้านตรงข้ามของดอกเบี้ยทบต้นที่จะเรียนพรุ่งนี้ (Day 5) เงินเฟ้อคือ "ดอกเบี้ยทบต้นที่กัดกร่อนอำนาจซื้อของเรา" แทนที่จะทำให้เงินเราโต</p>
+
+<h2>มูลค่าเงินตามเวลา (time value of money)</h2>
+
+<p><strong>มูลค่าเงินตามเวลา (time value of money)</strong> คือหลักการที่ว่า เงิน 1 บาทวันนี้ มีค่ามากกว่าเงิน 1 บาทในอนาคตเสมอ ด้วยเหตุผล 2 ข้อประกอบกัน</p>
+
+<div class="card">
+  <h3>1. เงินเฟ้อกัดกร่อนอำนาจซื้อ</h3>
+  <p style="margin-bottom:0">เงิน 100 บาทในอีก 10 ปี ซื้อของได้น้อยกว่าเงิน 100 บาทวันนี้ ตามตัวอย่างก๋วยเตี๋ยวข้างบน</p>
+</div>
+
+<div class="card">
+  <h3>2. ต้นทุนค่าเสียโอกาส (opportunity cost)</h3>
+  <p style="margin-bottom:0">เงินวันนี้เอาไปลงทุนหรือฝากธนาคารได้ทันที เกิดดอกผลระหว่างทาง แต่เงินที่จะได้รับในอนาคตไม่มีช่วงเวลานั้นให้ทำงาน</p>
+</div>
+
+<p>สองแรงนี้รวมกันเป็นเหตุผลว่าทำไมนักการเงินจึงไม่เปรียบเทียบ "จำนวนเงิน" ตรงๆ ข้ามช่วงเวลา ต้องแปลงให้อยู่ในหน่วยเดียวกันก่อนเสมอ — เรื่องการคิดลด (discounting) และมูลค่าปัจจุบัน (present value) แบบละเอียดจะอยู่ใน Day 5-6 เมื่อเข้าใจดอกเบี้ยทบต้นแล้ว วันนี้ขอโฟกัสที่ผลของเงินเฟ้ออย่างเดียวก่อน</p>
+
+<h2>ดอกเบี้ยที่แท้จริง (real interest rate)</h2>
+
+<p>กับดักที่พบบ่อยที่สุด: เห็นดอกเบี้ยเงินฝากออมทรัพย์ 0.5% ต่อปีแล้วคิดว่าเงิน "งอกเงย" ทั้งที่จริงอาจกำลัง <strong>จนลง</strong> ถ้าเงินเฟ้อสูงกว่าดอกเบี้ยที่ได้รับ</p>
+
+<div class="card accent">
+  <p style="margin-bottom:0"><code>ดอกเบี้ยที่แท้จริง (real rate) ≈ ดอกเบี้ยที่ได้รับ (nominal rate) − อัตราเงินเฟ้อ</code></p>
+</div>
+
+<p>ตัวอย่าง: ฝากออมทรัพย์ได้ดอกเบี้ย nominal 0.5% ต่อปี ขณะที่เงินเฟ้อ 2.5% ต่อปี</p>
+
+<div class="card warn">
+  <p style="margin-bottom:0">ดอกเบี้ยที่แท้จริง ≈ 0.5% − 2.5% = <strong>−2.0% ต่อปี</strong> (คำนวณแบบแม่นยำด้วยสูตร Fisher ได้ −1.95%) แปลว่าเงินในบัญชีออมทรัพย์ที่ "ตัวเลขไม่ลด" กลับมี<strong>อำนาจซื้อลดลงทุกปี</strong> นี่คือเหตุผลที่ Day 13-20 จะพูดถึงการลงทุนในสินทรัพย์ที่ผลตอบแทนคาดหวังชนะเงินเฟ้อได้</p>
+</div>
+
+<h2>ตัวอย่าง: เงินเก็บ 100,000 บาทที่ "จอดนิ่ง"</h2>
+
+<p>ต่อเนื่องจากเด็กจบใหม่ใน Day 2-3 สมมติมีเงินสด 100,000 บาทฝากไว้ในบัญชีที่แทบไม่มีดอกเบี้ย (0%) เพื่อดูผลของเงินเฟ้อล้วนๆ ต่ออำนาจซื้อ ถ้าเงินเฟ้อเฉลี่ย 2.5% ต่อปี</p>
+
+<table>
+  <tr><th>อีกกี่ปี</th><th class="num">อำนาจซื้อเทียบเท่าเงินวันนี้ (บาท)</th><th class="num">มูลค่าหายไป</th></tr>
+  <tr><td>10 ปี</td><td class="num">78,120</td><td class="num">21.9%</td></tr>
+  <tr><td>20 ปี</td><td class="num">61,027</td><td class="num">39.0%</td></tr>
+  <tr><td>30 ปี</td><td class="num">47,674</td><td class="num">52.3%</td></tr>
+</table>
+
+<p>ตัวเลข 100,000 บาทในบัญชียังคงแสดงเป็น 100,000 บาทเป๊ะๆ ไม่มีอะไรลด แต่ของที่ซื้อได้ด้วยเงินก้อนนี้ลดลงจริงเกือบครึ่งใน 30 ปี — นี่คือเหตุผลที่ "เก็บเงินสดเฉยๆ" ไม่ใช่กลยุทธ์ที่ปลอดภัยในระยะยาวอย่างที่หลายคนเข้าใจ</p>
+
+<h2>ลองคำนวณของตัวเอง</h2>
+<p>ปรับตัวเลขเพื่อดูว่าเงินก้อนหนึ่งจะเหลืออำนาจซื้อเท่าไรเมื่อเวลาผ่านไป ภายใต้อัตราเงินเฟ้อที่สมมติ</p>
+
+<div class="calc">
+  <div class="row">
+    <label>เงินตั้งต้น <span class="val" id="amtV">100,000</span> บาท</label>
+    <input type="range" id="amt" min="10000" max="1000000" value="100000" step="10000">
+  </div>
+  <div class="row">
+    <label>อัตราเงินเฟ้อสมมติ <span class="val" id="inflV">2.5</span>% ต่อปี</label>
+    <input type="range" id="infl" min="0" max="8" value="2.5" step="0.1">
+  </div>
+  <div class="row">
+    <label>ระยะเวลา <span class="val" id="yrV">10</span> ปี</label>
+    <input type="range" id="yr" min="1" max="40" value="10" step="1">
+  </div>
+  <div class="bars" id="bars"></div>
+  <div class="legend">
+    <span><span class="swatch bar-principal"></span>ตัวเลขในบัญชี (nominal)</span>
+    <span><span class="swatch bar-negative"></span>อำนาจซื้อจริง (real, เทียบเงินวันนี้)</span>
+  </div>
+  <p id="result" style="margin:14px 0 0;font-weight:600"></p>
+</div>
+
+<h2>งานของวันนี้</h2>
+<p>เอาตัวเลข net worth ที่คำนวณไว้เมื่อวาน (Day 3) มาลองคิดว่าถ้าปล่อยไว้เฉยๆ 10 ปีโดยไม่ลงทุนอะไรเลย ด้วยเงินเฟ้อ 2.5% ต่อปี อำนาจซื้อจริงจะเหลือเท่าไร แล้วเก็บตัวเลขนี้ไว้เทียบกับ Day 5 ที่จะเห็นว่าดอกเบี้ยทบต้นช่วยพลิกสถานการณ์นี้ได้อย่างไร</p>
+
+<details>
+  <summary>กล่องโค้ด (ข้ามได้ ไม่นับในเวลาอ่าน)</summary>
+  <div class="ans">
+  <p>สคริปต์คำนวณอำนาจซื้อจริงในอนาคตและดอกเบี้ยที่แท้จริง:</p>
+  <pre><code>def future_price(price_now, inflation, years):
+    return price_now * (1 + inflation) ** years
+
+def real_value(amount_now, inflation, years):
+    """อำนาจซื้อของเงินก้อนหนึ่งในอนาคต เทียบเป็นเงินวันนี้"""
+    return amount_now / (1 + inflation) ** years
+
+def real_rate(nominal, inflation):
+    """ดอกเบี้ยที่แท้จริงแบบแม่นยำ (Fisher equation)"""
+    return (1 + nominal) / (1 + inflation) - 1
+
+# ตัวอย่าง
+print(future_price(50, 0.025, 10))      # 64.00 บาท
+print(real_value(100000, 0.025, 10))    # 78,120 บาท
+print(real_rate(0.005, 0.025))          # -0.0195 หรือ -1.95%</code></pre>
+  <p style="margin-bottom:0">ฟังก์ชัน <code>real_value</code> คือสูตรเดียวกับมูลค่าปัจจุบัน (present value) ที่จะใช้ต่อเนื่องใน Day 5-6</p>
+  </div>
+</details>
+
+<h2>ทดสอบความเข้าใจ</h2>
+
+<p class="q">1. ทำไมเงินเฟ้อจึงถูกเรียกว่าเป็น "ดอกเบี้ยทบต้นในทางกลับกัน"?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">เพราะราคาสินค้าไม่ได้เพิ่มขึ้นแบบเส้นตรง แต่ทบต้นปีต่อปีเหมือนสูตรดอกเบี้ยทบต้น (ราคาใหม่ = ราคาเดิม × (1+เงินเฟ้อ)^ปี) ต่างกันตรงที่ดอกเบี้ยทบต้นทำให้เงินเราโต ส่วนเงินเฟ้อทำให้อำนาจซื้อของเงินเราหดลงในอัตราทบต้นเดียวกัน</div>
+</details>
+
+<p class="q">2. ดอกเบี้ยเงินฝากออมทรัพย์ 0.5% ต่อปี กับเงินเฟ้อ 2.5% ต่อปี ดอกเบี้ยที่แท้จริง (real rate) เป็นบวกหรือลบ และมีความหมายอย่างไร?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">เป็นลบ ประมาณ −2.0% ต่อปี แปลว่าแม้ตัวเลขในบัญชีจะเพิ่มขึ้นเล็กน้อยทุกปี แต่อำนาจซื้อจริงของเงินก้อนนั้นลดลงทุกปี เพราะราคาสินค้าโดยรวมขึ้นเร็วกว่าดอกเบี้ยที่ได้รับ</div>
+</details>
+
+<p class="q">3. ทำไมนักการเงินจึงไม่เปรียบเทียบจำนวนเงินตรงๆ ข้ามช่วงเวลา เช่น เงินเดือน 25,000 บาทเมื่อ 10 ปีก่อน กับ 25,000 บาทวันนี้?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">เพราะมูลค่าเงินตามเวลา (time value of money) ทำให้เงินจำนวนเท่ากันในเวลาต่างกันมีอำนาจซื้อไม่เท่ากัน ทั้งจากผลของเงินเฟ้อที่กัดกร่อนอำนาจซื้อ และต้นทุนค่าเสียโอกาส (opportunity cost) ที่เงินก้อนเก่าเสียโอกาสไม่ได้ถูกนำไปลงทุนตลอดช่วงเวลานั้น ต้องแปลงเป็นหน่วยเดียวกันก่อนเทียบเสมอ</div>
+</details>
+
+<p class="q"><strong>ทวน:</strong> ความมั่งคั่งสุทธิ (net worth) คำนวณจากสูตรอะไร?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">ความมั่งคั่งสุทธิ (net worth) = สินทรัพย์รวม (total assets) − หนี้สินรวม (total liabilities) เป็นภาพนิ่งของฐานะการเงิน ณ จุดเวลาหนึ่ง<br>ตอบผิดหรือลังเล? → <a href="finance-day-03-net-worth.html">ทบทวน Day 3: ความมั่งคั่งสุทธิ</a></div>
+</details>
+
+<div class="summary-box">
+  <h2 style="margin-top:0">สรุป 3 บรรทัด</h2>
+  <p>1. เงินเฟ้อ (inflation) ทำให้ราคาสินค้าสูงขึ้นแบบทบต้น เงินจำนวนเท่าเดิมจึงซื้อของได้น้อยลงเรื่อยๆ (ไทย มิ.ย. 2569 อยู่ที่ 2.42% ต่อปี)</p>
+  <p>2. มูลค่าเงินตามเวลา (time value of money) แปลว่าเงินวันนี้มีค่ามากกว่าเงินจำนวนเท่ากันในอนาคต จากทั้งผลของเงินเฟ้อและต้นทุนค่าเสียโอกาส</p>
+  <p style="margin-bottom:0">3. ต้องเทียบ "ดอกเบี้ยที่แท้จริง (real rate)" ไม่ใช่ตัวเลขดอกเบี้ยที่เห็น (nominal) — ถ้าดอกเบี้ยที่ได้รับต่ำกว่าเงินเฟ้อ เงินกำลังจนลงทั้งที่ตัวเลขในบัญชีไม่ลด</p>
+</div>
+
+<footer>
+  <p><strong>พรุ่งนี้ Day 5 — ดอกเบี้ยทบต้น (compound interest)</strong> พลังที่ทำให้เงินโตแบบทวีคูณ และเป็นเครื่องมือเดียวที่เอาชนะเงินเฟ้อที่เพิ่งเห็นวันนี้ได้จริง</p>
+  <p class="disclaimer">บทเรียนนี้เป็นความรู้เชิงการศึกษา ไม่ใช่คำแนะนำทางการเงินเฉพาะบุคคล ตัวเลขเงินเฟ้อ 2.5% ต่อปีที่ใช้คำนวณเป็นค่ากลมๆ อ้างอิงกรอบคาดการณ์ปี 2569 ของกระทรวงพาณิชย์ (แหล่งข้อมูลด้านบน) ไม่ใช่ค่าที่การันตีว่าจะเกิดขึ้นจริงในอนาคต</p>
+</footer>
+
+</div>
+
+<script>
+(function(){
+  var amt=document.getElementById('amt'), infl=document.getElementById('infl'), yr=document.getElementById('yr');
+  var amtV=document.getElementById('amtV'), inflV=document.getElementById('inflV'), yrV=document.getElementById('yrV');
+  var bars=document.getElementById('bars'), result=document.getElementById('result');
+  function fmt(n){return Math.round(n).toLocaleString('th-TH');}
+
+  function render(){
+    var a=+amt.value, i=+infl.value/100, y=+yr.value;
+    amtV.textContent=fmt(a);
+    inflV.textContent=i*100;
+    yrV.textContent=y;
+
+    var real = a / Math.pow(1+i, y);
+    var max = Math.max(a, real, 1);
+    var aPct = (a/max*100).toFixed(1);
+    var rPct = (real/max*100).toFixed(1);
+    var lossPct = ((1 - real/a)*100).toFixed(1);
+
+    bars.innerHTML=
+      '<div class="bar-row">'+
+        '<div class="bar-label"><span>ตัวเลขในบัญชี</span><strong>'+fmt(a)+' บาท</strong></div>'+
+        '<div class="bar-track"><div class="bar-fill bar-principal" style="width:'+aPct+'%"></div></div>'+
+      '</div>'+
+      '<div class="bar-row">'+
+        '<div class="bar-label"><span>อำนาจซื้อจริง (เทียบเงินวันนี้)</span><strong>'+fmt(real)+' บาท</strong></div>'+
+        '<div class="bar-track"><div class="bar-fill bar-negative" style="width:'+rPct+'%"></div></div>'+
+      '</div>';
+
+    result.style.color='var(--danger)';
+    result.textContent='อำนาจซื้อหายไป '+lossPct+'% ในอีก '+y+' ปีข้างหน้า';
+  }
+
+  [amt,infl,yr].forEach(function(el){el.addEventListener('input',render);});
+  render();
+})();
+</script>
+</body>
+</html>

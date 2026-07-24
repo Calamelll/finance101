@@ -1,9 +1,9 @@
 {
   "startDate": "2026-07-21",
   "totalDays": 90,
-  "lastCompletedDay": 3,
-  "nextDay": 4,
-  "lastRunDate": "2026-07-23",
+  "lastCompletedDay": 4,
+  "nextDay": 5,
+  "lastRunDate": "2026-07-24",
   "githubPushed": true,
   "pendingPush": [],
   "history": [
@@ -27,6 +27,13 @@
       "title": "ความมั่งคั่งสุทธิ (net worth): สินทรัพย์ vs หนี้สิน",
       "file": "lessons/finance-day-03-net-worth.html",
       "recallFrom": [2]
+    },
+    {
+      "day": 4,
+      "date": "2026-07-24",
+      "title": "เงินเฟ้อ (inflation) และมูลค่าเงินตามเวลา",
+      "file": "lessons/finance-day-04-inflation-time-value.html",
+      "recallFrom": [1]
     }
   ],
   "notesApplied": [
