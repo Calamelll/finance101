@@ -1,9 +1,9 @@
 {
   "startDate": "2026-07-21",
   "totalDays": 90,
-  "lastCompletedDay": 4,
-  "nextDay": 5,
-  "lastRunDate": "2026-07-24",
+  "lastCompletedDay": 5,
+  "nextDay": 6,
+  "lastRunDate": "2026-07-25",
   "githubPushed": true,
   "pendingPush": [],
   "history": [
@@ -34,6 +34,13 @@
       "title": "เงินเฟ้อ (inflation) และมูลค่าเงินตามเวลา",
       "file": "lessons/finance-day-04-inflation-time-value.html",
       "recallFrom": [1]
+    },
+    {
+      "day": 5,
+      "date": "2026-07-25",
+      "title": "ดอกเบี้ยทบต้น (compound interest)",
+      "file": "lessons/finance-day-05-compound-interest.html",
+      "recallFrom": [2]
     }
   ],
   "notesApplied": [
