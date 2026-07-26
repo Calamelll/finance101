@@ -1,9 +1,9 @@
 {
   "startDate": "2026-07-21",
   "totalDays": 90,
-  "lastCompletedDay": 5,
-  "nextDay": 6,
-  "lastRunDate": "2026-07-25",
+  "lastCompletedDay": 6,
+  "nextDay": 7,
+  "lastRunDate": "2026-07-26",
   "githubPushed": true,
   "pendingPush": [],
   "history": [
@@ -41,6 +41,13 @@
       "title": "ดอกเบี้ยทบต้น (compound interest)",
       "file": "lessons/finance-day-05-compound-interest.html",
       "recallFrom": [2]
+    },
+    {
+      "day": 6,
+      "date": "2026-07-26",
+      "title": "Rule of 72 และการประมาณผลตอบแทนแบบเร็ว",
+      "file": "lessons/finance-day-06-rule-of-72.html",
+      "recallFrom": [3]
     }
   ],
   "notesApplied": [
