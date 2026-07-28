@@ -1,9 +1,9 @@
 {
   "startDate": "2026-07-21",
   "totalDays": 90,
-  "lastCompletedDay": 7,
-  "nextDay": 8,
-  "lastRunDate": "2026-07-27",
+  "lastCompletedDay": 8,
+  "nextDay": 9,
+  "lastRunDate": "2026-07-28",
   "githubPushed": true,
   "pendingPush": [],
   "history": [
@@ -55,6 +55,13 @@
       "title": "เงินสำรองฉุกเฉิน (emergency fund)",
       "file": "lessons/finance-day-07-emergency-fund.html",
       "recallFrom": [4]
+    },
+    {
+      "day": 8,
+      "date": "2026-07-28",
+      "title": "ระบบจัดสรรเงิน 50/30/20 และ pay yourself first",
+      "file": "lessons/finance-day-08-50-30-20-pay-yourself-first.html",
+      "recallFrom": [5]
     }
   ],
   "notesApplied": [

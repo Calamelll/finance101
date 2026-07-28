@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day 8 — ระบบจัดสรรเงิน 50/30/20 และ pay yourself first | Finance101</title>
+<style>
+:root{
+  --bg:#191816; --card:#211f1d; --ink:#e8e4dd; --muted:#a09a91;
+  --line:#332f2b; --accent:#6cc394; --accent-soft:#1c2f26;
+  --warn:#e0a86f; --warn-soft:#2e2419; --code:#201e1b; --danger:#e0785c;
+  color-scheme: dark;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; padding:28px 18px 80px; background:var(--bg); color:var(--ink);
+  font-family:"Sarabun","Noto Sans Thai",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:17px; line-height:1.75; -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:720px;margin:0 auto}
+header{margin-bottom:34px}
+.kicker{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--muted);letter-spacing:.02em}
+.pill{background:var(--accent-soft);color:var(--accent);padding:3px 11px;border-radius:99px;font-weight:600}
+h1{font-size:29px;line-height:1.3;margin:12px 0 6px;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:16px;margin:0}
+h2{font-size:21px;margin:38px 0 12px;letter-spacing:-.005em}
+h3{font-size:17px;margin:26px 0 8px}
+p{margin:0 0 15px}
+ul,ol{margin:0 0 15px;padding-left:22px}
+li{margin-bottom:7px}
+strong{font-weight:600}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin:22px 0}
+.card.accent{background:var(--accent-soft);border-color:#2c4a3c}
+.card.warn{background:var(--warn-soft);border-color:#4a3722}
+.card h3{margin-top:0}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15.5px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-weight:600;font-size:13.5px;letter-spacing:.02em}
+td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.calc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;margin:22px 0}
+.calc label{display:block;font-size:14px;color:var(--muted);margin-bottom:6px}
+.calc .row{margin-bottom:18px}
+input[type=range]{width:100%;accent-color:var(--accent);height:24px}
+.val{font-weight:600;color:var(--accent);font-variant-numeric:tabular-nums}
+.bars{margin-top:6px}
+.bar-row{margin-bottom:12px}
+.bar-label{display:flex;justify-content:space-between;font-size:14px;margin-bottom:5px;gap:10px}
+.bar-track{background:#2a2724;border-radius:8px;height:26px;overflow:hidden;position:relative}
+.bar-fill{height:100%;border-radius:8px;transition:width .55s cubic-bezier(.22,.8,.3,1)}
+.bar-principal{background:#3f5c4e}
+.bar-growth{background:var(--accent)}
+.bar-negative{background:#a34a34}
+.legend{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-top:10px;flex-wrap:wrap}
+.swatch{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:middle}
+.seg{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+.seg button{
+  background:var(--code);color:var(--muted);border:1px solid var(--line);border-radius:99px;
+  padding:6px 16px;font-size:14px;font-family:inherit;cursor:pointer;transition:all .2s;
+}
+.seg button.active{background:var(--accent-soft);color:var(--accent);border-color:#2c4a3c;font-weight:600}
+details{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:12px 16px;margin:10px 0}
+details[open]{background:#1d1b19}
+summary{cursor:pointer;font-weight:600;font-size:15.5px;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"▸ ";color:var(--accent)}
+details[open] summary::before{content:"▾ "}
+.ans{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font-size:15.5px;color:#d6d1c9}
+.q{font-weight:600;margin:22px 0 8px}
+pre{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:14px;line-height:1.6}
+code{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+.summary-box{border-left:3px solid var(--accent);padding-left:18px;margin:26px 0}
+.summary-box p{margin-bottom:8px}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
+footer a{color:var(--accent)}
+.disclaimer{font-size:13px;color:var(--muted);margin-top:18px;line-height:1.6}
+.nav{margin-bottom:20px;font-size:14px}
+.nav a{color:var(--accent);text-decoration:none}
+.src{font-size:12.5px;color:var(--muted);margin-top:8px}
+@media(max-width:520px){
+  body{font-size:16px;padding:20px 14px 60px}
+  h1{font-size:25px}
+  .card,.calc{padding:16px}
+}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="nav"><a href="../index.html">← สารบัญ</a></div>
+
+<header>
+  <div class="kicker">
+    <span class="pill">Day 8 / 90</span>
+    <span>Phase 1 · พื้นฐานการเงินส่วนบุคคล</span>
+    <span>·</span>
+    <span>อ่าน 7 นาที</span>
+  </div>
+  <h1>ระบบจัดสรรเงิน 50/30/20 และ pay yourself first</h1>
+  <p class="sub">Day 7 บอกว่าควรมีเงินสำรองฉุกเฉินเท่าไร วันนี้มาดูว่าเงินเดือนที่เข้ามาแต่ละก้อน ควรถูกแบ่งไปที่ไหนบ้าง เพื่อให้ทั้งใช้ชีวิตได้ ทั้งมีเงินสำรอง และทั้งลงทุนได้ในเวลาเดียวกัน โดยไม่ต้องคิดใหม่ทุกเดือน</p>
+</header>
+
+<h2>ทำไมต้องมีกรอบจัดสรรเงิน</h2>
+
+<p>ปัญหาที่พบบ่อยที่สุดไม่ใช่ "หาเงินได้น้อย" แต่คือ "ไม่รู้ว่าเงินที่หาได้หายไปไหน" กรอบจัดสรรเงิน (budgeting framework) มีไว้แก้ปัญหานี้ โดยกำหนดสัดส่วนตายตัวล่วงหน้าว่าเงินเดือนแต่ละบาทจะไปอยู่หมวดไหน แทนที่จะตัดสินใจแบบสดๆ ทุกครั้งที่ใช้จ่าย ซึ่งสมองมนุษย์ทำได้แย่กว่าที่คิด โดยเฉพาะเมื่อเหนื่อยหรือรีบ</p>
+
+<p>กรอบที่นิยมที่สุดคือ <strong>50/30/20</strong> ซึ่งแบ่งรายได้หลังหักภาษีออกเป็น 3 หมวด:</p>
+
+<table>
+  <tr><th>หมวด</th><th>สัดส่วน</th><th>ครอบคลุมอะไร</th></tr>
+  <tr><td><strong>Needs (จำเป็น)</strong></td><td class="num">50%</td><td>หอพัก/ค่าเช่า ค่าอาหาร ค่าเดินทาง ค่าน้ำค่าไฟ ค่างวดหนี้ขั้นต่ำ ประกันสุขภาพ</td></tr>
+  <tr><td><strong>Wants (อยากได้)</strong></td><td class="num">30%</td><td>กิน-เที่ยวกับเพื่อน สตรีมมิ่ง ช้อปปิ้ง ของสังสรรค์ งานอดิเรก</td></tr>
+  <tr><td><strong>Savings (ออม/ลงทุน)</strong></td><td class="num">20%</td><td>เงินสำรองฉุกเฉิน (Day 7) การลงทุนระยะยาว การโปะหนี้ก้อนใหญ่</td></tr>
+</table>
+
+<p>ตัวเลข 50/30/20 ไม่ใช่กฎเหล็ก แต่เป็น <strong>จุดเริ่มต้นที่ปรับได้</strong> — เด็กจบใหม่ที่เงินเดือนยังไม่สูงและต้องเช่าหอในเมืองแพง อาจเจอว่าสัดส่วน needs ดันไปถึง 60-65% ซึ่งไม่ใช่เรื่องผิดปกติ สิ่งสำคัญกว่าคือมี "หมวด savings" ที่ไม่เท่ากับศูนย์ทุกเดือน ต่อให้เริ่มจาก 5-10% ก็ยังดีกว่าไม่มีเลย แล้วค่อยขยับสัดส่วนขึ้นเมื่อรายได้โตหรือค่าใช้จ่ายจำเป็นลดลง</p>
+
+<div class="card accent">
+  <p style="margin-bottom:0">จุดที่มักเข้าใจผิด: หมวด <strong>savings ในที่นี้รวมทั้งเงินสำรองฉุกเฉินและเงินลงทุน</strong> ไม่ใช่แค่เงินฝากธนาคาร ช่วงแรกเงิน 20% นี้ควรไหลเข้าเงินสำรองฉุกเฉินก่อนจนครบเป้าตาม Day 7 แล้วค่อยเปลี่ยนเส้นทางไปลงทุนระยะยาวแทน</p>
+</div>
+
+<h2>Pay yourself first คืออะไร</h2>
+
+<p><strong>Pay yourself first</strong> คือหลักการง่ายๆ ว่า: ก่อนจะใช้จ่ายอะไรทั้งนั้น ให้ "จ่ายให้ตัวเองในอนาคต" ก่อนเป็นลำดับแรก โดยกันเงินส่วน savings ออกไปทันทีที่เงินเดือนเข้า แทนที่จะใช้จ่ายทั้งเดือนแล้วดูว่า "เหลือเท่าไรค่อยเก็บ" ซึ่งในทางปฏิบัติมักเหลือน้อยกว่าที่ตั้งใจไว้มาก หรือไม่เหลือเลย</p>
+
+<p>หลักการนี้อาศัยพฤติกรรมมนุษย์ข้อหนึ่ง: คนมักปรับการใช้จ่ายให้พอดีกับเงินที่ "มองเห็นว่ามี" อยู่ในบัญชีใช้จ่ายประจำ ถ้าเงินสำหรับออมไม่เคยไปโผล่ในบัญชีนั้นตั้งแต่แรก สมองก็จะไม่รู้สึกว่ามันเป็นเงินที่ใช้ได้ และไม่เผลอใช้มันไป</p>
+
+<h3>วิธีตั้งระบบอัตโนมัติ</h3>
+<ol>
+<li>เปิดบัญชีออมทรัพย์แยกต่างหาก (หรือกองทุนตลาดเงิน) สำหรับเงินสำรองฉุกเฉิน และอีกบัญชี/พอร์ตสำหรับเงินลงทุนระยะยาว</li>
+<li>ตั้งคำสั่งโอนเงินอัตโนมัติ (auto-transfer) จากบัญชีเงินเดือน ไปยังบัญชีเหล่านั้น ให้ตัดในวันเดียวกับที่เงินเดือนเข้า หรือวันถัดไป</li>
+<li>ใช้ชีวิตจากเงินที่เหลือในบัญชีหลักตามปกติ โดยไม่ต้องคอยเช็กว่า "ควรโอนออมหรือยัง" เพราะระบบทำให้แล้ว</li>
+</ol>
+
+<p>ธนาคารไทยส่วนใหญ่ตั้งคำสั่งโอนเงินอัตโนมัติ (standing order) ผ่านแอปมือถือได้ฟรี และกองทุนสำรองเลี้ยงชีพหรือการหักเงินเดือนเข้ากองทุนรวมผ่านนายจ้างก็เป็นตัวอย่างของ pay yourself first ที่ทำงานอยู่แล้วโดยที่หลายคนไม่รู้ตัว</p>
+
+<h2>ตัวอย่างตัวเลขจริง</h2>
+
+<p>สมมติเด็กจบใหม่เริ่มงานแรกเป็น software engineer เงินเดือน 25,000 บาท (หลังหักประกันสังคมและภาษี) แบ่งตาม 50/30/20:</p>
+
+<div class="card">
+  <p style="margin-bottom:0">Needs (50%) = 25,000 × 0.50 = <strong>12,500 บาท</strong><br>
+  Wants (30%) = 25,000 × 0.30 = <strong>7,500 บาท</strong><br>
+  Savings (20%) = 25,000 × 0.20 = <strong>5,000 บาท</strong></p>
+</div>
+
+<p>เงิน 5,000 บาทต่อเดือนนี้ ถ้ากันไว้เป็นเงินสำรองฉุกเฉินก่อนจนครบ (ตาม Day 7) แล้วเปลี่ยนไปลงทุนต่อเนื่องทุกเดือนที่ผลตอบแทนเฉลี่ย 6% ต่อปีแบบทบต้น (Day 5) เป็นเวลา 10 ปี จะได้เงินก้อนประมาณ:</p>
+
+<div class="card accent">
+  <p style="margin-bottom:0">เงินที่ลงทุนสะสม 10 ปี = 5,000 × 120 เดือน = <strong>600,000 บาท</strong><br>
+  มูลค่าจริงเมื่อทบต้นที่ 6% ต่อปี (ทบรายเดือน) = <strong>823,494 บาท</strong><br>
+  ส่วนต่างที่เกิดจากดอกเบี้ยทบต้นล้วนๆ = <strong>223,494 บาท</strong></p>
+</div>
+
+<p>นี่คือเหตุผลที่หมวด savings 20% ไม่ใช่แค่ "เก็บเงินเฉยๆ" แต่เป็นจุดเริ่มต้นของการให้เงินทำงานผ่านดอกเบี้ยทบต้น ยิ่งเริ่มระบบอัตโนมัตินี้เร็วเท่าไร เวลาที่เงินได้ทบต้นก็ยิ่งนานเท่านั้น</p>
+
+<h2>ลองจัดสรรเงินเดือนของตัวเอง</h2>
+<p>ปรับเงินเดือนหลังหักภาษี แล้วดูว่าแต่ละหมวดควรได้เท่าไรตามสัดส่วน 50/30/20</p>
+
+<div class="calc">
+  <div class="row">
+    <label>เงินเดือนหลังหักภาษี <span class="val" id="salV">25,000</span> บาท/เดือน</label>
+    <input type="range" id="sal" min="10000" max="80000" value="25000" step="1000">
+  </div>
+  <div class="bars" id="bars"></div>
+  <p id="result" style="margin:14px 0 0;font-weight:600"></p>
+</div>
+
+<h2>ถ้า needs เกิน 50% ทำอย่างไร</h2>
+
+<p>สำหรับคนที่อยู่ในเมืองใหญ่หรือมีภาระค่าใช้จ่ายจำเป็นสูง สัดส่วน needs ที่เกิน 50% เป็นเรื่องปกติ ทางแก้ไม่ใช่ฝืนบีบ needs ให้พอดี 50% จนชีวิตลำบาก แต่ควรทำสองอย่างคู่กัน: (1) มองหาว่ามีรายการไหนใน needs ที่ลดได้จริงโดยไม่กระทบคุณภาพชีวิตมาก เช่น ย้ายหอที่ถูกลง หรือทำอาหารเองบางมื้อ และ (2) ยอมรับสัดส่วน savings ที่เล็กกว่า 20% ในช่วงแรก เช่น 10% แล้วตั้งเป้าขยับขึ้นทุกครั้งที่เงินเดือนขึ้นหรือได้โบนัส แทนที่จะปล่อยให้ไลฟ์สไตล์ขยับตามเงินเดือนทั้งหมด (lifestyle inflation)</p>
+
+<div class="card warn">
+  <h3>Lifestyle inflation คืออะไร</h3>
+  <p style="margin-bottom:0">คือพฤติกรรมที่ค่าใช้จ่ายเพิ่มขึ้นตามเงินเดือนที่ขึ้นแบบอัตโนมัติ จนสัดส่วน savings ไม่ขยับเลยแม้รายได้จะโตขึ้นมาก วิธีป้องกันที่ตรงไปตรงมาที่สุดคือ ทุกครั้งที่เงินเดือนขึ้น ให้เพิ่มยอดโอนอัตโนมัติเข้าบัญชีออม/ลงทุนตามสัดส่วนเดิมหรือมากกว่าเดิมทันที ก่อนที่ไลฟ์สไตล์จะขยับตาม</p>
+</div>
+
+<details>
+  <summary>กล่องโค้ด (ข้ามได้ ไม่นับในเวลาอ่าน)</summary>
+  <div class="ans">
+  <p>ฟังก์ชันแบ่งเงินเดือนตาม 50/30/20 และคำนวณมูลค่าอนาคตของเงินออมที่ลงทุนแบบทบต้นรายเดือน:</p>
+  <pre><code>def split_50_30_20(salary):
+    needs = salary * 0.50
+    wants = salary * 0.30
+    savings = salary * 0.20
+    return needs, wants, savings
+
+def future_value_monthly(monthly_amount, annual_rate, years):
+    """ทบต้นรายเดือน: ฝากท้ายเดือน แล้วทบดอกเบี้ยต่อ"""
+    months = years * 12
+    monthly_rate = annual_rate / 12
+    fv = 0
+    for _ in range(months):
+        fv = (fv + monthly_amount) * (1 + monthly_rate)
+    return fv
+
+salary = 25000
+needs, wants, savings = split_50_30_20(salary)
+print(f"needs={needs:,.0f} wants={wants:,.0f} savings={savings:,.0f}")
+
+fv = future_value_monthly(savings, 0.06, 10)
+contributed = savings * 12 * 10
+print(f"สะสม 10 ปี: ฝากจริง {contributed:,.0f} บาท -> มูลค่าทบต้น {fv:,.0f} บาท")
+
+# needs=12,500 wants=7,500 savings=5,000
+# สะสม 10 ปี: ฝากจริง 600,000 บาท -> มูลค่าทบต้น 823,494 บาท</code></pre>
+  </div>
+</details>
+
+<h2>พรุ่งนี้: ดอกเบี้ยเงินฝากในไทย</h2>
+<p>วันนี้รู้แล้วว่าเงินก้อน savings 20% ควรไหลไปไหนบ้าง พรุ่งนี้ (Day 9) จะเจาะลึกเรื่องบัญชีธนาคารและดอกเบี้ยเงินฝากในไทย — ต่างจากบัญชีออมทรัพย์ทั่วไปอย่างไร และควรเลือกเก็บเงินสำรองฉุกเฉินไว้ที่ไหนถึงจะคุ้มที่สุด</p>
+
+<h2>ทดสอบความเข้าใจ</h2>
+
+<p class="q">1. เพราะเหตุใดการตั้งคำสั่งโอนเงินอัตโนมัติ (pay yourself first) จึงได้ผลดีกว่าการ "ใช้จ่ายก่อน แล้วดูว่าเหลือเท่าไรค่อยเก็บ"?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">เพราะคนมักปรับการใช้จ่ายให้พอดีกับเงินที่มองเห็นว่ามีอยู่ในบัญชีใช้จ่าย ถ้าเงินออมถูกกันออกไปตั้งแต่ต้นเดือนโดยอัตโนมัติ เงินที่เหลือให้ใช้จ่ายจะน้อยลงตามจริง ทำให้ไม่มีโอกาสเผลอใช้เงินก้อนที่ควรจะออม ต่างจากการรอดูเงินที่ "เหลือ" ปลายเดือน ซึ่งมักเหลือน้อยกว่าที่ตั้งใจหรือไม่เหลือเลย</div>
+</details>
+
+<p class="q">2. ถ้าเงินเดือนหลังหักภาษีคือ 32,000 บาท ตามสัดส่วน 50/30/20 หมวด wants ควรได้เท่าไร?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">Wants = 32,000 × 0.30 = 9,600 บาท</div>
+</details>
+
+<p class="q">3. Lifestyle inflation คืออะไร และป้องกันได้อย่างไรเมื่อเงินเดือนขึ้น?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">คือค่าใช้จ่ายที่เพิ่มขึ้นอัตโนมัติตามเงินเดือนที่ขึ้น จนสัดส่วน savings ไม่ขยับแม้รายได้จะโตขึ้น ป้องกันได้ด้วยการเพิ่มยอดโอนอัตโนมัติเข้าบัญชีออม/ลงทุนทันทีที่เงินเดือนขึ้น ตามสัดส่วนเดิมหรือมากกว่าเดิม ก่อนที่จะปล่อยให้ไลฟ์สไตล์ขยับตามเงินที่ได้เพิ่ม</div>
+</details>
+
+<p class="q"><strong>ทวน:</strong> ดอกเบี้ยทบต้น (compound interest) ต่างจากดอกเบี้ยแบบธรรมดา (simple interest) อย่างไร?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">ดอกเบี้ยแบบธรรมดาคำนวณจากเงินต้นเดิมทุกงวด ส่วนดอกเบี้ยทบต้นคำนวณจากเงินต้นบวกดอกเบี้ยที่สะสมมาแล้วในงวดก่อนหน้า ทำให้ฐานที่ใช้คิดดอกเบี้ยโตขึ้นเรื่อยๆ ยิ่งเวลานานเท่าไร ผลต่างระหว่างสองแบบยิ่งถ่างมากขึ้น เหมือนตัวอย่างวันนี้ที่เงินที่ฝากจริง 600,000 บาท กลายเป็น 823,494 บาท เพราะดอกเบี้ยที่ได้ในแต่ละเดือนถูกนำไปทบเป็นเงินต้นของเดือนถัดไปด้วย<br>ตอบผิดหรือลังเล? → <a href="finance-day-05-compound-interest.html">ทบทวน Day 5: ดอกเบี้ยทบต้น</a></div>
+</details>
+
+<div class="summary-box">
+  <h2 style="margin-top:0">สรุป 3 บรรทัด</h2>
+  <p>1. กรอบ 50/30/20 แบ่งเงินเดือนหลังหักภาษีเป็น needs 50% / wants 30% / savings 20% เป็นจุดเริ่มต้นที่ปรับสัดส่วนได้ตามสถานการณ์จริง</p>
+  <p>2. Pay yourself first คือโอนเงินส่วน savings ออกอัตโนมัติทันทีที่เงินเดือนเข้า ก่อนใช้จ่าย เพื่อไม่ให้เผลอใช้เงินก้อนที่ควรออม</p>
+  <p style="margin-bottom:0">3. เงิน savings ที่กันไว้และลงทุนต่อเนื่องได้ประโยชน์จากดอกเบี้ยทบต้น ยิ่งเริ่มระบบอัตโนมัติเร็ว ยิ่งมีเวลาให้เงินทำงานนานขึ้น</p>
+</div>
+
+<footer>
+  <p><strong>พรุ่งนี้ Day 9 — บัญชีธนาคารและดอกเบี้ยเงินฝากในไทย</strong> เจาะลึกว่าบัญชีออมทรัพย์แต่ละแบบต่างกันอย่างไร และควรเก็บเงินสำรองฉุกเฉินไว้ที่ไหนถึงจะคุ้มดอกเบี้ยที่สุด</p>
+  <p class="disclaimer">บทเรียนนี้เป็นความรู้เชิงการศึกษา ไม่ใช่คำแนะนำทางการเงินเฉพาะบุคคล ตัวเลขเงินเดือนและอัตราผลตอบแทนในตัวอย่างเป็นค่าสมมติเพื่อการอธิบายเท่านั้น ผลตอบแทนจริงของการลงทุนมีความผันผวนและไม่รับประกัน ควรปรับสัดส่วนตามรายได้และค่าใช้จ่ายจริงของแต่ละคน</p>
+</footer>
+
+</div>
+
+<script>
+(function(){
+  var sal=document.getElementById('sal'), salV=document.getElementById('salV');
+  var bars=document.getElementById('bars'), result=document.getElementById('result');
+
+  function fmt(n){return Math.round(n).toLocaleString('en-US');}
+
+  function render(){
+    var s=+sal.value;
+    salV.textContent=fmt(s);
+
+    var needs = s*0.50, wants = s*0.30, savings = s*0.20;
+    var maxScale = s;
+
+    function row(label, val, cls){
+      var pct = (val/maxScale*100).toFixed(1);
+      return '<div class="bar-row">'+
+        '<div class="bar-label"><span>'+label+'</span><strong>'+fmt(val)+' บาท</strong></div>'+
+        '<div class="bar-track"><div class="bar-fill '+cls+'" style="width:'+pct+'%"></div></div>'+
+      '</div>';
+    }
+
+    bars.innerHTML =
+      row('Needs (50%) — จำเป็น', needs, 'bar-negative') +
+      row('Wants (30%) — อยากได้', wants, 'bar-principal') +
+      row('Savings (20%) — ออม/ลงทุน', savings, 'bar-growth');
+
+    result.style.color='var(--accent)';
+    result.textContent='เงินเดือน '+fmt(s)+' บาท -> needs '+fmt(needs)+' · wants '+fmt(wants)+' · savings '+fmt(savings)+' บาท/เดือน';
+  }
+
+  sal.addEventListener('input', render);
+  render();
+})();
+</script>
+</body>
+</html>
