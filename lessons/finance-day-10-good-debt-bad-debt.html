@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day 10 — หนี้ดี vs หนี้เสีย และดอกเบี้ยเงินกู้ | Finance101</title>
+<style>
+:root{
+  --bg:#191816; --card:#211f1d; --ink:#e8e4dd; --muted:#a09a91;
+  --line:#332f2b; --accent:#6cc394; --accent-soft:#1c2f26;
+  --warn:#e0a86f; --warn-soft:#2e2419; --code:#201e1b; --danger:#e0785c;
+  color-scheme: dark;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; padding:28px 18px 80px; background:var(--bg); color:var(--ink);
+  font-family:"Sarabun","Noto Sans Thai",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:17px; line-height:1.75; -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:720px;margin:0 auto}
+header{margin-bottom:34px}
+.kicker{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--muted);letter-spacing:.02em}
+.pill{background:var(--accent-soft);color:var(--accent);padding:3px 11px;border-radius:99px;font-weight:600}
+h1{font-size:29px;line-height:1.3;margin:12px 0 6px;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:16px;margin:0}
+h2{font-size:21px;margin:38px 0 12px;letter-spacing:-.005em}
+h3{font-size:17px;margin:26px 0 8px}
+p{margin:0 0 15px}
+ul,ol{margin:0 0 15px;padding-left:22px}
+li{margin-bottom:7px}
+strong{font-weight:600}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin:22px 0}
+.card.accent{background:var(--accent-soft);border-color:#2c4a3c}
+.card.warn{background:var(--warn-soft);border-color:#4a3722}
+.card h3{margin-top:0}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15.5px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-weight:600;font-size:13.5px;letter-spacing:.02em}
+td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.calc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;margin:22px 0}
+.calc label{display:block;font-size:14px;color:var(--muted);margin-bottom:6px}
+.calc .row{margin-bottom:18px}
+input[type=range]{width:100%;accent-color:var(--accent);height:24px}
+.val{font-weight:600;color:var(--accent);font-variant-numeric:tabular-nums}
+.bars{margin-top:6px}
+.bar-row{margin-bottom:12px}
+.bar-label{display:flex;justify-content:space-between;font-size:14px;margin-bottom:5px;gap:10px}
+.bar-track{background:#2a2724;border-radius:8px;height:26px;overflow:hidden;position:relative}
+.bar-fill{height:100%;border-radius:8px;transition:width .55s cubic-bezier(.22,.8,.3,1)}
+.bar-principal{background:#3f5c4e}
+.bar-growth{background:var(--accent)}
+.bar-negative{background:#a34a34}
+.legend{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-top:10px;flex-wrap:wrap}
+.swatch{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:middle}
+.seg{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+.seg button{
+  background:var(--code);color:var(--muted);border:1px solid var(--line);border-radius:99px;
+  padding:6px 16px;font-size:14px;font-family:inherit;cursor:pointer;transition:all .2s;
+}
+.seg button.active{background:var(--accent-soft);color:var(--accent);border-color:#2c4a3c;font-weight:600}
+details{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:12px 16px;margin:10px 0}
+details[open]{background:#1d1b19}
+summary{cursor:pointer;font-weight:600;font-size:15.5px;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"▸ ";color:var(--accent)}
+details[open] summary::before{content:"▾ "}
+.ans{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font-size:15.5px;color:#d6d1c9}
+.q{font-weight:600;margin:22px 0 8px}
+pre{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:14px;line-height:1.6}
+code{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+.summary-box{border-left:3px solid var(--accent);padding-left:18px;margin:26px 0}
+.summary-box p{margin-bottom:8px}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
+footer a{color:var(--accent)}
+.disclaimer{font-size:13px;color:var(--muted);margin-top:18px;line-height:1.6}
+.nav{margin-bottom:20px;font-size:14px}
+.nav a{color:var(--accent);text-decoration:none}
+.src{font-size:12.5px;color:var(--muted);margin-top:8px}
+@media(max-width:520px){
+  body{font-size:16px;padding:20px 14px 60px}
+  h1{font-size:25px}
+  .card,.calc{padding:16px}
+}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="nav"><a href="../index.html">← สารบัญ</a></div>
+
+<header>
+  <div class="kicker">
+    <span class="pill">Day 10 / 90</span>
+    <span>Phase 1 · พื้นฐานการเงินส่วนบุคคล</span>
+    <span>·</span>
+    <span>อ่าน 8 นาที</span>
+  </div>
+  <h1>หนี้ดี vs หนี้เสีย และดอกเบี้ยเงินกู้</h1>
+  <p class="sub">Day 9 ดูฝั่งที่ธนาคารจ่ายดอกเบี้ยให้เรา วันนี้กลับด้าน มาดูฝั่งที่เราต้องจ่ายดอกเบี้ยให้คนอื่น — หนี้ทุกก้อนไม่เท่ากัน บางก้อนช่วยสร้างความมั่งคั่ง บางก้อนกัดกร่อนมันอย่างเงียบๆ เกณฑ์แยกสองแบบนี้คืออะไร และดอกเบี้ยเงินกู้จริงในไทยตอนนี้อยู่ที่เท่าไร</p>
+</header>
+
+<h2>หนี้คืออะไร ทำไมไม่ได้เลวร้ายเสมอไป</h2>
+
+<p><strong>หนี้ (debt)</strong> คือการ "ยืมอำนาจซื้อจากตัวเองในอนาคต" มาใช้วันนี้ โดยจ่ายค่าเช่าอำนาจซื้อนั้นในรูปดอกเบี้ย (interest) หลายคนมองว่าหนี้คือสิ่งเลวร้ายที่ต้องหลีกเลี่ยงให้หมด แต่ในทางการเงิน คำถามที่สำคัญกว่าคือ <strong>เอาเงินที่กู้มาไปทำอะไร และดอกเบี้ยที่จ่ายคุ้มกับสิ่งที่ได้กลับมาหรือไม่</strong> — บริษัทใหญ่ที่สุดในโลกแทบทุกแห่งก็มีหนี้ เพราะใช้หนี้เป็นเครื่องมือขยายธุรกิจให้เร็วกว่าใช้แต่กำไรสะสม</p>
+
+<h2>เกณฑ์แยกหนี้ดีกับหนี้เสีย</h2>
+
+<p>ไม่มีเส้นแบ่งที่ตายตัว 100% แต่มี 3 คำถามที่ใช้ตัดสินได้เกือบทุกกรณี:</p>
+
+<div class="card accent">
+  <h3>หนี้ดี (good debt) มักมีลักษณะ</h3>
+  <ul style="margin-bottom:0">
+    <li>เงินที่กู้ไปเพิ่ม<strong>ความสามารถในการหารายได้ระยะยาว</strong> หรือซื้อสินทรัพย์ที่มีแนวโน้มรักษา/เพิ่มมูลค่า เช่น การศึกษา ที่อยู่อาศัยจำเป็น</li>
+    <li>ดอกเบี้ยที่จ่าย<strong>ต่ำกว่า</strong>ผลตอบแทนหรือมูลค่าที่คาดว่าจะได้กลับมา</li>
+    <li>มีแผนผ่อนชำระชัดเจน จำนวนคงที่ จบภายในระยะเวลาที่กำหนด</li>
+  </ul>
+</div>
+
+<div class="card warn">
+  <h3>หนี้เสีย (bad debt) มักมีลักษณะ</h3>
+  <ul style="margin-bottom:0">
+    <li>เงินที่กู้ไปใช้กับสิ่งที่<strong>มูลค่าลดลงทันที</strong>หลังซื้อ หรือใช้แล้วหมดไป (การบริโภค ของฟุ่มเฟือย)</li>
+    <li>ดอกเบี้ย<strong>สูง</strong> มักสูงกว่าผลตอบแทนที่สินทรัพย์ใดๆ ทำได้อย่างสม่ำเสมอ</li>
+    <li>ไม่มีแผนจ่ายคืนชัดเจน จ่ายแค่ขั้นต่ำไปเรื่อยๆ ทำให้ยอดหนี้ทบต้นโตแทนที่จะลด</li>
+  </ul>
+</div>
+
+<p>สังเกตว่าหนี้ประเภทเดียวกันอาจ "ดี" หรือ "เสีย" ก็ได้ขึ้นกับพฤติกรรม เช่น บัตรเครดิตที่จ่ายเต็มจำนวนทุกเดือนไม่มีดอกเบี้ยเลย (ธนาคารให้ระยะเวลาปลอดดอกเบี้ย — grace period) แต่บัตรเดียวกันที่จ่ายแค่ขั้นต่ำกลายเป็นหนี้เสียได้ทันที เรื่องนี้จะเจาะลึกใน Day 11</p>
+
+<h2>ดอกเบี้ยเงินกู้จริงในไทยตอนนี้</h2>
+
+<p>ธนาคารแห่งประเทศไทย (ธปท.) กำหนดเพดานดอกเบี้ยของสินเชื่อรายย่อยหลายประเภทไว้ตามกฎหมาย เพื่อป้องกันการเรียกเก็บดอกเบี้ยเกินควร ส่วนสินเชื่อบ้านและกองทุนกู้ยืมเพื่อการศึกษาใช้กลไกตลาดหรือกฎหมายเฉพาะของตัวเอง:</p>
+
+<table>
+  <tr><th>ประเภทหนี้</th><th>ดอกเบี้ยต่อปี</th><th>มักเป็น</th></tr>
+  <tr><td><strong>กยศ.</strong> (กู้ยืมเพื่อการศึกษา)</td><td class="num">≤ 1.00%</td><td>หนี้ดี</td></tr>
+  <tr><td><strong>สินเชื่อบ้าน</strong> (MRR ลอยตัว)</td><td class="num">≈ 6.50 – 7.30%</td><td>หนี้ดี*</td></tr>
+  <tr><td><strong>บัตรเครดิต</strong> (ค้างจ่าย)</td><td class="num">≤ 16.00%</td><td>หนี้เสีย**</td></tr>
+  <tr><td><strong>สินเชื่อส่วนบุคคล</strong> (P-Loan)</td><td class="num">≤ 25.00%</td><td>หนี้เสีย</td></tr>
+</table>
+
+<div class="card">
+  <p class="src" style="margin-bottom:0">แหล่งอ้างอิง: เพดานดอกเบี้ยสินเชื่อส่วนบุคคลภายใต้การกำกับ (P-Loan) และบัตรเครดิต — ธนาคารแห่งประเทศไทย (bot.or.th, เพดาน P-Loan 25% ต่อปีแบบ effective rate, เพดานบัตรเครดิต 16% ต่อปี มีผลตั้งแต่ 1 ส.ค. 2563 และยังบังคับใช้อยู่); อัตรา MRR เฉลี่ยธนาคารพาณิชย์ — ประกาศ ณ 4 มี.ค. 2569 (MRR 6.670%) และรายงานสรุปดอกเบี้ยบ้าน DDproperty.com (ก.ค. 2569); ดอกเบี้ย กยศ. ไม่เกิน 1% ต่อปี — พ.ร.บ. กองทุนเงินให้กู้ยืมเพื่อการศึกษา (ฉบับที่ 2) พ.ศ. 2566 สืบค้น ส.ค. 2569 ตัวเลขเปลี่ยนแปลงได้ตามประกาศ ธปท. และสภาวะตลาด ควรเช็กอัตราปัจจุบันก่อนตัดสินใจกู้จริง</p>
+</div>
+
+<p>*สินเชื่อบ้านนับเป็นหนี้ดีเพราะจำเป็นต่อการมีที่อยู่อาศัย ดอกเบี้ยต่ำกว่าสินเชื่อรายย่อยประเภทอื่นมาก และมักมีโปรโมชันดอกเบี้ยต่ำ 2.5-4.5% ต่อปีใน 3 ปีแรก แต่ถ้ากู้เกินความสามารถผ่อนจริง หรือซื้อบ้าน/คอนโดเพื่อเก็งกำไรเกินตัว ก็กลายเป็นหนี้เสียได้เช่นกัน</p>
+
+<p>**บัตรเครดิตกับสินเชื่อส่วนบุคคลมีเพดานดอกเบี้ยสูงกว่าสินเชื่อบ้านและ กยศ. หลายเท่า เพราะเป็นสินเชื่อไม่มีหลักประกัน (unsecured) ธนาคารเก็บดอกเบี้ยสูงเพื่อชดเชยความเสี่ยงหนี้เสีย</p>
+
+<h2>ตัวอย่างตัวเลขจริง: กู้ 50,000 บาท ดอกเบี้ยปีแรกต่างกันแค่ไหน</h2>
+
+<p>สมมติเด็กจบใหม่ต้องการเงิน 50,000 บาทก้อนหนึ่ง เปรียบเทียบว่าถ้ากู้ผ่านช่องทางต่างกัน ดอกเบี้ยปีแรก (คิดแบบง่าย ไม่ทบต้น) จะต่างกันแค่ไหน:</p>
+
+<table>
+  <tr><th>ประเภทหนี้</th><th>อัตรา</th><th class="num">ดอกเบี้ยปีแรก (บาท)</th></tr>
+  <tr><td>กยศ.</td><td class="num">1%</td><td class="num">500</td></tr>
+  <tr><td>สินเชื่อบ้าน (MRR เฉลี่ย)</td><td class="num">7%</td><td class="num">3,500</td></tr>
+  <tr><td>บัตรเครดิต (ค้างจ่าย)</td><td class="num">16%</td><td class="num">8,000</td></tr>
+  <tr><td>สินเชื่อส่วนบุคคล</td><td class="num">25%</td><td class="num">12,500</td></tr>
+</table>
+
+<p>เงินต้นเท่ากันเป๊ะที่ 50,000 บาท แต่ดอกเบี้ยปีแรกต่างกันถึง <strong>25 เท่า</strong> ระหว่างช่องทางที่ถูกที่สุดกับแพงที่สุด นี่คือเหตุผลที่ "จะกู้จากไหน" สำคัญไม่แพ้ "จะกู้เท่าไร"</p>
+
+<h2>เมื่อหนี้เสียทบต้นใส่ตัวเรา</h2>
+
+<p>Day 5 สอนว่าดอกเบี้ยทบต้น (compound interest) คือพลังที่ทำให้เงินออมโตแบบทวีคูณ — แต่พลังเดียวกันนี้ก็ทำงาน "ต่อต้าน" เราได้ถ้าเป็นฝั่งลูกหนี้ที่ไม่จ่ายคืน สมมติค้างหนี้บัตรเครดิต 20,000 บาท ที่ดอกเบี้ยเพดาน 16% ต่อปี คิดทบต้นรายเดือน แล้วไม่จ่ายอะไรเพิ่มเลยตลอด 12 เดือน:</p>
+
+<div class="card warn">
+  <p style="margin-bottom:0">20,000 × (1 + 0.16/12)<sup>12</sup> ≈ <strong>23,445 บาท</strong> — ดอกเบี้ยกินไป 3,445 บาทใน 1 ปี โดยที่ไม่ได้ใช้จ่ายเพิ่มแม้แต่บาทเดียว และถ้ายังไม่จ่ายต่อไปอีก ยอดหนี้จะทบต้นโตขึ้นเรื่อยๆ แบบเดียวกับที่เงินออมโตทบต้นใน Day 5 ทุกประการ เพียงแต่ทิศทางกลับกัน</p>
+</div>
+
+<h2>ลองเทียบดอกเบี้ยของหนี้แต่ละแบบด้วยตัวเอง</h2>
+<p>ปรับจำนวนเงินกู้เพื่อดูว่าดอกเบี้ยปีแรกของหนี้แต่ละประเภทต่างกันแค่ไหน (ใช้อัตราตามตารางข้างต้น)</p>
+
+<div class="calc">
+  <div class="row">
+    <label>จำนวนเงินกู้ <span class="val" id="prV">50,000</span> บาท</label>
+    <input type="range" id="pr" min="10000" max="500000" value="50000" step="5000">
+  </div>
+  <div class="bars" id="bars"></div>
+  <p id="result" style="margin:14px 0 0;font-weight:600"></p>
+</div>
+
+<h2>3 คำถามก่อนตัดสินใจกู้อะไรก็ตาม</h2>
+
+<ul>
+<li><strong>ดอกเบี้ยที่จ่ายต่ำกว่ามูลค่าหรือผลตอบแทนที่คาดว่าจะได้กลับมาหรือไม่?</strong> เช่น กู้เรียนที่ 1% เพื่อเพิ่มรายได้ในอนาคต คุ้มชัดเจน แต่กู้ 25% เพื่อซื้อของที่มูลค่าลดทันทีหลังซื้อ แทบไม่มีทางคุ้ม</li>
+<li><strong>มีแผนผ่อนคืนจริงจัง ไม่ใช่แค่จ่ายขั้นต่ำ?</strong> การจ่ายขั้นต่ำเรื้อรังคือสัญญาณอันตรายที่สุดของหนี้เสีย เพราะดอกเบี้ยทบต้นจะโตเร็วกว่าที่จ่ายไหว</li>
+<li><strong>ไม่กู้แล้วเสียโอกาสสำคัญจริงหรือไม่ (need) หรือแค่อยากได้ (want)?</strong> เงินสำรองฉุกเฉิน (Day 7) มีไว้ตอบคำถามนี้โดยเฉพาะ — ถ้ามีเงินสำรองพอ หลายครั้งไม่จำเป็นต้องกู้เลย</li>
+</ul>
+
+<details>
+  <summary>กล่องโค้ด (ข้ามได้ ไม่นับในเวลาอ่าน)</summary>
+  <div class="ans">
+  <p>ฟังก์ชันคำนวณดอกเบี้ยปีแรกแบบง่าย และยอดหนี้ที่ทบต้นรายเดือนถ้าไม่จ่ายคืนเลย:</p>
+  <pre><code>def first_year_interest(principal, annual_rate):
+    """ดอกเบี้ยปีแรกแบบไม่ทบต้น"""
+    return principal * annual_rate
+
+def compounding_debt(principal, annual_rate, months=12):
+    """ยอดหนี้ที่ทบต้นรายเดือนถ้าไม่จ่ายคืนเลย"""
+    monthly_rate = annual_rate / 12
+    return principal * (1 + monthly_rate) ** months
+
+principal = 50000
+rates = {"กยศ.": 0.01, "สินเชื่อบ้าน": 0.07, "บัตรเครดิต": 0.16, "สินเชื่อส่วนบุคคล": 0.25}
+for name, rate in rates.items():
+    print(name, round(first_year_interest(principal, rate), 2))
+
+debt = compounding_debt(20000, 0.16, 12)
+print("หนี้บัตรเครดิต 20,000 บาท หลัง 12 เดือนไม่จ่าย:", round(debt, 2))
+
+# กยศ.: 500.0
+# สินเชื่อบ้าน: 3500.0
+# บัตรเครดิต: 8000.0
+# สินเชื่อส่วนบุคคล: 12500.0
+# หนี้บัตรเครดิต 20,000 บาท หลัง 12 เดือนไม่จ่าย: 23445.42</code></pre>
+  </div>
+</details>
+
+<h2>พรุ่งนี้: บัตรเครดิตและกับดักดอกเบี้ยขั้นบันได</h2>
+<p>วันนี้เห็นแล้วว่าบัตรเครดิตมีเพดานดอกเบี้ยสูงและทบต้นเร็ว พรุ่งนี้ (Day 11) จะเจาะลึกกลไกของบัตรเครดิตโดยเฉพาะ — grace period ทำงานอย่างไร ทำไมจ่ายขั้นต่ำถึงเป็นกับดัก และวิธีใช้บัตรเครดิตให้เป็นประโยชน์โดยไม่เสียดอกเบี้ยเลย</p>
+
+<h2>ทดสอบความเข้าใจ</h2>
+
+<p class="q">1. เพราะเหตุใดบัตรเครดิตใบเดียวกันถึงเป็น "หนี้ดี" ได้ในบางกรณี และเป็น "หนี้เสีย" ได้ในอีกกรณี?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">เพราะหนี้ดี/หนี้เสียไม่ได้ขึ้นกับประเภทผลิตภัณฑ์อย่างเดียว แต่ขึ้นกับพฤติกรรมการใช้ด้วย ถ้าจ่ายเต็มจำนวนทุกเดือนภายในระยะเวลาปลอดดอกเบี้ย (grace period) จะไม่เสียดอกเบี้ยเลย เท่ากับยืมเงินฟรีระยะสั้น แต่ถ้าจ่ายแค่ขั้นต่ำ ดอกเบี้ยเพดาน 16% ต่อปีจะเริ่มทบต้น กลายเป็นหนี้เสียได้อย่างรวดเร็ว</div>
+</details>
+
+<p class="q">2. กู้สินเชื่อส่วนบุคคล 30,000 บาท ที่อัตราดอกเบี้ยเพดาน 25% ต่อปี จะต้องจ่ายดอกเบี้ยปีแรกเท่าไร (คิดแบบไม่ทบต้น)?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">30,000 × 0.25 = 7,500 บาท เทียบเท่ากับเกือบ 1 ใน 4 ของเงินต้นที่กู้มา หายไปกับดอกเบี้ยตั้งแต่ปีแรกปีเดียว</div>
+</details>
+
+<p class="q">3. ทำไม กยศ. (ดอกเบี้ยไม่เกิน 1% ต่อปี) จึงถูกจัดเป็นหนี้ดีเกือบทุกกรณี ทั้งที่การศึกษาไม่ใช่ "สินทรัพย์" ที่จับต้องได้แบบบ้านหรือหุ้น?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">เพราะเกณฑ์หนี้ดีไม่ได้จำกัดแค่สินทรัพย์จับต้องได้ แต่รวมถึงสิ่งที่เพิ่มความสามารถในการหารายได้ระยะยาว (human capital) ด้วย การศึกษาที่ดีมักเพิ่มรายได้ตลอดชีวิตได้มากกว่าดอกเบี้ย 1% ต่อปีที่จ่ายไปหลายเท่า บวกกับดอกเบี้ยที่ต่ำมากและมีเงื่อนไขผ่อนตามกำลัง ทำให้ความเสี่ยงของหนี้ก้อนนี้ต่ำกว่าหนี้ประเภทอื่นมาก</div>
+</details>
+
+<p class="q"><strong>ทวน:</strong> สินเชื่อบ้านดอกเบี้ยเฉลี่ย 7% ต่อปี ในช่วงที่เงินเฟ้อเฉลี่ย 2.5% ต่อปี ดอกเบี้ยที่แท้จริง (real rate) ของหนี้ก้อนนี้ประมาณเท่าไร และทำไมตัวเลขนี้ทำให้หนี้บ้านดู "ถูกกว่า" ที่ตัวเลขปรากฏ?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">real rate ≈ nominal − inflation = 7% − 2.5% = <strong>4.5% ต่อปี</strong> (คำนวณแม่นยำด้วยสูตร Fisher ได้ 4.39%) เพราะเงินเฟ้อกัดกร่อนมูลค่าของทั้งเงินต้นและดอกเบี้ยที่ต้องจ่ายคืนในอนาคตด้วยเช่นกัน ต้นทุนที่แท้จริงของหนี้จึงต่ำกว่าตัวเลขดอกเบี้ยที่ปรากฏบนสัญญาเสมอเมื่อมีเงินเฟ้อ ยิ่งเงินเฟ้อสูง หนี้ดอกเบี้ยคงที่ยิ่ง "ถูกลง" ในความเป็นจริง<br>ตอบผิดหรือลังเล? → <a href="finance-day-04-inflation-time-value.html">ทบทวน Day 4: เงินเฟ้อและมูลค่าเงินตามเวลา</a></div>
+</details>
+
+<div class="summary-box">
+  <h2 style="margin-top:0">สรุป 3 บรรทัด</h2>
+  <p>1. หนี้ไม่ได้เลวร้ายเสมอไป หนี้ดีคือหนี้ที่เพิ่มความสามารถหารายได้หรือมูลค่าในระยะยาว ดอกเบี้ยต่ำกว่าผลตอบแทนที่คาดว่าจะได้ และมีแผนจ่ายคืนชัดเจน</p>
+  <p>2. ดอกเบี้ยเงินกู้จริงในไทยต่างกันมาก — กยศ. ≤1%, บ้าน ≈6.5-7.3%, บัตรเครดิต ≤16%, สินเชื่อส่วนบุคคล ≤25% ต่อปี เงินต้นเท่ากันแต่ดอกเบี้ยต่างกันได้หลายสิบเท่า</p>
+  <p style="margin-bottom:0">3. หนี้เสียที่ไม่จ่ายคืนจะทบต้นโตเร็วเหมือนดอกเบี้ยทบต้นใน Day 5 เพียงแต่ทำงานย้อนกลับ ยิ่งปล่อยไว้นาน ยิ่งจ่ายคืนยากขึ้น</p>
+</div>
+
+<footer>
+  <p><strong>พรุ่งนี้ Day 11 — บัตรเครดิตและกับดักดอกเบี้ยขั้นบันได</strong> เจาะลึก grace period วิธีคิดดอกเบี้ย และทำไมจ่ายขั้นต่ำถึงอันตรายกว่าที่คิด</p>
+  <p class="disclaimer">บทเรียนนี้เป็นความรู้เชิงการศึกษา ไม่ใช่คำแนะนำทางการเงินเฉพาะบุคคล และไม่ใช่การแนะนำผลิตภัณฑ์สินเชื่อหรือธนาคารใดธนาคารหนึ่ง อัตราดอกเบี้ยที่อ้างอิงเป็นข้อมูล ณ ช่วงต้น-กลางปี 2569 เพดานดอกเบี้ยตามกฎหมายเปลี่ยนแปลงได้ตามประกาศ ธปท. และอัตราตลาด ควรตรวจสอบอัตราปัจจุบันจากธนาคาร/ผู้ให้บริการก่อนตัดสินใจกู้จริง</p>
+</footer>
+
+</div>
+
+<script>
+(function(){
+  var pr=document.getElementById('pr'), prV=document.getElementById('prV');
+  var bars=document.getElementById('bars'), result=document.getElementById('result');
+
+  function fmt(n){return Math.round(n).toLocaleString('en-US');}
+
+  function render(){
+    var p=+pr.value;
+    prV.textContent=fmt(p);
+
+    var ksf = p*0.01;
+    var home = p*0.07;
+    var card = p*0.16;
+    var ploan = p*0.25;
+    var maxScale = Math.max(ksf, home, card, ploan, 1);
+
+    function row(label, val, cls){
+      var pct = (val/maxScale*100).toFixed(1);
+      return '<div class="bar-row">'+
+        '<div class="bar-label"><span>'+label+'</span><strong>'+fmt(val)+' บาท/ปี</strong></div>'+
+        '<div class="bar-track"><div class="bar-fill '+cls+'" style="width:'+pct+'%"></div></div>'+
+      '</div>';
+    }
+
+    bars.innerHTML =
+      row('กยศ. (1%)', ksf, 'bar-growth') +
+      row('สินเชื่อบ้าน (7%)', home, 'bar-principal') +
+      row('บัตรเครดิตค้างจ่าย (16%)', card, 'bar-negative') +
+      row('สินเชื่อส่วนบุคคล (25%)', ploan, 'bar-negative');
+
+    result.style.color='var(--accent)';
+    result.textContent='เงินกู้ '+fmt(p)+' บาท -> ดอกเบี้ยแพงที่สุด (สินเชื่อส่วนบุคคล) แพงกว่าถูกที่สุด (กยศ.) '+(ploan/ksf).toFixed(1)+' เท่า';
+  }
+
+  pr.addEventListener('input', render);
+  render();
+})();
+</script>
+</body>
+</html>

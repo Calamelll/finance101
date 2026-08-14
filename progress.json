@@ -1,9 +1,9 @@
 {
   "startDate": "2026-07-21",
   "totalDays": 90,
-  "lastCompletedDay": 9,
-  "nextDay": 10,
-  "lastRunDate": "2026-08-12",
+  "lastCompletedDay": 10,
+  "nextDay": 11,
+  "lastRunDate": "2026-08-14",
   "githubPushed": true,
   "pendingPush": [],
   "history": [
@@ -69,6 +69,13 @@
       "title": "บัญชีธนาคารและดอกเบี้ยเงินฝากในไทย",
       "file": "lessons/finance-day-09-bank-accounts-thailand.html",
       "recallFrom": [6]
+    },
+    {
+      "day": 10,
+      "date": "2026-08-14",
+      "title": "หนี้ดี vs หนี้เสีย และดอกเบี้ยเงินกู้",
+      "file": "lessons/finance-day-10-good-debt-bad-debt.html",
+      "recallFrom": [4]
     }
   ],
   "notesApplied": [
