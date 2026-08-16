@@ -1,9 +1,9 @@
 {
   "startDate": "2026-07-21",
   "totalDays": 90,
-  "lastCompletedDay": 10,
-  "nextDay": 11,
-  "lastRunDate": "2026-08-14",
+  "lastCompletedDay": 11,
+  "nextDay": 12,
+  "lastRunDate": "2026-08-16",
   "githubPushed": true,
   "pendingPush": [],
   "history": [
@@ -76,6 +76,13 @@
       "title": "หนี้ดี vs หนี้เสีย และดอกเบี้ยเงินกู้",
       "file": "lessons/finance-day-10-good-debt-bad-debt.html",
       "recallFrom": [4]
+    },
+    {
+      "day": 11,
+      "date": "2026-08-16",
+      "title": "บัตรเครดิตและกับดักดอกเบี้ยขั้นบันได",
+      "file": "lessons/finance-day-11-credit-card-tiered-interest.html",
+      "recallFrom": [7]
     }
   ],
   "notesApplied": [

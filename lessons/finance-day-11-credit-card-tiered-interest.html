@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day 11 — บัตรเครดิตและกับดักดอกเบี้ยขั้นบันได | Finance101</title>
+<style>
+:root{
+  --bg:#191816; --card:#211f1d; --ink:#e8e4dd; --muted:#a09a91;
+  --line:#332f2b; --accent:#6cc394; --accent-soft:#1c2f26;
+  --warn:#e0a86f; --warn-soft:#2e2419; --code:#201e1b; --danger:#e0785c;
+  color-scheme: dark;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; padding:28px 18px 80px; background:var(--bg); color:var(--ink);
+  font-family:"Sarabun","Noto Sans Thai",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:17px; line-height:1.75; -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:720px;margin:0 auto}
+header{margin-bottom:34px}
+.kicker{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--muted);letter-spacing:.02em}
+.pill{background:var(--accent-soft);color:var(--accent);padding:3px 11px;border-radius:99px;font-weight:600}
+h1{font-size:29px;line-height:1.3;margin:12px 0 6px;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:16px;margin:0}
+h2{font-size:21px;margin:38px 0 12px;letter-spacing:-.005em}
+h3{font-size:17px;margin:26px 0 8px}
+p{margin:0 0 15px}
+ul,ol{margin:0 0 15px;padding-left:22px}
+li{margin-bottom:7px}
+strong{font-weight:600}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin:22px 0}
+.card.accent{background:var(--accent-soft);border-color:#2c4a3c}
+.card.warn{background:var(--warn-soft);border-color:#4a3722}
+.card h3{margin-top:0}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15.5px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-weight:600;font-size:13.5px;letter-spacing:.02em}
+td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.calc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;margin:22px 0}
+.calc label{display:block;font-size:14px;color:var(--muted);margin-bottom:6px}
+.calc .row{margin-bottom:18px}
+input[type=range]{width:100%;accent-color:var(--accent);height:24px}
+.val{font-weight:600;color:var(--accent);font-variant-numeric:tabular-nums}
+.bars{margin-top:6px}
+.bar-row{margin-bottom:12px}
+.bar-label{display:flex;justify-content:space-between;font-size:14px;margin-bottom:5px;gap:10px}
+.bar-track{background:#2a2724;border-radius:8px;height:26px;overflow:hidden;position:relative}
+.bar-fill{height:100%;border-radius:8px;transition:width .55s cubic-bezier(.22,.8,.3,1)}
+.bar-principal{background:#3f5c4e}
+.bar-growth{background:var(--accent)}
+.bar-negative{background:#a34a34}
+.legend{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-top:10px;flex-wrap:wrap}
+.swatch{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:middle}
+.seg{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+.seg button{
+  background:var(--code);color:var(--muted);border:1px solid var(--line);border-radius:99px;
+  padding:6px 16px;font-size:14px;font-family:inherit;cursor:pointer;transition:all .2s;
+}
+.seg button.active{background:var(--accent-soft);color:var(--accent);border-color:#2c4a3c;font-weight:600}
+details{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:12px 16px;margin:10px 0}
+details[open]{background:#1d1b19}
+summary{cursor:pointer;font-weight:600;font-size:15.5px;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"▸ ";color:var(--accent)}
+details[open] summary::before{content:"▾ "}
+.ans{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font-size:15.5px;color:#d6d1c9}
+.q{font-weight:600;margin:22px 0 8px}
+pre{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:14px;line-height:1.6}
+code{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+.summary-box{border-left:3px solid var(--accent);padding-left:18px;margin:26px 0}
+.summary-box p{margin-bottom:8px}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
+footer a{color:var(--accent)}
+.disclaimer{font-size:13px;color:var(--muted);margin-top:18px;line-height:1.6}
+.nav{margin-bottom:20px;font-size:14px}
+.nav a{color:var(--accent);text-decoration:none}
+.src{font-size:12.5px;color:var(--muted);margin-top:8px}
+.steps{display:flex;align-items:flex-end;gap:14px;margin:18px 0 6px;height:150px}
+.step{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px}
+.step-bar{width:100%;border-radius:8px 8px 0 0;transition:height .55s cubic-bezier(.22,.8,.3,1);min-height:2px}
+.step1 .step-bar{background:#3f5c4e}
+.step2 .step-bar{background:var(--danger)}
+.step-label{font-size:13px;color:var(--muted);text-align:center}
+.step-val{font-weight:600;color:var(--ink);font-size:14.5px}
+@media(max-width:520px){
+  body{font-size:16px;padding:20px 14px 60px}
+  h1{font-size:25px}
+  .card,.calc{padding:16px}
+}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="nav"><a href="../index.html">← สารบัญ</a></div>
+
+<header>
+  <div class="kicker">
+    <span class="pill">Day 11 / 90</span>
+    <span>Phase 1 · พื้นฐานการเงินส่วนบุคคล</span>
+    <span>·</span>
+    <span>อ่าน 9 นาที</span>
+  </div>
+  <h1>บัตรเครดิตและกับดักดอกเบี้ยขั้นบันได</h1>
+  <p class="sub">Day 10 บอกว่าบัตรเครดิตใบเดียวกันเป็นได้ทั้งหนี้ดีและหนี้เสีย ขึ้นกับพฤติกรรม วันนี้เจาะกลไกจริงเบื้องหลังตัวเลขดอกเบี้ย 16% ต่อปีที่เห็น — ทำไมจ่ายขั้นต่ำถึงทำให้เสียสิทธิ์ปลอดดอกเบี้ยทันที และดอกเบี้ยถูกคิดเป็น "ขั้นบันได" สองช่วงอย่างไร</p>
+</header>
+
+<h2>Grace period: สิทธิ์ยืมเงินฟรีที่หายไปง่ายกว่าที่คิด</h2>
+
+<p><strong>ระยะเวลาปลอดดอกเบี้ย (grace period)</strong> คือช่วงเวลาตั้งแต่วันที่รูดบัตรจนถึงวันครบกำหนดชำระ ซึ่งธนาคารในไทยส่วนใหญ่ให้เฉลี่ยประมาณ <strong>45-51 วัน</strong> ถ้าจ่ายเต็มจำนวนและตรงเวลาในทุกรอบบิล เท่ากับได้ยืมเงินฟรีตลอดช่วงนั้น ไม่มีดอกเบี้ยเลยแม้แต่บาทเดียว นี่คือเหตุผลที่ Day 10 บอกว่าบัตรเครดิตเป็นหนี้ดีได้ — <em>ถ้า</em>ใช้แบบนี้เท่านั้น</p>
+
+<p>จุดที่คนส่วนใหญ่เข้าใจผิดคือ <strong>สิทธิ์ปลอดดอกเบี้ยเป็นสิทธิ์แบบ "ทั้งหมดหรือไม่มีเลย" (all-or-nothing)</strong> ไม่ใช่แบบขั้นบันไดที่ลดหย่อนตามสัดส่วนที่จ่าย เมื่อไรก็ตามที่จ่ายน้อยกว่ายอดเต็ม แม้จะจ่ายมากกว่ายอดขั้นต่ำก็ตาม สิทธิ์ grace period ของ<strong>ทั้งรอบบิล</strong>จะหายทันที และธนาคารจะคิดดอกเบี้ยย้อนหลังจากวันที่บันทึกรายการซื้อ (posting date) ไม่ใช่จากวันที่ครบกำหนดชำระ</p>
+
+<h2>ดอกเบี้ยขั้นบันได: ทำไมถึงมี 2 ช่วง ไม่ใช่ช่วงเดียว</h2>
+
+<p>เมื่อจ่ายไม่เต็มจำนวน ธนาคารจะคิดดอกเบี้ยแบบรายวัน (daily rate = อัตราต่อปี ÷ 365) แบ่งเป็น 2 ช่วงที่ต่อกันเป็นขั้นบันได:</p>
+
+<div class="card">
+  <ul style="margin-bottom:0">
+    <li><strong>ขั้นที่ 1</strong> — คิดดอกเบี้ยจาก<strong>ยอดใช้จ่ายเต็มจำนวน</strong> ตั้งแต่วันบันทึกรายการ จนถึงวันก่อนวันครบกำหนดชำระ</li>
+    <li><strong>ขั้นที่ 2</strong> — หลังจ่ายขั้นต่ำแล้ว คิดดอกเบี้ยต่อจาก<strong>ยอดคงเหลือ</strong> (เงินต้นเต็ม ลบยอดที่จ่ายไป) ไปจนถึงวันสรุปยอดรอบถัดไป</li>
+  </ul>
+</div>
+
+<p>ตัวอย่างจากกรณีศึกษาจริง: รูดซื้อของ 10,000 บาท วันที่บันทึกรายการ 1 มีนาคม วันครบกำหนดชำระ 5 เมษายน (35 วัน) แล้วจ่ายขั้นต่ำ 1,000 บาทในวันครบกำหนด ก่อนวันสรุปยอดรอบถัดไปอีก 16 วัน:</p>
+
+<div class="card warn">
+  <p style="margin-bottom:8px"><strong>ขั้นที่ 1:</strong> 10,000 × 16% × (35 ÷ 365) ≈ 153 บาท</p>
+  <p style="margin-bottom:0"><strong>ขั้นที่ 2:</strong> (10,000 − 1,000) × 16% × (16 ÷ 365) ≈ 63 บาท → <strong>รวมดอกเบี้ย ≈ 216 บาท</strong> ในบิลถัดไป ทั้งที่จ่ายไปแล้ว 1,000 บาท</p>
+</div>
+
+<p class="src">ตัวอย่างการคำนวณและกลไกดอกเบี้ย 2 ช่วงอ้างอิงจาก Thairath Money คอลัมน์ "ถอดรหัสดอกเบี้ยบัตรเครดิต" โดยพนิดา ชูกุล เผยแพร่ 15 มี.ค. 2569 (thairath.co.th) เพดานดอกเบี้ยบัตรเครดิต 16% ต่อปี — ธนาคารแห่งประเทศไทย มีผลตั้งแต่ 1 ส.ค. 2563 และยังบังคับใช้อยู่ ณ กลางปี 2569</p>
+
+<h2>ยอดชำระขั้นต่ำในไทยตอนนี้: 8% ไม่ใช่ 10%</h2>
+
+<p>ปกติเกณฑ์ยอดชำระขั้นต่ำ (minimum payment) ของบัตรเครดิตอยู่ที่ 10% ของยอดคงค้าง แต่ธนาคารแห่งประเทศไทย (ธปท.) มีมาตรการผ่อนปรนชั่วคราวคงอัตราไว้ที่ <strong>8%</strong> และล่าสุดขยายเวลามาตรการนี้ต่อไป<strong>จนถึงสิ้นปี 2569</strong> เพื่อลดภาระลูกหนี้ในช่วงเศรษฐกิจฟื้นตัวช้า</p>
+
+<div class="card">
+  <p class="src" style="margin-bottom:0">แหล่งอ้างอิง: "ธปท. ขยายระยะเวลามาตรการช่วยเหลือลูกหนี้บัตรเครดิตออกไปจนถึงสิ้นปี 2569" ประกาศธนาคารแห่งประเทศไทย 4 ธ.ค. 2568 (bot.or.th) — ยอดชำระขั้นต่ำคงที่ 8% ของยอดคงค้าง แทนที่จะขยับเป็น 10% ตามกำหนดเดิม สืบค้นข้อมูล ส.ค. 2569 มาตรการนี้เป็นการชั่วคราว ควรตรวจสอบอัตราล่าสุดก่อนวางแผนจ่ายหนี้จริง</p>
+</div>
+
+<h2>ตัวอย่างตัวเลขจริง: ซื้อโน้ตบุ๊ค 8,000 บาทด้วยบัตรเครดิต</h2>
+
+<p>สมมตินักศึกษาซื้อโน้ตบุ๊ครุ่นประหยัด 8,000 บาท ผ่านบัตรเครดิต รอบบิลมีเวลาถึงวันครบกำหนด 35 วัน แล้วเลือกจ่ายแค่ขั้นต่ำ 8% (640 บาท) แทนที่จะจ่ายเต็ม:</p>
+
+<table>
+  <tr><th>รายการ</th><th class="num">จำนวน (บาท)</th></tr>
+  <tr><td>เงินต้น</td><td class="num">8,000</td></tr>
+  <tr><td>ยอดขั้นต่ำ (8%)</td><td class="num">640</td></tr>
+  <tr><td>ยอดคงเหลือหลังจ่ายขั้นต่ำ</td><td class="num">7,360</td></tr>
+  <tr><td>ดอกเบี้ยขั้นที่ 1 (35 วันเต็มยอด)</td><td class="num">122.74</td></tr>
+  <tr><td>ดอกเบี้ยขั้นที่ 2 (16 วัน ยอดคงเหลือ)</td><td class="num">51.62</td></tr>
+  <tr><td><strong>ดอกเบี้ยรวมบิลถัดไป</strong></td><td class="num"><strong>174.36</strong></td></tr>
+</table>
+
+<p>จ่ายไป 640 บาท แต่ยังโดนดอกเบี้ยเพิ่มอีก 174 บาทในบิลถัดไปแบบไม่รู้ตัว — เท่ากับเสียเงินเปล่าไปเกือบ 2.2% ของราคาโน้ตบุ๊คทั้งเครื่อง เพียงเพราะจ่ายไม่เต็มจำนวนรอบเดียว</p>
+
+<h2>ทำไม "จ่ายขั้นต่ำไปเรื่อยๆ" ไม่ช่วยเท่าที่คิด</h2>
+
+<p>สมมติค้างหนี้บัตรเครดิต 20,000 บาท หยุดใช้บัตรเพิ่ม แล้วจ่ายขั้นต่ำ 8% ของยอดคงเหลือทุกเดือน (ดอกเบี้ยคิดแบบรายเดือนโดยประมาณ 16%/12):</p>
+
+<table>
+  <tr><th>เดือน</th><th class="num">ดอกเบี้ย</th><th class="num">ยอดจ่าย</th><th class="num">เงินต้นที่ลดจริง</th><th class="num">คงเหลือ</th></tr>
+  <tr><td>1</td><td class="num">267</td><td class="num">1,600</td><td class="num">1,333</td><td class="num">18,667</td></tr>
+  <tr><td>2</td><td class="num">249</td><td class="num">1,493</td><td class="num">1,244</td><td class="num">17,422</td></tr>
+  <tr><td>3</td><td class="num">232</td><td class="num">1,394</td><td class="num">1,161</td><td class="num">16,261</td></tr>
+  <tr><td>6</td><td class="num">189</td><td class="num">1,133</td><td class="num">944</td><td class="num">13,221</td></tr>
+</table>
+
+<p>สังเกตว่ายอดจ่ายขั้นต่ำ<strong>ลดลงเรื่อยๆ</strong> ตามยอดคงเหลือที่ลดลง (8% ของก้อนที่เล็กลง) เงินต้นที่ตัดจริงจึงยิ่งลดช้าลงทุกเดือน และนี่คือกรณีที่<strong>หยุดใช้บัตรแล้ว</strong> — ในชีวิตจริงคนส่วนใหญ่ที่จ่ายขั้นต่ำมักยังใช้บัตรต่อไปด้วย ทำให้ยอดหนี้แทบไม่ลดลงเลยในทางปฏิบัติ แม้จะจ่ายบิลทุกเดือนก็ตาม</p>
+
+<h2>ลองคำนวณดอกเบี้ยขั้นบันไดด้วยตัวเอง</h2>
+<p>ปรับยอดใช้จ่ายและจำนวนวันก่อนครบกำหนดชำระ เพื่อดูว่าดอกเบี้ย 2 ขั้นรวมกันเป็นเท่าไร (สมมติจ่ายขั้นต่ำ 8% แล้วรออีก 16 วันถึงวันสรุปยอดรอบถัดไป)</p>
+
+<div class="calc">
+  <div class="row">
+    <label>ยอดใช้จ่าย <span class="val" id="prV">8,000</span> บาท</label>
+    <input type="range" id="pr" min="2000" max="30000" value="8000" step="1000">
+  </div>
+  <div class="row">
+    <label>จำนวนวันก่อนครบกำหนดชำระ <span class="val" id="dV">35</span> วัน</label>
+    <input type="range" id="days" min="20" max="50" value="35" step="1">
+  </div>
+  <div class="steps" id="steps"></div>
+  <p id="result" style="margin:14px 0 0;font-weight:600"></p>
+</div>
+
+<details>
+  <summary>กล่องโค้ด (ข้ามได้ ไม่นับในเวลาอ่าน)</summary>
+  <div class="ans">
+  <p>ฟังก์ชันคำนวณดอกเบี้ยขั้นบันได 2 ช่วง และการจ่ายขั้นต่ำรายเดือนสะสม:</p>
+  <pre><code>def staircase_interest(principal, days_to_payment, min_pay_pct=0.08, rate=0.16, days_after=16):
+    """ดอกเบี้ย 2 ขั้น: เต็มยอดก่อนจ่ายขั้นต่ำ + ยอดคงเหลือหลังจ่ายขั้นต่ำ"""
+    step1 = principal * rate * days_to_payment / 365
+    min_pay = principal * min_pay_pct
+    remaining = principal - min_pay
+    step2 = remaining * rate * days_after / 365
+    return step1, step2, step1 + step2
+
+s1, s2, total = staircase_interest(8000, 35)
+print(round(s1, 2), round(s2, 2), round(total, 2))
+# 122.74 51.62 174.36
+
+def minimum_payment_schedule(balance, months, min_pay_pct=0.08, annual_rate=0.16):
+    """จำลองยอดคงเหลือถ้าจ่ายขั้นต่ำทุกเดือน ไม่ใช้บัตรเพิ่ม"""
+    rate_m = annual_rate / 12
+    rows = []
+    for m in range(1, months + 1):
+        interest = balance * rate_m
+        min_pay = balance * min_pay_pct
+        balance = balance + interest - min_pay
+        rows.append((m, round(interest, 2), round(min_pay, 2), round(balance, 2)))
+    return rows
+
+for row in minimum_payment_schedule(20000, 6):
+    print(row)
+# (1, 266.67, 1600.0, 18666.67) ... (6, 188.87, 1133.19, 13220.58)</code></pre>
+  </div>
+</details>
+
+<h2>ใช้บัตรเครดิตอย่างไรไม่ให้กลายเป็นกับดัก</h2>
+
+<ul>
+<li><strong>ใช้บัตรเป็นเครื่องมือจ่ายเงิน ไม่ใช่กู้เงิน</strong> — รูดเท่าที่มีเงินสดรองรับพร้อมจ่ายเต็มอยู่แล้วเท่านั้น</li>
+<li><strong>จ่ายเต็มจำนวนทุกรอบบิล</strong> เพื่อรักษาสิทธิ์ grace period ทั้งหมด แค่จ่ายมากกว่าขั้นต่ำก็ไม่พอ ต้องเต็มจำนวนเท่านั้นถึงจะไม่เสียดอกเบี้ยเลย</li>
+<li><strong>ถ้าเริ่มจ่ายไม่เต็ม ให้หยุดใช้บัตรทันที</strong> แล้วทยอยจ่ายให้หมดโดยเร็วที่สุด เพราะยิ่งค้างนาน ดอกเบี้ยขั้นบันไดยิ่งสะสม และยอดขั้นต่ำที่ลดตามยอดคงเหลือทำให้เงินต้นหมดช้ากว่าที่คิด</li>
+</ul>
+
+<h2>พรุ่งนี้: ภาษีเงินได้บุคคลธรรมดา 101</h2>
+<p>วันนี้เห็นกลไกดอกเบี้ยฝั่งที่เราเป็นหนี้ พรุ่งนี้ (Day 12) เปลี่ยนไปดูอีกฝั่งที่กระทบเงินเดือนทุกเดือน — โครงสร้างภาษีเงินได้บุคคลธรรมดาแบบขั้นบันไดของไทย และวิธีคำนวณภาษีที่ต้องจ่ายจริงจากเงินเดือน</p>
+
+<h2>ทดสอบความเข้าใจ</h2>
+
+<p class="q">1. ทำไมการจ่าย "มากกว่ายอดขั้นต่ำ แต่ไม่เต็มจำนวน" ถึงยังเสียสิทธิ์ปลอดดอกเบี้ย (grace period) ทั้งรอบบิล ทั้งที่จ่ายไปเยอะแล้ว?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">เพราะ grace period เป็นสิทธิ์แบบทั้งหมดหรือไม่มีเลย (all-or-nothing) ไม่ได้ลดหย่อนตามสัดส่วนที่จ่าย เมื่อไรก็ตามที่ยอดจ่ายต่ำกว่ายอดเต็ม 100% ธนาคารจะถือว่าไม่ได้ใช้สิทธิ์ปลอดดอกเบี้ย และคิดดอกเบี้ยย้อนหลังจากวันบันทึกรายการทันที ไม่ว่าจะจ่ายไปกี่เปอร์เซ็นต์ก็ตาม</div>
+</details>
+
+<p class="q">2. ซื้อของ 15,000 บาท มีเวลาถึงวันครบกำหนดชำระ 35 วัน จ่ายขั้นต่ำ 8% แล้วรออีก 16 วันถึงวันสรุปยอดรอบถัดไป ดอกเบี้ยขั้นที่ 1 และขั้นที่ 2 (ที่ 16% ต่อปี) รวมกันประมาณเท่าไร?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">ขั้นที่ 1: 15,000 × 16% × (35÷365) ≈ 230.14 บาท ขั้นที่ 2: (15,000 − 1,200) × 16% × (16÷365) ≈ 96.79 บาท รวม ≈ <strong>326.93 บาท</strong> (ยอดขั้นต่ำ 8% ของ 15,000 คือ 1,200 บาท)</div>
+</details>
+
+<p class="q">3. ถ้าค้างหนี้บัตรเครดิตแล้วยังใช้บัตรใบเดียวกันซื้อของเพิ่มทุกเดือน ทำไมยอดหนี้ถึงแทบไม่ลดลงเลยแม้จะจ่ายบิลตรงเวลาทุกครั้ง?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">เพราะยอดที่จ่ายแต่ละเดือน (ถ้าจ่ายแค่ขั้นต่ำ) ส่วนใหญ่ถูกนำไปตัดดอกเบี้ยก่อน เหลือไปตัดเงินต้นน้อยมาก และยอดใช้จ่ายใหม่ที่เพิ่มเข้ามาแต่ละเดือนก็ไปเพิ่มฐานที่ใช้คิดดอกเบี้ยขั้นบันไดรอบถัดไปทันที ผลคือเงินต้นที่ตัดจริงในแต่ละเดือนถูกหักล้างด้วยยอดใช้จ่ายใหม่ ทำให้ยอดหนี้รวมทรงตัวหรือโตขึ้นแทนที่จะลด</div>
+</details>
+
+<p class="q"><strong>ทวน:</strong> ก่อนตัดสินใจรูดบัตรซื้อของที่ไม่ได้วางแผนไว้ เครื่องมือการเงินตัวไหนที่ช่วยตอบคำถามว่า "จำเป็นต้องรูดจริงไหม" และทำไมมันถึงช่วยลดโอกาสตกหลุมพรางดอกเบี้ยขั้นบันไดได้?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">เงินสำรองฉุกเฉิน (emergency fund) จาก Day 7 คือเครื่องมือนั้น หากมีเงินสำรองพอสำหรับค่าใช้จ่ายจำเป็น 3-6 เดือน จะไม่ต้องพึ่งบัตรเครดิตในสถานการณ์ฉุกเฉินที่อาจจ่ายคืนไม่ทันเต็มจำนวน ซึ่งเป็นจุดเริ่มต้นของการเสียสิทธิ์ grace period และเข้าสู่วงจรดอกเบี้ยขั้นบันได<br>ตอบผิดหรือลังเล? → <a href="finance-day-07-emergency-fund.html">ทบทวน Day 7: เงินสำรองฉุกเฉิน</a></div>
+</details>
+
+<div class="summary-box">
+  <h2 style="margin-top:0">สรุป 3 บรรทัด</h2>
+  <p>1. Grace period (45-51 วันเฉลี่ย) เป็นสิทธิ์แบบทั้งหมดหรือไม่มีเลย จ่ายไม่เต็มจำนวนแม้แค่รอบเดียวก็เสียสิทธิ์ทั้งบิล ดอกเบี้ยคิดย้อนหลังจากวันบันทึกรายการทันที</p>
+  <p>2. ดอกเบี้ยบัตรเครดิตคิดแบบขั้นบันได 2 ช่วง: เต็มยอดก่อนจ่ายขั้นต่ำ + ยอดคงเหลือหลังจ่ายขั้นต่ำจนถึงวันสรุปยอดรอบถัดไป ทำให้ 16% ต่อปีกลายเป็นเงินจริงเร็วกว่าที่คิด</p>
+  <p style="margin-bottom:0">3. ยอดชำระขั้นต่ำในไทยตอนนี้อยู่ที่ 8% (มาตรการผ่อนปรนถึงสิ้นปี 2569) แต่จ่ายขั้นต่ำต่อเนื่องแทบไม่ช่วยลดหนี้ เพราะยอดจ่ายลดตามยอดคงเหลือ และการใช้บัตรต่อยิ่งเพิ่มฐานดอกเบี้ยรอบถัดไป</p>
+</div>
+
+<footer>
+  <p><strong>พรุ่งนี้ Day 12 — ภาษีเงินได้บุคคลธรรมดา 101</strong> โครงสร้างภาษีแบบขั้นบันไดของไทย และวิธีคำนวณภาษีจากเงินเดือนจริง</p>
+  <p class="disclaimer">บทเรียนนี้เป็นความรู้เชิงการศึกษา ไม่ใช่คำแนะนำทางการเงินเฉพาะบุคคล และไม่ใช่การแนะนำผลิตภัณฑ์บัตรเครดิตหรือธนาคารใดธนาคารหนึ่ง ตัวเลขดอกเบี้ย เพดาน และมาตรการยอดชำระขั้นต่ำที่อ้างอิงเป็นข้อมูล ณ ช่วงต้น-กลางปี 2569 และเป็นมาตรการชั่วคราวที่อาจเปลี่ยนแปลงได้ตามประกาศ ธปท. ควรตรวจสอบเงื่อนไขปัจจุบันจากธนาคารผู้ออกบัตรก่อนตัดสินใจจริง</p>
+</footer>
+
+</div>
+
+<script>
+(function(){
+  var pr=document.getElementById('pr'), prV=document.getElementById('prV');
+  var days=document.getElementById('days'), dV=document.getElementById('dV');
+  var steps=document.getElementById('steps'), result=document.getElementById('result');
+
+  function fmt(n){return Math.round(n*100)/100;}
+  function fmtInt(n){return Math.round(n).toLocaleString('en-US');}
+
+  function render(){
+    var p=+pr.value, d=+days.value;
+    prV.textContent=fmtInt(p);
+    dV.textContent=d;
+
+    var minPayPct=0.08, rate=0.16, daysAfter=16;
+    var step1 = p*rate*d/365;
+    var minPay = p*minPayPct;
+    var remaining = p-minPay;
+    var step2 = remaining*rate*daysAfter/365;
+    var total = step1+step2;
+    var maxH = 120;
+
+    // ขั้นบันไดแบบสะสม: แท่งที่ 1 = ดอกเบี้ยขั้น 1, แท่งที่ 2 = ดอกเบี้ยขั้น 1+2 รวมกัน
+    var h1 = Math.max(4, (step1/total)*maxH);
+    var h2 = Math.max(h1+2, maxH);
+
+    steps.innerHTML =
+      '<div class="step step1"><div class="step-val">'+fmt(step1)+' บ.</div><div class="step-bar" style="height:'+h1+'px"></div><div class="step-label">ขั้น 1<br>('+d+' วัน เต็มยอด)</div></div>'+
+      '<div class="step step2"><div class="step-val">'+fmt(total)+' บ. รวม</div><div class="step-bar" style="height:'+h2+'px"></div><div class="step-label">ขั้น 2<br>(+16 วัน คงเหลือ)</div></div>';
+
+    result.style.color='var(--accent)';
+    result.textContent='จ่ายขั้นต่ำ '+fmtInt(minPay)+' บาท -> ดอกเบี้ยรวมบิลถัดไป ≈ '+fmt(total)+' บาท ('+((total/p)*100).toFixed(2)+'% ของยอดใช้จ่าย)';
+  }
+
+  pr.addEventListener('input', render);
+  days.addEventListener('input', render);
+  render();
+})();
+</script>
+</body>
+</html>
