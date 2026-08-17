@@ -1,10 +1,10 @@
 {
   "startDate": "2026-07-21",
   "totalDays": 90,
-  "lastCompletedDay": 11,
-  "nextDay": 12,
-  "lastRunDate": "2026-08-16",
-  "githubPushed": true,
+  "lastCompletedDay": 12,
+  "nextDay": 13,
+  "lastRunDate": "2026-08-17",
+  "githubPushed": false,
   "pendingPush": [],
   "history": [
     {
@@ -83,6 +83,13 @@
       "title": "บัตรเครดิตและกับดักดอกเบี้ยขั้นบันได",
       "file": "lessons/finance-day-11-credit-card-tiered-interest.html",
       "recallFrom": [7]
+    },
+    {
+      "day": 12,
+      "date": "2026-08-17",
+      "title": "ภาษีเงินได้บุคคลธรรมดา 101",
+      "file": "lessons/finance-day-12-personal-income-tax.html",
+      "recallFrom": [4, 8]
     }
   ],
   "notesApplied": [
