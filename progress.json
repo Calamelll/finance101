@@ -1,10 +1,10 @@
 {
   "startDate": "2026-07-21",
   "totalDays": 90,
-  "lastCompletedDay": 12,
-  "nextDay": 13,
-  "lastRunDate": "2026-08-17",
-  "githubPushed": false,
+  "lastCompletedDay": 13,
+  "nextDay": 14,
+  "lastRunDate": "2026-08-24",
+  "githubPushed": true,
   "pendingPush": [],
   "history": [
     {
@@ -90,6 +90,13 @@
       "title": "ภาษีเงินได้บุคคลธรรมดา 101",
       "file": "lessons/finance-day-12-personal-income-tax.html",
       "recallFrom": [4, 8]
+    },
+    {
+      "day": 13,
+      "date": "2026-08-24",
+      "title": "ลดหย่อนภาษีด้วยการลงทุน: RMF, SSF, ThaiESG",
+      "file": "lessons/finance-day-13-rmf-ssf-thaiesg.html",
+      "recallFrom": [6, 9]
     }
   ],
   "notesApplied": [

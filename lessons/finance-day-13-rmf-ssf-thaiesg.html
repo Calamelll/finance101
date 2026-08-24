@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day 13 — ลดหย่อนภาษีด้วยการลงทุน: RMF, SSF, ThaiESG | Finance101</title>
+<style>
+:root{
+  --bg:#191816; --card:#211f1d; --ink:#e8e4dd; --muted:#a09a91;
+  --line:#332f2b; --accent:#6cc394; --accent-soft:#1c2f26;
+  --warn:#e0a86f; --warn-soft:#2e2419; --code:#201e1b; --danger:#e0785c;
+  color-scheme: dark;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; padding:28px 18px 80px; background:var(--bg); color:var(--ink);
+  font-family:"Sarabun","Noto Sans Thai",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:17px; line-height:1.75; -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:720px;margin:0 auto}
+header{margin-bottom:34px}
+.kicker{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--muted);letter-spacing:.02em}
+.pill{background:var(--accent-soft);color:var(--accent);padding:3px 11px;border-radius:99px;font-weight:600}
+h1{font-size:29px;line-height:1.3;margin:12px 0 6px;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:16px;margin:0}
+h2{font-size:21px;margin:38px 0 12px;letter-spacing:-.005em}
+h3{font-size:17px;margin:26px 0 8px}
+p{margin:0 0 15px}
+ul,ol{margin:0 0 15px;padding-left:22px}
+li{margin-bottom:7px}
+strong{font-weight:600}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin:22px 0}
+.card.accent{background:var(--accent-soft);border-color:#2c4a3c}
+.card.warn{background:var(--warn-soft);border-color:#4a3722}
+.card h3{margin-top:0}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15.5px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-weight:600;font-size:13.5px;letter-spacing:.02em}
+td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.calc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;margin:22px 0}
+.calc label{display:block;font-size:14px;color:var(--muted);margin-bottom:6px}
+.calc .row{margin-bottom:18px}
+input[type=range]{width:100%;accent-color:var(--accent);height:24px}
+.val{font-weight:600;color:var(--accent);font-variant-numeric:tabular-nums}
+.bars{margin-top:6px}
+.bar-row{margin-bottom:12px}
+.bar-label{display:flex;justify-content:space-between;font-size:14px;margin-bottom:5px;gap:10px}
+.bar-track{background:#2a2724;border-radius:8px;height:26px;overflow:hidden;position:relative}
+.bar-fill{height:100%;border-radius:8px;transition:width .55s cubic-bezier(.22,.8,.3,1)}
+.bar-principal{background:#3f5c4e}
+.bar-growth{background:var(--accent)}
+.bar-negative{background:#a34a34}
+.legend{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-top:10px;flex-wrap:wrap}
+.swatch{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:middle}
+.seg{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+.seg button{
+  background:var(--code);color:var(--muted);border:1px solid var(--line);border-radius:99px;
+  padding:6px 16px;font-size:14px;font-family:inherit;cursor:pointer;transition:all .2s;
+}
+.seg button.active{background:var(--accent-soft);color:var(--accent);border-color:#2c4a3c;font-weight:600}
+details{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:12px 16px;margin:10px 0}
+details[open]{background:#1d1b19}
+summary{cursor:pointer;font-weight:600;font-size:15.5px;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"▸ ";color:var(--accent)}
+details[open] summary::before{content:"▾ "}
+.ans{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font-size:15.5px;color:#d6d1c9}
+.q{font-weight:600;margin:22px 0 8px}
+pre{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:14px;line-height:1.6}
+code{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+.summary-box{border-left:3px solid var(--accent);padding-left:18px;margin:26px 0}
+.summary-box p{margin-bottom:8px}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
+footer a{color:var(--accent)}
+.disclaimer{font-size:13px;color:var(--muted);margin-top:18px;line-height:1.6}
+.nav{margin-bottom:20px;font-size:14px}
+.nav a{color:var(--accent);text-decoration:none}
+.src{font-size:12.5px;color:var(--muted);margin-top:8px}
+.steps{display:flex;align-items:flex-end;gap:14px;margin:18px 0 6px;height:150px}
+.step{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px}
+.step-bar{width:100%;border-radius:8px 8px 0 0;transition:height .55s cubic-bezier(.22,.8,.3,1);min-height:2px}
+.step1 .step-bar{background:#3f5c4e}
+.step2 .step-bar{background:var(--danger)}
+.step-label{font-size:13px;color:var(--muted);text-align:center}
+.step-val{font-weight:600;color:var(--ink);font-size:14.5px}
+@media(max-width:520px){
+  body{font-size:16px;padding:20px 14px 60px}
+  h1{font-size:25px}
+  .card,.calc{padding:16px}
+}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="nav"><a href="../index.html">← สารบัญ</a></div>
+
+<header>
+  <div class="kicker">
+    <span class="pill">Day 13 / 90</span>
+    <span>Phase 1 · พื้นฐานการเงินส่วนบุคคล</span>
+    <span>·</span>
+    <span>อ่าน 8 นาที</span>
+  </div>
+  <h1>ลดหย่อนภาษีด้วยการลงทุน: RMF, SSF, ThaiESG</h1>
+  <p class="sub">เมื่อวาน (Day 12) เห็นสูตร เงินได้สุทธิ = เงินได้พึงประเมิน − ค่าใช้จ่าย − ค่าลดหย่อน วันนี้มาดูว่ากองทุนลดหย่อนภาษีเข้าไปลด "เงินได้สุทธิ" ในสูตรนั้นได้จริงแค่ไหน คุ้มค่าแค่ไหน และทำไม SSF ถึงหายไปจากลิสต์แล้ว</p>
+</header>
+
+<h2>ทำไมรัฐยอมให้ "ลดหย่อน" ผ่านกองทุนพวกนี้</h2>
+
+<p>รัฐอยากให้คนออมเงินไว้ใช้ยามเกษียณเอง แทนที่จะพึ่งสวัสดิการรัฐทั้งหมด จึงออกแบบกองทุนที่ให้สิทธิ <strong>หักลดหย่อนภาษี (tax deduction)</strong> เป็นแรงจูงใจ แลกกับการที่ผู้ลงทุนต้อง "ล็อกเงิน" ไว้ระยะยาวตามเงื่อนไข ถ้าถอนก่อนกำหนดมักต้องคืนภาษีที่เคยลดหย่อนไปพร้อมเงินเพิ่ม กลไกนี้ต่างจากเงินฝากธนาคารใน Day 9 ตรงที่ดอกเบี้ยเงินฝากมาจากธนาคารเอง แต่ "ผลตอบแทน" ก้อนแรกของกองทุนลดหย่อนภาษีมาจากรัฐคืนภาษีให้ทันทีที่ซื้อ ก่อนจะนับผลตอบแทนจากการลงทุนจริงด้วยซ้ำ</p>
+
+<h2>RMF (Retirement Mutual Fund): กองทุนเพื่อการเลี้ยงชีพ</h2>
+
+<div class="card">
+  <ul style="margin-bottom:0">
+    <li>ลดหย่อนได้ไม่เกิน <strong>30% ของเงินได้พึงประเมิน</strong> และไม่เกิน <strong>500,000 บาท/ปี</strong></li>
+    <li>วงเงิน 500,000 นี้ <strong>นับรวม</strong> กับกองทุนสำรองเลี้ยงชีพ (PVD), กบข., กองทุนสงเคราะห์ครูโรงเรียนเอกชน, กองทุนการออมแห่งชาติ (กอช.) และเบี้ยประกันชีวิตแบบบำนาญ</li>
+    <li>ต้องซื้อต่อเนื่องอย่างน้อยปีเว้นปี (ห้ามหยุดเกิน 1 ปี) และถือจนอายุครบ 55 ปีบริบูรณ์ รวมถือมาแล้วไม่ต่ำกว่า 5 ปี</li>
+    <li>เลือกสินทรัพย์ได้หลากหลาย (หุ้น ตราสารหนี้ ทองคำ ฯลฯ) ตามระดับความเสี่ยงที่รับได้</li>
+  </ul>
+</div>
+
+<h2>ThaiESG และ ThaiESG Extra: น้องใหม่ที่รัฐผลักดันเต็มที่</h2>
+
+<div class="card">
+  <ul style="margin-bottom:0">
+    <li>ลดหย่อนได้ไม่เกิน <strong>30% ของเงินได้พึงประเมิน</strong> และไม่เกิน <strong>300,000 บาท/ปี</strong></li>
+    <li>วงเงินนี้ <strong>แยกต่างหาก</strong> ไม่นับรวมกับตะกร้า 500,000 ของ RMF ด้านบน — ซื้อเต็มทั้งสองแบบในปีเดียวกันได้</li>
+    <li>ถือครองอย่างน้อย <strong>5 ปี</strong> (ลดจากเงื่อนไขเดิม 8 ปี) สำหรับหน่วยลงทุนที่ซื้อระหว่าง 1 ม.ค. 2567 – 31 ธ.ค. 2569</li>
+    <li>ลงทุนเฉพาะหุ้น/ตราสารของบริษัทที่เข้าเกณฑ์ด้านความยั่งยืน (ESG) เท่านั้น ไม่ต้องซื้อต่อเนื่องทุกปีเหมือน RMF</li>
+  </ul>
+</div>
+
+<div class="card warn">
+  <h3>แล้ว SSF หายไปไหน?</h3>
+  <p style="margin-bottom:0">SSF (Super Savings Fund) ปิดสิทธิ์ลดหย่อนภาษีสำหรับการซื้อใหม่ไปแล้วตั้งแต่ <strong>1 มกราคม 2568</strong> ใครที่ซื้อ SSF ไว้ก่อนหน้ายังต้องถือครบ 10 ปีตามเงื่อนไขเดิม แต่ซื้อเพิ่มเพื่อลดหย่อนภาษีปีนี้ไม่ได้แล้ว นี่คือตัวอย่างจริงว่ากติกาภาษีเปลี่ยนได้ทุกปี — บทเรียนนี้จึงพูดถึง SSF ไว้เป็นความรู้ประกอบ ไม่ใช่ทางเลือกที่ใช้ได้จริงอีกต่อไป</p>
+</div>
+
+<p class="src">ตัวเลขวงเงิน RMF 500,000 บาท (รวม 30% ของเงินได้), ThaiESG/ESGX 300,000 บาท (แยกวงเงิน, ถือ 5 ปี, ซื้อได้ถึง 31 ธ.ค. 2569) และการปิดสิทธิ์ SSF ตั้งแต่ 1 ม.ค. 2568 อ้างอิงจาก iTAX "Thai ESG ลดหย่อนภาษี 300,000 ประกาศเป็นกฎหมายแล้ว", ประกาศ บลจ. เรื่องปิดรับคำสั่งซื้อหน่วยลงทุน SSF (scbam.com, ธ.ค. 2567) และสรุปเงื่อนไขจาก hole.plus "กองทุนลดหย่อนภาษี 2569: RMF-SSF ยุบรวมจริงหรือ?" สืบค้นข้อมูล ส.ค. 2569 ควรตรวจสอบเงื่อนไขล่าสุดจากกรมสรรพากร (rd.go.th) หรือ ก.ล.ต. ก่อนตัดสินใจซื้อจริง เพราะมาตรการเหล่านี้มักมีกำหนดสิ้นสุดหรือปรับเกณฑ์ทุกปี</p>
+
+<h2>ตัวอย่างตัวเลขจริง: ต่อจากวิศวกรจบใหม่ Day 12</h2>
+
+<p>ยังเป็นคนเดิมจาก Day 12 — เงินเดือน 40,000 บาท/เดือน (480,000 บาท/ปี) เงินได้สุทธิก่อนซื้อกองทุนอยู่ที่ <strong>311,000 บาท</strong> เสียภาษี <strong>8,600 บาท</strong> เพดาน RMF/ThaiESG ของคนนี้คือ 30% ของเงินได้พึงประเมิน = 480,000 × 30% = <strong>144,000 บาท</strong> (ต่ำกว่าเพดานตายตัว 500,000 และ 300,000 มาก เพราะรายได้ยังไม่สูงพอ)</p>
+
+<table>
+  <tr><th>ซื้อกองทุนเพิ่ม</th><th class="num">เงินได้สุทธิใหม่</th><th class="num">ภาษีใหม่</th><th class="num">ประหยัดภาษี</th></tr>
+  <tr><td>20,000 บาท</td><td class="num">291,000</td><td class="num">7,050</td><td class="num">1,550</td></tr>
+  <tr><td>50,000 บาท</td><td class="num">261,000</td><td class="num">5,550</td><td class="num">3,050</td></tr>
+  <tr><td>100,000 บาท</td><td class="num">211,000</td><td class="num">3,050</td><td class="num">5,550</td></tr>
+</table>
+
+<p>สังเกตว่า "ประหยัดภาษีต่อบาทที่ลงทุน" ไม่คงที่ เพราะเงินได้สุทธิ 311,000 บาทอยู่เหนือขั้น 300,000 แค่ 11,000 บาท เงินลงทุน 11,000 บาทแรกจึงลดภาษีในอัตรา <strong>10%</strong> (ขั้นบนสุดที่โดนอยู่) ส่วนที่เกินจากนั้นตกไปอยู่ในขั้น 150,000–300,000 ซึ่งลดภาษีในอัตรา <strong>5%</strong> เท่านั้น หลักการเดียวกับเรื่อง marginal rate ใน Day 12 — ยิ่งเงินได้สุทธิของคุณอยู่ใกล้ขอบบนของขั้นภาษีสูง ยิ่งซื้อกองทุนลดหย่อนภาษีคุ้มค่าต่อบาทมากกว่าคนที่เงินได้สุทธิอยู่กลางขั้นภาษีต่ำ</p>
+
+<h2>ลองคำนวณของตัวเอง</h2>
+<p>ปรับจำนวนเงินที่ซื้อ RMF หรือ ThaiESG เพิ่มจากฐานเงินเดือน 40,000 บาท/เดือนเดิม เพื่อดูว่าภาษีลดลงเท่าไรและคุ้มกี่เปอร์เซ็นต์ของเงินที่ลงทุนไป (เพดานตามกฎ 30% ของเงินได้ = 144,000 บาทสำหรับคนนี้)</p>
+
+<div class="calc">
+  <div class="row">
+    <label>ซื้อกองทุนลดหย่อนภาษีเพิ่ม <span class="val" id="invV">50,000</span> บาท</label>
+    <input type="range" id="inv" min="0" max="144000" value="50000" step="1000">
+  </div>
+  <div class="steps">
+    <div class="step step1">
+      <div class="step-val" id="taxBeforeVal"></div>
+      <div class="step-bar" id="taxBeforeBar"></div>
+      <div class="step-label">ภาษีก่อนซื้อกองทุน</div>
+    </div>
+    <div class="step step2">
+      <div class="step-val" id="taxAfterVal"></div>
+      <div class="step-bar" id="taxAfterBar"></div>
+      <div class="step-label">ภาษีหลังซื้อกองทุน</div>
+    </div>
+  </div>
+  <p id="result" style="margin:14px 0 0;font-weight:600"></p>
+</div>
+
+<details>
+  <summary>กล่องโค้ด (ข้ามได้ ไม่นับในเวลาอ่าน)</summary>
+  <div class="ans">
+  <p>ต่อยอดฟังก์ชันจาก Day 12 โดยเพิ่มพารามิเตอร์ <code>extra_deduction</code> สำหรับเงินที่ซื้อ RMF/ThaiESG ตัวเลขตรวจสอบด้วย Python ก่อนใส่ในบทเรียนนี้แล้ว:</p>
+  <pre><code>def thai_pit(net_income):
+    brackets = [
+        (0,       150000,  0.00),
+        (150000,  300000,  0.05),
+        (300000,  500000,  0.10),
+        (500000,  750000,  0.15),
+        (750000,  1000000, 0.20),
+        (1000000, 2000000, 0.25),
+        (2000000, 5000000, 0.30),
+        (5000000, float('inf'), 0.35),
+    ]
+    tax = 0
+    for lo, hi, rate in brackets:
+        if net_income > lo:
+            taxable = min(net_income, hi) - lo
+            tax += taxable * rate
+        else:
+            break
+    return tax
+
+def tax_after_fund(monthly_salary, extra_deduction):
+    gross = monthly_salary * 12
+    expense_deduction = min(gross * 0.5, 100000)
+    net_income = gross - expense_deduction - 60000 - 9000 - extra_deduction
+    return thai_pit(max(net_income, 0))
+
+base = tax_after_fund(40000, 0)
+for invest in (20000, 50000, 100000):
+    saved = base - tax_after_fund(40000, invest)
+    print(invest, saved)
+# 20000 1550.0
+# 50000 3050.0
+# 100000 5550.0</code></pre>
+  </div>
+</details>
+
+<h2>ลดหย่อนภาษีไม่ใช่ผลตอบแทนฟรี</h2>
+
+<p>เงินคืนภาษีคือ "ส่วนลดต้นทุน" ตอนซื้อ ไม่ใช่กำไรจากการลงทุน เงินก้อนที่เหลือหลังหักส่วนลดภาษียังอยู่ในกองทุนที่มีความเสี่ยงตามสินทรัพย์ที่เลือก ถ้าเลือกกองทุนหุ้นแล้วตลาดร่วงตอนใกล้ครบกำหนดถือครอง มูลค่าหน่วยลงทุนอาจต่ำกว่าที่ซื้อมาได้ ต่างจากดอกเบี้ยเงินฝากใน Day 9 ที่การันตีเงินต้นเสมอ นอกจากนี้เงินก้อนนี้ถูกล็อกจนครบเงื่อนไข ถอนก่อนกำหนดต้องคืนภาษีพร้อมเงินเพิ่ม จึงควรใช้เงินที่ไม่จำเป็นต้องใช้ในระยะสั้นเท่านั้น และเลือกสัดส่วนสินทรัพย์ในกองทุนให้เหมาะกับระยะเวลาที่ต้องถือจริง บทเรียนนี้ให้ความรู้เชิงหลักการเท่านั้น ไม่ได้แนะนำให้ซื้อกองทุนใดกองทุนหนึ่งเป็นการเฉพาะ</p>
+
+<h2>พรุ่งนี้: เป้าหมายการเงิน SMART + สรุป Phase 1</h2>
+<p>Day 14 เป็นบทปิดท้าย Phase 1 — รวบรวมทุกเครื่องมือที่เรียนมา 13 วัน (cash flow, net worth, ดอกเบี้ยทบต้น, ภาษี, กองทุนลดหย่อนภาษี) มาตั้งเป็นเป้าหมายการเงินที่วัดผลได้จริงด้วยกรอบ SMART</p>
+
+<h2>ทดสอบความเข้าใจ</h2>
+
+<p class="q">1. ทำไมเงินลงทุน RMF/ThaiESG 100,000 บาทแรกกับ 100,000 บาทถัดไปของคนคนเดียวกัน อาจประหยัดภาษีได้ไม่เท่ากัน?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">เพราะกองทุนลดหย่อนภาษีลดเงินได้สุทธิลงเรื่อยๆ ถ้าเงินได้สุทธิเดิมอยู่คาบเกี่ยวขั้นภาษีสองขั้น เงินลงทุนช่วงแรกจะลดภาษีในอัตราขั้นบน (สูงกว่า) จนกว่าจะดันเงินได้สุทธิลงมาต่ำกว่าขอบขั้นนั้น จากนั้นเงินลงทุนส่วนที่เหลือจะลดภาษีในอัตราขั้นล่าง (ต่ำกว่า) หลักการเดียวกับที่ภาษีขั้นบันไดคิดแยกทีละช่วงใน Day 12</div>
+</details>
+
+<p class="q">2. เพดานลดหย่อน RMF คือ "ไม่เกิน 30% ของเงินได้ และไม่เกิน 500,000 บาท" คนที่เงินได้พึงประเมิน 800,000 บาท/ปี ซื้อ RMF ได้สูงสุดกี่บาท?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">30% ของ 800,000 = 240,000 บาท ซึ่งต่ำกว่าเพดานตายตัว 500,000 บาท กฎใช้ค่าที่ "น้อยกว่า" ระหว่างสองเงื่อนไขเสมอ ดังนั้นซื้อ RMF ลดหย่อนได้สูงสุด 240,000 บาท ไม่ใช่ 500,000 บาท (คนที่จะใช้เพดาน 500,000 เต็มได้ต้องมีเงินได้พึงประเมินอย่างน้อย 500,000÷0.30 ≈ 1,666,667 บาท/ปี)</div>
+</details>
+
+<p class="q">3. ทำไม ThaiESG ถึงไม่นับรวมกับวงเงิน 500,000 บาทของ RMF?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">เพราะกฎหมายกำหนดให้ ThaiESG เป็นวงเงินแยกต่างหาก (สูงสุด 300,000 บาท) ที่ออกแบบมาเพื่อจูงใจการลงทุนในบริษัทที่เข้าเกณฑ์ความยั่งยืน (ESG) โดยเฉพาะ ไม่ได้ผูกกับตะกร้าเงินออมเพื่อเกษียณอายุแบบ RMF/PVD/กบข./ประกันบำนาญ ผู้ที่มีเงินได้สูงพอจึงอาจซื้อได้ทั้งสองแบบเต็มเพดานในปีเดียวกัน รวมลดหย่อนได้สูงสุดถึง 800,000 บาท</div>
+</details>
+
+<p class="q"><strong>ทวน:</strong> ถ้าลงทุนใน RMF 50,000 บาทวันนี้ ได้ผลตอบแทนเฉลี่ย 8% ต่อปีแบบทบต้น จะใช้เวลาประมาณกี่ปีถึงเงินก้อนนี้จะโตเป็น 2 เท่า โดยไม่ต้องคำนวณสูตรเต็ม?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">ใช้ Rule of 72: 72 ÷ 8 = 9 ปี (โดยประมาณ) เป็นวิธีประมาณเร็วโดยไม่ต้องคำนวณสูตรดอกเบี้ยทบต้นเต็มรูปแบบ ข้อควรระวังคือกองทุน RMF ส่วนใหญ่มีความเสี่ยงตามสินทรัพย์ที่ถือ ผลตอบแทน 8% ต่อปีเป็นสมมติฐานระยะยาว ไม่ใช่ตัวเลขการันตี<br>ตอบผิดหรือลังเล? → <a href="finance-day-06-rule-of-72.html">ทบทวน Day 6: Rule of 72 และการประมาณผลตอบแทนแบบเร็ว</a></div>
+</details>
+
+<p class="q"><strong>ทวน:</strong> เงินฝากออมทรัพย์ธนาคารไทยทั่วไปให้ดอกเบี้ยประมาณ 0.5–1.5% ต่อปี ต่างจากการซื้อ RMF/ThaiESG ที่ "ได้ผลตอบแทนก้อนแรก" ทันทีจากส่วนลดภาษีอย่างไร?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">ดอกเบี้ยเงินฝากออมทรัพย์มาจากธนาคารจ่ายให้ตามอัตราที่ประกาศ เงินต้นได้รับการคุ้มครองสูง ความเสี่ยงต่ำมาก แต่ผลตอบแทนก็ต่ำตามไปด้วย ส่วนเงินคืนภาษีจากการซื้อ RMF/ThaiESG มาจากรัฐ ไม่ใช่ผลตอบแทนจากการลงทุน เกิดขึ้นทันทีในปีที่ซื้อโดยไม่ต้องรอ แต่เงินต้นส่วนที่เหลือหลังหักส่วนลดภาษียังไปลงทุนในสินทรัพย์ที่มีความเสี่ยงและถูกล็อกไว้ระยะยาว จึงไม่ใช่สิ่งที่ทดแทนกันได้ตรงๆ ต้องดูเป้าหมายการใช้เงินประกอบด้วย<br>ตอบผิดหรือลังเล? → <a href="finance-day-09-bank-accounts-thailand.html">ทบทวน Day 9: บัญชีธนาคารและดอกเบี้ยเงินฝากในไทย</a></div>
+</details>
+
+<div class="summary-box">
+  <h2 style="margin-top:0">สรุป 3 บรรทัด</h2>
+  <p>1. RMF ลดหย่อนได้ไม่เกิน 30% ของเงินได้ (สูงสุด 500,000 บาท รวมกับ PVD/กบข./ประกันบำนาญ) ส่วน ThaiESG ลดหย่อนได้ไม่เกิน 30% ของเงินได้ (สูงสุด 300,000 บาท แยกวงเงินต่างหาก) ส่วน SSF ปิดสิทธิ์ซื้อใหม่ไปแล้วตั้งแต่ 1 ม.ค. 2568</p>
+  <p>2. เงินลงทุนช่วงที่ทำให้เงินได้สุทธิข้ามขั้นภาษี จะประหยัดภาษีในอัตราขั้นบน (สูงกว่า) ส่วนที่เหลือประหยัดในอัตราขั้นล่าง เหมือนหลักการขั้นบันไดใน Day 12</p>
+  <p style="margin-bottom:0">3. เงินคืนภาษีเป็นส่วนลดต้นทุน ไม่ใช่ผลตอบแทนจากการลงทุน เงินต้นที่เหลือยังมีความเสี่ยงตามสินทรัพย์และถูกล็อกจนกว่าจะครบเงื่อนไข ถอนก่อนกำหนดต้องคืนภาษีพร้อมเงินเพิ่ม</p>
+</div>
+
+<footer>
+  <p><strong>พรุ่งนี้ Day 14 — เป้าหมายการเงิน SMART + สรุป Phase 1</strong> รวบรวมทุกเครื่องมือจาก 13 วันที่ผ่านมา มาตั้งเป็นเป้าหมายการเงินที่วัดผลได้จริง</p>
+  <p class="disclaimer">บทเรียนนี้เป็นความรู้เชิงการศึกษา ไม่ใช่คำแนะนำให้ซื้อกองทุนใดกองทุนหนึ่งเป็นการเฉพาะ ตัวเลขวงเงินลดหย่อน เงื่อนไขการถือครอง และสถานะของ SSF เป็นข้อมูล ณ ปีภาษี 2569 สืบค้น ส.ค. 2569 กฎเกณฑ์เหล่านี้เปลี่ยนแปลงได้ทุกปี ควรตรวจสอบเงื่อนไขล่าสุดจากกรมสรรพากร (rd.go.th), ก.ล.ต. หรือปรึกษาผู้เชี่ยวชาญด้านภาษี/การลงทุนก่อนตัดสินใจซื้อจริง</p>
+</footer>
+
+</div>
+
+<script>
+(function(){
+  var inv=document.getElementById('inv'), invV=document.getElementById('invV');
+  var result=document.getElementById('result');
+  var taxBeforeVal=document.getElementById('taxBeforeVal'), taxBeforeBar=document.getElementById('taxBeforeBar');
+  var taxAfterVal=document.getElementById('taxAfterVal'), taxAfterBar=document.getElementById('taxAfterBar');
+
+  var brackets = [
+    {lo:0,       hi:150000,  rate:0.00},
+    {lo:150000,  hi:300000,  rate:0.05},
+    {lo:300000,  hi:500000,  rate:0.10},
+    {lo:500000,  hi:750000,  rate:0.15},
+    {lo:750000,  hi:1000000, rate:0.20},
+    {lo:1000000, hi:2000000, rate:0.25},
+    {lo:2000000, hi:5000000, rate:0.30},
+    {lo:5000000, hi:Infinity,rate:0.35}
+  ];
+
+  function thaiPit(net){
+    var tax=0;
+    for(var i=0;i<brackets.length;i++){
+      var b=brackets[i];
+      if(net > b.lo){
+        var taxable = Math.min(net, b.hi) - b.lo;
+        tax += taxable * b.rate;
+      } else break;
+    }
+    return tax;
+  }
+
+  var MONTHLY = 40000, GROSS = MONTHLY*12;
+  var EXPENSE_DED = Math.min(GROSS*0.5, 100000);
+  var BASE_NET = GROSS - EXPENSE_DED - 60000 - 9000;
+  var BASE_TAX = thaiPit(BASE_NET);
+
+  function fmt(n){return Math.round(n).toLocaleString('en-US');}
+  function fmt2(n){return (Math.round(n*100)/100).toLocaleString('en-US');}
+
+  function render(){
+    var extra=+inv.value;
+    invV.textContent=fmt(extra);
+    var net = Math.max(BASE_NET - extra, 0);
+    var tax = thaiPit(net);
+    var saved = BASE_TAX - tax;
+
+    var maxH = Math.max(BASE_TAX, 1);
+    taxBeforeBar.style.height = Math.max(4, BASE_TAX/maxH*120) + 'px';
+    taxAfterBar.style.height = Math.max(4, tax/maxH*120) + 'px';
+    taxBeforeVal.textContent = fmt2(BASE_TAX) + ' บ.';
+    taxAfterVal.textContent = fmt2(tax) + ' บ.';
+
+    var pct = extra>0 ? (saved/extra*100) : 0;
+    if(extra===0){
+      result.textContent = 'ยังไม่ได้ซื้อกองทุนเพิ่ม — ภาษีคงเดิมที่ ' + fmt2(BASE_TAX) + ' บาท/ปี';
+    } else {
+      result.textContent = 'ประหยัดภาษี ' + fmt2(saved) + ' บาท จากเงินลงทุน ' + fmt(extra) + ' บาท (คิดเป็น ' + pct.toFixed(1) + '% ของเงินที่ลงทุนไป)';
+    }
+  }
+
+  inv.addEventListener('input', render);
+  render();
+})();
+</script>
+</body>
+</html>
