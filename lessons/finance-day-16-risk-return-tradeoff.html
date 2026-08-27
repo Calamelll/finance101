@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day 16 — ความเสี่ยงกับผลตอบแทน (risk-return tradeoff) | Finance101</title>
+<style>
+:root{
+  --bg:#191816; --card:#211f1d; --ink:#e8e4dd; --muted:#a09a91;
+  --line:#332f2b; --accent:#6cc394; --accent-soft:#1c2f26;
+  --warn:#e0a86f; --warn-soft:#2e2419; --code:#201e1b; --danger:#e0785c;
+  color-scheme: dark;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; padding:28px 18px 80px; background:var(--bg); color:var(--ink);
+  font-family:"Sarabun","Noto Sans Thai",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:17px; line-height:1.75; -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:720px;margin:0 auto}
+header{margin-bottom:34px}
+.kicker{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--muted);letter-spacing:.02em}
+.pill{background:var(--accent-soft);color:var(--accent);padding:3px 11px;border-radius:99px;font-weight:600}
+h1{font-size:29px;line-height:1.3;margin:12px 0 6px;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:16px;margin:0}
+h2{font-size:21px;margin:38px 0 12px;letter-spacing:-.005em}
+h3{font-size:17px;margin:26px 0 8px}
+p{margin:0 0 15px}
+ul,ol{margin:0 0 15px;padding-left:22px}
+li{margin-bottom:7px}
+strong{font-weight:600}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin:22px 0}
+.card.accent{background:var(--accent-soft);border-color:#2c4a3c}
+.card.warn{background:var(--warn-soft);border-color:#4a3722}
+.card h3{margin-top:0}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15.5px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-weight:600;font-size:13.5px;letter-spacing:.02em}
+td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.calc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;margin:22px 0}
+.calc label{display:block;font-size:14px;color:var(--muted);margin-bottom:6px}
+.calc .row{margin-bottom:18px}
+input[type=range]{width:100%;accent-color:var(--accent);height:24px}
+.val{font-weight:600;color:var(--accent);font-variant-numeric:tabular-nums}
+.bars{margin-top:6px}
+.bar-row{margin-bottom:12px}
+.bar-label{display:flex;justify-content:space-between;font-size:14px;margin-bottom:5px;gap:10px}
+.bar-track{background:#2a2724;border-radius:8px;height:26px;overflow:hidden;position:relative}
+.bar-fill{height:100%;border-radius:8px;transition:width .55s cubic-bezier(.22,.8,.3,1)}
+.bar-principal{background:#3f5c4e}
+.bar-growth{background:var(--accent)}
+.bar-negative{background:#a34a34}
+.legend{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-top:10px;flex-wrap:wrap}
+.swatch{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:middle}
+.seg{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+.seg button{
+  background:var(--code);color:var(--muted);border:1px solid var(--line);border-radius:99px;
+  padding:6px 16px;font-size:14px;font-family:inherit;cursor:pointer;transition:all .2s;
+}
+.seg button.active{background:var(--accent-soft);color:var(--accent);border-color:#2c4a3c;font-weight:600}
+details{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:12px 16px;margin:10px 0}
+details[open]{background:#1d1b19}
+summary{cursor:pointer;font-weight:600;font-size:15.5px;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"▸ ";color:var(--accent)}
+details[open] summary::before{content:"▾ "}
+.ans{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font-size:15.5px;color:#d6d1c9}
+.q{font-weight:600;margin:22px 0 8px}
+pre{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:14px;line-height:1.6}
+code{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+.summary-box{border-left:3px solid var(--accent);padding-left:18px;margin:26px 0}
+.summary-box p{margin-bottom:8px}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
+footer a{color:var(--accent)}
+.disclaimer{font-size:13px;color:var(--muted);margin-top:18px;line-height:1.6}
+.nav{margin-bottom:20px;font-size:14px}
+.nav a{color:var(--accent);text-decoration:none}
+.src{font-size:12.5px;color:var(--muted);margin-top:8px}
+.steps{display:flex;align-items:flex-end;gap:14px;margin:18px 0 6px;height:150px}
+.step{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px}
+.step-bar{width:100%;border-radius:8px 8px 0 0;transition:height .55s cubic-bezier(.22,.8,.3,1);min-height:2px}
+.step1 .step-bar{background:#3f5c4e}
+.step2 .step-bar{background:var(--danger)}
+.step-label{font-size:13px;color:var(--muted);text-align:center}
+.step-val{font-weight:600;color:var(--ink);font-size:14.5px}
+.band-track{position:relative;height:64px;background:#2a2724;border-radius:10px;margin:14px 0 6px;overflow:hidden}
+.band-95{position:absolute;top:0;height:100%;background:#33413a;transition:all .5s cubic-bezier(.22,.8,.3,1)}
+.band-68{position:absolute;top:0;height:100%;background:#3f5c4e;transition:all .5s cubic-bezier(.22,.8,.3,1)}
+.band-mean{position:absolute;top:0;height:100%;width:3px;background:var(--accent);transition:left .5s cubic-bezier(.22,.8,.3,1)}
+.band-zero{position:absolute;top:0;height:100%;width:2px;background:var(--danger);opacity:.85;transition:left .5s}
+.band-scale{display:flex;justify-content:space-between;font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+@media(max-width:520px){
+  body{font-size:16px;padding:20px 14px 60px}
+  h1{font-size:25px}
+  .card,.calc{padding:16px}
+}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="nav"><a href="../index.html">← สารบัญ</a></div>
+
+<header>
+  <div class="kicker">
+    <span class="pill">Day 16 / 90</span>
+    <span>Phase 2 · การลงทุนระยะยาว</span>
+    <span>·</span>
+    <span>อ่าน 9 นาที</span>
+  </div>
+  <h1>ความเสี่ยงกับผลตอบแทน (risk-return tradeoff)</h1>
+  <p class="sub">เมื่อวานสรุปว่าการลงทุนมี expected value เป็นบวกในระยะยาว วันนี้ต่อด้วยคำถามที่ตามมาทันที: ถ้าอยากได้ผลตอบแทนสูงขึ้นต้องแลกกับอะไร คำตอบสั้นๆ คือ "ความไม่แน่นอน" แต่คำตอบที่ใช้ทำงานได้จริงต้องวัดความไม่แน่นอนนั้นออกมาเป็นตัวเลขให้ได้</p>
+</header>
+
+<h2>ความเสี่ยงไม่ได้แปลว่า "โอกาสขาดทุน" อย่างเดียว</h2>
+
+<p>ในภาษาการเงิน <strong>ความเสี่ยง (risk)</strong> หมายถึง <em>ความไม่แน่นอนของผลตอบแทน</em> — ผลลัพธ์กระจายตัวออกจากค่าเฉลี่ยมากแค่ไหน ไม่ใช่แค่ฝั่งขาดทุนอย่างเดียว สินทรัพย์ที่บางปีได้ +40% บางปีได้ −30% ถือว่าเสี่ยงสูง แม้ค่าเฉลี่ยจะเป็นบวกก็ตาม ส่วนพันธบัตรที่ได้ 3% ทุกปีตรงเป๊ะถือว่าเสี่ยงต่ำมาก แม้ผลตอบแทนจะน้อย</p>
+
+<p>เครื่องมือมาตรฐานที่ใช้วัดคือ <strong>ส่วนเบี่ยงเบนมาตรฐาน (standard deviation, σ)</strong> ของผลตอบแทนรายปี ถ้าให้ R<sub>i</sub> คือผลตอบแทนในสถานการณ์ i ที่มีความน่าจะเป็น p<sub>i</sub>:</p>
+
+<div class="card">
+  <p style="margin-bottom:6px"><strong>ผลตอบแทนคาดหวัง</strong> &nbsp; E[R] = Σ p<sub>i</sub> · R<sub>i</sub></p>
+  <p style="margin-bottom:0"><strong>ความแปรปรวนและความเสี่ยง</strong> &nbsp; σ² = Σ p<sub>i</sub> · (R<sub>i</sub> − E[R])² &nbsp;&nbsp;→&nbsp;&nbsp; σ = √(σ²)</p>
+</div>
+
+<p>ลองใส่ตัวเลขจริง สมมติหุ้นบริษัทหนึ่งในตลาดไทย มีสามฉากทัศน์ในหนึ่งปี: เศรษฐกิจดี (โอกาส 25%) ได้ +35% / ปกติ (50%) ได้ +10% / แย่ (25%) ได้ −25%</p>
+
+<p>E[R] = 0.25(0.35) + 0.50(0.10) + 0.25(−0.25) = 0.0875 + 0.05 − 0.0625 = <strong>7.5%</strong><br>
+σ² = 0.25(0.35−0.075)² + 0.50(0.10−0.075)² + 0.25(−0.25−0.075)² = 0.045625 &nbsp;→&nbsp; σ = <strong>21.4%</strong></p>
+
+<p>อ่านออกมาเป็นภาษาคนได้ว่า "คาดว่าจะได้ราว 7.5% ต่อปี แต่ผลจริงแกว่งรอบตัวเลขนั้นประมาณ ±21%" ซึ่งกว้างกว่าผลตอบแทนคาดหวังเองเกือบสามเท่า</p>
+
+<h2>ส่วนชดเชยความเสี่ยง (risk premium)</h2>
+
+<p>ไม่มีใครยอมรับความไม่แน่นอนฟรีๆ ผลตอบแทนส่วนที่เกินจาก <strong>อัตราผลตอบแทนปราศจากความเสี่ยง (risk-free rate)</strong> เรียกว่า risk premium และเป็น "ค่าจ้าง" ที่ตลาดจ่ายให้คนที่ยอมถือความเสี่ยง</p>
+
+<p>ในไทยตัวอ้างอิงที่ใกล้เคียง risk-free rate ที่สุดคือดอกเบี้ยนโยบายและผลตอบแทนพันธบัตรรัฐบาลระยะสั้น <strong>ณ 26 สิงหาคม 2569 กนง. มีมติเอกฉันท์คงอัตราดอกเบี้ยนโยบายไว้ที่ 1.00% ต่อปี</strong> ดังนั้นถ้าสินทรัพย์เสี่ยงตัวหนึ่งมีผลตอบแทนคาดหวัง 7.5% ส่วน risk premium คือ 7.5% − 1.00% = 6.5% ต่อปี</p>
+
+<p class="src">ที่มา: มติ กนง. วันที่ 26 สิงหาคม 2569 คงดอกเบี้ยนโยบาย 1.00% ต่อปี (thestandard.co, kaohoon.com) — อัตรานี้เปลี่ยนแปลงได้ตามการประชุมแต่ละรอบ ถ้าอ่านบทเรียนนี้ในภายหลังควรตรวจสอบอัตราปัจจุบันจากเว็บไซต์ ธปท. อีกครั้ง</p>
+
+<p>เอาสองตัวมารวมกันจะได้อัตราส่วนที่ใช้เปรียบเทียบสินทรัพย์ต่างประเภทได้ในหน่วยเดียวกัน คือ <strong>ผลตอบแทนส่วนเกินต่อหนึ่งหน่วยความเสี่ยง (E[R] − r<sub>f</sub>) / σ</strong> ซึ่งเป็นแนวคิดตั้งต้นของ Sharpe ratio ที่จะลงรายละเอียดใน Phase 2 ตอนหลัง</p>
+
+<table>
+  <tr><th>สินทรัพย์ (ตัวเลขสมมติเพื่อเปรียบเทียบ)</th><th class="num">E[R]</th><th class="num">σ</th><th class="num">(E[R]−1%)/σ</th></tr>
+  <tr><td>พันธบัตรระยะกลาง</td><td class="num">3%</td><td class="num">5%</td><td class="num">0.40</td></tr>
+  <tr><td>หุ้นกระจายความเสี่ยงดี</td><td class="num">8%</td><td class="num">20%</td><td class="num">0.35</td></tr>
+  <tr><td>เก็งกำไรสินทรัพย์ผันผวนสูง</td><td class="num">15%</td><td class="num">60%</td><td class="num">0.23</td></tr>
+</table>
+
+<p>สังเกตว่า E[R] สูงสุดไม่ได้แปลว่าคุ้มที่สุด แถวล่างให้ผลตอบแทนคาดหวังสูงกว่าเกือบเท่าตัว แต่จ่ายส่วนชดเชยต่อหน่วยความเสี่ยงน้อยที่สุด นี่คือหัวใจของ tradeoff — เปรียบเทียบ <em>ผลตอบแทนต่อความเสี่ยง</em> ไม่ใช่ผลตอบแทนเปล่าๆ</p>
+
+<h2>ความผันผวนกินผลตอบแทนจริง (volatility drag)</h2>
+
+<p>จุดที่คนพลาดบ่อยที่สุด: <strong>ค่าเฉลี่ยเลขคณิตไม่ใช่ผลตอบแทนที่พอร์ตได้จริง</strong> ตัวอย่างสุดคลาสสิก ปีแรก +50% ปีที่สอง −50% ค่าเฉลี่ยเลขคณิตคือ 0% แต่เงิน 100,000 บาทจะกลายเป็น 100,000 × 1.5 × 0.5 = 75,000 บาท คิดเป็นผลตอบแทนทบต้นเฉลี่ย √0.75 − 1 = <strong>−13.4% ต่อปี</strong></p>
+
+<p>สิ่งที่พอร์ตได้จริงคือ <strong>ค่าเฉลี่ยเรขาคณิต (geometric mean)</strong> ซึ่งประมาณได้ด้วยสูตรที่ใช้ได้ดีเมื่อ σ ไม่ใหญ่เกินไป:</p>
+
+<div class="card accent">
+  <p style="margin-bottom:0;text-align:center;font-size:19px">g ≈ μ − σ² / 2</p>
+</div>
+
+<table>
+  <tr><th>μ (ค่าเฉลี่ยเลขคณิต)</th><th class="num">σ</th><th class="num">g โดยประมาณ</th><th class="num">ถูกกินไป</th></tr>
+  <tr><td>8%</td><td class="num">5%</td><td class="num">7.88%</td><td class="num">0.13%</td></tr>
+  <tr><td>8%</td><td class="num">10%</td><td class="num">7.50%</td><td class="num">0.50%</td></tr>
+  <tr><td>8%</td><td class="num">20%</td><td class="num">6.00%</td><td class="num">2.00%</td></tr>
+  <tr><td>8%</td><td class="num">30%</td><td class="num">3.50%</td><td class="num">4.50%</td></tr>
+  <tr><td>8%</td><td class="num">40%</td><td class="num">0.00%</td><td class="num">8.00%</td></tr>
+</table>
+
+<p>เพราะ σ ถูกยกกำลังสอง ความผันผวนที่เพิ่มขึ้นจึงกัดกินผลตอบแทนแบบเร่งตัว ไม่ใช่เชิงเส้น สองพอร์ตที่มี μ เท่ากันที่ 8% เท่ากันเป๊ะ พอร์ตที่ σ = 20% จะโตทบต้นจริงราว 6% ต่อปี ทำให้เงิน 100,000 บาทใน 20 ปีได้ประมาณ 320,700 บาท ขณะที่ถ้าโตได้ 8% เต็มจะได้ 466,100 บาท ต่างกันราว 145,000 บาทจากความผันผวนล้วนๆ ทั้งที่ "ค่าเฉลี่ย" เท่ากัน</p>
+
+<div class="card warn">
+  <h3>เชื่อมกับชีวิตเด็กฝึกงาน</h3>
+  <p style="margin-bottom:0">เงินเดือนเด็กจบใหม่สายวิศวกรรมคอมพิวเตอร์อยู่ราวๆ 30,000–45,000 บาท ถ้ากันเงินลงทุนเดือนละ 5,000 บาท ปีละ 60,000 บาท คำถามสำคัญไม่ใช่ "สินทรัพย์ไหนผลตอบแทนสูงสุด" แต่คือ "σ เท่าไหร่ที่รับได้โดยไม่ต้องขายตอนตลาดลง" เพราะเงินก้อนที่ถูกบังคับขายตอนติดลบจะไม่มีวันได้ค่าเฉลี่ยระยะยาวคืนมา นี่คือเหตุผลว่าทำไม Day 7 ถึงยืนกรานให้มีเงินสำรองฉุกเฉินก่อนเริ่มลงทุน</p>
+</div>
+
+<h2>ลองปรับความเสี่ยงดูเอง</h2>
+<p>เลื่อนค่า σ เพื่อดูช่วงผลลัพธ์ที่เป็นไปได้ของเงิน 100,000 บาทในหนึ่งปี แถบเข้มคือช่วง ~68% (μ ± σ) แถบอ่อนคือช่วง ~95% (μ ± 2σ) ภายใต้สมมติฐานว่าผลตอบแทนกระจายแบบปกติ เส้นสีเขียวคือค่าคาดหวัง เส้นสีส้มคือจุดเท่าทุน</p>
+
+<div class="calc">
+  <div class="row">
+    <label>ผลตอบแทนคาดหวังต่อปี (μ)</label>
+    <div class="seg" id="muSeg">
+      <button data-mu="0.03" class="">3%</button>
+      <button data-mu="0.08" class="active">8%</button>
+      <button data-mu="0.15" class="">15%</button>
+    </div>
+  </div>
+  <div class="row">
+    <label>ความเสี่ยง σ = <span class="val" id="sdV">20</span>%</label>
+    <input type="range" id="sd" min="0" max="50" value="20" step="1">
+  </div>
+  <div class="band-track">
+    <div class="band-95" id="b95"></div>
+    <div class="band-68" id="b68"></div>
+    <div class="band-zero" id="bzero"></div>
+    <div class="band-mean" id="bmean"></div>
+  </div>
+  <div class="band-scale"><span>40,000</span><span>100,000</span><span>200,000</span></div>
+  <div class="legend">
+    <span><span class="swatch" style="background:#3f5c4e"></span>ช่วง 68%</span>
+    <span><span class="swatch" style="background:#33413a"></span>ช่วง 95%</span>
+    <span><span class="swatch" style="background:#6cc394"></span>ค่าคาดหวัง</span>
+    <span><span class="swatch" style="background:#e0785c"></span>เท่าทุน</span>
+  </div>
+  <p id="bandTxt" style="margin:16px 0 8px"></p>
+  <p id="geoTxt" style="margin:0;font-weight:600"></p>
+</div>
+
+<details>
+  <summary>กล่องโค้ด (ข้ามได้ ไม่นับในเวลาอ่าน)</summary>
+  <div class="ans">
+  <p>ตรวจสูตรทั้งหมดในบทนี้ด้วย Python ก่อนใส่ตัวเลขแล้ว:</p>
+  <pre><code>scen = [(0.25, 0.35), (0.50, 0.10), (0.25, -0.25)]
+ev  = sum(p * r for p, r in scen)
+var = sum(p * (r - ev) ** 2 for p, r in scen)
+print(ev, var, var ** 0.5)
+# 0.075 0.045625 0.2136...
+
+# volatility drag: g = mu - sigma^2 / 2
+mu = 0.08
+for sd in (0.05, 0.10, 0.20, 0.30, 0.40):
+    print(sd, round((mu - sd**2/2) * 100, 2))
+# 0.05 7.88 | 0.10 7.5 | 0.20 6.0 | 0.30 3.5 | 0.40 0.0
+
+# +50% then -50%
+print((1.5 * 0.5) ** 0.5 - 1)   # -0.1339... ต่อปี</code></pre>
+  </div>
+</details>
+
+<h2>ทดสอบความเข้าใจ</h2>
+
+<p class="q">1. สินทรัพย์ A มี E[R] = 15% และ σ = 60% ส่วนสินทรัพย์ B มี E[R] = 8% และ σ = 20% ถ้า risk-free rate = 1% สินทรัพย์ไหนให้ผลตอบแทนส่วนเกินต่อหนึ่งหน่วยความเสี่ยงดีกว่า และตัวเลขบอกอะไร?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">A ได้ (0.15−0.01)/0.60 = 0.23 ส่วน B ได้ (0.08−0.01)/0.20 = 0.35 ดังนั้น B ดีกว่าในแง่ผลตอบแทนต่อหน่วยความเสี่ยง แม้ผลตอบแทนคาดหวังของ A จะสูงกว่าเกือบเท่าตัว ตัวเลขนี้บอกว่าการดูแต่ E[R] อย่างเดียวทำให้ตัดสินใจผิด ต้องดูว่าต้องแบกความไม่แน่นอนเท่าไหร่เพื่อแลกกับผลตอบแทนส่วนนั้น</div>
+</details>
+
+<p class="q">2. พอร์ตหนึ่งได้ +50% ในปีแรก และ −50% ในปีที่สอง ค่าเฉลี่ยเลขคณิตคือ 0% แล้วเงิน 100,000 บาทเหลือเท่าไหร่ และผลตอบแทนทบต้นเฉลี่ยต่อปีเป็นเท่าไหร่?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">เหลือ 100,000 × 1.5 × 0.5 = 75,000 บาท ผลตอบแทนทบต้นเฉลี่ย = √0.75 − 1 ≈ −13.4% ต่อปี เพราะการขาดทุน 50% ต้องการกำไร 100% เพื่อกลับมาเท่าทุน ค่าเฉลี่ยเลขคณิตจึงมองโลกสวยเกินจริงเสมอเมื่อมีความผันผวน สิ่งที่พอร์ตได้จริงคือค่าเฉลี่ยเรขาคณิต</div>
+</details>
+
+<p class="q">3. ทำไมสูตร g ≈ μ − σ²/2 ถึงบอกว่าความผันผวนที่เพิ่มขึ้นกัดกินผลตอบแทนแบบ "เร่งตัว" ไม่ใช่เชิงเส้น?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">เพราะ σ ถูกยกกำลังสอง เมื่อ σ เพิ่มจาก 10% เป็น 20% (สองเท่า) ส่วนที่ถูกหักเพิ่มจาก 0.5% เป็น 2.0% (สี่เท่า) และเมื่อ σ = 40% ส่วนที่ถูกหักคือ 8% ซึ่งกลืน μ = 8% หมดพอดี ทำให้ผลตอบแทนทบต้นจริงเหลือประมาณ 0% ทั้งที่ค่าเฉลี่ยเลขคณิตยังเป็นบวก</div>
+</details>
+
+<p class="q"><strong>ทวน:</strong> หลักการแยก "หนี้ดี" ออกจาก "หนี้เสีย" คืออะไร และทำไมอัตราดอกเบี้ยอย่างเดียวไม่พอที่จะตัดสิน?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">หนี้ดีคือหนี้ที่นำไปสร้างสินทรัพย์หรือความสามารถในการหารายได้ที่ให้ผลตอบแทนสูงกว่าต้นทุนดอกเบี้ย (เช่น กู้เรียน กู้ซื้อที่อยู่อาศัย) ส่วนหนี้เสียคือหนี้ที่นำไปบริโภคของที่เสื่อมมูลค่าทันที ดอกเบี้ยอย่างเดียวไม่พอเพราะต้องเทียบกับ "ผลตอบแทนของสิ่งที่เอาเงินกู้ไปทำ" ด้วย หนี้ดอกเบี้ยต่ำที่เอาไปซื้อของที่ไม่สร้างมูลค่าก็ยังทำให้ความมั่งคั่งสุทธิลดลง<br>ตอบผิดหรือลังเล? → <a href="finance-day-10-good-debt-bad-debt.html">ทบทวน Day 10: หนี้ดี vs หนี้เสีย และดอกเบี้ยเงินกู้</a></div>
+</details>
+
+<p class="q"><strong>ทวน:</strong> RMF, SSF และ ThaiESG ต่างกันในแง่ของเงื่อนไขระยะเวลาถือครองอย่างไร และทำไมเงื่อนไขนั้นถึงสำคัญต่อการวางแผน?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">ทั้งสามเป็นกองทุนที่ให้สิทธิลดหย่อนภาษีแลกกับเงื่อนไขการถือครองระยะยาวที่ต่างกัน — RMF ผูกกับการเกษียณ (ถือยาวถึงอายุที่กำหนดและต้องลงทุนต่อเนื่อง) ส่วน SSF และ ThaiESG กำหนดจำนวนปีถือครองขั้นต่ำนับจากวันที่ซื้อแต่ละก้อน เงื่อนไขนี้สำคัญเพราะเงินที่ใส่เข้าไปจะถูกล็อกสภาพคล่อง ถ้าขายผิดเงื่อนไขต้องคืนภาษีที่ลดหย่อนไปพร้อมเบี้ยปรับ จึงต้องแน่ใจว่าเป็นเงินที่ไม่ต้องใช้ในช่วงเวลานั้นจริงๆ<br>ตอบผิดหรือลังเล? → <a href="finance-day-13-rmf-ssf-thaiesg.html">ทบทวน Day 13: ลดหย่อนภาษีด้วยการลงทุน RMF, SSF, ThaiESG</a></div>
+</details>
+
+<div class="summary-box">
+  <h2 style="margin-top:0">สรุป 3 บรรทัด</h2>
+  <p>1. ความเสี่ยงคือความไม่แน่นอนของผลตอบแทน วัดด้วย σ และผลตอบแทนที่เกินจาก risk-free rate (ดอกเบี้ยนโยบายไทย 1.00% ณ 26 ส.ค. 2569) คือ risk premium ที่ตลาดจ่ายให้คนที่ยอมแบกความไม่แน่นอนนั้น</p>
+  <p>2. เปรียบเทียบสินทรัพย์ด้วย (E[R] − r<sub>f</sub>) / σ ไม่ใช่ E[R] เปล่าๆ เพราะผลตอบแทนคาดหวังสูงสุดมักไม่ใช่ตัวที่จ่ายค่าตอบแทนต่อหน่วยความเสี่ยงดีที่สุด</p>
+  <p style="margin-bottom:0">3. พอร์ตได้ค่าเฉลี่ยเรขาคณิต ไม่ใช่เลขคณิต — g ≈ μ − σ²/2 ทำให้ความผันผวนกัดกินผลตอบแทนจริงแบบเร่งตัวตามกำลังสองของ σ</p>
+</div>
+
+<footer>
+  <p><strong>พรุ่งนี้ Day 17 — ประเภทสินทรัพย์ (asset classes)</strong> ไล่ดูว่าเงินสด ตราสารหนี้ หุ้น อสังหาริมทรัพย์ และสินทรัพย์ทางเลือก แต่ละประเภทมีโปรไฟล์ความเสี่ยง-ผลตอบแทนต่างกันอย่างไร และเข้าถึงได้จริงแค่ไหนจากไทย</p>
+  <p class="disclaimer">บทเรียนนี้เป็นความรู้เชิงการศึกษา ไม่ใช่คำแนะนำทางการเงินเฉพาะบุคคล ตัวเลข E[R] และ σ ในตารางเป็นค่าสมมติเพื่อการเปรียบเทียบเชิงหลักการ ไม่ใช่การพยากรณ์ผลตอบแทนของสินทรัพย์ใดโดยเฉพาะ สมมติฐานการกระจายตัวแบบปกติเป็นแบบจำลองที่ง่ายกว่าความจริง ตลาดจริงมีหางอ้วน (fat tails) ที่ทำให้เหตุการณ์สุดขั้วเกิดบ่อยกว่าที่โมเดลบอก ควรปรึกษาผู้เชี่ยวชาญด้านการเงินก่อนตัดสินใจวางแผนจริง</p>
+</footer>
+
+</div>
+
+<script>
+(function(){
+  var sd=document.getElementById('sd'), sdV=document.getElementById('sdV');
+  var muSeg=document.getElementById('muSeg');
+  var b95=document.getElementById('b95'), b68=document.getElementById('b68');
+  var bmean=document.getElementById('bmean'), bzero=document.getElementById('bzero');
+  var bandTxt=document.getElementById('bandTxt'), geoTxt=document.getElementById('geoTxt');
+
+  var P = 100000;
+  var mu = 0.08;
+  var LO = 40000, HI = 200000;
+
+  function fmt(n){ return Math.round(n).toLocaleString('en-US'); }
+  function pos(v){
+    var x = (v - LO) / (HI - LO) * 100;
+    return Math.max(0, Math.min(100, x));
+  }
+
+  function render(){
+    var s = +sd.value / 100;
+    sdV.textContent = (s*100).toFixed(0);
+
+    var mean = P * (1 + mu);
+    var lo68 = P * (1 + mu - s),   hi68 = P * (1 + mu + s);
+    var lo95 = P * (1 + mu - 2*s), hi95 = P * (1 + mu + 2*s);
+
+    var a95 = pos(lo95), z95 = pos(hi95);
+    b95.style.left = a95 + '%'; b95.style.width = Math.max(z95 - a95, 0.5) + '%';
+    var a68 = pos(lo68), z68 = pos(hi68);
+    b68.style.left = a68 + '%'; b68.style.width = Math.max(z68 - a68, 0.5) + '%';
+    bmean.style.left = pos(mean) + '%';
+    bzero.style.left = pos(P) + '%';
+
+    var g = mu - s*s/2;
+    bandTxt.textContent = 'เงิน 100,000 บาท หลัง 1 ปี: มีโอกาสราว 68% ที่จะอยู่ระหว่าง ' +
+      fmt(lo68) + ' – ' + fmt(hi68) + ' บาท และราว 95% ที่จะอยู่ระหว่าง ' +
+      fmt(lo95) + ' – ' + fmt(hi95) + ' บาท';
+    geoTxt.textContent = 'ผลตอบแทนทบต้นจริงโดยประมาณ g ≈ ' + (mu*100).toFixed(0) + '% − ' +
+      (s*100).toFixed(0) + '%² / 2 = ' + (g*100).toFixed(2) + '% ต่อปี  ·  ใน 20 ปีได้ราว ' +
+      fmt(P * Math.pow(1+g, 20)) + ' บาท';
+  }
+
+  sd.addEventListener('input', render);
+
+  var btns = muSeg.querySelectorAll('button');
+  for(var i=0;i<btns.length;i++){
+    btns[i].addEventListener('click', function(){
+      for(var j=0;j<btns.length;j++) btns[j].classList.remove('active');
+      this.classList.add('active');
+      mu = +this.getAttribute('data-mu');
+      render();
+    });
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>

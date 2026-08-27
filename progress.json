@@ -1,11 +1,11 @@
 {
   "startDate": "2026-07-21",
   "totalDays": 90,
-  "lastCompletedDay": 14,
-  "nextDay": 15,
-  "lastRunDate": "2026-08-25",
-  "githubPushed": true,
-  "pendingPush": [],
+  "lastCompletedDay": 16,
+  "nextDay": 17,
+  "lastRunDate": "2026-08-27",
+  "githubPushed": false,
+  "pendingPush": [15, 16],
   "history": [
     {
       "day": 1,
@@ -104,6 +104,20 @@
       "title": "เป้าหมายการเงิน SMART + สรุป Phase 1",
       "file": "lessons/finance-day-14-smart-goals-phase1-summary.html",
       "recallFrom": [8, 11]
+    },
+    {
+      "day": 15,
+      "date": "2026-08-26",
+      "title": "การลงทุนคืออะไร ต่างจากการออมและการพนัน",
+      "file": "lessons/finance-day-15-investing-vs-saving-vs-gambling.html",
+      "recallFrom": [5, 9]
+    },
+    {
+      "day": 16,
+      "date": "2026-08-27",
+      "title": "ความเสี่ยงกับผลตอบแทน (risk-return tradeoff)",
+      "file": "lessons/finance-day-16-risk-return-tradeoff.html",
+      "recallFrom": [10, 13]
     }
   ],
   "notesApplied": [
