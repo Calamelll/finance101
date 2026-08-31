@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day 17 — ประเภทสินทรัพย์ (asset classes) | Finance101</title>
+<style>
+:root{
+  --bg:#191816; --card:#211f1d; --ink:#e8e4dd; --muted:#a09a91;
+  --line:#332f2b; --accent:#6cc394; --accent-soft:#1c2f26;
+  --warn:#e0a86f; --warn-soft:#2e2419; --code:#201e1b; --danger:#e0785c;
+  color-scheme: dark;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; padding:28px 18px 80px; background:var(--bg); color:var(--ink);
+  font-family:"Sarabun","Noto Sans Thai",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:17px; line-height:1.75; -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:720px;margin:0 auto}
+header{margin-bottom:34px}
+.kicker{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--muted);letter-spacing:.02em}
+.pill{background:var(--accent-soft);color:var(--accent);padding:3px 11px;border-radius:99px;font-weight:600}
+h1{font-size:29px;line-height:1.3;margin:12px 0 6px;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:16px;margin:0}
+h2{font-size:21px;margin:38px 0 12px;letter-spacing:-.005em}
+h3{font-size:17px;margin:26px 0 8px}
+p{margin:0 0 15px}
+ul,ol{margin:0 0 15px;padding-left:22px}
+li{margin-bottom:7px}
+strong{font-weight:600}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin:22px 0}
+.card.accent{background:var(--accent-soft);border-color:#2c4a3c}
+.card.warn{background:var(--warn-soft);border-color:#4a3722}
+.card h3{margin-top:0}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15.5px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-weight:600;font-size:13.5px;letter-spacing:.02em}
+td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.calc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;margin:22px 0}
+.calc label{display:block;font-size:14px;color:var(--muted);margin-bottom:6px}
+.calc .row{margin-bottom:18px}
+input[type=range]{width:100%;accent-color:var(--accent);height:24px}
+.val{font-weight:600;color:var(--accent);font-variant-numeric:tabular-nums}
+.bars{margin-top:6px}
+.bar-row{margin-bottom:12px}
+.bar-label{display:flex;justify-content:space-between;font-size:14px;margin-bottom:5px;gap:10px}
+.bar-track{background:#2a2724;border-radius:8px;height:26px;overflow:hidden;position:relative}
+.bar-fill{height:100%;border-radius:8px;transition:width .55s cubic-bezier(.22,.8,.3,1)}
+.bar-principal{background:#3f5c4e}
+.bar-growth{background:var(--accent)}
+.bar-negative{background:#a34a34}
+.bar-bond{background:#4a7fa0}
+.bar-stock{background:var(--accent)}
+.bar-gold{background:var(--warn)}
+.legend{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-top:10px;flex-wrap:wrap}
+.swatch{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:middle}
+.seg{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+.seg button{
+  background:var(--code);color:var(--muted);border:1px solid var(--line);border-radius:99px;
+  padding:6px 16px;font-size:14px;font-family:inherit;cursor:pointer;transition:all .2s;
+}
+.seg button.active{background:var(--accent-soft);color:var(--accent);border-color:#2c4a3c;font-weight:600}
+details{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:12px 16px;margin:10px 0}
+details[open]{background:#1d1b19}
+summary{cursor:pointer;font-weight:600;font-size:15.5px;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"▸ ";color:var(--accent)}
+details[open] summary::before{content:"▾ "}
+.ans{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font-size:15.5px;color:#d6d1c9}
+.q{font-weight:600;margin:22px 0 8px}
+pre{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:14px;line-height:1.6}
+code{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+.summary-box{border-left:3px solid var(--accent);padding-left:18px;margin:26px 0}
+.summary-box p{margin-bottom:8px}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
+footer a{color:var(--accent)}
+.disclaimer{font-size:13px;color:var(--muted);margin-top:18px;line-height:1.6}
+.nav{margin-bottom:20px;font-size:14px}
+.nav a{color:var(--accent);text-decoration:none}
+.src{font-size:12.5px;color:var(--muted);margin-top:8px}
+.steps{display:flex;align-items:flex-end;gap:14px;margin:18px 0 6px;height:150px}
+.step{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px}
+.step-bar{width:100%;border-radius:8px 8px 0 0;transition:height .55s cubic-bezier(.22,.8,.3,1);min-height:2px}
+.step1 .step-bar{background:#3f5c4e}
+.step2 .step-bar{background:var(--danger)}
+.step-label{font-size:13px;color:var(--muted);text-align:center}
+.step-val{font-weight:600;color:var(--ink);font-size:14.5px}
+.band-track{position:relative;height:64px;background:#2a2724;border-radius:10px;margin:14px 0 6px;overflow:hidden}
+.band-95{position:absolute;top:0;height:100%;background:#33413a;transition:all .5s cubic-bezier(.22,.8,.3,1)}
+.band-68{position:absolute;top:0;height:100%;background:#3f5c4e;transition:all .5s cubic-bezier(.22,.8,.3,1)}
+.band-mean{position:absolute;top:0;height:100%;width:3px;background:var(--accent);transition:left .5s cubic-bezier(.22,.8,.3,1)}
+.band-zero{position:absolute;top:0;height:100%;width:2px;background:var(--danger);opacity:.85;transition:left .5s}
+.band-scale{display:flex;justify-content:space-between;font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.mixbar{display:flex;height:30px;border-radius:8px;overflow:hidden;margin:6px 0 10px;background:#2a2724}
+.mixseg{height:100%;transition:width .4s cubic-bezier(.22,.8,.3,1)}
+.stat{display:flex;justify-content:space-between;font-size:15.5px;padding:7px 0;border-bottom:1px solid var(--line)}
+.stat:last-child{border-bottom:none}
+.stat b{font-variant-numeric:tabular-nums;color:var(--accent)}
+@media(max-width:520px){
+  body{font-size:16px;padding:20px 14px 60px}
+  h1{font-size:25px}
+  .card,.calc{padding:16px}
+}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="nav"><a href="../index.html">← สารบัญ</a></div>
+
+<header>
+  <div class="kicker">
+    <span class="pill">Day 17 / 90</span>
+    <span>Phase 2 · การลงทุนระยะยาว</span>
+    <span>·</span>
+    <span>อ่าน 9 นาที</span>
+  </div>
+  <h1>ประเภทสินทรัพย์ (asset classes)</h1>
+  <p class="sub">สองวันที่ผ่านมาเราคุยกันว่าการลงทุนคืออะไรและวัดความเสี่ยงยังไง วันนี้มาดูของจริงว่ามีอะไรให้ลงทุนบ้าง แต่ละกลุ่มหาเงินให้เราจากทางไหน และทำไมการเอามารวมกันถึงได้ผลลัพธ์ที่ดีกว่าถือตัวเดียวที่ดูดีที่สุด</p>
+</header>
+
+<h2>สินทรัพย์ประเภทเดียวกันคือกลุ่มที่ "เจ็บจากเรื่องเดียวกัน"</h2>
+
+<p><strong>ประเภทสินทรัพย์ (asset class)</strong> คือกลุ่มของสิ่งที่เราลงทุนได้ซึ่งมีลักษณะทางเศรษฐกิจร่วมกัน — ถูกขับเคลื่อนด้วยปัจจัยชุดเดียวกัน มีโครงสร้างกฎหมายและภาษีคล้ายกัน และที่สำคัญที่สุดคือ <em>มักเคลื่อนไหวไปในทางเดียวกัน</em> เมื่อเจอเหตุการณ์เดียวกัน หุ้นธนาคารกับหุ้นโรงพยาบาลต่างบริษัทกันคนละเรื่อง แต่เมื่อตลาดตกใจทั้งคู่มักลงพร้อมกัน ในทางกลับกันพันธบัตรรัฐบาลอาจนิ่งหรือขึ้นในวันเดียวกันนั้น นั่นแปลว่าหุ้นทั้งสองตัวอยู่ใน asset class เดียวกัน ส่วนพันธบัตรอยู่คนละกลุ่ม</p>
+
+<p>เส้นแบ่งที่ทรงพลังที่สุดมีแค่เส้นเดียว: เราเข้าไปในฐานะ <strong>เจ้าหนี้ (lender)</strong> หรือ <strong>เจ้าของ (owner)</strong></p>
+
+<div class="card">
+  <p><strong>เจ้าหนี้</strong> — ให้เงินคนอื่นใช้ แล้วได้ผลตอบแทนตามสัญญาที่ตกลงไว้ล่วงหน้า ได้ก่อนคนอื่นเวลาบริษัทมีปัญหา แต่ถึงกิจการรุ่งแค่ไหนก็ได้เท่าที่สัญญาระบุ → เงินฝาก พันธบัตร หุ้นกู้</p>
+  <p style="margin-bottom:0"><strong>เจ้าของ</strong> — เอาเงินไปแลกส่วนแบ่งในกิจการหรือทรัพย์สิน ได้ส่วนที่เหลือหลังจ่ายเจ้าหนี้หมดแล้ว ซึ่งอาจเป็นศูนย์หรือมหาศาล → หุ้น อสังหาริมทรัพย์ ธุรกิจของตัวเอง</p>
+</div>
+
+<p>เส้นนี้อธิบายลำดับความเสี่ยงเกือบทั้งหมดในตารางถัดไป: เจ้าหนี้ได้ก่อนแต่ได้จำกัด เจ้าของได้ทีหลังแต่ไม่จำกัด</p>
+
+<h2>ผลตอบแทนมาจากสองทางเท่านั้น</h2>
+
+<p>ไม่ว่าจะสินทรัพย์อะไร เงินที่เราได้กลับมาแยกได้แค่สองก้อน:</p>
+
+<ul>
+  <li><strong>กระแสเงินสด (income yield)</strong> — ดอกเบี้ย เงินปันผล ค่าเช่า สินทรัพย์จ่ายให้เราระหว่างที่ถืออยู่</li>
+  <li><strong>ส่วนต่างราคา (capital gain)</strong> — ขายได้แพงกว่าที่ซื้อมา</li>
+</ul>
+
+<p>ข้อสังเกตที่ใช้คัดกรองได้ดีมาก: <strong>สินทรัพย์บางอย่างมีแต่ก้อนที่สอง</strong> ทองคำและคริปโทเคอร์เรนซีไม่จ่ายอะไรให้ผู้ถือเลย กำไรทั้งหมดต้องมาจากการที่มีคนยอมจ่ายแพงกว่าเราในอนาคต ต่างจากหุ้นกู้ที่จ่ายดอกเบี้ยตามสัญญา หรือหุ้นที่บริษัทมีกำไรจริงมาแบ่ง ไม่ได้แปลว่าสินทรัพย์ไม่มีกระแสเงินสดเป็นสิ่งที่ผิด แต่แปลว่ามูลค่าของมันประเมินยากกว่ามาก เพราะไม่มีตัวเลขพื้นฐานให้ยึด</p>
+
+<h2>ห้ากลุ่มหลัก และเข้าถึงยังไงจากไทย</h2>
+
+<table>
+  <tr><th>กลุ่ม</th><th>ฐานะ</th><th class="num">ผลตอบแทนอ้างอิง</th><th class="num">σ คร่าวๆ</th></tr>
+  <tr><td>เงินสด / ตลาดเงิน</td><td>เจ้าหนี้</td><td class="num">~1%</td><td class="num">~0%</td></tr>
+  <tr><td>ตราสารหนี้ (bonds)</td><td>เจ้าหนี้</td><td class="num">2.8%</td><td class="num">5%</td></tr>
+  <tr><td>หุ้น (equities)</td><td>เจ้าของ</td><td class="num">7–9%</td><td class="num">20%</td></tr>
+  <tr><td>อสังหาฯ / REIT</td><td>เจ้าของ</td><td class="num">5–7%</td><td class="num">15%</td></tr>
+  <tr><td>สินทรัพย์ทางเลือก (ทองคำ)</td><td>ไม่ใช่ทั้งคู่</td><td class="num">~5%</td><td class="num">17%</td></tr>
+</table>
+
+<p><strong>ตัวเลขจริงที่จับต้องได้ ณ ปลายเดือนสิงหาคม 2569:</strong></p>
+
+<ul>
+  <li><strong>เงินสด</strong> — ดอกเบี้ยนโยบายอยู่ที่ 1.00% ต่อปี (มติ กนง. 26 ส.ค. 2569) เงินฝากออมทรัพย์ทั่วไปได้ต่ำกว่านั้นอีก เข้าถึงผ่านบัญชีธนาคารที่มีอยู่แล้ว</li>
+  <li><strong>ตราสารหนี้</strong> — พันธบัตรออมทรัพย์รัฐบาลรุ่นอายุ 10 ปี ที่จำหน่ายช่วง 3–5 ส.ค. 2569 ให้ดอกเบี้ยคงที่ 2.80% ต่อปี ซื้อผ่านแอปธนาคารตัวแทนจำหน่ายด้วยเงินหลักพันบาท</li>
+  <li><strong>หุ้นไทย</strong> — ดัชนี SET เคลื่อนไหวแถว 1,610–1,625 จุดในเดือนสิงหาคม 2569 ต้องเปิดบัญชีหลักทรัพย์กับโบรกเกอร์ หรือซื้อผ่านกองทุนรวมดัชนี</li>
+  <li><strong>ทองคำ</strong> — ราคาทองคำแท่งขายออกบาทละ 69,600 บาท (31 ส.ค. 2569) ลดลง 650 บาทในวันเดียว และลดจาก 72,900 บาทเมื่อ 26 ส.ค. คิดเป็น <strong>−4.5% ในห้าวัน</strong> ซึ่งเป็นภาพชัดว่า σ ของทองคำไม่ได้ต่ำอย่างที่หลายคนเข้าใจ</li>
+  <li><strong>อสังหาริมทรัพย์</strong> — ซื้อตึกไม่ไหวก็เข้าผ่าน REIT หรือกองทุนรวมอสังหาฯ ที่ซื้อขายในตลาดหลักทรัพย์เหมือนหุ้น ได้ค่าเช่ามาเป็นเงินปันผล</li>
+</ul>
+
+<p class="src">ที่มา: มติ กนง. 26 ส.ค. 2569 (ดอกเบี้ยนโยบาย 1.00%); พันธบัตรออมทรัพย์รุ่นอายุ 10 ปี ส.ค. 2569 ที่ 2.80% (gotradehere.com); ระดับดัชนี SET เดือน ส.ค. 2569 (settrade, line today); ราคาทองคำแท่ง 31 ส.ค. 2569 จากประกาศสมาคมค้าทองคำ (thairath.co.th) — ตัวเลขทุกตัวเปลี่ยนตลอดเวลา ถ้าอ่านย้อนหลังให้เช็กแหล่งปัจจุบันใหม่เสมอ ส่วนคอลัมน์ σ ในตารางเป็นค่าประมาณเชิงหลักการเพื่อเปรียบเทียบ ไม่ใช่ค่าที่วัดจากข้อมูลจริงชุดใดชุดหนึ่ง</p>
+
+<h2>ทำไมต้องรู้จักหลายกลุ่ม ในเมื่อหุ้นให้ผลตอบแทนสูงสุด</h2>
+
+<p>เพราะความเสี่ยงของพอร์ต <strong>ไม่ใช่</strong> ค่าเฉลี่ยถ่วงน้ำหนักของความเสี่ยงรายตัว สูตรสำหรับพอร์ตสองสินทรัพย์คือ:</p>
+
+<div class="card accent">
+  <p style="margin-bottom:6px;text-align:center;font-size:18px">E[R<sub>p</sub>] = w<sub>1</sub>μ<sub>1</sub> + w<sub>2</sub>μ<sub>2</sub></p>
+  <p style="margin-bottom:0;text-align:center;font-size:18px">σ<sub>p</sub>² = w<sub>1</sub>²σ<sub>1</sub>² + w<sub>2</sub>²σ<sub>2</sub>² + 2w<sub>1</sub>w<sub>2</sub>σ<sub>1</sub>σ<sub>2</sub>ρ<sub>12</sub></p>
+</div>
+
+<p>สังเกตความไม่สมมาตร: ผลตอบแทนรวมกันแบบ <em>เชิงเส้น</em> แต่ความเสี่ยงรวมกันแบบ <em>ไม่เชิงเส้น</em> และขึ้นกับ <strong>สหสัมพันธ์ (correlation, ρ)</strong> ระหว่างสินทรัพย์ ถ้า ρ &lt; 1 ความเสี่ยงของพอร์ตจะน้อยกว่าค่าเฉลี่ยถ่วงน้ำหนักเสมอ</p>
+
+<p>ใส่ตัวเลข: พันธบัตร (μ = 2.8%, σ = 5%) กับหุ้นไทย (μ = 8%, σ = 20%) สมมติ ρ = 0.10 ถือครึ่งต่อครึ่ง</p>
+
+<p>E[R<sub>p</sub>] = 0.5(2.8%) + 0.5(8%) = <strong>5.40%</strong><br>
+σ<sub>p</sub>² = 0.25(0.05²) + 0.25(0.20²) + 2(0.5)(0.5)(0.05)(0.20)(0.10) = 0.011125 &nbsp;→&nbsp; σ<sub>p</sub> = <strong>10.55%</strong></p>
+
+<p>ค่าเฉลี่ยถ่วงน้ำหนักของ σ คือ 0.5(5%) + 0.5(20%) = 12.5% แต่ของจริงได้ 10.55% — <strong>ความเสี่ยงหายไป 1.95 จุดฟรีๆ โดยไม่ได้เสียผลตอบแทนแม้แต่จุดเดียว</strong> นี่คือสิ่งเดียวในการเงินที่มักถูกเรียกว่า "ของฟรี" และมันมาจากการที่สินทรัพย์คนละกลุ่มไม่ได้เจ็บพร้อมกัน</p>
+
+<p>ใส่ทองคำเข้าไปด้วยจะเห็นชัดขึ้นอีก แบ่งเท่ากันสามกลุ่ม (พันธบัตร/หุ้น/ทองคำ) ได้ E[R] = 5.27% และ σ = 9.19% ทำให้ผลตอบแทนส่วนเกินต่อหน่วยความเสี่ยง (E[R] − r<sub>f</sub>)/σ ที่เรียนไปเมื่อวานเท่ากับ <strong>0.464</strong> ซึ่ง <em>สูงกว่าสินทรัพย์เดี่ยวทุกตัว</em> — พันธบัตรล้วนได้ 0.360 หุ้นล้วนได้ 0.350 ทองคำล้วนได้ 0.235</p>
+
+<h2>ลองผสมพอร์ตเอง</h2>
+<p>เลื่อนสัดส่วนแต่ละกลุ่ม (ระบบจะปรับให้รวมกันได้ 100% เอง) แล้วดูว่า E[R] σ และผลตอบแทนทบต้นจริง g ≈ μ − σ²/2 เปลี่ยนไปอย่างไร</p>
+
+<div class="calc">
+  <div class="row">
+    <label>ตราสารหนี้ (μ 2.8% / σ 5%) — <span class="val" id="wbV">33</span>%</label>
+    <input type="range" id="wb" min="0" max="100" value="33" step="1">
+  </div>
+  <div class="row">
+    <label>หุ้นไทย (μ 8% / σ 20%) — <span class="val" id="wsV">33</span>%</label>
+    <input type="range" id="ws" min="0" max="100" value="33" step="1">
+  </div>
+  <div class="row">
+    <label>ทองคำ (μ 5% / σ 17%) — <span class="val" id="wgV">34</span>%</label>
+    <input type="range" id="wg" min="0" max="100" value="34" step="1">
+  </div>
+  <div class="mixbar">
+    <div class="mixseg bar-bond" id="mb"></div>
+    <div class="mixseg bar-stock" id="ms"></div>
+    <div class="mixseg bar-gold" id="mg"></div>
+  </div>
+  <div class="legend">
+    <span><span class="swatch" style="background:#4a7fa0"></span>ตราสารหนี้</span>
+    <span><span class="swatch" style="background:#6cc394"></span>หุ้นไทย</span>
+    <span><span class="swatch" style="background:#e0a86f"></span>ทองคำ</span>
+  </div>
+  <div style="margin-top:16px">
+    <div class="stat"><span>ผลตอบแทนคาดหวัง E[R]</span><b id="oEr"></b></div>
+    <div class="stat"><span>ความเสี่ยง σ ของพอร์ต</span><b id="oSd"></b></div>
+    <div class="stat"><span>ค่าเฉลี่ยถ่วงน้ำหนักของ σ (ถ้าไม่มีผลกระจายความเสี่ยง)</span><b id="oNaive"></b></div>
+    <div class="stat"><span>ผลตอบแทนทบต้นจริง g ≈ μ − σ²/2</span><b id="oG"></b></div>
+    <div class="stat"><span>ผลตอบแทนส่วนเกินต่อหน่วยความเสี่ยง (r<sub>f</sub> = 1%)</span><b id="oSh"></b></div>
+  </div>
+  <p id="oTxt" style="margin:16px 0 0;font-size:15.5px;color:var(--muted)"></p>
+</div>
+
+<div class="card warn">
+  <h3>เชื่อมกับชีวิตเด็กฝึกงาน</h3>
+  <p style="margin-bottom:0">ถ้าเก็บเงินลงทุนเดือนละ 5,000 บาท (ปีละ 60,000 บาท) เป็นเวลา 10 ปี ผลลัพธ์ต่างกันตามกลุ่มสินทรัพย์แบบนี้: พันธบัตรล้วนที่ g = 2.67% ได้ราว 696,000 บาท / หุ้นล้วนที่ g = 6.00% ได้ราว 838,000 บาท / พอร์ตผสม 50-50 ที่ g = 4.84% ได้ราว 785,000 บาท พอร์ตผสมให้เงินน้อยกว่าหุ้นล้วนประมาณ 53,000 บาท แต่แลกมาด้วย σ ที่ลดจาก 20% เหลือ 10.55% — คำถามคือเงินก้อนนี้มีไว้ทำอะไร ถ้าเป็นเงินดาวน์คอนโดในอีก 5 ปี ความนิ่งมีค่ามากกว่าส่วนต่างนั้น ถ้าเป็นเงินเกษียณอีก 35 ปี เรื่องกลับกันทันที</p>
+</div>
+
+<details>
+  <summary>กล่องโค้ด (ข้ามได้ ไม่นับในเวลาอ่าน)</summary>
+  <div class="ans">
+  <p>ตัวเลขทุกตัวในบทนี้คำนวณและตรวจด้วย Python ก่อนเขียนลงบทเรียน:</p>
+  <pre><code>import math
+
+mu  = [0.028, 0.080, 0.050]          # bond, stock, gold
+sd  = [0.050, 0.200, 0.170]
+rho = [[1.00, 0.10, 0.15],
+       [0.10, 1.00, 0.00],
+       [0.15, 0.00, 1.00]]
+
+def port(w):
+    m = sum(w[i] * mu[i] for i in range(3))
+    v = sum(w[i] * w[j] * sd[i] * sd[j] * rho[i][j]
+            for i in range(3) for j in range(3))
+    return m, math.sqrt(v)
+
+for w in ([1,0,0], [0,1,0], [0,0,1],
+          [.5,.5,0], [1/3,1/3,1/3]):
+    m, s = port(w)
+    print(w, round(m*100,2), round(s*100,2),
+          round((m - s*s/2)*100, 2), round((m-0.01)/s, 3))
+
+# [1,0,0]       2.80  5.00  2.67  0.360
+# [0,1,0]       8.00 20.00  6.00  0.350
+# [0,0,1]       5.00 17.00  3.55  0.235
+# [.5,.5,0]     5.40 10.55  4.84  0.417
+# [1/3 each]    5.27  9.19  4.84  0.464
+
+# ออมเดือนละ 5,000 บาท 10 ปี
+for g in (0.0267, 0.0600, 0.0484):
+    print(g, round(sum(60000*(1+g)**k for k in range(1,11))))
+# 0.0267 695559 | 0.06 838299 | 0.0484 785316</code></pre>
+  </div>
+</details>
+
+<h2>ทดสอบความเข้าใจ</h2>
+
+<p class="q">1. อธิบายว่าทำไมทองคำถึงจัดอยู่คนละฝั่งกับทั้ง "เจ้าหนี้" และ "เจ้าของ" และข้อนี้ส่งผลอย่างไรต่อการประเมินมูลค่าของมัน?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">เพราะการถือทองคำไม่ได้ทำให้เราเป็นเจ้าหนี้ของใคร (ไม่มีสัญญาจ่ายดอกเบี้ย) และไม่ได้ทำให้เป็นเจ้าของกิจการที่สร้างกำไร (ทองไม่ผลิตอะไร) ผลตอบแทนทั้งหมดจึงมาจากส่วนต่างราคาเพียงทางเดียว ไม่มีกระแสเงินสดใดๆ ระหว่างถือ ผลคือประเมินมูลค่าที่ "ควรจะเป็น" ได้ยากมาก เพราะไม่มีดอกเบี้ยหรือกำไรให้คิดลดกลับมาเป็นมูลค่าปัจจุบัน ราคาขึ้นกับความต้องการของผู้ซื้อรายถัดไปล้วนๆ</div>
+</details>
+
+<p class="q">2. พอร์ต A ถือหุ้นล้วน (σ = 20%) พอร์ต B ถือพันธบัตรครึ่งหนึ่งกับหุ้นครึ่งหนึ่ง (ρ = 0.10) ได้ σ = 10.55% ทั้งที่ค่าเฉลี่ยถ่วงน้ำหนักของ σ คือ 12.5% ความเสี่ยงที่ "หายไป" 1.95 จุดนั้นหายไปไหน?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">ไม่ได้หายไปไหน แต่มันไม่เคยมีอยู่ตั้งแต่แรก — ค่าเฉลี่ยถ่วงน้ำหนักของ σ จะถูกต้องก็ต่อเมื่อ ρ = 1 คือสินทรัพย์สองตัวขึ้นลงพร้อมกันเป๊ะ เมื่อ ρ = 0.10 ช่วงที่หุ้นตกมักไม่ใช่ช่วงเดียวกับที่พันธบัตรตก ความผันผวนของทั้งสองจึงหักล้างกันบางส่วน เทอม 2w₁w₂σ₁σ₂ρ ในสูตรจึงเล็กกว่าที่ควรจะเป็นมาก ผลคือ σ ของพอร์ตต่ำลงโดยที่ E[R] ยังเป็นค่าเฉลี่ยถ่วงน้ำหนักเต็มๆ ไม่ถูกลดตาม</div>
+</details>
+
+<p class="q">3. ถ้ามีคนเสนอสินทรัพย์ที่ผลตอบแทนคาดหวัง 5% เท่ากับทองคำ แต่มี ρ กับหุ้นไทยเท่ากับ −0.3 ควรสนใจมากขึ้นหรือน้อยลงกว่าทองคำ และเพราะอะไร?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">ควรสนใจมากขึ้น เพราะ ρ ติดลบแปลว่ามันมักขึ้นในช่วงที่หุ้นลง เทอม 2w₁w₂σ₁σ₂ρ ในสูตร σ<sub>p</sub>² จะกลายเป็นค่าลบ ซึ่งดึงความเสี่ยงของพอร์ตลงมากกว่ากรณี ρ เป็นบวกหรือศูนย์ ที่ผลตอบแทนคาดหวังเท่ากันแต่ช่วยลดความเสี่ยงได้มากกว่า แปลว่าให้ผลตอบแทนต่อหน่วยความเสี่ยงของทั้งพอร์ตดีกว่า อย่างไรก็ตามต้องตรวจด้วยว่า ρ ที่วัดได้นั้นเสถียรจริงไหม เพราะสหสัมพันธ์ในอดีตมักเปลี่ยนตัวเลขได้ในภาวะวิกฤต</div>
+</details>
+
+<p class="q"><strong>ทวน:</strong> ระบบ 50/30/20 แบ่งเงินเดือนออกเป็นสามก้อนอะไรบ้าง และหลักการ "pay yourself first" เปลี่ยนลำดับการใช้เงินอย่างไร?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">50% สำหรับค่าใช้จ่ายจำเป็น (needs) 30% สำหรับสิ่งที่อยากได้ (wants) และ 20% สำหรับการออมและชำระหนี้ ส่วน pay yourself first คือการหักเงินออมออกทันทีที่เงินเดือนเข้า ก่อนจะใช้จ่ายอะไรทั้งสิ้น แทนที่จะออมเงินที่เหลือปลายเดือน เพราะเงินที่เหลือปลายเดือนมักไม่เหลือ การกลับลำดับทำให้การออมกลายเป็นค่าใช้จ่ายคงที่ที่ไม่ต้องใช้วินัยรายวัน<br>ตอบผิดหรือลังเล? → <a href="finance-day-08-50-30-20-pay-yourself-first.html">ทบทวน Day 8: ระบบจัดสรรเงิน 50/30/20 และ pay yourself first</a></div>
+</details>
+
+<p class="q"><strong>ทวน:</strong> ภาษีเงินได้บุคคลธรรมดาของไทยใช้อัตราก้าวหน้าแบบขั้นบันได การขึ้นขั้นภาษีทำให้เงินได้ทั้งก้อนถูกเก็บในอัตราใหม่หรือไม่?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">ไม่ใช่ — อัตราก้าวหน้าเก็บเป็นชั้นๆ เฉพาะส่วนของเงินได้สุทธิที่เกินเข้าไปในแต่ละขั้นเท่านั้นที่ถูกเก็บในอัตราของขั้นนั้น เงินได้ส่วนล่างยังคงเสียในอัตราเดิม ดังนั้นการมีรายได้เพิ่มจนข้ามขั้นจะไม่ทำให้เงินสุทธิที่เหลือลดลงเด็ดขาด นี่คือความต่างระหว่าง "อัตราภาษีขั้นสูงสุด (marginal rate)" กับ "อัตราภาษีเฉลี่ยที่จ่ายจริง (effective rate)" ซึ่งอัตราเฉลี่ยจะต่ำกว่าเสมอ<br>ตอบผิดหรือลังเล? → <a href="finance-day-12-personal-income-tax.html">ทบทวน Day 12: ภาษีเงินได้บุคคลธรรมดา 101</a></div>
+</details>
+
+<div class="summary-box">
+  <h2 style="margin-top:0">สรุป 3 บรรทัด</h2>
+  <p>1. asset class คือกลุ่มสินทรัพย์ที่ตอบสนองต่อปัจจัยชุดเดียวกัน แบ่งหยาบที่สุดด้วยคำถามว่าเราเป็นเจ้าหนี้ (เงินฝาก พันธบัตร หุ้นกู้ — ได้ก่อนแต่ได้จำกัด) หรือเจ้าของ (หุ้น อสังหาฯ — ได้ทีหลังแต่ไม่จำกัด)</p>
+  <p>2. ผลตอบแทนมาจากกระแสเงินสดกับส่วนต่างราคาเท่านั้น สินทรัพย์อย่างทองคำที่ไม่มีกระแสเงินสดเลย (69,600 บาท/บาททอง ณ 31 ส.ค. 2569 และ −4.5% ในห้าวัน) จึงประเมินมูลค่ายากกว่ามาก</p>
+  <p style="margin-bottom:0">3. ผลตอบแทนของพอร์ตรวมกันแบบเชิงเส้น แต่ความเสี่ยงไม่ใช่ — ตราบใดที่ ρ &lt; 1 การผสมสินทรัพย์ต่างกลุ่มจะได้ σ ต่ำกว่าค่าเฉลี่ยถ่วงน้ำหนักเสมอ พอร์ตแบ่งสามกลุ่มเท่ากันให้ผลตอบแทนต่อหน่วยความเสี่ยง 0.464 สูงกว่าถือสินทรัพย์เดี่ยวทุกตัว</p>
+</div>
+
+<footer>
+  <p><strong>พรุ่งนี้ Day 18 — ตราสารหนี้ (bonds): พันธบัตร หุ้นกู้ และ yield</strong> เจาะกลุ่ม "เจ้าหนี้" ให้ลึก ว่าหน้าตั๋วบอกอะไรบ้าง coupon กับ yield ต่างกันตรงไหน และเรตติ้งเครดิตมีความหมายกับผลตอบแทนที่เราได้อย่างไร</p>
+  <p class="disclaimer">บทเรียนนี้เป็นความรู้เชิงการศึกษา ไม่ใช่คำแนะนำทางการเงินเฉพาะบุคคล ค่า μ σ และ ρ ที่ใช้ในเครื่องคำนวณเป็นค่าสมมติเพื่อสาธิตหลักการกระจายความเสี่ยง ไม่ใช่การพยากรณ์ผลตอบแทนหรือค่าที่วัดจากข้อมูลตลาดจริง ในความเป็นจริงสหสัมพันธ์ระหว่างสินทรัพย์ไม่คงที่ และมักเพิ่มขึ้นเข้าใกล้ 1 ในช่วงวิกฤต ซึ่งทำให้ประโยชน์จากการกระจายความเสี่ยงลดลงพอดีในจังหวะที่ต้องการมากที่สุด ตัวเลขราคาและอัตราดอกเบี้ยที่อ้างอิงเป็นข้อมูล ณ วันที่ระบุเท่านั้น ควรปรึกษาผู้เชี่ยวชาญด้านการเงินก่อนตัดสินใจลงทุนจริง</p>
+</footer>
+
+</div>
+
+<script>
+(function(){
+  var MU  = [0.028, 0.080, 0.050];
+  var SD  = [0.050, 0.200, 0.170];
+  var RHO = [[1.00,0.10,0.15],[0.10,1.00,0.00],[0.15,0.00,1.00]];
+
+  var ids = ['wb','ws','wg'];
+  var sl = ids.map(function(i){ return document.getElementById(i); });
+  var lb = ids.map(function(i){ return document.getElementById(i+'V'); });
+  var mseg = ['mb','ms','mg'].map(function(i){ return document.getElementById(i); });
+
+  var oEr=document.getElementById('oEr'), oSd=document.getElementById('oSd');
+  var oNaive=document.getElementById('oNaive'), oG=document.getElementById('oG');
+  var oSh=document.getElementById('oSh'), oTxt=document.getElementById('oTxt');
+
+  function render(){
+    var raw = sl.map(function(s){ return +s.value; });
+    var tot = raw[0] + raw[1] + raw[2];
+    var w = tot === 0 ? [1/3,1/3,1/3] : raw.map(function(x){ return x / tot; });
+
+    for(var i=0;i<3;i++){
+      lb[i].textContent = (w[i]*100).toFixed(0);
+      mseg[i].style.width = (w[i]*100) + '%';
+    }
+
+    var m = 0, v = 0, naive = 0;
+    for(var a=0;a<3;a++){
+      m += w[a] * MU[a];
+      naive += w[a] * SD[a];
+      for(var b=0;b<3;b++) v += w[a]*w[b]*SD[a]*SD[b]*RHO[a][b];
+    }
+    var s = Math.sqrt(v);
+    var g = m - s*s/2;
+    var sh = s > 0 ? (m - 0.01) / s : 0;
+
+    oEr.textContent    = (m*100).toFixed(2) + '%';
+    oSd.textContent    = (s*100).toFixed(2) + '%';
+    oNaive.textContent = (naive*100).toFixed(2) + '%';
+    oG.textContent     = (g*100).toFixed(2) + '%';
+    oSh.textContent    = sh.toFixed(3);
+
+    var saved = (naive - s) * 100;
+    var fv = 0;
+    for(var k=1;k<=10;k++) fv += 60000 * Math.pow(1+g, k);
+    oTxt.textContent = 'การกระจายความเสี่ยงลด σ ลงได้ ' + saved.toFixed(2) +
+      ' จุด จากค่าเฉลี่ยถ่วงน้ำหนัก โดยไม่กระทบ E[R] เลย · ออมเดือนละ 5,000 บาท 10 ปี ที่ g นี้ได้ราว ' +
+      Math.round(fv).toLocaleString('en-US') + ' บาท';
+  }
+
+  sl.forEach(function(s){ s.addEventListener('input', render); });
+  render();
+})();
+</script>
+</body>
+</html>
