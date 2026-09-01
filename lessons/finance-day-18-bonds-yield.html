@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day 18 — ตราสารหนี้ (bonds): พันธบัตร หุ้นกู้ และ yield | Finance101</title>
+<style>
+:root{
+  --bg:#191816; --card:#211f1d; --ink:#e8e4dd; --muted:#a09a91;
+  --line:#332f2b; --accent:#6cc394; --accent-soft:#1c2f26;
+  --warn:#e0a86f; --warn-soft:#2e2419; --code:#201e1b; --danger:#e0785c;
+  color-scheme: dark;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; padding:28px 18px 80px; background:var(--bg); color:var(--ink);
+  font-family:"Sarabun","Noto Sans Thai",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:17px; line-height:1.75; -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:720px;margin:0 auto}
+header{margin-bottom:34px}
+.kicker{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--muted);letter-spacing:.02em}
+.pill{background:var(--accent-soft);color:var(--accent);padding:3px 11px;border-radius:99px;font-weight:600}
+h1{font-size:29px;line-height:1.3;margin:12px 0 6px;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:16px;margin:0}
+h2{font-size:21px;margin:38px 0 12px;letter-spacing:-.005em}
+h3{font-size:17px;margin:26px 0 8px}
+p{margin:0 0 15px}
+ul,ol{margin:0 0 15px;padding-left:22px}
+li{margin-bottom:7px}
+strong{font-weight:600}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin:22px 0}
+.card.accent{background:var(--accent-soft);border-color:#2c4a3c}
+.card.warn{background:var(--warn-soft);border-color:#4a3722}
+.card h3{margin-top:0}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15.5px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-weight:600;font-size:13.5px;letter-spacing:.02em}
+td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.calc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;margin:22px 0}
+.calc label{display:block;font-size:14px;color:var(--muted);margin-bottom:6px}
+.calc .row{margin-bottom:18px}
+input[type=range]{width:100%;accent-color:var(--accent);height:24px}
+.val{font-weight:600;color:var(--accent);font-variant-numeric:tabular-nums}
+.bars{margin-top:6px}
+.bar-row{margin-bottom:12px}
+.bar-label{display:flex;justify-content:space-between;font-size:14px;margin-bottom:5px;gap:10px}
+.bar-track{background:#2a2724;border-radius:8px;height:26px;overflow:hidden;position:relative}
+.bar-fill{height:100%;border-radius:8px;transition:width .55s cubic-bezier(.22,.8,.3,1)}
+.bar-principal{background:#3f5c4e}
+.bar-growth{background:var(--accent)}
+.bar-negative{background:#a34a34}
+.bar-bond{background:#4a7fa0}
+.bar-stock{background:var(--accent)}
+.bar-gold{background:var(--warn)}
+.legend{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-top:10px;flex-wrap:wrap}
+.swatch{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:middle}
+.seg{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+.seg button{
+  background:var(--code);color:var(--muted);border:1px solid var(--line);border-radius:99px;
+  padding:6px 16px;font-size:14px;font-family:inherit;cursor:pointer;transition:all .2s;
+}
+.seg button.active{background:var(--accent-soft);color:var(--accent);border-color:#2c4a3c;font-weight:600}
+details{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:12px 16px;margin:10px 0}
+details[open]{background:#1d1b19}
+summary{cursor:pointer;font-weight:600;font-size:15.5px;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"▸ ";color:var(--accent)}
+details[open] summary::before{content:"▾ "}
+.ans{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font-size:15.5px;color:#d6d1c9}
+.q{font-weight:600;margin:22px 0 8px}
+pre{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:14px;line-height:1.6}
+code{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+.summary-box{border-left:3px solid var(--accent);padding-left:18px;margin:26px 0}
+.summary-box p{margin-bottom:8px}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
+footer a{color:var(--accent)}
+.disclaimer{font-size:13px;color:var(--muted);margin-top:18px;line-height:1.6}
+.nav{margin-bottom:20px;font-size:14px}
+.nav a{color:var(--accent);text-decoration:none}
+.src{font-size:12.5px;color:var(--muted);margin-top:8px}
+.steps{display:flex;align-items:flex-end;gap:14px;margin:18px 0 6px;height:150px}
+.step{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px}
+.step-bar{width:100%;border-radius:8px 8px 0 0;transition:height .55s cubic-bezier(.22,.8,.3,1);min-height:2px}
+.step1 .step-bar{background:#3f5c4e}
+.step2 .step-bar{background:var(--danger)}
+.step-label{font-size:13px;color:var(--muted);text-align:center}
+.step-val{font-weight:600;color:var(--ink);font-size:14.5px}
+.band-track{position:relative;height:64px;background:#2a2724;border-radius:10px;margin:14px 0 6px;overflow:hidden}
+.band-95{position:absolute;top:0;height:100%;background:#33413a;transition:all .5s cubic-bezier(.22,.8,.3,1)}
+.band-68{position:absolute;top:0;height:100%;background:#3f5c4e;transition:all .5s cubic-bezier(.22,.8,.3,1)}
+.band-mean{position:absolute;top:0;height:100%;width:3px;background:var(--accent);transition:left .5s cubic-bezier(.22,.8,.3,1)}
+.band-zero{position:absolute;top:0;height:100%;width:2px;background:var(--danger);opacity:.85;transition:left .5s}
+.band-scale{display:flex;justify-content:space-between;font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.mixbar{display:flex;height:30px;border-radius:8px;overflow:hidden;margin:6px 0 10px;background:#2a2724}
+.mixseg{height:100%;transition:width .4s cubic-bezier(.22,.8,.3,1)}
+.stat{display:flex;justify-content:space-between;font-size:15.5px;padding:7px 0;border-bottom:1px solid var(--line)}
+.stat:last-child{border-bottom:none}
+.stat b{font-variant-numeric:tabular-nums;color:var(--accent)}
+.cf{display:flex;align-items:flex-end;gap:5px;height:120px;margin:16px 0 4px}
+.cf-col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:5px}
+.cf-bar{width:100%;border-radius:5px 5px 0 0;background:#4a7fa0;transition:height .5s cubic-bezier(.22,.8,.3,1);min-height:3px}
+.cf-col.last .cf-bar{background:var(--accent)}
+.cf-lab{font-size:11.5px;color:var(--muted)}
+@media(max-width:520px){
+  body{font-size:16px;padding:20px 14px 60px}
+  h1{font-size:25px}
+  .card,.calc{padding:16px}
+}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="nav"><a href="../index.html">← สารบัญ</a></div>
+
+<header>
+  <div class="kicker">
+    <span class="pill">Day 18 / 90</span>
+    <span>Phase 2 · การลงทุนระยะยาว</span>
+    <span>·</span>
+    <span>อ่าน 9 นาที</span>
+  </div>
+  <h1>ตราสารหนี้ (bonds): พันธบัตร หุ้นกู้ และ yield</h1>
+  <p class="sub">เมื่อวานเราแบ่งสินทรัพย์ด้วยคำถามว่าเป็นเจ้าหนี้หรือเจ้าของ วันนี้เจาะฝั่งเจ้าหนี้ให้ลึก — ตั๋วบอนด์หนึ่งใบบอกอะไรบ้าง ทำไม coupon กับ yield ถึงไม่ใช่ตัวเดียวกัน และทำไมหุ้นกู้เรตติ้ง BBB+ ถึงจ่ายมากกว่า AAA อยู่ 214 จุด</p>
+</header>
+
+<h2>บอนด์คือสัญญาเงินกู้ที่เปลี่ยนมือได้</h2>
+
+<p><strong>ตราสารหนี้ (bond)</strong> คือสัญญาที่ผู้ออก (issuer) ยืมเงินจากเรา แล้วสัญญาว่าจะจ่ายดอกเบี้ยตามงวดที่ตกลง และคืนเงินต้นเต็มจำนวนในวันครบกำหนด สิ่งที่ทำให้มันต่างจากการเอาเงินให้เพื่อนยืมคือ <em>มันซื้อขายเปลี่ยนมือได้</em> เราไม่จำเป็นต้องถือจนครบอายุ ขายให้คนอื่นกลางทางได้ และนั่นแหละคือต้นเหตุของความซับซ้อนทั้งหมดในบทนี้</p>
+
+<p>สิ่งที่เขียนอยู่บน "หน้าตั๋ว" มีสี่อย่าง จำให้ครบแล้วอ่านบอนด์ทุกตัวในโลกได้:</p>
+
+<div class="card">
+  <p><strong>มูลค่าที่ตราไว้ (face value / par)</strong> — เงินต้นที่จะได้คืนวันครบกำหนด บอนด์ไทยส่วนใหญ่ตราไว้ใบละ 1,000 บาท</p>
+  <p><strong>อัตราดอกเบี้ยหน้าตั๋ว (coupon rate)</strong> — คิดเป็น % ของ par และ <em>คงที่ตลอดอายุ</em> ไม่ว่าราคาตลาดจะเปลี่ยนไปแค่ไหน coupon 4% บนตั๋ว 1,000 บาท คือ 40 บาท/ปี ตลอดกาล</p>
+  <p><strong>วันครบกำหนด (maturity)</strong> — วันที่ได้ par คืน อาจ 3 เดือน หรือ 30 ปี</p>
+  <p style="margin-bottom:0"><strong>ผู้ออก (issuer)</strong> — ใครเป็นคนสัญญา รัฐบาลไทย (พันธบัตร / government bond) หรือบริษัทเอกชน (หุ้นกู้ / corporate bond) ตัวนี้เป็นตัวกำหนดว่าเราจะได้เงินคืนจริงไหม</p>
+</div>
+
+<h2>coupon ไม่ใช่ผลตอบแทน — yield ต่างหาก</h2>
+
+<p>นี่คือจุดที่คนพลาดกันมากที่สุด <strong>coupon คือสิ่งที่ผู้ออกจ่าย ส่วน yield คือสิ่งที่เราได้</strong> ทั้งสองเท่ากันเฉพาะกรณีเดียว คือเราซื้อที่ราคา par พอดี</p>
+
+<p>เพราะราคาตลาดเปลี่ยนได้ แต่ coupon เปลี่ยนไม่ได้ ผลตอบแทนจริงจึงต้องคิดจากราคาที่ <em>เราจ่ายไป</em> มีสองตัววัด:</p>
+
+<p><strong>1. อัตราผลตอบแทนปัจจุบัน (current yield)</strong> — หยาบแต่คิดในหัวได้</p>
+
+<div class="card accent">
+  <p style="margin-bottom:0;text-align:center;font-size:18px">Current Yield = ดอกเบี้ยต่อปี ÷ ราคาที่จ่าย</p>
+</div>
+
+<p><strong>2. อัตราผลตอบแทนจนครบอายุ (yield to maturity, YTM)</strong> — ตัวจริงที่ตลาดใช้ มันคืออัตราคิดลด y ที่ทำให้มูลค่าปัจจุบันของกระแสเงินสดทั้งหมดเท่ากับราคาตลาดพอดี:</p>
+
+<div class="card accent">
+  <p style="margin-bottom:0;text-align:center;font-size:18px">P = Σ<sub>t=1..n</sub> C/(1+y)<sup>t</sup> + F/(1+y)<sup>n</sup></p>
+</div>
+
+<p>โดย C = coupon ต่องวด, F = face value, n = จำนวนงวดคงเหลือ สมการนี้แก้หา y ตรงๆ ไม่ได้ (มันเป็นพหุนามดีกรี n) ต้องใช้วิธีเชิงตัวเลข — ซึ่งเป็นเหตุผลที่กล่องโค้ดข้างล่างใช้ bisection</p>
+
+<p>ข้อสำคัญคือ YTM รวมทั้ง <em>ดอกเบี้ยที่จะได้</em> และ <em>ส่วนต่างระหว่างราคาที่จ่ายกับ par ที่จะได้คืน</em> เข้าด้วยกันแล้ว มันคือ IRR ของการถือบอนด์จนครบอายุ</p>
+
+<h3>ตัวอย่างที่คำนวณจริง</h3>
+
+<p>หุ้นกู้ไทยใบหนึ่ง par 1,000 บาท coupon 4% จ่ายปีละครั้ง เหลืออายุ 5 ปี ราคาตลาดจะเป็นเท่าไรที่ระดับ YTM ต่างกัน:</p>
+
+<table>
+  <tr><th>YTM ที่ตลาดต้องการ</th><th class="num">ราคา</th><th class="num">Current yield</th><th>สถานะ</th></tr>
+  <tr><td>2.66% (เรตติ้ง A)</td><td class="num">1,061.97</td><td class="num">3.767%</td><td>ซื้อแพงกว่า par (premium)</td></tr>
+  <tr><td>4.00%</td><td class="num">1,000.00</td><td class="num">4.000%</td><td>ที่ par พอดี</td></tr>
+  <tr><td>6.00%</td><td class="num">915.75</td><td class="num">4.368%</td><td>ซื้อถูกกว่า par (discount)</td></tr>
+</table>
+
+<p>สังเกตสามอย่าง: (ก) <strong>ราคากับ yield เดินสวนทางกันเสมอ</strong> — ตลาดต้องการผลตอบแทนสูงขึ้น ราคาต้องลง เพราะ coupon แก้ไม่ได้ ปรับได้แต่ราคาเข้าซื้อ (ข) current yield 4.368% ในแถวล่างยัง <em>ต่ำกว่า</em> YTM 6% เพราะมันไม่ได้นับกำไร 84.25 บาทที่จะได้เมื่อบอนด์ราคา 915.75 คืน par 1,000 (ค) ที่ par พอดี ทั้งสามตัว (coupon, current yield, YTM) เท่ากันหมด</p>
+
+<h2>ตัวเลขจริงในตลาดไทย</h2>
+
+<p>พันธบัตรออมทรัพย์รัฐบาล "ออมพลัส" ปีงบประมาณ 2569 ครั้งที่ 1 จำหน่ายผ่านวอลเล็ต สบม. บนแอปเป๋าตัง เมื่อ 31 ก.ค.–ส.ค. 2569 ลงทุนขั้นต่ำ 100 บาท:</p>
+
+<table>
+  <tr><th>รุ่น</th><th class="num">coupon</th><th class="num">ดอกเบี้ย/ปี ถ้าลงทุน 20,000</th><th class="num">real yield (เงินเฟ้อ 1.95%)</th></tr>
+  <tr><td>อายุ 3 ปี</td><td class="num">1.80%</td><td class="num">360 บาท</td><td class="num" style="color:var(--danger)">−0.15%</td></tr>
+  <tr><td>อายุ 10 ปี</td><td class="num">2.80%</td><td class="num">560 บาท</td><td class="num">+0.83%</td></tr>
+  <tr><td>เทียบ: ฝากประจำ ~1.00%</td><td class="num">1.00%</td><td class="num">200 บาท</td><td class="num" style="color:var(--danger)">−0.93%</td></tr>
+</table>
+
+<p class="src">real yield คิดแบบ Fisher เต็มสูตร (1+i)/(1+π) − 1 ไม่ใช่ลบกันตรงๆ · ที่มา: พันธบัตรออมพลัส 2569 ครั้งที่ 1 อายุ 3 ปี 1.80% / 10 ปี 2.80% (ธปท., ธนาคารกรุงไทย, thansettakij 31 ก.ค. 2569); เงินเฟ้อทั่วไป ก.ค. 2569 = 1.95% YoY (สนค. กระทรวงพาณิชย์); ดอกเบี้ยนโยบาย 1.00% ต่อปี มติ กนง. เอกฉันท์ 24 มิ.ย. 2569</p>
+
+<p>อ่านตารางนี้ให้ออก: <strong>บอนด์รุ่น 3 ปีให้ผลตอบแทนที่แท้จริงติดลบ</strong> ณ ระดับเงินเฟ้อปัจจุบัน มันไม่ได้ทำให้รวยขึ้น แต่ทำให้จนช้าลงกว่าฝากธนาคาร ส่วนรุ่น 10 ปีชนะเงินเฟ้อได้จริงแต่ชนะแค่ 0.83% ต่อปี — และต้องล็อกเงินไว้สิบปี นี่คือหน้าตาที่แท้จริงของ "สินทรัพย์ปลอดภัย" ที่เราคุยกันเมื่อวาน</p>
+
+<h2>เรตติ้งเครดิต: ราคาของความไม่แน่ใจ</h2>
+
+<p>ผู้ออกแต่ละรายไม่ได้น่าเชื่อถือเท่ากัน สถาบันจัดอันดับ (TRIS Rating, Fitch Ratings Thailand) ให้เกรดตั้งแต่ AAA ลงมา โดยเส้นแบ่งสำคัญอยู่ที่ <strong>BBB−</strong> เหนือเส้นเรียก <em>investment grade</em> ใต้เส้นเรียก <em>high yield</em> หรือชื่อตรงๆ ว่า junk bond</p>
+
+<p>ส่วนต่างผลตอบแทนที่นักลงทุนเรียกร้องเพิ่มเพื่อชดเชยความเสี่ยงผิดนัดชำระ เรียกว่า <strong>ส่วนต่างเครดิต (credit spread)</strong> ข้อมูลหุ้นกู้ไทยอายุ 5 ปี ณ สิ้นไตรมาส 2/2569:</p>
+
+<table>
+  <tr><th>เรตติ้ง</th><th class="num">yield 5 ปี</th><th class="num">spread เหนือ AAA</th><th class="num">สิ้นปี 2568</th></tr>
+  <tr><td>AAA</td><td class="num">1.98%</td><td class="num">—</td><td class="num">1.81%</td></tr>
+  <tr><td>AA</td><td class="num">2.26%</td><td class="num">+28 bp</td><td class="num">2.10%</td></tr>
+  <tr><td>A</td><td class="num">2.66%</td><td class="num">+68 bp</td><td class="num">2.53%</td></tr>
+  <tr><td>BBB+</td><td class="num">4.12%</td><td class="num">+214 bp</td><td class="num">3.78%</td></tr>
+</table>
+
+<p class="src">ที่มา: ThaiBMA สรุปภาวะตลาดตราสารหนี้ไทย ไตรมาส 2/2569 · 1 bp (basis point) = 0.01% · yield ทุกเรตติ้งปรับขึ้น 14–34 bp ในครึ่งแรกของปี 2569 ตามทิศทาง yield พันธบัตรรัฐบาล</p>
+
+<p>spread ไม่ใช่เงินฟรี มันคือ <em>ค่าชดเชยความเสี่ยง</em> ที่ตลาดตีราคาไว้ ถ้าเราถือหุ้นกู้ BBB+ ที่ 4.12% แทน AAA ที่ 1.98% เราได้เพิ่มปีละ 2.14% แต่ต้องแลกกับความเสี่ยงที่บริษัทจะจ่ายไม่ได้ ประมาณคร่าวๆ ได้ด้วยความสัมพันธ์:</p>
+
+<div class="card accent">
+  <p style="margin-bottom:0;text-align:center;font-size:18px">spread ≈ PD × (1 − recovery rate)</p>
+</div>
+
+<p>ถ้าคาดว่าผิดนัดแล้วเรียกคืนได้ 40% ของเงินต้น (recovery = 0.4) spread 214 bp แปลว่าตลาดกำลังตีราคาความน่าจะเป็นที่จะผิดนัด (PD) ไว้ราว <strong>3.57% ต่อปี</strong> คิดเป็น 1 ใน 28 — คำถามที่ต้องถามตัวเองคือ "ฉันเชื่อว่าโอกาสผิดนัดจริงต่ำกว่า 3.57% ไหม" ถ้าไม่มีเหตุผลว่าทำไมถึงรู้ดีกว่าตลาด ส่วนต่างนั้นก็คือราคายุติธรรม ไม่ใช่ของถูก</p>
+
+<div class="card warn">
+  <h3>ความไม่สมมาตรที่ต้องเห็นให้ชัด</h3>
+  <p style="margin-bottom:0">ลงทุน 100,000 บาทในหุ้นกู้ 3 ปี — BBB+ ที่ 4.12% ถ้าทุกอย่างราบรื่นได้ 112,876 บาท ส่วน AAA ที่ 1.98% ได้ 106,058 บาท ต่างกัน 6,818 บาท <strong>แต่ถ้า BBB+ ผิดนัดหลังจ่าย coupon ไปงวดเดียวและเรียกคืนได้ 40% เราเหลือ 44,120 บาท</strong> — ขาดทุนเงินต้น 55,880 บาท กำไรส่วนเกินที่มากที่สุดที่จะได้คือ 6,818 บาท แต่ขาดทุนที่มากที่สุดคือเกือบทั้งก้อน นี่คือลักษณะเด่นของการเป็นเจ้าหนี้: <em>ผลตอบแทนถูกจำกัดด้านบน แต่ความเสียหายไม่ถูกจำกัดด้านล่าง</em> จึงต้องกระจายผู้ออกเสมอ ห้ามทุ่มก้อนเดียวลงหุ้นกู้บริษัทเดียว</p>
+</div>
+
+<h2>ลองคิดราคาบอนด์เอง</h2>
+<p>เลื่อนดูว่า coupon, YTM ที่ตลาดต้องการ และอายุคงเหลือ เปลี่ยนราคาไปอย่างไร กราฟด้านล่างคือกระแสเงินสดแต่ละปี (แท่งสุดท้ายรวมเงินต้นคืน)</p>
+
+<div class="calc">
+  <div class="row">
+    <label>อัตราดอกเบี้ยหน้าตั๋ว coupon — <span class="val" id="cV">4.00</span>%</label>
+    <input type="range" id="c" min="0" max="10" value="4" step="0.05">
+  </div>
+  <div class="row">
+    <label>YTM ที่ตลาดต้องการ — <span class="val" id="yV">4.00</span>%</label>
+    <input type="range" id="y" min="0.25" max="10" value="4" step="0.05">
+  </div>
+  <div class="row">
+    <label>อายุคงเหลือ — <span class="val" id="nV">5</span> ปี</label>
+    <input type="range" id="n" min="1" max="20" value="5" step="1">
+  </div>
+
+  <div class="cf" id="cf"></div>
+  <div style="font-size:12.5px;color:var(--muted);margin-bottom:10px">กระแสเงินสดที่จะได้รับรายปี (par 1,000 บาท)</div>
+
+  <div style="margin-top:16px">
+    <div class="stat"><span>ราคาตลาดของบอนด์</span><b id="oP"></b></div>
+    <div class="stat"><span>สถานะเทียบ par 1,000</span><b id="oSt"></b></div>
+    <div class="stat"><span>ดอกเบี้ยที่ได้ต่อปี (คงที่)</span><b id="oC"></b></div>
+    <div class="stat"><span>Current yield</span><b id="oCY"></b></div>
+    <div class="stat"><span>ผลตอบแทนรวมถ้าถือจนครบ</span><b id="oTot"></b></div>
+  </div>
+  <p id="oTxt" style="margin:16px 0 0;font-size:15.5px;color:var(--muted)"></p>
+</div>
+
+<div class="card">
+  <h3>เชื่อมกับชีวิตเด็กฝึกงาน</h3>
+  <p>เต้นเก็บเงินค่าตอบแทนฝึกงานได้ 20,000 บาท และรู้ว่าจะไม่ใช้เงินก้อนนี้ไปอีกอย่างน้อยสามปี เทียบสามทางเลือก โดยคิด<strong>ภาษีหัก ณ ที่จ่าย 15%</strong> ที่คุยกันไว้ใน Day 9 เข้าไปด้วย (ดอกเบี้ยพันธบัตรและเงินฝากประจำถูกหัก 15% เสมอ ส่วนออมทรัพย์ได้ยกเว้นเพราะดอกเบี้ยยังไม่ถึง 20,000 บาท/ปี):</p>
+  <table style="margin-bottom:0">
+    <tr><th>ทางเลือก</th><th class="num">อัตรา</th><th class="num">3 ปี ก่อนภาษี</th><th class="num">3 ปี หลังภาษี</th></tr>
+    <tr><td>ออมทรัพย์ปกติ</td><td class="num">0.30%</td><td class="num">20,180.54</td><td class="num">20,180.54</td></tr>
+    <tr><td>ฝากประจำ</td><td class="num">1.00%</td><td class="num">20,606.02</td><td class="num">20,514.35</td></tr>
+    <tr><td>พันธบัตรออมพลัส 3 ปี</td><td class="num">1.80%</td><td class="num">21,099.56</td><td class="num"><strong>20,932.12</strong></td></tr>
+  </table>
+  <p style="margin-bottom:0">ชนะออมทรัพย์อยู่ 752 บาท และชนะฝากประจำ 418 บาท ซึ่งฟังดูน้อย แต่สังเกตว่าเป็นเงินที่ได้มาโดย<em>ไม่ต้องรับความเสี่ยงผิดนัดเพิ่มเลย</em> เพราะผู้ออกคือรัฐบาลไทยโดยตรง สิ่งที่จ่ายไปแทนคือ <strong>สภาพคล่อง</strong> — ถอนก่อนกำหนดไม่ได้ ต้องขายในตลาดรองซึ่งอาจได้ราคาต่ำกว่า par ตามที่ตารางด้านบนอธิบาย ดังนั้นเงินก้อนนี้ต้องไม่ใช่เงินสำรองฉุกเฉินที่คุยกันไปใน Day 7 เด็ดขาด</p>
+</div>
+
+<details>
+  <summary>กล่องโค้ด (ข้ามได้ ไม่นับในเวลาอ่าน)</summary>
+  <div class="ans">
+  <p>ตัวเลขทุกตัวในบทนี้คำนวณและตรวจด้วย Python ก่อนเขียนลงบทเรียน — และเป็นโค้ดชุดเดียวกับที่ JS ในเครื่องคำนวณข้างบนใช้:</p>
+  <pre><code>def price(F, cpn, y, n):
+    """ราคาบอนด์ = PV ของ coupon ทุกงวด + PV ของเงินต้น"""
+    C = F * cpn
+    return sum(C/(1+y)**t for t in range(1, n+1)) + F/(1+y)**n
+
+def ytm(F, cpn, P, n, lo=-0.5, hi=1.0):
+    """แก้หา y จากราคา — bisection เพราะสมการเป็นพหุนามดีกรี n"""
+    for _ in range(200):
+        mid = (lo + hi) / 2
+        if price(F, cpn, mid, n) > P: lo = mid
+        else:                          hi = mid
+    return (lo + hi) / 2
+
+for y in (0.0266, 0.0400, 0.0600):
+    P = price(1000, 0.04, y, 5)
+    print(f"YTM {y:.2%}  price {P:8.2f}  current yield {40/P:.3%}")
+# YTM 2.66%  price  1061.97  current yield 3.767%
+# YTM 4.00%  price  1000.00  current yield 4.000%
+# YTM 6.00%  price   915.75  current yield 4.368%
+
+print(ytm(1000, 0.04, 950, 5))     # 0.0516  -> ซื้อ 950 ได้ YTM 5.16%
+print(ytm(1000, 0.028, 900, 10))   # 0.0404  -> coupon 2.8% แต่ YTM 4.04%
+
+# real yield แบบ Fisher เต็มสูตร ไม่ใช่ลบกันตรงๆ
+for i in (0.018, 0.028, 0.010):
+    print(i, round(((1+i)/1.0195 - 1)*100, 3), "%")
+# 0.018 -0.147 % | 0.028 0.834 % | 0.01 -0.932 %
+
+# break-even PD จาก credit spread 214 bp
+for R in (0.0, 0.4, 0.6):
+    print(f"recovery {R:.0%} -> PD {0.0214/(1-R):.2%}")
+# recovery 0% -> PD 2.14% | 40% -> 3.57% | 60% -> 5.35%</code></pre>
+  </div>
+</details>
+
+<h2>ทดสอบความเข้าใจ</h2>
+
+<p class="q">1. บอนด์ใบหนึ่ง par 1,000 บาท coupon 2.8% เหลืออายุ 10 ปี ปัจจุบันซื้อขายที่ราคา 900 บาท current yield คือ 3.11% แต่ YTM คือ 4.04% ทำไมสองตัวนี้ถึงไม่เท่ากัน และตัวไหนคือผลตอบแทนที่แท้จริงถ้าเราถือจนครบอายุ?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">current yield นับเฉพาะดอกเบี้ยหารด้วยราคาที่จ่าย (28 ÷ 900 = 3.11%) มันมองข้ามข้อเท็จจริงว่าเราจ่ายไป 900 บาทแต่จะได้คืน 1,000 บาทในวันครบกำหนด กำไรส่วนต่างราคา 100 บาทนั้นเป็นผลตอบแทนจริงที่ current yield ไม่นับ ส่วน YTM คิดกระแสเงินสดทุกก้อนรวมทั้งเงินต้นที่คืน แล้วหาอัตราคิดลดที่ทำให้ PV เท่ากับ 900 พอดี — มันคือ IRR ของการถือจนครบ จึงเป็นตัวที่ถูกต้อง ข้อสังเกตทั่วไป: ซื้อต่ำกว่า par → YTM &gt; current yield &gt; coupon เสมอ ซื้อสูงกว่า par → กลับลำดับทั้งหมด</div>
+</details>
+
+<p class="q">2. หุ้นกู้ BBB+ ให้ yield 4.12% ขณะที่ AAA ให้ 1.98% ถ้าเราคิดว่าโอกาสผิดนัดของบริษัท BBB+ รายนี้อยู่ที่ 1% ต่อปี และคาดว่าจะเรียกคืนได้ 40% ควรสรุปว่าอย่างไร และมีข้อควรระวังอะไร?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">จากสูตร spread ≈ PD × (1 − recovery) ถ้า PD จริงคือ 1% และ recovery 40% ส่วนชดเชยที่ "ควรได้" คือ 0.01 × 0.6 = 0.6% หรือ 60 bp แต่ตลาดจ่ายให้ถึง 214 bp แปลว่าเราได้ค่าชดเชยเกินความเสี่ยงที่เราประเมิน — บอนด์ตัวนี้ดูถูกในมุมมองของเรา ข้อควรระวังคือ 214 bp ไม่ได้ชดเชยแค่ default risk อย่างเดียว มันรวมความเสี่ยงสภาพคล่อง (หุ้นกู้เรตติ้งต่ำซื้อขายยาก อาจขายไม่ได้ราคาเมื่อต้องการเงิน) และเบี้ยความไม่แน่นอนของตัวประมาณการเองด้วย ที่สำคัญกว่านั้นคือคำถามว่าเรามีข้อมูลอะไรที่ตลาดทั้งตลาดไม่มี ถึงกล้าประเมิน PD ต่ำกว่าเขา — ถ้าตอบไม่ได้ ส่วนต่างนั้นน่าจะสะท้อนความเสี่ยงที่เรามองไม่เห็นมากกว่าเป็นโอกาส</div>
+</details>
+
+<p class="q">3. พันธบัตรออมทรัพย์รุ่น 3 ปีให้ coupon 1.80% ขณะที่เงินเฟ้อล่าสุดอยู่ที่ 1.95% ทำไมยังมีคนซื้อ ทั้งที่ผลตอบแทนที่แท้จริงติดลบ 0.15%?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">เพราะทางเลือกที่มีความเสี่ยงเท่ากันแย่กว่านั้นอีก — ฝากออมทรัพย์ราว 0.25% ให้ real yield ประมาณ −1.66% และฝากประจำ 1.00% ให้ −0.93% การเลือก −0.15% จึงเป็นการ <em>ลดการสูญเสีย</em> ไม่ใช่การสร้างผลตอบแทน นอกจากนี้เงินเฟ้อ 1.95% เป็นตัวเลขเดือนเดียว ไม่ใช่ค่าที่จะคงอยู่ตลอดสามปี ถ้าเงินเฟ้อลดลงมาที่ 1.5% ตามกรอบล่างที่กระทรวงพาณิชย์คาดไว้ real yield จะกลับเป็นบวก ประเด็นหลักคือบอนด์ระยะสั้นเรตติ้งสูงไม่ได้มีไว้เพื่อสร้างความมั่งคั่ง แต่มีไว้เพื่อ <em>รักษามูลค่าเงินที่มีวันใช้แน่นอนในอนาคตอันใกล้</em> ให้ผันผวนน้อยที่สุด ซึ่งเป็นคนละหน้าที่กับหุ้น</div>
+</details>
+
+<p class="q"><strong>ทวน:</strong> ภาษีหัก ณ ที่จ่ายของดอกเบี้ยเงินฝากออมทรัพย์กับเงินฝากประจำต่างกันอย่างไร และ "กฎ 20,000 บาท" ทำงานแบบขั้นบันไดหรือแบบหน้าผา?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">ดอกเบี้ยออมทรัพย์รวมทุกบัญชีทุกธนาคารในปีปฏิทินเดียวกัน ถ้าไม่เกิน 20,000 บาทจะได้ยกเว้นภาษีทั้งหมด แต่ถ้าเกินแม้บาทเดียว จะถูกหัก 15% <strong>ตั้งแต่บาทแรก</strong> ไม่ใช่เฉพาะส่วนที่เกิน — เป็นแบบหน้าผา (cliff) ไม่ใช่ขั้นบันไดแบบภาษีเงินได้ที่เรียนใน Day 12 ส่วนเงินฝากประจำถูกหัก 15% เสมอไม่ว่าดอกเบี้ยเท่าไร ไม่มีเกณฑ์ยกเว้น ประเด็นที่เชื่อมกับบทวันนี้: ดอกเบี้ยพันธบัตรและหุ้นกู้ก็ถูกหัก ณ ที่จ่าย 15% เช่นกัน ดังนั้นการเทียบ yield กับดอกเบี้ยออมทรัพย์ต้องเทียบหลังภาษีเสมอ ไม่งั้นเปรียบเทียบผิดฐาน<br>ตอบผิดหรือลังเล? → <a href="finance-day-09-bank-accounts-thailand.html">ทบทวน Day 9: บัญชีธนาคารและดอกเบี้ยเงินฝากในไทย</a></div>
+</details>
+
+<p class="q"><strong>ทวน:</strong> อะไรคือเส้นแบ่งระหว่างการลงทุน (investing) กับการพนัน (gambling) และการซื้อพันธบัตรรัฐบาลอยู่ฝั่งไหนของเส้นนั้น?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">เส้นแบ่งหลักคือ <em>ผลตอบแทนคาดหวัง (expected value) เป็นบวกหรือไม่ และมาจากการสร้างมูลค่าจริงหรือไม่</em> การลงทุนคือการวางเงินลงในกิจกรรมที่สร้างผลผลิตทางเศรษฐกิจ ผลตอบแทนจึงผูกกับมูลค่าเพิ่มที่เกิดขึ้นจริง ส่วนการพนันเป็นการย้ายเงินระหว่างผู้เล่นด้วยกันเอง (zero-sum) และติดลบหลังหักค่าเจ้ามือ พันธบัตรรัฐบาลอยู่ฝั่งการลงทุนชัดเจนที่สุดในบรรดาสินทรัพย์ทั้งหมด เพราะผลตอบแทนถูกกำหนดไว้ล่วงหน้าตามสัญญา ไม่ต้องอาศัยการเดาทิศทางราคาเลยหากถือจนครบอายุ — เรารู้ตั้งแต่วันซื้อว่าจะได้เท่าไร ต่างจากการเทรดที่ต้องมีคนขาดทุนเพื่อให้เราได้กำไร<br>ตอบผิดหรือลังเล? → <a href="finance-day-15-investing-vs-saving-vs-gambling.html">ทบทวน Day 15: การลงทุนคืออะไร ต่างจากการออมและการพนัน</a></div>
+</details>
+
+<div class="summary-box">
+  <h2 style="margin-top:0">สรุป 3 บรรทัด</h2>
+  <p>1. บอนด์คือสัญญาเงินกู้ที่เปลี่ยนมือได้ หน้าตั๋วบอก par / coupon / maturity / issuer โดย coupon คงที่ตลอดอายุ แต่ราคาตลาดเปลี่ยนได้ ผลตอบแทนจริงจึงต้องวัดด้วย yield ไม่ใช่ coupon</p>
+  <p>2. YTM คืออัตราคิดลดที่ทำให้ PV ของกระแสเงินสดทั้งหมดเท่ากับราคาตลาด — ซื้อต่ำกว่า par ได้ YTM &gt; coupon ซื้อสูงกว่า par ได้ YTM &lt; coupon และราคากับ yield เดินสวนทางกันเสมอ</p>
+  <p style="margin-bottom:0">3. credit spread คือราคาของความเสี่ยงผิดนัด (≈ PD × (1−recovery)) หุ้นกู้ BBB+ ไทยจ่ายมากกว่า AAA อยู่ 214 bp ณ ไตรมาส 2/2569 ซึ่งไม่ใช่เงินฟรี แต่คือค่าชดเชยความเสี่ยงที่ผลตอบแทนจำกัดด้านบนแต่ขาดทุนไม่จำกัดด้านล่าง</p>
+</div>
+
+<footer>
+  <p><strong>พรุ่งนี้ Day 19 — ราคาบอนด์กับอัตราดอกเบี้ย และ duration</strong> วันนี้เราเห็นแล้วว่าราคากับ yield สวนทางกัน พรุ่งนี้จะวัดกันเป็นตัวเลขว่า <em>สวนทางแรงแค่ไหน</em> ทำไมบอนด์ 10 ปีถึงเจ็บกว่าบอนด์ 3 ปีหลายเท่าเมื่อดอกเบี้ยขยับเท่ากัน และ duration ใช้ประมาณความเสียหายล่วงหน้าได้อย่างไร</p>
+  <p class="disclaimer">บทเรียนนี้เป็นความรู้เชิงการศึกษา ไม่ใช่คำแนะนำทางการเงินเฉพาะบุคคล และไม่ใช่การชี้ชวนให้ซื้อหรือขายตราสารใดตราสารหนึ่ง ตัวเลข yield เรตติ้ง อัตราดอกเบี้ย และเงินเฟ้อที่อ้างอิงเป็นข้อมูล ณ วันที่ระบุในแต่ละตารางเท่านั้น และเปลี่ยนแปลงตลอดเวลา — ถ้าอ่านย้อนหลังให้ตรวจสอบกับ ThaiBMA ธปท. และสำนักงานนโยบายและยุทธศาสตร์การค้าใหม่เสมอ ค่า recovery rate 40% ที่ใช้ประกอบการอธิบายเป็นค่าสมมติเชิงหลักการ ไม่ใช่ค่าที่วัดจากข้อมูลการผิดนัดชำระของตลาดไทยชุดใดชุดหนึ่ง ควรอ่านหนังสือชี้ชวนฉบับเต็มและปรึกษาผู้เชี่ยวชาญด้านการเงินก่อนตัดสินใจลงทุนจริง</p>
+</footer>
+
+</div>
+
+<script>
+(function(){
+  var F = 1000;
+  var sc = document.getElementById('c'), sy = document.getElementById('y'), sn = document.getElementById('n');
+  var lc = document.getElementById('cV'), ly = document.getElementById('yV'), ln = document.getElementById('nV');
+  var cf = document.getElementById('cf');
+  var oP=document.getElementById('oP'), oSt=document.getElementById('oSt'), oC=document.getElementById('oC');
+  var oCY=document.getElementById('oCY'), oTot=document.getElementById('oTot'), oTxt=document.getElementById('oTxt');
+
+  function price(cpn, y, n){
+    var C = F * cpn, p = 0;
+    for(var t=1;t<=n;t++) p += C/Math.pow(1+y,t);
+    return p + F/Math.pow(1+y,n);
+  }
+  function fmt(x){ return x.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+
+  function render(){
+    var cpn = +sc.value/100, y = +sy.value/100, n = +sn.value;
+    lc.textContent = (+sc.value).toFixed(2);
+    ly.textContent = (+sy.value).toFixed(2);
+    ln.textContent = n;
+
+    var P = price(cpn, y, n);
+    var C = F * cpn;
+
+    // กระแสเงินสดรายปี แท่งสุดท้ายรวมเงินต้น
+    var flows = [], max = 0;
+    for(var t=1;t<=n;t++){
+      var v = (t === n) ? C + F : C;
+      flows.push(v);
+      if(v > max) max = v;
+    }
+    var html = '';
+    var showLab = n <= 12;
+    for(var i=0;i<flows.length;i++){
+      var h = max > 0 ? Math.max(3, flows[i]/max*100) : 3;
+      html += '<div class="cf-col' + (i===flows.length-1 ? ' last' : '') + '">' +
+              '<div class="cf-bar" style="height:' + h + '%"></div>' +
+              '<div class="cf-lab">' + (showLab ? (i+1) : (i===0||i===flows.length-1 ? (i+1) : '')) + '</div></div>';
+    }
+    cf.innerHTML = html;
+
+    var totalCash = C * n + F;
+    var gain = totalCash - P;
+
+    oP.textContent  = fmt(P) + ' บาท';
+    oC.textContent  = fmt(C) + ' บาท/ปี';
+    oCY.textContent = C > 0 ? (C/P*100).toFixed(3) + '%' : '0.000%';
+    oTot.textContent = fmt(totalCash) + ' บาท (กำไรรวม ' + fmt(gain) + ')';
+
+    var diff = P - F;
+    if(Math.abs(diff) < 0.005){
+      oSt.textContent = 'ที่ par พอดี';
+      oSt.style.color = 'var(--accent)';
+    } else if(diff > 0){
+      oSt.textContent = 'premium +' + fmt(diff);
+      oSt.style.color = 'var(--warn)';
+    } else {
+      oSt.textContent = 'discount ' + fmt(diff);
+      oSt.style.color = 'var(--danger)';
+    }
+
+    var msg;
+    if(Math.abs(cpn - y) < 0.00005){
+      msg = 'coupon เท่ากับ YTM พอดี ราคาจึงเท่ากับ par 1,000 บาท — เป็นกรณีเดียวที่ coupon, current yield และ YTM มีค่าเท่ากันทั้งสามตัว';
+    } else if(cpn > y){
+      msg = 'coupon (' + (+sc.value).toFixed(2) + '%) สูงกว่าที่ตลาดต้องการ (' + (+sy.value).toFixed(2) +
+            '%) บอนด์ใบนี้จึง "ดีเกินไป" ตลาดเลยดันราคาขึ้นเหนือ par จนผลตอบแทนที่ผู้ซื้อใหม่ได้ลดลงมาเท่า YTM พอดี — ผู้ซื้อจ่ายแพงวันนี้เพื่อแลกดอกเบี้ยที่สูงกว่าปกติ';
+    } else {
+      msg = 'coupon (' + (+sc.value).toFixed(2) + '%) ต่ำกว่าที่ตลาดต้องการ (' + (+sy.value).toFixed(2) +
+            '%) ไม่มีใครยอมซื้อที่ par ราคาจึงต้องลดลงจนส่วนต่างที่จะได้คืนตอนครบอายุชดเชยดอกเบี้ยที่ขาดไปพอดี';
+    }
+    oTxt.textContent = msg;
+  }
+
+  [sc,sy,sn].forEach(function(s){ s.addEventListener('input', render); });
+  render();
+})();
+</script>
+</body>
+</html>

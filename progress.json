@@ -1,9 +1,9 @@
 {
   "startDate": "2026-07-21",
   "totalDays": 90,
-  "lastCompletedDay": 17,
-  "nextDay": 18,
-  "lastRunDate": "2026-08-31",
+  "lastCompletedDay": 18,
+  "nextDay": 19,
+  "lastRunDate": "2026-09-01",
   "githubPushed": true,
   "pendingPush": [],
   "history": [
@@ -162,6 +162,16 @@
       "recallFrom": [
         8,
         12
+      ]
+    },
+    {
+      "day": 18,
+      "date": "2026-09-01",
+      "title": "ตราสารหนี้ (bonds): พันธบัตร หุ้นกู้ และ yield",
+      "file": "lessons/finance-day-18-bonds-yield.html",
+      "recallFrom": [
+        9,
+        15
       ]
     }
   ],
