@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day 19 — ราคาบอนด์กับอัตราดอกเบี้ย และ duration | Finance101</title>
+<style>
+:root{
+  --bg:#191816; --card:#211f1d; --ink:#e8e4dd; --muted:#a09a91;
+  --line:#332f2b; --accent:#6cc394; --accent-soft:#1c2f26;
+  --warn:#e0a86f; --warn-soft:#2e2419; --code:#201e1b; --danger:#e0785c;
+  color-scheme: dark;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; padding:28px 18px 80px; background:var(--bg); color:var(--ink);
+  font-family:"Sarabun","Noto Sans Thai",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:17px; line-height:1.75; -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:720px;margin:0 auto}
+header{margin-bottom:34px}
+.kicker{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--muted);letter-spacing:.02em}
+.pill{background:var(--accent-soft);color:var(--accent);padding:3px 11px;border-radius:99px;font-weight:600}
+h1{font-size:29px;line-height:1.3;margin:12px 0 6px;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:16px;margin:0}
+h2{font-size:21px;margin:38px 0 12px;letter-spacing:-.005em}
+h3{font-size:17px;margin:26px 0 8px}
+p{margin:0 0 15px}
+ul,ol{margin:0 0 15px;padding-left:22px}
+li{margin-bottom:7px}
+strong{font-weight:600}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin:22px 0}
+.card.accent{background:var(--accent-soft);border-color:#2c4a3c}
+.card.warn{background:var(--warn-soft);border-color:#4a3722}
+.card h3{margin-top:0}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15.5px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-weight:600;font-size:13.5px;letter-spacing:.02em}
+td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.calc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;margin:22px 0}
+.calc label{display:block;font-size:14px;color:var(--muted);margin-bottom:6px}
+.calc .row{margin-bottom:18px}
+input[type=range]{width:100%;accent-color:var(--accent);height:24px}
+.val{font-weight:600;color:var(--accent);font-variant-numeric:tabular-nums}
+.bars{margin-top:6px}
+.bar-row{margin-bottom:12px}
+.bar-label{display:flex;justify-content:space-between;font-size:14px;margin-bottom:5px;gap:10px}
+.bar-track{background:#2a2724;border-radius:8px;height:26px;overflow:hidden;position:relative}
+.bar-fill{height:100%;border-radius:8px;transition:width .55s cubic-bezier(.22,.8,.3,1)}
+.bar-principal{background:#3f5c4e}
+.bar-growth{background:var(--accent)}
+.bar-negative{background:#a34a34}
+.bar-bond{background:#4a7fa0}
+.bar-stock{background:var(--accent)}
+.bar-gold{background:var(--warn)}
+.legend{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-top:10px;flex-wrap:wrap}
+.swatch{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:middle}
+.seg{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+.seg button{
+  background:var(--code);color:var(--muted);border:1px solid var(--line);border-radius:99px;
+  padding:6px 16px;font-size:14px;font-family:inherit;cursor:pointer;transition:all .2s;
+}
+.seg button.active{background:var(--accent-soft);color:var(--accent);border-color:#2c4a3c;font-weight:600}
+details{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:12px 16px;margin:10px 0}
+details[open]{background:#1d1b19}
+summary{cursor:pointer;font-weight:600;font-size:15.5px;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"▸ ";color:var(--accent)}
+details[open] summary::before{content:"▾ "}
+.ans{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font-size:15.5px;color:#d6d1c9}
+.q{font-weight:600;margin:22px 0 8px}
+pre{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:14px;line-height:1.6}
+code{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+.summary-box{border-left:3px solid var(--accent);padding-left:18px;margin:26px 0}
+.summary-box p{margin-bottom:8px}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
+footer a{color:var(--accent)}
+.disclaimer{font-size:13px;color:var(--muted);margin-top:18px;line-height:1.6}
+.nav{margin-bottom:20px;font-size:14px}
+.nav a{color:var(--accent);text-decoration:none}
+.src{font-size:12.5px;color:var(--muted);margin-top:8px}
+.steps{display:flex;align-items:flex-end;gap:14px;margin:18px 0 6px;height:150px}
+.step{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px}
+.step-bar{width:100%;border-radius:8px 8px 0 0;transition:height .55s cubic-bezier(.22,.8,.3,1);min-height:2px}
+.step1 .step-bar{background:#3f5c4e}
+.step2 .step-bar{background:var(--danger)}
+.step-label{font-size:13px;color:var(--muted);text-align:center}
+.step-val{font-weight:600;color:var(--ink);font-size:14.5px}
+.band-track{position:relative;height:64px;background:#2a2724;border-radius:10px;margin:14px 0 6px;overflow:hidden}
+.band-95{position:absolute;top:0;height:100%;background:#33413a;transition:all .5s cubic-bezier(.22,.8,.3,1)}
+.band-68{position:absolute;top:0;height:100%;background:#3f5c4e;transition:all .5s cubic-bezier(.22,.8,.3,1)}
+.band-mean{position:absolute;top:0;height:100%;width:3px;background:var(--accent);transition:left .5s cubic-bezier(.22,.8,.3,1)}
+.band-zero{position:absolute;top:0;height:100%;width:2px;background:var(--danger);opacity:.85;transition:left .5s}
+.band-scale{display:flex;justify-content:space-between;font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.mixbar{display:flex;height:30px;border-radius:8px;overflow:hidden;margin:6px 0 10px;background:#2a2724}
+.mixseg{height:100%;transition:width .4s cubic-bezier(.22,.8,.3,1)}
+.stat{display:flex;justify-content:space-between;font-size:15.5px;padding:7px 0;border-bottom:1px solid var(--line)}
+.stat:last-child{border-bottom:none}
+.stat b{font-variant-numeric:tabular-nums;color:var(--accent)}
+.cf{display:flex;align-items:flex-end;gap:5px;height:120px;margin:16px 0 4px}
+.cf-col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:5px}
+.cf-bar{width:100%;border-radius:5px 5px 0 0;background:#4a7fa0;transition:height .5s cubic-bezier(.22,.8,.3,1);min-height:3px}
+.cf-col.last .cf-bar{background:var(--accent)}
+.cf-lab{font-size:11.5px;color:var(--muted)}
+@media(max-width:520px){
+  body{font-size:16px;padding:20px 14px 60px}
+  h1{font-size:25px}
+  .card,.calc{padding:16px}
+}
+
+.dur{position:relative;margin:20px 0 4px}
+.dur-bars{display:flex;align-items:flex-end;gap:4px;height:130px}
+.dur-col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:4px}
+.dur-bar{width:100%;border-radius:5px 5px 0 0;background:#4a7fa0;transition:height .5s cubic-bezier(.22,.8,.3,1);min-height:3px}
+.dur-col.last .dur-bar{background:var(--accent)}
+.beam{height:9px;background:#3a3632;border-radius:5px;margin-top:8px;position:relative}
+.fulcrum{position:absolute;top:7px;width:0;height:0;border-left:11px solid transparent;border-right:11px solid transparent;border-top:16px solid var(--warn);transform:translateX(-11px);transition:left .5s cubic-bezier(.22,.8,.3,1)}
+.fulcrum-lab{position:absolute;top:26px;transform:translateX(-50%);font-size:12.5px;color:var(--warn);white-space:nowrap;transition:left .5s cubic-bezier(.22,.8,.3,1)}
+.dur-axis{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:34px}
+.curve{width:100%;height:auto;display:block;margin:8px 0 2px}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="nav"><a href="../index.html">← สารบัญ</a></div>
+
+<header>
+  <div class="kicker">
+    <span class="pill">Day 19 / 90</span>
+    <span>Phase 2 · การลงทุนระยะยาว</span>
+    <span>·</span>
+    <span>อ่าน 9 นาที</span>
+  </div>
+  <h1>ราคาบอนด์กับอัตราดอกเบี้ย และ duration</h1>
+  <p class="sub">เมื่อวานจบที่ข้อสรุปว่าราคากับ yield เดินสวนทางกันเสมอ วันนี้เราวัดกันเป็นตัวเลขว่าสวนทางแรงแค่ไหน — ทำไมพันธบัตร 30 ปีเจ็บกว่า 2 ปีถึงสิบเท่าเมื่อดอกเบี้ยขยับเท่ากัน และทำไมตัวเลขที่ชื่อว่า "อายุเฉลี่ย" ถึงกลายเป็นมาตรวัดความเสี่ยงที่สำคัญที่สุดของโลกตราสารหนี้</p>
+</header>
+
+<h2>ราคาไม่ได้ลง "เพราะ" ดอกเบี้ยขึ้น มันลงเพราะตัวหารโต</h2>
+
+<p>ก่อนจะไปที่ duration ต้องเข้าใจกลไกให้ชัดก่อน ราคาบอนด์คือมูลค่าปัจจุบันของกระแสเงินสดที่ยังไม่ได้รับ ตามสูตรที่เราเขียนไว้เมื่อวาน:</p>
+
+<div class="card accent">
+  <p style="margin-bottom:0;text-align:center;font-size:18px">P = Σ<sub>t=1..n</sub> C/(1+y)<sup>t</sup> + F/(1+y)<sup>n</sup></p>
+</div>
+
+<p>สังเกตว่า <strong>ตัวเศษ (C กับ F) ถูกล็อกไว้ในสัญญาแล้ว เปลี่ยนไม่ได้เลย</strong> เมื่อดอกเบี้ยในตลาดขยับขึ้น สิ่งเดียวที่เปลี่ยนคือ y ในตัวหาร และเมื่อตัวหารโตขึ้น ทุกก้อนของกระแสเงินสดถูกลดค่าลงหมด ราคาจึงต้องลง นี่ไม่ใช่จิตวิทยาตลาดหรือแรงขาย มันคือเลขคณิตล้วนๆ</p>
+
+<p>แต่ประเด็นสำคัญกว่าคือ <em>ก้อนที่อยู่ไกลถูกลดค่าแรงกว่าก้อนที่อยู่ใกล้</em> เพราะ (1+y)<sup>t</sup> เป็นฟังก์ชันเลขชี้กำลังของ t — เงิน 1,000 บาทที่จะได้ในอีก 30 ปี ถูกกระทบหนักกว่าเงิน 28 บาทที่จะได้ปีหน้ามหาศาล บอนด์ที่มีกระแสเงินสดกองอยู่ไกลจึงอ่อนไหวต่อดอกเบี้ยมากกว่า และนี่คือแก่นของ duration ทั้งหมด</p>
+
+<h2>Macaulay duration: จุดสมดุลของกระแสเงินสด</h2>
+
+<p><strong>Macaulay duration (D<sub>mac</sub>)</strong> คือ <em>อายุเฉลี่ยถ่วงน้ำหนักของการได้รับเงิน</em> โดยน้ำหนักคือสัดส่วนมูลค่าปัจจุบันของแต่ละงวดต่อราคาทั้งหมด:</p>
+
+<div class="card accent">
+  <p style="margin-bottom:0;text-align:center;font-size:18px">D<sub>mac</sub> = Σ<sub>t</sub> t · w<sub>t</sub> &nbsp;&nbsp;โดย&nbsp;&nbsp; w<sub>t</sub> = [CF<sub>t</sub>/(1+y)<sup>t</sup>] ÷ P</p>
+</div>
+
+<p>ภาพที่ช่วยให้จำได้ตลอดชีวิต: วางกระแสเงินสด (คิดลดแล้ว) เป็นก้อนน้ำหนักบนไม้กระดานที่มีแกนเวลาเป็นความยาว <strong>D<sub>mac</sub> คือจุดที่เอาลิ่มไปหนุนแล้วกระดานสมดุลพอดี</strong> ถ้าเงินก้อนใหญ่กองอยู่ปลายไกล จุดสมดุลก็เลื่อนออกไปไกล</p>
+
+<p>ตรวจสอบสูตรด้วยกรณีสุดขั้ว: บอนด์ไม่จ่ายดอกเบี้ย (zero-coupon) อายุ 10 ปี มีกระแสเงินสดก้อนเดียวที่ปีที่ 10 น้ำหนักทั้งหมดจึงอยู่ที่นั่น ⇒ D<sub>mac</sub> = 10 ปีพอดี เท่ากับอายุคงเหลือเป๊ะ นี่เป็นเพดานสูงสุด — <strong>บอนด์ที่จ่าย coupon จะมี D<sub>mac</sub> น้อยกว่าอายุคงเหลือเสมอ</strong> เพราะ coupon แต่ละงวดดึงน้ำหนักเข้ามาข้างหน้า</p>
+
+<h2>Modified duration: แปลงอายุให้เป็น % ความเสียหาย</h2>
+
+<p>D<sub>mac</sub> มีหน่วยเป็น "ปี" ซึ่งยังใช้ตอบคำถามที่เราอยากรู้จริงๆ ไม่ได้ — คำถามคือ "ถ้าดอกเบี้ยขึ้น 1% พอร์ตฉันหายไปกี่ %" ตัวที่ตอบได้คือ <strong>modified duration (D<sub>mod</sub>)</strong> ซึ่งมาจากการหาอนุพันธ์ของ P เทียบกับ y ตรงๆ:</p>
+
+<div class="card accent">
+  <p style="margin:0 0 10px;text-align:center;font-size:18px">D<sub>mod</sub> = D<sub>mac</sub> / (1 + y/m)</p>
+  <p style="margin-bottom:0;text-align:center;font-size:18px">ΔP/P ≈ − D<sub>mod</sub> × Δy</p>
+</div>
+
+<p>(m = จำนวนงวดจ่ายต่อปี ในบทนี้ใช้ m = 1 เพื่อความชัดเจน) อ่านสูตรที่สองให้ออก: <strong>D<sub>mod</sub> คือค่าความยืดหยุ่น</strong> — ถ้า D<sub>mod</sub> = 8.7 แปลว่าดอกเบี้ยขยับขึ้น 1.00% ราคาจะลงประมาณ 8.7% เครื่องหมายลบคือความสัมพันธ์สวนทางที่เราพิสูจน์เชิงคุณภาพไว้เมื่อวาน ตอนนี้มันมีตัวเลขกำกับแล้ว</p>
+
+<h2>ตัวเลขจริง: เส้นอัตราผลตอบแทนไทย</h2>
+
+<p>สมมติเราถือพันธบัตรรัฐบาลไทย coupon 2.80% ต่อปี ที่ระดับ yield 2.06% (ระดับ ณ สิ้นไตรมาส 2/2569) แล้ว yield ขยับขึ้นไปที่ 2.33% ตามกรอบที่ ThaiBMA คาดไว้สำหรับครึ่งหลังของปี — ขยับแค่ <strong>27 basis point</strong> เท่านั้น ผลต่ออายุแต่ละรุ่นเป็นแบบนี้:</p>
+
+<table>
+  <tr><th>อายุคงเหลือ</th><th class="num">ราคา</th><th class="num">D<sub>mac</sub></th><th class="num">D<sub>mod</sub></th><th class="num">ราคาเปลี่ยนจริง</th></tr>
+  <tr><td>2 ปี</td><td class="num">1,014.35</td><td class="num">1.973</td><td class="num">1.933</td><td class="num" style="color:var(--danger)">−0.520%</td></tr>
+  <tr><td>5 ปี</td><td class="num">1,034.82</td><td class="num">4.740</td><td class="num">4.645</td><td class="num" style="color:var(--danger)">−1.244%</td></tr>
+  <tr><td>10 ปี</td><td class="num">1,066.26</td><td class="num">8.902</td><td class="num">8.723</td><td class="num" style="color:var(--danger)">−2.323%</td></tr>
+  <tr><td>20 ปี</td><td class="num">1,120.30</td><td class="num">15.865</td><td class="num">15.545</td><td class="num" style="color:var(--danger)">−4.092%</td></tr>
+  <tr><td>30 ปี</td><td class="num">1,164.37</td><td class="num">21.444</td><td class="num">21.011</td><td class="num" style="color:var(--danger)">−5.474%</td></tr>
+</table>
+
+<p class="src">คำนวณจาก par 1,000 บาท coupon 2.80% จ่ายปีละครั้ง yield เริ่มต้น 2.06% → 2.33% (Δy = +27 bp) · อ้างอิงระดับ yield: ThaiBMA รายงานอัตราผลตอบแทนพันธบัตรรัฐบาลไทยอายุ 10 ปี ณ สิ้นไตรมาส 2/2569 ที่ 2.06% และคาดกรอบ 2.19–2.33% ในครึ่งหลังของปี 2569 · ดอกเบี้ยนโยบาย 1.00% ต่อปี มติ กนง. เอกฉันท์ 26 ส.ค. 2569 (คงเป็นครั้งที่ 3 ติดต่อกัน) · coupon 2.80% ใช้อ้างอิงจากพันธบัตรออมทรัพย์ออมพลัส 2569 รุ่น 10 ปี ที่คุยกันใน Day 18</p>
+
+<p>สามข้อที่ต้องเห็นจากตารางนี้:</p>
+
+<ul>
+  <li><strong>D<sub>mac</sub> โตช้ากว่าอายุมาก</strong> — อายุเพิ่มจาก 10 เป็น 30 ปี (3 เท่า) แต่ duration เพิ่มจาก 8.90 เป็น 21.44 (2.4 เท่า) เพราะยิ่งไกล น้ำหนัก PV ของกระแสเงินสดปลายๆ ยิ่งถูกคิดลดจนแทบไม่มีน้ำหนัก duration จึงมีเพดานอิ่มตัว</li>
+  <li><strong>ความเสียหายเป็นสัดส่วนตรงกับ D<sub>mod</sub> ไม่ใช่กับอายุ</strong> — รุ่น 30 ปีเจ็บกว่ารุ่น 2 ปีอยู่ 10.5 เท่า ซึ่งตรงกับอัตราส่วน 21.011 ÷ 1.933 = 10.87 พอดี (ไม่เป๊ะเพราะ convexity ที่จะพูดถัดไป)</li>
+  <li><strong>ขยับแค่ 27 bp ก็กินผลตอบแทนทั้งปี</strong> — รุ่น 10 ปีจ่าย coupon ปีละ 2.80% แต่ราคาลง 2.32% ในพริบตา แปลว่าปีนั้นแทบไม่ได้อะไรเลยถ้าต้องขาย</li>
+</ul>
+
+<div class="card warn">
+  <h3>"ปลอดภัย" ไม่ได้แปลว่า "ไม่ขาดทุน"</h3>
+  <p style="margin-bottom:0">Day 17 เราจัดพันธบัตรรัฐบาลไว้ในกลุ่มสินทรัพย์ปลอดภัย ซึ่งถูกต้องในความหมายเดียวคือ <em>ความเสี่ยงผิดนัดชำระ (credit risk) ต่ำมาก</em> แต่มันไม่ได้ปลอดภัยจาก <strong>ความเสี่ยงอัตราดอกเบี้ย (interest rate risk)</strong> เลย พันธบัตรรัฐบาล 30 ปีที่รับประกันโดยรัฐเต็มร้อย ยังขาดทุน 5.5% ในวันเดียวได้ถ้า yield ขยับ 27 bp ความเสี่ยงสองชนิดนี้เป็นคนละตัวกันโดยสิ้นเชิง และ duration คือเครื่องมือที่วัดชนิดที่สอง</p>
+</div>
+
+<h2>Convexity: ทำไมกำไรถึงมากกว่าขาดทุน</h2>
+
+<p>สูตร ΔP/P ≈ −D<sub>mod</sub> Δy เป็นการประมาณเชิงเส้น (พจน์อันดับหนึ่งของอนุกรมเทย์เลอร์) แต่ความสัมพันธ์จริงระหว่างราคากับ yield <strong>เป็นเส้นโค้งคว่ำ ไม่ใช่เส้นตรง</strong> ความโค้งนั้นเรียกว่า <strong>convexity (C)</strong> และให้ผลตอบแทนที่ประมาณแม่นขึ้นเมื่อเติมพจน์อันดับสอง:</p>
+
+<div class="card accent">
+  <p style="margin-bottom:0;text-align:center;font-size:18px">ΔP/P ≈ − D<sub>mod</sub> · Δy + ½ · C · (Δy)²</p>
+</div>
+
+<p>เพราะ (Δy)² เป็นบวกเสมอ ไม่ว่าดอกเบี้ยจะขึ้นหรือลง <strong>พจน์ convexity ก็บวกให้เราเสมอ</strong> ผลคือความไม่สมมาตรที่เป็นประโยชน์กับผู้ถือบอนด์ ลองดูบอนด์ 10 ปี coupon 2.80% ที่ yield 2.06% เมื่อโดนช็อกใหญ่ ±1.00%:</p>
+
+<table>
+  <tr><th>สถานการณ์</th><th class="num">ราคาใหม่</th><th class="num">จริง</th><th class="num">เส้นตรงล้วน</th><th class="num">+ convexity</th></tr>
+  <tr><td>yield ขึ้น 1.00%</td><td class="num">977.89</td><td class="num" style="color:var(--danger)">−8.288%</td><td class="num">−8.723%</td><td class="num">−8.271%</td></tr>
+  <tr><td>yield ลง 1.00%</td><td class="num">1,164.27</td><td class="num">+9.192%</td><td class="num">+8.723%</td><td class="num">+9.174%</td></tr>
+</table>
+
+<p class="src">C = 90.25 สำหรับบอนด์ตัวนี้ · พจน์ convexity = ½ × 90.25 × 0.01² = +0.451% ซึ่งอธิบายส่วนต่างระหว่างคอลัมน์ "จริง" กับ "เส้นตรงล้วน" ได้เกือบทั้งหมด</p>
+
+<p>อ่านตารางนี้ให้ออก: เส้นตรงบอกว่าเราควรเจ็บ 8.723% และได้ 8.723% เท่ากันทั้งสองทาง แต่ความจริงคือ <strong>เจ็บแค่ 8.288% และได้ถึง 9.192%</strong> ส่วนต่าง 0.90% นั้นคือของขวัญจากความโค้ง กฎที่จำได้เลยคือ <em>convexity สูงเป็นเรื่องดีเสมอสำหรับผู้ถือบอนด์</em> — และเป็นเหตุผลที่บอนด์ระยะยาว (convexity สูงกว่า) ถูกซื้อในราคาที่ให้ yield ต่ำกว่าที่ duration อย่างเดียวจะอธิบายได้</p>
+
+<p>ข้อควรระวังจากตารางเดียวกัน: การประมาณเชิงเส้นแม่นมากเมื่อ Δy เล็ก (ที่ 27 bp คลาดเคลื่อนแค่ 0.032% ในรุ่น 10 ปี) แต่เพี้ยนชัดเมื่อ Δy ใหญ่ (ที่ 100 bp คลาดเคลื่อน 0.44%) <strong>duration คือมาตรวัดเฉพาะที่ (local) ไม่ใช่แผนที่ทั้งเส้นโค้ง</strong></p>
+
+<h2>coupon สูงลด duration ได้</h2>
+
+<p>อายุคงเหลือไม่ใช่ตัวแปรเดียว บอนด์อายุ 10 ปีเท่ากันที่ yield 2.06% แต่ coupon ต่างกัน จะมี duration ต่างกัน:</p>
+
+<table>
+  <tr><th>coupon</th><th class="num">D<sub>mac</sub> (ปี)</th><th class="num">D<sub>mod</sub></th><th>เหตุผล</th></tr>
+  <tr><td>0% (zero-coupon)</td><td class="num">10.000</td><td class="num">9.798</td><td>น้ำหนักทั้งหมดอยู่ปีที่ 10</td></tr>
+  <tr><td>2.00%</td><td class="num">9.159</td><td class="num">8.975</td><td>coupon เล็กน้อยดึงน้ำหนักมาข้างหน้า</td></tr>
+  <tr><td>2.80%</td><td class="num">8.902</td><td class="num">8.723</td><td>ระดับพันธบัตรออมทรัพย์ 10 ปี</td></tr>
+  <tr><td>5.00%</td><td class="num">8.346</td><td class="num">8.177</td><td>ได้เงินคืนเร็วขึ้นมาก</td></tr>
+  <tr><td>8.00%</td><td class="num">7.817</td><td class="num">7.659</td><td>เกือบ 1 ใน 4 ของ PV มาจาก coupon</td></tr>
+</table>
+
+<p>กฎสามข้อที่สรุปได้ทั้งหมด: duration <strong>เพิ่ม</strong>ตามอายุคงเหลือ, <strong>ลด</strong>เมื่อ coupon สูงขึ้น, และ <strong>ลด</strong>เมื่อระดับ yield สูงขึ้น (เพราะ yield สูงคิดลดกระแสเงินสดไกลๆ แรงขึ้น น้ำหนักจึงถูกดึงเข้าใกล้) ทั้งสามข้อมาจากเหตุผลเดียวกันคือ "น้ำหนัก PV กองอยู่ใกล้หรือไกล"</p>
+
+<h2>ลองขยับดอกเบี้ยเอง</h2>
+<p>แท่งด้านล่างคือมูลค่าปัจจุบันของกระแสเงินสดแต่ละปี ลิ่มสีส้มคือจุดสมดุล = Macaulay duration ลองเลื่อนดูว่าอายุกับ coupon ดันลิ่มไปทางไหน แล้วดูว่าการประมาณด้วย duration คลาดเคลื่อนจากราคาจริงแค่ไหนเมื่อช็อกใหญ่ขึ้น</p>
+
+<div class="calc">
+  <div class="row">
+    <label>อายุคงเหลือ — <span class="val" id="nV">10</span> ปี</label>
+    <input type="range" id="n" min="1" max="30" value="10" step="1">
+  </div>
+  <div class="row">
+    <label>อัตราดอกเบี้ยหน้าตั๋ว coupon — <span class="val" id="cV">2.80</span>%</label>
+    <input type="range" id="c" min="0" max="10" value="2.8" step="0.1">
+  </div>
+  <div class="row">
+    <label>yield ตั้งต้น — <span class="val" id="yV">2.06</span>%</label>
+    <input type="range" id="y" min="0.25" max="8" value="2.06" step="0.01">
+  </div>
+  <div class="row">
+    <label>ดอกเบี้ยขยับ Δy — <span class="val" id="dV">+27</span> bp</label>
+    <input type="range" id="d" min="-200" max="200" value="27" step="1">
+  </div>
+
+  <div class="dur">
+    <div class="dur-bars" id="bars"></div>
+    <div class="beam"><div class="fulcrum" id="ful"></div><div class="fulcrum-lab" id="fulLab"></div></div>
+    <div class="dur-axis"><span>ปีที่ 1</span><span id="axEnd">ปีที่ 10</span></div>
+  </div>
+  <div style="font-size:12.5px;color:var(--muted);margin-bottom:14px">มูลค่าปัจจุบันของกระแสเงินสดรายปี (แท่งสุดท้ายรวมเงินต้นคืน) · ลิ่ม = จุดสมดุล</div>
+
+  <div style="margin-top:6px">
+    <div class="stat"><span>Macaulay duration</span><b id="oDm"></b></div>
+    <div class="stat"><span>Modified duration</span><b id="oDmod"></b></div>
+    <div class="stat"><span>Convexity</span><b id="oCx"></b></div>
+    <div class="stat"><span>ราคาเดิม → ราคาใหม่</span><b id="oP"></b></div>
+    <div class="stat"><span>ราคาเปลี่ยนจริง</span><b id="oAct"></b></div>
+    <div class="stat"><span>ประมาณด้วย duration อย่างเดียว</span><b id="oLin"></b></div>
+    <div class="stat"><span>ประมาณ duration + convexity</span><b id="oCv"></b></div>
+    <div class="stat"><span>ถ้าลงทุน 20,000 บาท กำไร/ขาดทุนทางบัญชี</span><b id="oBaht"></b></div>
+  </div>
+  <p id="oTxt" style="margin:16px 0 0;font-size:15.5px;color:var(--muted)"></p>
+</div>
+
+<div class="card">
+  <h3>เชื่อมกับชีวิตเด็กฝึกงาน</h3>
+  <p>Day 18 เต้นเทียบเงิน 20,000 บาทระหว่างพันธบัตรออมพลัสรุ่น 3 ปี (1.80%) กับรุ่น 10 ปี (2.80%) แล้วสรุปว่ารุ่น 10 ปีชนะเงินเฟ้อได้ วันนี้เติมมิติที่หายไป — ถ้าเกิดจำเป็นต้องใช้เงินก่อนกำหนดจริงๆ แล้วดอกเบี้ยดันขึ้นไปแล้ว จะขายขาดทุนเท่าไร:</p>
+  <table>
+    <tr><th>รุ่น</th><th class="num">D<sub>mod</sub></th><th class="num">ถ้า yield +27 bp</th><th class="num">ถ้า yield +100 bp</th></tr>
+    <tr><td>ออมพลัส 3 ปี (1.80%)</td><td class="num">2.895</td><td class="num" style="color:var(--danger)">−156 บาท</td><td class="num" style="color:var(--danger)">−568 บาท</td></tr>
+    <tr><td>ออมพลัส 10 ปี (2.80%)</td><td class="num">8.618</td><td class="num" style="color:var(--danger)">−459 บาท</td><td class="num" style="color:var(--danger)">−1,638 บาท</td></tr>
+  </table>
+  <p style="margin-bottom:0">รุ่น 10 ปีให้ดอกเบี้ยมากกว่าปีละ 200 บาท (560 vs 360) แต่ <strong>ถ้าดอกเบี้ยขึ้น 1% แล้วต้องขาย จะเสียมูลค่า 1,638 บาท — กินดอกเบี้ยส่วนเกินที่ได้เพิ่มไปแปดปี</strong> นี่คือราคาที่แท้จริงของการ "ล็อกยาวเพื่อ yield สูงกว่า" ข้อสังเกตสำคัญ: ตัวเลขนี้เป็นขาดทุนทางบัญชี (mark-to-market) เท่านั้น ถ้าถือจนครบอายุก็ได้ par 1,000 คืนเต็มเสมอ ความเสียหายเกิดจริงต่อเมื่อ<em>ถูกบังคับให้ขายก่อนกำหนด</em> ซึ่งย้อนกลับไปที่กฎ Day 7 อีกครั้ง — เงินสำรองฉุกเฉินต้องแยกออกมาก่อน แล้วสิ่งที่เหลือถึงจะล็อกยาวได้อย่างสบายใจ</p>
+</div>
+
+<div class="card accent">
+  <h3>เกณฑ์ตัดสินใจที่ใช้ได้จริง</h3>
+  <p style="margin-bottom:0">มีหลักที่นักลงทุนสถาบันใช้ชื่อว่า <strong>duration matching</strong> — เลือกบอนด์ที่ D<sub>mac</sub> ใกล้เคียงกับ<em>ระยะเวลาที่จะใช้เงิน</em> เพราะที่จุดนั้นการขาดทุนจากราคาและกำไรจากการนำ coupon ไปลงทุนต่อในอัตราที่สูงขึ้นจะหักล้างกันพอดี ความเสี่ยงอัตราดอกเบี้ยจึงถูกลบล้างไปเกือบหมด แปลเป็นภาษาคน: จะใช้เงินอีก 3 ปี ก็อย่าไปซื้อบอนด์ที่ duration 9 ปี ไม่ว่า yield จะน่าดึงดูดแค่ไหน</p>
+</div>
+
+<details>
+  <summary>กล่องโค้ด (ข้ามได้ ไม่นับในเวลาอ่าน)</summary>
+  <div class="ans">
+  <p>ตัวเลขทุกตัวในบทนี้คำนวณและตรวจด้วย Python ก่อนเขียนลงบทเรียน — และเป็นตรรกะชุดเดียวกับที่ JS ในเครื่องคำนวณข้างบนใช้:</p>
+  <pre><code>def price(F, cpn, y, n):
+    C = F * cpn
+    return sum(C/(1+y)**t for t in range(1, n+1)) + F/(1+y)**n
+
+def macaulay(F, cpn, y, n):
+    """อายุเฉลี่ยถ่วงน้ำหนักด้วย PV ของแต่ละงวด"""
+    C = F * cpn; P = price(F, cpn, y, n)
+    s = sum(t * C/(1+y)**t for t in range(1, n+1)) + n * F/(1+y)**n
+    return s / P
+
+def moddur(F, cpn, y, n):  return macaulay(F, cpn, y, n) / (1+y)
+
+def convexity(F, cpn, y, n):
+    """พจน์อันดับสอง: d2P/dy2 / P"""
+    C = F * cpn; P = price(F, cpn, y, n)
+    s = sum(t*(t+1) * C/(1+y)**(t+2) for t in range(1, n+1)) \
+        + n*(n+1) * F/(1+y)**(n+2)
+    return s / P
+
+assert abs(macaulay(1000, 0.0, 0.03, 10) - 10) &lt; 1e-9   # zero-coupon: D = n
+
+y0, dy = 0.0206, 0.0027
+for n in (2, 5, 10, 20, 30):
+    P, Dm = price(1000,.028,y0,n), moddur(1000,.028,y0,n)
+    act = (price(1000,.028,y0+dy,n)/P - 1) * 100
+    print(f"n={n:2d} P={P:8.2f} Dmod={Dm:6.3f} actual={act:+.3f}% lin={-Dm*dy*100:+.3f}%")
+# n= 2 P= 1014.35 Dmod= 1.933 actual=-0.520% lin=-0.522%
+# n=10 P= 1066.26 Dmod= 8.723 actual=-2.323% lin=-2.355%
+# n=30 P= 1164.37 Dmod=21.011 actual=-5.474% lin=-5.673%
+
+# ความไม่สมมาตรจาก convexity ที่ช็อก +/-1%
+n, P = 10, price(1000,.028,y0,10)
+Dm, Cx = moddur(1000,.028,y0,10), convexity(1000,.028,y0,10)
+for d in (0.01, -0.01):
+    act = (price(1000,.028,y0+d,10)/P - 1)*100
+    print(f"{d:+.0%}: actual {act:+.3f}%  lin {-Dm*d*100:+.3f}%"
+          f"  +cx {(-Dm*d + 0.5*Cx*d*d)*100:+.3f}%")
+# +1%: actual -8.288%  lin -8.723%  +cx -8.271%
+# -1%: actual +9.192%  lin +8.723%  +cx +9.174%   &lt;- ได้มากกว่าเสีย</code></pre>
+  </div>
+</details>
+
+<h2>ทดสอบความเข้าใจ</h2>
+
+<p class="q">1. พันธบัตรสองใบมีอายุคงเหลือ 10 ปีเท่ากัน ใบ A เป็น zero-coupon ใบ B จ่าย coupon 8% ถ้าดอกเบี้ยตลาดขึ้น 50 bp พร้อมกัน ใบไหนราคาลงแรงกว่า และแรงกว่ากี่เท่าโดยประมาณ?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">ใบ A ลงแรงกว่า จากตารางในบทเรียน ที่ yield 2.06% ใบ A มี D<sub>mod</sub> = 9.798 ส่วนใบ B มี D<sub>mod</sub> = 7.659 ⇒ ใบ A ลงประมาณ 9.798 × 0.005 = 4.90% ส่วนใบ B ลงประมาณ 7.659 × 0.005 = 3.83% แรงกว่าราว 1.28 เท่า เหตุผลเชิงกลไก: ใบ A มีกระแสเงินสดก้อนเดียวกองอยู่ที่ปีที่ 10 น้ำหนัก PV ทั้งหมดจึงอยู่ปลายสุด จุดสมดุลอยู่ที่ 10 ปีเต็ม ส่วนใบ B ได้เงินคืนระหว่างทางปีละ 80 บาท ซึ่งดึงจุดสมดุลเข้ามาที่ 7.82 ปี บทเรียนทั่วไป: <strong>อายุคงเหลือเท่ากันไม่ได้แปลว่าความเสี่ยงดอกเบี้ยเท่ากัน ต้องดู duration ไม่ใช่ maturity</strong></div>
+</details>
+
+<p class="q">2. บอนด์ตัวหนึ่งมี D<sub>mod</sub> = 8.7 และ convexity = 90 ถ้า yield ลง 2.00% การประมาณด้วย duration อย่างเดียวจะให้คำตอบต่ำหรือสูงเกินไป และคลาดเคลื่อนกี่เปอร์เซ็นต์?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">ต่ำเกินไป (underestimate กำไร) เพราะพจน์ convexity เป็นบวกเสมอ: ½ × 90 × (0.02)² = ½ × 90 × 0.0004 = <strong>+1.80%</strong> เส้นตรงล้วนบอกว่าได้ 8.7 × 2 = 17.4% แต่ความจริงราว 19.2% ประเด็นที่ต้องเก็บไปคือพจน์ convexity โตแบบ<em>กำลังสอง</em>ของ Δy — ที่ Δy = 0.27% มันเล็กจนละเลยได้ (0.033%) แต่ที่ Δy = 2% มันใหญ่พอที่จะเปลี่ยนการตัดสินใจได้ ดังนั้น <strong>duration ใช้ได้ดีกับการขยับเล็กเท่านั้น</strong> ในสถานการณ์วิกฤตที่ดอกเบี้ยกระโดดหลายเปอร์เซ็นต์ ต้องคิดราคาจากสูตร PV เต็มเสมอ อย่าใช้สูตรประมาณ</div>
+</details>
+
+<p class="q">3. เต้นซื้อพันธบัตร 10 ปี coupon 2.80% ที่ราคา par วันรุ่งขึ้น yield ตลาดขึ้นเป็น 3.06% พอร์ตแสดงผลขาดทุนทันที เต้นควรตกใจไหม และเงื่อนไขอะไรที่ทำให้ขาดทุนนั้นกลายเป็นของจริง?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">ไม่ควรตกใจ ถ้าเงื่อนไขสองข้อนี้เป็นจริง: (ก) เต้นตั้งใจถือจนครบอายุอยู่แล้ว และ (ข) เงินก้อนนี้ไม่ใช่เงินที่อาจต้องใช้ก่อน 10 ปี เพราะกระแสเงินสดที่จะได้รับถูกล็อกไว้ในสัญญาแล้ว — coupon 28 บาททุกปี และ par 1,000 บาทวันครบกำหนด ราคาตลาดที่ลดลงไม่ได้ทำให้จำนวนเงินเหล่านั้นเปลี่ยนแม้บาทเดียว มันเปลี่ยนแค่ราคาที่<em>คนอื่น</em>ยอมจ่ายให้เราวันนี้ ที่จริงในระยะยาว yield ที่สูงขึ้นเป็นผลดีด้วยซ้ำ เพราะ coupon ที่ได้รับจะถูกนำไปลงทุนต่อในอัตราที่สูงขึ้น (reinvestment) ขาดทุนกลายเป็นของจริงเมื่อ <strong>ถูกบังคับให้ขายก่อนกำหนด</strong> — ซึ่งเกิดจากเหตุฉุกเฉินที่ไม่มีเงินสำรองรองรับ หรือจากการที่ผู้ออกผิดนัดชำระซึ่งเป็นความเสี่ยงคนละชนิด ข้อสรุป: ความเสี่ยงอัตราดอกเบี้ยเป็นความเสี่ยงของ<em>สภาพคล่องและระยะเวลา</em> ไม่ใช่ความเสี่ยงของมูลค่าที่จะได้รับสุดท้าย</div>
+</details>
+
+<p class="q"><strong>ทวน:</strong> ทำไมสินทรัพย์ที่ให้ผลตอบแทนคาดหวังสูงกว่าจึงต้องมาพร้อมความผันผวนสูงกว่า และ "ความเสี่ยง" ในความหมายของนักลงทุนต่างจากความหมายในภาษาพูดอย่างไร?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">เพราะถ้ามีสินทรัพย์ที่ให้ผลตอบแทนสูงกว่าโดยไม่เสี่ยงเพิ่ม ทุกคนจะแห่ซื้อจนราคาสูงขึ้นและผลตอบแทนในอนาคตลดลงมาเท่าตัวอื่นเอง ส่วนต่างผลตอบแทนที่ยั่งยืนจึงต้องเป็น<em>ค่าชดเชยความเสี่ยง (risk premium)</em> ที่มีคนยอมรับไม่ได้จริงๆ อยู่เสมอ ส่วนคำว่าความเสี่ยงในภาษาพูดหมายถึง "โอกาสเสียหาย" แต่ในทางการเงินหมายถึง <strong>ความไม่แน่นอนของผลลัพธ์ (variance/volatility)</strong> ซึ่งรวมทั้งด้านดีและด้านร้าย ที่เชื่อมกับบทวันนี้โดยตรง: duration คือการวัดความเสี่ยงในความหมายที่สอง — บอนด์ 30 ปีมีความไม่แน่นอนของราคาสูงกว่า จึงมักได้ yield สูงกว่าเป็นค่าชดเชย (term premium) ไม่ใช่เพราะมันแย่กว่า<br>ตอบผิดหรือลังเล? → <a href="finance-day-16-risk-return-tradeoff.html">ทบทวน Day 16: ความเสี่ยงกับผลตอบแทน (risk-return tradeoff)</a></div>
+</details>
+
+<p class="q"><strong>ทวน:</strong> เส้นแบ่งระหว่างหนี้ดีกับหนี้เสียคืออะไร และเมื่อดอกเบี้ยตลาดสูงขึ้น หนี้ที่เคยเป็น "หนี้ดี" กลายเป็นหนี้เสียได้ไหม?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">เส้นแบ่งไม่ได้อยู่ที่ตัวหนี้ แต่อยู่ที่ว่า <em>สิ่งที่เอาเงินกู้ไปทำ ให้ผลตอบแทนสูงกว่าดอกเบี้ยที่จ่ายหรือไม่</em> — กู้ 6% ไปลงทุนในสิ่งที่ให้ 10% คือหนี้ดี กู้ 18% ไปซื้อของที่เสื่อมค่าคือหนี้เสีย ตอบคำถามที่สอง: <strong>ได้ และเป็นเรื่องที่เกิดบ่อยมาก</strong> เพราะหนี้อัตราลอยตัว (floating rate) เช่นสินเชื่อบ้านส่วนใหญ่ในไทยผูกกับ MRR/MLR ซึ่งขยับตามดอกเบี้ยนโยบาย เมื่อดอกเบี้ยขึ้น ต้นทุนการกู้ขึ้นตาม แต่ผลตอบแทนจากสิ่งที่ลงทุนไว้ไม่ได้ขึ้นตามอัตโนมัติ หนี้ที่คำนวณว่าคุ้มที่ 5% อาจไม่คุ้มที่ 7% จุดเชื่อมกับบทวันนี้ที่สวยงามคือ <em>หนี้ก็มี duration เหมือนกัน</em> — ผู้กู้คือฝั่งตรงข้ามของผู้ถือบอนด์ เมื่อดอกเบี้ยขึ้น มูลค่าปัจจุบันของภาระหนี้อัตราคงที่ที่เราติดอยู่จะ<em>ลดลง</em> ซึ่งเป็นผลดีกับลูกหนี้ ตรงข้ามกับเจ้าหนี้พอดี<br>ตอบผิดหรือลังเล? → <a href="finance-day-10-good-debt-bad-debt.html">ทบทวน Day 10: หนี้ดี vs หนี้เสีย และดอกเบี้ยเงินกู้</a></div>
+</details>
+
+<div class="summary-box">
+  <h2 style="margin-top:0">สรุป 3 บรรทัด</h2>
+  <p>1. ราคาบอนด์ลงเมื่อดอกเบี้ยขึ้นเพราะตัวเศษ (coupon กับเงินต้น) ถูกล็อกไว้ในสัญญา เปลี่ยนได้แค่ตัวหาร (1+y)<sup>t</sup> — และกระแสเงินสดที่อยู่ไกลถูกกระทบแรงกว่าที่อยู่ใกล้แบบทวีคูณ</p>
+  <p>2. Macaulay duration คือจุดสมดุลของกระแสเงินสดถ่วงน้ำหนักด้วย PV ส่วน modified duration = D<sub>mac</sub>/(1+y) แปลงเป็น % ความเสียหายต่อการขยับ 1% ได้โดยตรง: พันธบัตรไทย 10 ปีมี D<sub>mod</sub> ≈ 8.72 จึงเสีย 2.32% เมื่อ yield ขยับแค่ 27 bp</p>
+  <p style="margin-bottom:0">3. duration เป็นเส้นตรง แต่ความจริงเป็นเส้นโค้ง convexity ทำให้กำไรตอนดอกเบี้ยลงมากกว่าขาดทุนตอนดอกเบี้ยขึ้นเสมอ (+9.19% vs −8.29% ที่ช็อก ±1%) และเป็นเหตุผลว่าทำไมสูตรประมาณใช้ได้เฉพาะการขยับเล็กๆ</p>
+</div>
+
+<footer>
+  <p><strong>พรุ่งนี้ Day 20 — หุ้นคืออะไร ผู้ถือหุ้นได้อะไรบ้าง</strong> เราอยู่ฝั่งเจ้าหนี้มาสามวันแล้ว พรุ่งนี้ข้ามไปฝั่งเจ้าของ — ถือหุ้นหนึ่งหุ้นแปลว่าเราเป็นเจ้าของอะไรจริงๆ สิทธิในเงินปันผลกับสิทธิออกเสียงทำงานอย่างไร และทำไมผู้ถือหุ้นถึงได้เงินเป็นคนสุดท้ายเสมอแต่กลับได้ผลตอบแทนระยะยาวสูงที่สุด</p>
+  <p class="disclaimer">บทเรียนนี้เป็นความรู้เชิงการศึกษา ไม่ใช่คำแนะนำทางการเงินเฉพาะบุคคล และไม่ใช่การชี้ชวนให้ซื้อหรือขายตราสารใดตราสารหนึ่ง ระดับ yield อัตราดอกเบี้ยนโยบาย และ coupon ที่อ้างอิงเป็นข้อมูล ณ วันที่ระบุในแต่ละตารางเท่านั้น และเปลี่ยนแปลงตลอดเวลา — ถ้าอ่านย้อนหลังให้ตรวจสอบกับ ThaiBMA และ ธปท. ใหม่เสมอ ตัวเลข duration และ convexity ทั้งหมดคำนวณบนสมมติฐานว่าจ่าย coupon ปีละครั้ง เส้นอัตราผลตอบแทนขยับขนานกันทั้งเส้น (parallel shift) และไม่มีสิทธิไถ่ถอนก่อนกำหนด (no embedded option) ซึ่งเป็นการทำให้ง่ายเพื่อการเรียนรู้ บอนด์จริงบางรุ่นมีเงื่อนไขที่ทำให้ duration คำนวณต่างไปจากนี้</p>
+</footer>
+
+</div>
+
+<script>
+(function(){
+  var F = 1000;
+  var sn=document.getElementById('n'), sc=document.getElementById('c'),
+      sy=document.getElementById('y'), sd=document.getElementById('d');
+  var ln=document.getElementById('nV'), lc=document.getElementById('cV'),
+      ly=document.getElementById('yV'), ld=document.getElementById('dV');
+  var bars=document.getElementById('bars'), ful=document.getElementById('ful'),
+      fulLab=document.getElementById('fulLab'), axEnd=document.getElementById('axEnd');
+  var oDm=document.getElementById('oDm'), oDmod=document.getElementById('oDmod'),
+      oCx=document.getElementById('oCx'), oP=document.getElementById('oP'),
+      oAct=document.getElementById('oAct'), oLin=document.getElementById('oLin'),
+      oCv=document.getElementById('oCv'), oBaht=document.getElementById('oBaht'),
+      oTxt=document.getElementById('oTxt');
+
+  function price(cpn,y,n){
+    var C=F*cpn, p=0;
+    for(var t=1;t<=n;t++) p+=C/Math.pow(1+y,t);
+    return p+F/Math.pow(1+y,n);
+  }
+  function macaulay(cpn,y,n){
+    var C=F*cpn, P=price(cpn,y,n), s=0;
+    for(var t=1;t<=n;t++) s+=t*C/Math.pow(1+y,t);
+    s+=n*F/Math.pow(1+y,n);
+    return s/P;
+  }
+  function convexity(cpn,y,n){
+    var C=F*cpn, P=price(cpn,y,n), s=0;
+    for(var t=1;t<=n;t++) s+=t*(t+1)*C/Math.pow(1+y,t+2);
+    s+=n*(n+1)*F/Math.pow(1+y,n+2);
+    return s/P;
+  }
+  function fmt(x){ return x.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+  function pct(x){ return (x>=0?'+':'') + x.toFixed(3) + '%'; }
+  function col(el,x){ el.style.color = x>=0 ? 'var(--accent)' : 'var(--danger)'; }
+
+  function render(){
+    var n=+sn.value, cpn=+sc.value/100, y=+sy.value/100, dy=+sd.value/10000;
+    ln.textContent=n;
+    lc.textContent=(+sc.value).toFixed(2);
+    ly.textContent=(+sy.value).toFixed(2);
+    ld.textContent=(+sd.value>=0?'+':'')+sd.value;
+    axEnd.textContent='ปีที่ '+n;
+
+    var P=price(cpn,y,n), Dmac=macaulay(cpn,y,n), Dmod=Dmac/(1+y), Cx=convexity(cpn,y,n);
+    var P2=price(cpn,y+dy,n);
+    var act=(P2/P-1)*100, lin=-Dmod*dy*100, cv=(-Dmod*dy+0.5*Cx*dy*dy)*100;
+
+    // แท่ง PV ของกระแสเงินสดแต่ละปี
+    var C=F*cpn, pv=[], max=0;
+    for(var t=1;t<=n;t++){
+      var v=((t===n)?(C+F):C)/Math.pow(1+y,t);
+      pv.push(v); if(v>max) max=v;
+    }
+    var html='', showLab = n<=15;
+    for(var i=0;i<pv.length;i++){
+      var h = max>0 ? Math.max(3, pv[i]/max*100) : 3;
+      html += '<div class="dur-col'+(i===pv.length-1?' last':'')+'">'+
+              '<div class="dur-bar" style="height:'+h+'%"></div></div>';
+    }
+    bars.innerHTML=html;
+
+    // ลิ่มอยู่ตรงจุดสมดุล: map ปี 1..n ให้ตรงกลางแท่งแรกถึงกลางแท่งสุดท้าย
+    var frac = n>1 ? (Dmac-1)/(n-1) : 0.5;
+    frac = Math.max(0, Math.min(1, frac));
+    var left = (100/n)*0.5 + frac*(100 - 100/n);
+    ful.style.left = left+'%';
+    fulLab.style.left = left+'%';
+    fulLab.textContent = 'D = '+Dmac.toFixed(2)+' ปี';
+
+    oDm.textContent   = Dmac.toFixed(3)+' ปี';
+    oDmod.textContent = Dmod.toFixed(3);
+    oCx.textContent   = Cx.toFixed(2);
+    oP.textContent    = fmt(P)+' → '+fmt(P2);
+    oAct.textContent  = pct(act);   col(oAct,act);
+    oLin.textContent  = pct(lin)+' (คลาด '+Math.abs(lin-act).toFixed(3)+')';
+    oCv.textContent   = pct(cv)+' (คลาด '+Math.abs(cv-act).toFixed(3)+')';
+    var baht = (P2/P-1)*20000;
+    oBaht.textContent = (baht>=0?'+':'') + fmt(baht) + ' บาท';
+    col(oBaht, baht);
+    oLin.style.color='var(--muted)'; oCv.style.color='var(--muted)';
+
+    var msg;
+    if(Math.abs(dy)<1e-9){
+      msg='ยังไม่ขยับดอกเบี้ย ลองเลื่อน Δy ดู — สังเกตว่ายิ่งอายุยาวหรือ coupon ต่ำ ลิ่มยิ่งเลื่อนไปทางขวา และนั่นแปลว่าความเสียหายต่อการขยับ 1 bp จะยิ่งมาก';
+    } else if(Math.abs(dy)<=0.005){
+      msg='Δy เล็ก การประมาณเชิงเส้นด้วย duration คลาดเคลื่อนแค่ '+Math.abs(lin-act).toFixed(3)+
+          '% — ในช่วงนี้จำแค่ D_mod ตัวเดียวก็ประมาณในหัวได้แม่นพอใช้งานจริง';
+    } else {
+      msg='Δy ใหญ่ ('+(+sd.value)+' bp) การประมาณเชิงเส้นเริ่มเพี้ยน คลาด '+Math.abs(lin-act).toFixed(3)+
+          '% แต่พอเติมพจน์ convexity เข้าไปเหลือคลาดแค่ '+Math.abs(cv-act).toFixed(3)+
+          '% — ความโค้งนี้เข้าข้างผู้ถือบอนด์เสมอ ลองสลับเครื่องหมาย Δy ดูว่าฝั่งได้กับฝั่งเสียไม่เท่ากัน';
+    }
+    oTxt.textContent=msg;
+  }
+
+  [sn,sc,sy,sd].forEach(function(s){ s.addEventListener('input', render); });
+  render();
+})();
+</script>
+</body>
+</html>
