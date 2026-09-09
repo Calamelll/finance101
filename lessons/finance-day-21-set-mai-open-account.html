@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day 21 — ตลาดหลักทรัพย์ไทย (SET/mai) และการเปิดพอร์ต | Finance101</title>
+<style>
+:root{
+  --bg:#191816; --card:#211f1d; --ink:#e8e4dd; --muted:#a09a91;
+  --line:#332f2b; --accent:#6cc394; --accent-soft:#1c2f26;
+  --warn:#e0a86f; --warn-soft:#2e2419; --code:#201e1b; --danger:#e0785c;
+  color-scheme: dark;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; padding:28px 18px 80px; background:var(--bg); color:var(--ink);
+  font-family:"Sarabun","Noto Sans Thai",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:17px; line-height:1.75; -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:720px;margin:0 auto}
+header{margin-bottom:34px}
+.kicker{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--muted);letter-spacing:.02em}
+.pill{background:var(--accent-soft);color:var(--accent);padding:3px 11px;border-radius:99px;font-weight:600}
+h1{font-size:29px;line-height:1.3;margin:12px 0 6px;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:16px;margin:0}
+h2{font-size:21px;margin:38px 0 12px;letter-spacing:-.005em}
+h3{font-size:17px;margin:26px 0 8px}
+p{margin:0 0 15px}
+ul,ol{margin:0 0 15px;padding-left:22px}
+li{margin-bottom:7px}
+strong{font-weight:600}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin:22px 0}
+.card.accent{background:var(--accent-soft);border-color:#2c4a3c}
+.card.warn{background:var(--warn-soft);border-color:#4a3722}
+.card h3{margin-top:0}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15.5px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-weight:600;font-size:13.5px;letter-spacing:.02em}
+td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.calc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;margin:22px 0}
+.calc label{display:block;font-size:14px;color:var(--muted);margin-bottom:6px}
+.calc .row{margin-bottom:18px}
+input[type=range]{width:100%;accent-color:var(--accent);height:24px}
+.val{font-weight:600;color:var(--accent);font-variant-numeric:tabular-nums}
+.bars{margin-top:6px}
+.bar-row{margin-bottom:12px}
+.bar-label{display:flex;justify-content:space-between;font-size:14px;margin-bottom:5px;gap:10px}
+.bar-track{background:#2a2724;border-radius:8px;height:26px;overflow:hidden;position:relative}
+.bar-fill{height:100%;border-radius:8px;transition:width .55s cubic-bezier(.22,.8,.3,1)}
+.bar-principal{background:#3f5c4e}
+.bar-growth{background:var(--accent)}
+.bar-negative{background:#a34a34}
+.bar-bond{background:#4a7fa0}
+.bar-stock{background:var(--accent)}
+.bar-gold{background:var(--warn)}
+.legend{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-top:10px;flex-wrap:wrap}
+.swatch{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:middle}
+.seg{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+.seg button{
+  background:var(--code);color:var(--muted);border:1px solid var(--line);border-radius:99px;
+  padding:6px 16px;font-size:14px;font-family:inherit;cursor:pointer;transition:all .2s;
+}
+.seg button.active{background:var(--accent-soft);color:var(--accent);border-color:#2c4a3c;font-weight:600}
+details{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:12px 16px;margin:10px 0}
+details[open]{background:#1d1b19}
+summary{cursor:pointer;font-weight:600;font-size:15.5px;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"▸ ";color:var(--accent)}
+details[open] summary::before{content:"▾ "}
+.ans{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font-size:15.5px;color:#d6d1c9}
+.q{font-weight:600;margin:22px 0 8px}
+pre{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:14px;line-height:1.6}
+code{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+.summary-box{border-left:3px solid var(--accent);padding-left:18px;margin:26px 0}
+.summary-box p{margin-bottom:8px}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
+footer a{color:var(--accent)}
+.disclaimer{font-size:13px;color:var(--muted);margin-top:18px;line-height:1.6}
+.nav{margin-bottom:20px;font-size:14px}
+.nav a{color:var(--accent);text-decoration:none}
+.src{font-size:12.5px;color:var(--muted);margin-top:8px}
+.steps{display:flex;align-items:flex-end;gap:14px;margin:18px 0 6px;height:150px}
+.step{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px}
+.step-bar{width:100%;border-radius:8px 8px 0 0;transition:height .55s cubic-bezier(.22,.8,.3,1);min-height:2px}
+.step1 .step-bar{background:#3f5c4e}
+.step2 .step-bar{background:var(--danger)}
+.step-label{font-size:13px;color:var(--muted);text-align:center}
+.step-val{font-weight:600;color:var(--ink);font-size:14.5px}
+.mixbar{display:flex;height:30px;border-radius:8px;overflow:hidden;margin:6px 0 10px;background:#2a2724}
+.mixseg{height:100%;transition:width .4s cubic-bezier(.22,.8,.3,1)}
+.stat{display:flex;justify-content:space-between;font-size:15.5px;padding:7px 0;border-bottom:1px solid var(--line)}
+.stat:last-child{border-bottom:none}
+.stat b{font-variant-numeric:tabular-nums;color:var(--accent)}
+@media(max-width:520px){
+  body{font-size:16px;padding:20px 14px 60px}
+  h1{font-size:25px}
+  .card,.calc{padding:16px}
+}
+
+/* โครงสร้างสิทธิเรียกร้อง / แถบสัดส่วน (ใช้ต่อจาก Day 20) */
+.wf{margin:18px 0 6px}
+.wf-track{display:flex;height:44px;border-radius:10px;overflow:hidden;background:#2a2724;border:1px solid var(--line)}
+.wf-seg{height:100%;display:flex;align-items:center;justify-content:center;font-size:12.5px;color:#12130f;font-weight:600;overflow:hidden;white-space:nowrap;transition:width .5s cubic-bezier(.22,.8,.3,1)}
+.wf-debt{background:#4a7fa0;color:#0f1b22}
+.wf-eq{background:var(--accent)}
+.wf-gap{background:#7a3d2c;color:#f0ded8}
+.wf-axis{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:6px;font-variant-numeric:tabular-nums}
+.ladder{list-style:none;padding:0;margin:16px 0}
+.ladder li{display:flex;gap:12px;align-items:baseline;padding:9px 14px;border:1px solid var(--line);border-radius:9px;margin-bottom:7px;background:var(--card);font-size:15.5px}
+.ladder li:last-child{background:var(--accent-soft);border-color:#2c4a3c}
+.ladder .rank{font-variant-numeric:tabular-nums;font-size:13px;color:var(--muted);min-width:20px;flex-shrink:0}
+
+/* Day 21 — เส้นทางคำสั่งซื้อ */
+.pipe{margin:16px 0 4px}
+.pnode{display:flex;gap:12px;align-items:flex-start;padding:11px 14px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;background:var(--card);transition:background .3s,border-color .3s,transform .3s}
+.pnode.on{background:var(--accent-soft);border-color:#2c4a3c;transform:translateX(7px)}
+.pnum{width:25px;height:25px;border-radius:50%;background:#2a2724;color:var(--muted);font-size:12.5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:3px;font-variant-numeric:tabular-nums;transition:background .3s,color .3s}
+.pnode.on .pnum{background:var(--accent);color:#12130f;font-weight:700}
+.pttl{font-weight:600;font-size:15.5px;margin-bottom:2px}
+.pdesc{font-size:14px;color:var(--muted);line-height:1.6}
+.pbtn{background:var(--accent-soft);color:var(--accent);border:1px solid #2c4a3c;border-radius:99px;padding:8px 22px;font-size:15px;font-family:inherit;font-weight:600;cursor:pointer;transition:opacity .2s}
+.pbtn:disabled{opacity:.45;cursor:default}
+.regbar{margin-top:10px;padding:10px 14px;border:1px dashed var(--line);border-radius:10px;font-size:14px;color:var(--muted)}
+.scalebar{background:#2a2724;border-radius:8px;height:22px;overflow:hidden;margin-bottom:5px}
+.scalefill{height:100%;border-radius:8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="nav"><a href="../index.html">← สารบัญ</a></div>
+
+<header>
+  <div class="kicker">
+    <span class="pill">Day 21 / 90</span>
+    <span>Phase 2 · การลงทุนระยะยาว</span>
+    <span>·</span>
+    <span>อ่าน 9 นาที</span>
+  </div>
+  <h1>ตลาดหลักทรัพย์ไทย (SET/mai) และการเปิดพอร์ต</h1>
+  <p class="sub">เมื่อวานเรารู้แล้วว่าหุ้นคือสิทธิใน "ส่วนที่เหลือ" ของกิจการ วันนี้มาดูว่าสิทธินั้นเปลี่ยนมือกันที่ไหน ใครเป็นคนบันทึกว่ามันเป็นของเรา และคำถามที่คนส่วนใหญ่ตอบผิด — เวลาเราซื้อหุ้นบนกระดาน เงินของเราไปเข้ากระเป๋าใคร</p>
+</header>
+
+<h2>ตลาดแรกกับตลาดรอง: เส้นแบ่งที่คนเข้าใจผิดมากที่สุด</h2>
+
+<p>มีตลาดสองอันซ้อนกันอยู่ และการแยกมันออกจากกันคือหัวใจของบทนี้</p>
+
+<ul>
+  <li><strong>ตลาดแรก (primary market)</strong> — บริษัทออกหุ้น<em>ใหม่</em>ขายให้นักลงทุนโดยตรง เกิดขึ้นตอน IPO (initial public offering) และตอนเพิ่มทุนภายหลัง <strong>เงินไหลเข้าบริษัทจริง</strong> ไปเป็นทุนสร้างโรงงาน จ้างคน ใช้หนี้</li>
+  <li><strong>ตลาดรอง (secondary market)</strong> — นักลงทุนซื้อขายหุ้นที่ออกไปแล้วกันเอง คือกระดาน SET ที่เราเห็นทุกวัน <strong>บริษัทไม่ได้เงินสักบาทเดียว</strong> เงินไหลจากผู้ซื้อไปหาผู้ขาย เท่านั้น</li>
+</ul>
+
+<p>ถ้าเต้นซื้อหุ้นตัวหนึ่งบนแอปวันนี้ 20,000 บาท บริษัทนั้นได้รับเงินเพิ่ม <strong>0 บาท</strong> ทั้งหมดไปหาคนที่ขายให้เรา — ซึ่งอาจเป็นกองทุนบำนาญที่ไหนสักแห่ง แล้วทำไมบริษัทยังสนใจราคาหุ้นตัวเองล่ะ? เพราะราคาตลาดคือ <em>ต้นทุนของการระดมทุนครั้งหน้า</em> ราคาสูงแปลว่าออกหุ้นใหม่จำนวนน้อยลงก็ได้เงินเท่าเดิม เจ้าของเดิมถูกลดสัดส่วน (dilute) น้อยลง และยังใช้หุ้นเป็นค่าตอบแทนพนักงานหรือจ่ายค่าซื้อกิจการได้ด้วย</p>
+
+<h2>ลองเป็นเจ้าของบริษัทที่กำลังจะ IPO</h2>
+
+<p>บริษัทสมมุติแห่งหนึ่ง: ผู้ก่อตั้งถือหุ้นเดิม <strong>120 ล้านหุ้น</strong> มูลค่าที่ตราไว้ (par value) หุ้นละ 1.00 บาท ส่วนของผู้ถือหุ้นตามบัญชีก่อน IPO <strong>240 ล้านบาท</strong> (มูลค่าตามบัญชีต่อหุ้น = 240 ÷ 120 = 2.00 บาท) ตอนนี้จะเสนอขายหุ้นใหม่ต่อประชาชน ลองเลื่อนดูว่าราคาและจำนวนหุ้นที่ขายเปลี่ยนอะไรบ้าง</p>
+
+<div class="calc">
+  <div class="row">
+    <label>ราคาเสนอขาย IPO — <span class="val" id="pV">9.00</span> บาท/หุ้น</label>
+    <input type="range" id="p" min="2" max="30" value="9" step="0.5">
+  </div>
+  <div class="row">
+    <label>จำนวนหุ้นใหม่ที่เสนอขาย — <span class="val" id="nV">40</span> ล้านหุ้น <span style="color:var(--muted);font-weight:400">(หุ้นเดิม 120 ล้านหุ้น)</span></label>
+    <input type="range" id="n" min="10" max="400" value="40" step="10">
+  </div>
+
+  <div class="wf">
+    <div class="wf-track" id="wf"></div>
+    <div class="wf-axis"><span>0</span><span>520 ล้านหุ้น</span></div>
+  </div>
+  <div class="legend">
+    <span><i class="swatch" style="background:#4a7fa0"></i>หุ้นของผู้ก่อตั้ง (120 ล้านหุ้นคงที่)</span>
+    <span><i class="swatch" style="background:var(--accent)"></i>หุ้นใหม่ที่กระจายให้รายย่อย</span>
+  </div>
+
+  <div style="margin-top:14px">
+    <div class="stat"><span>เงินสดเข้าบริษัท (ตลาดแรก ครั้งเดียว)</span><b id="oRaise"></b></div>
+    <div class="stat"><span>&nbsp;&nbsp;↳ ทุนชำระแล้วที่เพิ่ม (par 1.00)</span><b id="oPar"></b></div>
+    <div class="stat"><span>&nbsp;&nbsp;↳ ส่วนเกินมูลค่าหุ้น (share premium)</span><b id="oPrem"></b></div>
+    <div class="stat"><span>ทุนชำระแล้วรวมหลัง IPO</span><b id="oPaid"></b></div>
+    <div class="stat"><span>มูลค่าตลาดที่ราคา IPO</span><b id="oMcap"></b></div>
+    <div class="stat"><span>สัดส่วนหุ้นรายย่อย (free float)</span><b id="oFF"></b></div>
+    <div class="stat"><span>สัดส่วนที่ผู้ก่อตั้งเหลือ</span><b id="oFdr"></b></div>
+    <div class="stat"><span>มูลค่าตามบัญชีต่อหุ้นหลัง IPO</span><b id="oBv"></b></div>
+    <div class="stat"><span>P/BV ที่ราคา IPO</span><b id="oPbv"></b></div>
+  </div>
+  <p id="oMkt" style="margin:16px 0 0;font-size:15.5px"></p>
+  <p id="oTxt" style="margin:10px 0 0;font-size:15.5px;color:var(--muted)"></p>
+</div>
+
+<p>ที่ค่าตั้งต้น (40 ล้านหุ้น ที่ 9.00 บาท) มีตัวเลขสามอันที่ควรจำ:</p>
+
+<ul>
+  <li><strong>บริษัทได้เงิน 360 ล้านบาท แต่มูลค่าตลาดคือ 1,440 ล้านบาท</strong> — อัตราส่วนนี้เท่ากับ free float 25% พอดี ไม่ใช่เรื่องบังเอิญ เพราะบริษัทได้เงินเฉพาะจากหุ้นส่วนที่ขายใหม่เท่านั้น</li>
+  <li><strong>เงิน 360 ล้านแยกเป็นสองบรรทัดในงบดุล</strong> — ทุนที่ออกและชำระแล้วเพิ่มแค่ 1.00 × 40 = 40 ล้านบาท ส่วนที่เหลือ (9.00 − 1.00) × 40 = 320 ล้านบาท เข้าบัญชี "ส่วนเกินมูลค่าหุ้น" ทั้งคู่รวมอยู่ในส่วนของผู้ถือหุ้นตามสมการ Day 20 เหมือนกัน</li>
+  <li><strong>ผู้ก่อตั้งถูกลดสัดส่วนจาก 100% เหลือ 75% แต่มูลค่าตามบัญชีต่อหุ้นโตจาก 2.00 เป็น 3.75 บาท (+87.5%)</strong> — ขายหุ้นแพงกว่ามูลค่าตามบัญชี ผู้ถือหุ้นเดิมได้เนื้อในต่อหุ้นเพิ่ม นี่คือคำตอบว่าทำไมการถูก dilute ถึงไม่ได้แย่เสมอไป กลับไปอ่านควิซข้อ 2 ของ Day 20 คู่กันจะเห็นภาพครบ</li>
+</ul>
+
+<h2>SET กับ mai ต่างกันตรงไหน</h2>
+
+<p>ทั้งสองอยู่ภายใต้ตลาดหลักทรัพย์แห่งประเทศไทยองค์กรเดียวกัน ใช้ระบบซื้อขายและระบบชำระราคาชุดเดียวกัน ต่างกันที่ <strong>เกณฑ์รับหลักทรัพย์ (listing criteria)</strong> ซึ่งกำหนดว่าบริษัทขนาดไหนเข้าได้:</p>
+
+<table>
+  <tr><th></th><th>SET</th><th>mai</th></tr>
+  <tr><td>กลุ่มเป้าหมาย</td><td>บริษัทขนาดใหญ่</td><td>บริษัทขนาดกลางและเล็ก</td></tr>
+  <tr><td>ทุนชำระแล้วหลัง IPO</td><td class="num">≥ 300 ล้านบาท</td><td class="num">≥ 50 ล้านบาท</td></tr>
+  <tr><td>ผู้ถือหุ้นรายย่อยขั้นต่ำ</td><td class="num">1,000 ราย</td><td class="num">300 ราย</td></tr>
+  <tr><td>บริษัทจดทะเบียน</td><td class="num">~609 บริษัท</td><td class="num">230 บริษัท</td></tr>
+  <tr><td>มูลค่าตลาดรวม</td><td class="num">~15.93 ล้านล้านบาท</td><td class="num">~0.224 ล้านล้านบาท</td></tr>
+  <tr><td>เฉลี่ยต่อบริษัท</td><td class="num">~26,200 ล้านบาท</td><td class="num">~974 ล้านบาท</td></tr>
+</table>
+
+<p>ลองมองตัวเลขสองแถวล่างพร้อมกัน — <strong>mai คิดเป็นเพียง 1.4% ของมูลค่าตลาดทั้งหมด</strong> และบริษัทเฉลี่ยใน SET ใหญ่กว่าบริษัทเฉลี่ยใน mai ประมาณ <strong>27 เท่า</strong> วาดเป็นแถบบนสเกลเดียวกันจะเห็นแบบนี้:</p>
+
+<div class="card">
+  <div style="font-size:14px;color:var(--muted);margin-bottom:4px">SET — 15.93 ล้านล้านบาท</div>
+  <div class="scalebar"><div class="scalefill" style="width:100%;background:var(--accent)"></div></div>
+  <div style="font-size:14px;color:var(--muted);margin:12px 0 4px">mai — 0.224 ล้านล้านบาท (1.4%)</div>
+  <div class="scalebar"><div class="scalefill" style="width:1.41%;background:#4a7fa0"></div></div>
+  <p style="margin:14px 0 0;font-size:15px">แถบล่างแทบมองไม่เห็น และนั่นคือประเด็น <strong>สิ่งที่ตามมาคือสภาพคล่อง</strong> — มูลค่าซื้อขายเฉลี่ยของ mai อยู่ราว 430 ล้านบาทต่อวัน เทียบกับ SET ที่ระดับหลายหมื่นล้านบาทต่อวัน คิดเป็นสัดส่วนราว 0.6% ซึ่ง<em>น้อยกว่าสัดส่วนมูลค่าตลาด 1.4% เสียอีก</em> แปลว่าหุ้น mai โดยเฉลี่ยหมุนช้ากว่า</p>
+  <p style="margin:12px 0 0;font-size:15px">ผลในทางปฏิบัติ: หุ้นสภาพคล่องต่ำมีช่วงห่างราคาเสนอซื้อ-เสนอขาย (bid-ask spread) กว้างกว่า และเวลาอยากขายจำนวนมากอาจไม่มีใครรับ ต้นทุนที่มองไม่เห็นตรงนี้มักใหญ่กว่าค่าคอมมิชชันที่เรามองเห็น ซึ่งเป็นเรื่องของพรุ่งนี้</p>
+  <p class="src">ข้อมูล mai: 230 บริษัท มูลค่าตลาด 224,016.75 ล้านบาท มูลค่าซื้อขายเฉลี่ย 429.89 ล้านบาท/วัน ณ 26 ส.ค. 2569 (ตลาดหลักทรัพย์แห่งประเทศไทย) · จำนวนบริษัทจดทะเบียน SET+mai รวม 839 บริษัท ณ 30 มิ.ย. 2569 จึงประมาณ SET ได้ที่ราว 609 บริษัท · มูลค่าตลาด SET 15.93 ล้านล้านบาท ณ 30 ธ.ค. 2568 · เกณฑ์รับหลักทรัพย์ฉบับปรับปรุงมีผล 1 ม.ค. 2568 · ตัวเลขทุกตัวเปลี่ยนตลอดเวลาและวันที่อ้างอิงไม่ตรงกันทุกรายการ ให้ตรวจกับ set.or.th ใหม่เสมอเมื่ออ่านย้อนหลัง</p>
+</div>
+
+<p>ข้อควรระวังที่ต้องพูดตรงๆ: บริษัทเล็กไม่ได้แปลว่าโตเร็วกว่าอัตโนมัติ และการที่บริษัทอยู่ mai แปลว่ามันผ่านเกณฑ์ที่<em>ต่ำกว่า</em> ทั้งเรื่องขนาดและการกระจายหุ้น ความเสี่ยงเฉพาะตัวจึงสูงกว่าโดยโครงสร้าง ไม่ใช่โดยความบังเอิญ</p>
+
+<h2>คำสั่งซื้อของเราเดินทางผ่านใครบ้าง</h2>
+
+<p>กดปุ่มดูทีละขั้น จะเห็นว่ามีสี่องค์กรคนละนิติบุคคลกันทำงานต่อกันเป็นทอด และแต่ละทอดมีหน้าที่ป้องกันความเสี่ยงคนละแบบ</p>
+
+<div class="calc">
+  <div class="pipe" id="pipe"></div>
+  <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:12px">
+    <button class="pbtn" id="go">▶ ส่งคำสั่งซื้อ 100 หุ้น</button>
+    <button class="pbtn" id="rst" style="background:var(--code);color:var(--muted);border-color:var(--line)">รีเซ็ต</button>
+  </div>
+  <div class="regbar" id="reg">สำนักงาน ก.ล.ต. (SEC) กำกับดูแลอยู่เหนือทุกขั้นตอน — ออกใบอนุญาตโบรกเกอร์ กำหนดให้แยกทรัพย์สินลูกค้าออกจากทรัพย์สินบริษัท และบังคับให้บริษัทจดทะเบียนเปิดเผยข้อมูล</div>
+</div>
+
+<p>จุดที่สำคัญที่สุดสำหรับเราคือขั้นที่ 5: <strong>หุ้นถูกบันทึกในระบบไร้ใบหุ้น (scripless) ที่ศูนย์รับฝากหลักทรัพย์ ซึ่งเป็นคนละนิติบุคคลกับโบรกเกอร์</strong> ประกอบกับเกณฑ์ ก.ล.ต. ที่บังคับให้แยกทรัพย์สินลูกค้าออกจากทรัพย์สินของบริษัทหลักทรัพย์ นี่คือเหตุผลเชิงโครงสร้างว่าทำไมโบรกเกอร์ล้มแล้วหุ้นเราไม่หายไปด้วย</p>
+
+<h2>เปิดพอร์ตจริง: สิ่งที่ต้องเตรียมและสิ่งที่ต้องเลือก</h2>
+
+<p>เอกสารมาตรฐานสำหรับนักศึกษาสัญชาติไทยที่อายุครบ 20 ปีบริบูรณ์: <strong>สำเนาบัตรประชาชน</strong> และ <strong>สำเนาหน้าแรกสมุดบัญชีธนาคาร</strong> (ธนาคารพาณิชย์ใดก็ได้ ใช้ผูกฝาก-ถอนอัตโนมัติ) ถ้าเคยเปลี่ยนชื่อ-นามสกุลต้องแนบหลักฐานด้วย โบรกส่วนใหญ่เปิดบัญชีผ่านแอปได้ทั้งกระบวนการ ถ้ายังไม่ครบ 20 ปีมักต้องมีผู้ปกครองร่วมลงนาม ให้เช็กกับโบรกที่เลือก</p>
+
+<p>สองสิ่งที่ต้องตัดสินใจตอนสมัคร:</p>
+
+<ol>
+  <li><strong>ประเภทบัญชี</strong> — <em>Cash Balance</em> คือฝากเงินเข้าก่อนแล้วซื้อได้ไม่เกินเงินที่ฝาก · <em>Cash Account</em> คือโบรกให้วงเงินตามฐานะการเงินแล้วค่อยจ่ายภายหลัง · <em>Credit Balance</em> คือกู้เงินโบรกมาซื้อ (margin) สำหรับคนเริ่มต้น Cash Balance เหมาะที่สุดโดยไม่ต้องคิดมาก เพราะมันบังคับข้อจำกัดทางกายภาพให้เราเอง — ขาดทุนได้ไม่เกินเงินที่ใส่ไป ซึ่งตรงกับหลักความรับผิดจำกัดของ Day 20 พอดี ส่วน Credit Balance คือการซ้อนอัตราทดทางการเงินอีกชั้นบนอัตราทดที่บริษัทมีอยู่แล้ว จะพูดถึงตอน Phase 3</li>
+  <li><strong>แบบประเมินความเหมาะสมในการลงทุน (suitability test)</strong> — ไม่ใช่พิธีกรรม มันเป็นข้อกำหนดของ ก.ล.ต. และผลลัพธ์จะกำหนดว่าโบรกเสนอผลิตภัณฑ์ระดับความเสี่ยงไหนให้เราได้ ตอบตามความจริง ไม่ใช่ตอบให้ได้คะแนนสูง</li>
+</ol>
+
+<div class="card accent">
+  <h3>เชื่อมกับสถานะตอนนี้ของเต้น</h3>
+  <p>ในทางเลข การเปิดพอร์ตแทบไม่มีต้นทุน — โบรกส่วนใหญ่ไม่มีค่าเปิดบัญชีและไม่กำหนดเงินฝากขั้นต่ำสำหรับ Cash Balance และหุ้นราคา 9 บาทซื้อขั้นต่ำ 1 board lot = 100 หุ้น ใช้เงิน 900 บาท เท่ากับค่าข้าวสองสามวัน</p>
+  <p style="margin-bottom:0">แต่ลำดับที่ควรทำยังเป็นลำดับเดิมของ Day 7 และ Day 8: <strong>เงินสำรองฉุกเฉินเต็มก่อน แล้วค่อยเอาส่วนเกินมาลงทุน</strong> เหตุผลไม่ใช่เรื่องศีลธรรม แต่เป็นเลขจาก Day 20 — มูลค่าส่วนของผู้ถือหุ้นถูกขยายผล 2–3 เท่าตามโครงสร้างหนี้ของบริษัท การถูกบังคับขายตอนราคาต่ำเพราะมีเรื่องด่วนจึงแพงกว่าที่คิดมาก ข้อดีของเงินเดือนฝึกงานที่เข้าทุกเดือนคือมันทำให้ทยอยซื้อได้สม่ำเสมอ ซึ่งเป็นวิธีเดียวที่ใช้ประโยชน์จากความผันผวนแทนที่จะโดนมันเล่นงาน</p>
+</div>
+
+<details>
+  <summary>กล่องโค้ด (ข้ามได้ ไม่นับในเวลาอ่าน)</summary>
+  <div class="ans">
+  <p>ตรรกะของเครื่องคำนวณ IPO ข้างบน เขียนเป็นฟังก์ชันเดียวได้ และตรวจกับตัวเลขในบทด้วย <code>assert</code>:</p>
+  <pre><code>OLD, PAR, EQ_PRE = 120, 1.00, 240      # ล้านหุ้น, บาท/หุ้น, ล้านบาท
+SET_MIN, MAI_MIN = 300, 50             # ทุนชำระแล้วขั้นต่ำ (ล้านบาท)
+
+def ipo(price, new):
+    total   = OLD + new
+    raise_  = price * new              # เงินเข้าบริษัท (ตลาดแรก) ครั้งเดียว
+    par_add = PAR * new                # เข้าบัญชีทุนที่ออกและชำระแล้ว
+    premium = raise_ - par_add         # เข้าบัญชีส่วนเกินมูลค่าหุ้น
+    paidup  = PAR * total
+    mcap    = price * total
+    ff      = new / total              # free float
+    bvps    = (EQ_PRE + raise_) / total
+    board   = "SET" if paidup &gt;= SET_MIN else ("mai" if paidup &gt;= MAI_MIN else "-")
+    return dict(raise_=raise_, par_add=par_add, premium=premium, paidup=paidup,
+                mcap=mcap, ff=ff, bvps=bvps, pbv=price/bvps, board=board)
+
+b = ipo(9.00, 40)
+assert b["raise_"]  == 360      # ล้านบาท
+assert b["par_add"] == 40 and b["premium"] == 320
+assert b["paidup"]  == 160 and b["board"] == "mai"    # 160 &lt; 300 จึงยังขึ้น SET ไม่ได้
+assert b["mcap"]    == 1440
+assert b["ff"]      == 0.25
+assert b["bvps"]    == 3.75 and b["pbv"] == 2.4
+assert b["raise_"] / b["mcap"] == b["ff"]             # เงินที่ได้ ÷ มูลค่าตลาด = free float เสมอ
+assert b["bvps"] / (EQ_PRE / OLD) == 1.875            # ผู้ก่อตั้ง: BVPS 2.00 -&gt; 3.75 (+87.5%)
+
+# อยากขึ้น SET ต้องขายหุ้นใหม่เท่าไร? ต้องการ PAR*(OLD+new) &gt;= 300
+need = SET_MIN / PAR - OLD
+assert need == 180 and ipo(9.00, 180)["board"] == "SET"
+assert ipo(9.00, 180)["ff"] == 0.6      # ...แลกกับ free float 60% เจ้าของเหลือ 40%
+
+# ตลาดรอง: ซื้อ 1,000 หุ้นที่ 20 บาท บริษัทได้เท่าไร
+def cash_to_company(shares, price, primary): return shares * price if primary else 0
+assert cash_to_company(1000, 20, primary=False) == 0</code></pre>
+  </div>
+</details>
+
+<h2>ทดสอบความเข้าใจ</h2>
+
+<p class="q">1. บริษัทหนึ่งมีหุ้นเดิม 120 ล้านหุ้น par 1.00 บาท ต้องการ IPO ขายหุ้นใหม่ 30 ล้านหุ้นที่ราคา 8.00 บาท (ก) บริษัทได้เงินเท่าไร (ข) ทุนชำระแล้วหลัง IPO เท่าไร เข้าเกณฑ์ตลาดไหน (ค) free float เท่าไร (ง) ถ้าอยากได้ free float 25% พอดี ต้องขายหุ้นใหม่กี่ล้านหุ้น?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">(ก) 8.00 × 30 = <strong>240 ล้านบาท</strong> แยกเป็นทุนชำระแล้วเพิ่ม 1.00 × 30 = 30 ล้านบาท และส่วนเกินมูลค่าหุ้น 7.00 × 30 = 210 ล้านบาท<br>
+  (ข) หุ้นรวม 120 + 30 = 150 ล้านหุ้น ⇒ ทุนชำระแล้ว = 1.00 × 150 = <strong>150 ล้านบาท</strong> ซึ่ง ≥ 50 แต่ &lt; 300 ⇒ เข้าเกณฑ์ทุนชำระแล้วของ <strong>mai เท่านั้น</strong><br>
+  (ค) 30 ÷ 150 = <strong>20.0%</strong><br>
+  (ง) ต้องการ x ÷ (120 + x) = 0.25 ⇒ x = 30 + 0.25x ⇒ 0.75x = 30 ⇒ <strong>x = 40 ล้านหุ้น</strong> (ตรวจ: 40 ÷ 160 = 25% ✓ บริษัทจะได้เงิน 8 × 40 = 320 ล้านบาท และทุนชำระแล้วเป็น 160 ล้านบาท — ยังไม่ถึง 300 อยู่ดี)<br>
+  บทเรียนที่ต้องเก็บ: เกณฑ์ทุนชำระแล้วขึ้นกับ <em>จำนวนหุ้น × par</em> ไม่เกี่ยวกับราคา IPO เลย บริษัทจะตั้งราคา 8 บาทหรือ 80 บาทก็ไม่ทำให้ทุนชำระแล้วเปลี่ยน ราคามีผลแค่กับเงินที่ได้และส่วนเกินมูลค่าหุ้น นี่เป็นกับดักที่คนสับสนบ่อยเพราะเอา "ขนาดบริษัท" ไปปนกับ "มูลค่าตลาด"</div>
+</details>
+
+<p class="q">2. เต้นกดซื้อหุ้นตัวหนึ่ง 1,000 หุ้นที่ราคา 20.00 บาทบนกระดาน SET (ก) บริษัทที่ออกหุ้นได้รับเงินเพิ่มเท่าไร (ข) เงิน 20,000 บาทไปอยู่ที่ใคร (ค) ถ้าบริษัทไม่ได้เงินจากการซื้อขายรายวันเลย ทำไมผู้บริหารถึงยังสนใจราคาหุ้น — ให้เหตุผลอย่างน้อย 2 ข้อ</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">(ก) <strong>0 บาท</strong> นี่คือการซื้อขายในตลาดรอง หุ้นเปลี่ยนมือจากคนหนึ่งไปอีกคนหนึ่ง ไม่มีหุ้นใหม่ถูกออก<br>
+  (ข) ไปหา <strong>ผู้ขายที่ถูกจับคู่กับเรา</strong> (หักค่าธรรมเนียมที่คนกลางเก็บ) ซึ่งเราไม่มีทางรู้ว่าเป็นใคร<br>
+  (ค) เหตุผลเชิงโครงสร้าง เช่น <strong>1) ต้นทุนการระดมทุนครั้งหน้า</strong> — ราคาสูงแปลว่าเพิ่มทุนคราวหน้าออกหุ้นน้อยลงก็ได้เงินเท่าเดิม เจ้าของเดิมถูก dilute น้อยลง <strong>2) หุ้นเป็นสกุลเงินในการซื้อกิจการ</strong> — จ่ายค่าซื้อบริษัทอื่นด้วยหุ้นตัวเองได้ ราคาสูงคือได้ของถูกลง <strong>3) ค่าตอบแทนพนักงาน</strong> — ESOP และหุ้นจูงใจผูกกับราคาตลาด <strong>4) แรงกดดันจากผู้ถือหุ้น</strong> — ราคาต่ำต่อเนื่องดึงดูดการเข้าซื้อกิจการเพื่อเปลี่ยนผู้บริหาร และผู้ถือหุ้นใช้สิทธิออกเสียงตาม Day 20 ได้ <strong>5) หลักประกัน</strong> — ผู้ถือหุ้นใหญ่มักใช้หุ้นค้ำเงินกู้ ราคาตกอาจถูกบังคับขาย</div>
+</details>
+
+<p class="q">3. สมมติบริษัทหลักทรัพย์ที่เต้นเปิดบัญชี Cash Balance ด้วยประสบปัญหาทางการเงินจนต้องเลิกกิจการ หุ้นและเงินสดของเต้นหายไปด้วยหรือไม่ อธิบายด้วยกลไกเชิงโครงสร้าง ไม่ใช่ด้วยความเชื่อมั่น</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">โดยหลักการแล้ว<strong>ไม่หาย</strong> เพราะมีการแยกส่วนสองชั้น: <strong>1) หุ้นไม่ได้อยู่ที่โบรก</strong> — ระบบซื้อขายไทยเป็นแบบไร้ใบหุ้น (scripless) โดยทะเบียนผู้ถือหลักทรัพย์อยู่ที่ศูนย์รับฝากหลักทรัพย์ ซึ่งเป็นคนละนิติบุคคลกับบริษัทหลักทรัพย์ ทรัพย์สินของเราจึงไม่ใช่ทรัพย์สินในกองล้มละลายของโบรก <strong>2) เกณฑ์แยกทรัพย์สินลูกค้า</strong> — ก.ล.ต. บังคับให้บริษัทหลักทรัพย์เก็บเงินและทรัพย์สินของลูกค้าแยกจากบัญชีของบริษัทเอง จะเอาไปใช้ในกิจการตัวเองไม่ได้<br>
+  สิ่งที่จะเกิดขึ้นจริงคือความยุ่งยากเรื่องกระบวนการและระยะเวลาในการโอนย้ายบัญชีไปโบรกใหม่ ไม่ใช่การสูญทรัพย์ — <em>เว้นแต่</em>มีการฉ้อโกงหรือทำผิดเกณฑ์ ซึ่งเป็นคนละเรื่องกับการล้มละลายตามปกติ ประเด็นที่ควรเก็บไปคิดต่อคือ ความเสี่ยงของคนกลาง (counterparty risk) ไม่ได้หายไป มันแค่ถูกลดด้วยการออกแบบเชิงสถาบัน และการเลือกโบรกที่มีใบอนุญาตจาก ก.ล.ต. คือขั้นตอนที่ทำให้กลไกเหล่านี้คุ้มครองเราได้จริง</div>
+</details>
+
+<p class="q"><strong>ทวน:</strong> ตราสารหนี้มีตลาดแรกและตลาดรองเหมือนหุ้นหรือไม่ และตลาดรองของพันธบัตรรัฐบาลไทยทำงานต่างจากกระดาน SET อย่างไร?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">มีทั้งสองตลาดเหมือนกัน <strong>ตลาดแรกของตราสารหนี้</strong> คือตอนออกครั้งแรก — พันธบัตรรัฐบาลใช้วิธีประมูล (auction) ส่วนหุ้นกู้เอกชนเสนอขายผ่านผู้จัดจำหน่าย เงินไหลเข้าผู้ออกตราสาร (รัฐบาลหรือบริษัท) เหมือนที่เงิน IPO ไหลเข้าบริษัท<br>
+  <strong>ตลาดรองต่างกันตรงโครงสร้าง</strong> — หุ้นซื้อขายบนกระดานรวมศูนย์ที่จับคู่คำสั่งอัตโนมัติและเห็นราคาสาธารณะตลอดเวลา ส่วนตราสารหนี้ไทยส่วนใหญ่ซื้อขายแบบ over-the-counter (OTC) คือต่อรองราคากับผู้ค้าตราสารหนี้ (dealer) ทีละดีล แล้วรายงานธุรกรรมเข้าระบบกลาง มีกระดานตราสารหนี้บนตลาดหลักทรัพย์อยู่จริงแต่สภาพคล่องน้อยมาก<br>
+  ผลที่ตามมาซึ่งเชื่อมกับบทวันนี้: นักลงทุนรายย่อยเข้าถึงตลาดรองของบอนด์ได้ยากกว่าและมีต้นทุนแฝงสูงกว่า ซึ่งเป็นเหตุผลหนึ่งที่คนทั่วไปเข้าถึงตราสารหนี้ผ่านกองทุนรวมมากกว่าซื้อตัวเอง<br>ตอบผิดหรือลังเล? → <a href="finance-day-18-bonds-yield.html">ทบทวน Day 18: ตราสารหนี้ (bonds) พันธบัตร หุ้นกู้ และ yield</a></div>
+</details>
+
+<p class="q"><strong>ทวน:</strong> เป้าหมาย "อยากรวยจากหุ้น" ผิดหลัก SMART ตรงไหนบ้าง และเขียนใหม่ให้เป็น SMART สำหรับการเปิดพอร์ตครั้งแรกได้อย่างไร?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">ผิดเกือบทุกตัวอักษร: ไม่ <strong>S</strong>pecific (รวยแค่ไหน ด้วยวิธีไหน) ไม่ <strong>M</strong>easurable (ไม่มีตัวเลขให้วัด) ไม่ <strong>A</strong>chievable (ไม่รู้ว่าต้องใส่เงินเท่าไร ผลตอบแทนเท่าไร) <strong>R</strong>elevant พอเดาได้แต่ไม่ชัด และไม่ <strong>T</strong>ime-bound (ภายในเมื่อไร)<br>
+  เขียนใหม่เป็นตัวอย่าง: <em>"ภายใน 31 ธ.ค. 2569 เปิดบัญชี Cash Balance กับโบรกที่มีใบอนุญาต ก.ล.ต. และโอนเงินเข้าเดือนละ 2,000 บาทเป็นเวลา 4 เดือนติดต่อกัน โดยยังคงเงินสำรองฉุกเฉิน 3 เท่าของรายจ่ายรายเดือนไว้ครบ"</em> — ทุกข้อวัดได้ มีวันสิ้นสุด และมีเงื่อนไขคุมความเสี่ยงติดมาด้วย<br>
+  จุดที่ควรสังเกต: เป้าหมายเวอร์ชัน SMART คุมเฉพาะสิ่งที่เรา<em>ควบคุมได้</em> (การเปิดบัญชี จำนวนเงินที่ใส่ ความสม่ำเสมอ) ไม่ใช่สิ่งที่ควบคุมไม่ได้ (ผลตอบแทนของตลาด) การตั้งเป้าเป็น "% ผลตอบแทนต่อปี" จึงเป็นเป้าที่ผิดตั้งแต่ต้น เพราะทำให้ต้องเสี่ยงเพิ่มเมื่อไม่ถึงเป้า<br>ตอบผิดหรือลังเล? → <a href="finance-day-14-smart-goals-phase1-summary.html">ทบทวน Day 14: เป้าหมายการเงิน SMART + สรุป Phase 1</a></div>
+</details>
+
+<div class="summary-box">
+  <h2 style="margin-top:0">สรุป 3 บรรทัด</h2>
+  <p>1. ตลาดแรกคือตอนบริษัทออกหุ้นใหม่และได้เงินจริง ตลาดรองคือกระดาน SET ที่เราซื้อขายกันเอง ซึ่งบริษัทได้ 0 บาท — ในตัวอย่าง IPO บริษัทได้ 360 ล้านจากมูลค่าตลาด 1,440 ล้าน คิดเป็น 25% เท่ากับ free float พอดี</p>
+  <p>2. SET กับ mai ใช้ระบบเดียวกัน ต่างที่เกณฑ์รับหลักทรัพย์ (ทุนชำระแล้ว ≥ 300 vs ≥ 50 ล้านบาท) และต่างที่ขนาดจริง — mai คิดเป็นราว 1.4% ของมูลค่าตลาด แต่มีสัดส่วนมูลค่าซื้อขายเพียงราว 0.6% แปลว่าสภาพคล่องต่ำกว่าตามสัดส่วน</p>
+  <p style="margin-bottom:0">3. คำสั่งซื้อวิ่งผ่านโบรกเกอร์ → ระบบจับคู่ของตลาดหลักทรัพย์ → สำนักหักบัญชี → ศูนย์รับฝากหลักทรัพย์ โดยมี ก.ล.ต. กำกับทั้งสาย การที่หุ้นถูกบันทึกไว้นอกโบรกและทรัพย์สินลูกค้าต้องแยกบัญชี คือกลไกที่ทำให้โบรกล้มแล้วหุ้นเราไม่หาย</p>
+</div>
+
+<footer>
+  <p><strong>พรุ่งนี้ Day 22 — คำสั่งซื้อขาย ค่าคอมมิชชัน ภาษี และ T+2</strong> วันนี้เรารู้เส้นทางของคำสั่งแล้ว พรุ่งนี้ลงไปที่ตัวคำสั่งเอง — Limit กับ Market order ต่างกันอย่างไร ราคาที่เราเห็นบนหน้าจอกับราคาที่ได้จริงต่างกันเพราะอะไร ค่าคอมมิชชันขั้นบันไดกับค่าธรรมเนียมขั้นต่ำกินผลตอบแทนเราเท่าไรต่อไม้ กำไรจากการขายหุ้นเสียภาษีหรือไม่ และทำไมกดขายวันนี้เงินถึงเข้าอีกสองวันทำการ</p>
+  <p class="disclaimer">บทเรียนนี้เป็นความรู้เชิงการศึกษา ไม่ใช่คำแนะนำทางการเงินเฉพาะบุคคล และไม่ใช่การชี้ชวนให้ซื้อหรือขายหลักทรัพย์ใดหลักทรัพย์หนึ่ง หรือให้ใช้บริการบริษัทหลักทรัพย์รายใดรายหนึ่ง บริษัทที่ใช้ในตัวอย่าง IPO เป็นบริษัทสมมุติที่สร้างขึ้นให้ตัวเลขคำนวณตามง่าย ไม่ใช่บริษัทจริง เกณฑ์รับหลักทรัพย์ เกณฑ์การกระจายหุ้นรายย่อย ประเภทบัญชี เอกสารเปิดบัญชี และเงื่อนไขอายุขั้นต่ำ เป็นข้อมูลระดับภาพรวม ณ วันที่เขียน ซึ่งถูกแก้ไขได้ตลอดและมีรายละเอียดปลีกย่อยต่างกันในแต่ละกรณี ให้ตรวจกับตลาดหลักทรัพย์แห่งประเทศไทย สำนักงาน ก.ล.ต. และโบรกเกอร์ที่เลือกใหม่เสมอก่อนตัดสินใจจริง ตัวเลขจำนวนบริษัท มูลค่าตลาด และมูลค่าซื้อขาย เป็นข้อมูล ณ วันที่ระบุกำกับไว้เท่านั้นและเปลี่ยนแปลงตลอดเวลา</p>
+</footer>
+
+</div>
+
+<script>
+(function(){
+  /* ---------- เครื่องคำนวณ IPO ---------- */
+  var OLD = 120, PAR = 1.00, EQ_PRE = 240;      // ล้านหุ้น, บาท/หุ้น, ล้านบาท
+  var SET_MIN = 300, MAI_MIN = 50;              // ทุนชำระแล้วขั้นต่ำ ล้านบาท
+  var SCALE = 520;                              // ล้านหุ้น (120 + 400)
+
+  var sp = document.getElementById('p'), sn = document.getElementById('n');
+  var pV = document.getElementById('pV'), nV = document.getElementById('nV');
+  var wf = document.getElementById('wf');
+  var oRaise=document.getElementById('oRaise'), oPar=document.getElementById('oPar'),
+      oPrem=document.getElementById('oPrem'),   oPaid=document.getElementById('oPaid'),
+      oMcap=document.getElementById('oMcap'),   oFF=document.getElementById('oFF'),
+      oFdr=document.getElementById('oFdr'),     oBv=document.getElementById('oBv'),
+      oPbv=document.getElementById('oPbv'),     oMkt=document.getElementById('oMkt'),
+      oTxt=document.getElementById('oTxt');
+
+  function mb(x){ return x.toLocaleString('en-US',{maximumFractionDigits:1}) + ' ล้านบาท'; }
+
+  function renderIPO(){
+    var price = +sp.value, nw = +sn.value;
+    pV.textContent = price.toFixed(2);
+    nV.textContent = nw;
+
+    var total   = OLD + nw;
+    var raise   = price * nw;
+    var parAdd  = PAR * nw;
+    var premium = raise - parAdd;
+    var paidup  = PAR * total;
+    var mcap    = price * total;
+    var ff      = nw / total;
+    var bvps    = (EQ_PRE + raise) / total;
+    var pbv     = price / bvps;
+
+    wf.innerHTML =
+      '<div class="wf-seg wf-debt" style="width:'+(OLD/SCALE*100)+'%">ผู้ก่อตั้ง</div>'+
+      '<div class="wf-seg wf-eq"   style="width:'+(nw/SCALE*100)+'%">'+(nw/SCALE>0.09?'รายย่อย':'')+'</div>';
+
+    oRaise.textContent = mb(raise);
+    oPar.textContent   = mb(parAdd);
+    oPrem.textContent  = mb(premium);
+    oPaid.textContent  = mb(paidup);
+    oMcap.textContent  = mb(mcap);
+    oFF.textContent    = (ff*100).toFixed(1) + '%';
+    oFdr.textContent   = ((1-ff)*100).toFixed(1) + '%';
+    oBv.textContent    = bvps.toFixed(2) + ' บาท';
+    oPbv.textContent   = pbv.toFixed(2) + ' เท่า';
+    oPar.style.color = oPrem.style.color = 'var(--muted)';
+
+    var board, colr;
+    if(paidup >= SET_MIN){ board = 'เข้าเกณฑ์ทุนชำระแล้วของ SET (≥ 300 ล้านบาท)'; colr='var(--accent)'; }
+    else if(paidup >= MAI_MIN){
+      board = 'เข้าเกณฑ์ทุนชำระแล้วของ mai (≥ 50 ล้านบาท) แต่ยังไม่ถึงเกณฑ์ SET — ต้องขายหุ้นใหม่อย่างน้อย ' +
+              (SET_MIN/PAR - OLD) + ' ล้านหุ้น ทุนชำระแล้วจึงจะถึง 300 ล้านบาท';
+      colr='var(--warn)';
+    }
+    else { board = 'ยังไม่ถึงเกณฑ์ทุนชำระแล้วของทั้ง SET และ mai'; colr='var(--danger)'; }
+    oMkt.innerHTML = '<strong style="color:'+colr+'">'+board+'</strong>';
+
+    var msg = 'เงินที่บริษัทได้ ' + raise.toLocaleString('en-US',{maximumFractionDigits:1}) +
+      ' ล้านบาท คิดเป็น ' + (raise/mcap*100).toFixed(1) + '% ของมูลค่าตลาด — ตรงกับ free float พอดีเสมอ ' +
+      'เพราะบริษัทได้เงินเฉพาะจากหุ้นส่วนที่ออกใหม่. ';
+    if(ff < 0.25){
+      msg += 'free float ' + (ff*100).toFixed(1) + '% ยังต่ำ การกระจายหุ้นน้อยแปลว่าสภาพคล่องบนกระดานจะบางและราคาเหวี่ยงง่าย ' +
+             'ตลาดหลักทรัพย์จึงมีเกณฑ์การกระจายหุ้นรายย่อยกำกับไว้ด้วย ไม่ใช่ดูแค่ทุนชำระแล้ว';
+    } else {
+      msg += 'ผู้ก่อตั้งเหลือ ' + ((1-ff)*100).toFixed(1) + '% ของกิจการ แต่มูลค่าตามบัญชีต่อหุ้นขยับจาก ' +
+             (EQ_PRE/OLD).toFixed(2) + ' เป็น ' + bvps.toFixed(2) + ' บาท (' +
+             ((bvps/(EQ_PRE/OLD)-1)*100).toFixed(1) + '%) เพราะขายหุ้นได้สูงกว่ามูลค่าตามบัญชี';
+    }
+    oTxt.textContent = msg;
+  }
+
+  [sp,sn].forEach(function(s){ s.addEventListener('input', renderIPO); });
+  renderIPO();
+
+  /* ---------- เส้นทางคำสั่งซื้อ ---------- */
+  var STAGES = [
+    ['เต้น — ส่งคำสั่งจากแอปโบรกเกอร์',
+     'ระบุชื่อหุ้น จำนวน (ทวีคูณของ board lot 100 หุ้น) และราคา คำสั่งยังไม่เข้าตลาด'],
+    ['บริษัทหลักทรัพย์ (โบรกเกอร์) — ตัวกลางที่มีใบอนุญาต',
+     'ตรวจตัวตนลูกค้าและวงเงิน บัญชี Cash Balance ต้องมีเงินฝากพอก่อนถึงจะส่งคำสั่งได้ แล้วส่งต่อเข้าระบบตลาด'],
+    ['ระบบซื้อขายของตลาดหลักทรัพย์ — จับคู่คำสั่ง',
+     'จับคู่อัตโนมัติตามลำดับราคาก่อน แล้วจึงลำดับเวลา (price then time priority) คนซื้อกับคนขายไม่รู้จักกันและไม่ต้องเชื่อใจกัน'],
+    ['สำนักหักบัญชี — ชำระราคาและส่งมอบ',
+     'เข้ามาเป็นคู่สัญญากลางของทั้งสองฝั่ง เพื่อไม่ให้ฝ่ายใดเบี้ยว การชำระราคาเสร็จสิ้นแบบ T+2 (รายละเอียดพรุ่งนี้)'],
+    ['ศูนย์รับฝากหลักทรัพย์ — บันทึกทะเบียนผู้ถือหุ้น',
+     'ตัดหุ้นออกจากบัญชีผู้ขาย เพิ่มเข้าบัญชีผู้ซื้อในระบบไร้ใบหุ้น (scripless) ตรงนี้แหละที่ชื่อของเราถูกบันทึกว่าเป็นเจ้าของจริง']
+  ];
+
+  var pipe = document.getElementById('pipe'),
+      go   = document.getElementById('go'),
+      rst  = document.getElementById('rst');
+
+  pipe.innerHTML = STAGES.map(function(s,i){
+    return '<div class="pnode" id="pn'+i+'"><div class="pnum">'+(i+1)+'</div>'+
+           '<div><div class="pttl">'+s[0]+'</div><div class="pdesc">'+s[1]+'</div></div></div>';
+  }).join('');
+
+  var timers = [];
+  function clearAll(){
+    timers.forEach(clearTimeout); timers = [];
+    for(var i=0;i<STAGES.length;i++){ document.getElementById('pn'+i).classList.remove('on'); }
+    go.disabled = false;
+    go.textContent = '▶ ส่งคำสั่งซื้อ 100 หุ้น';
+  }
+
+  go.addEventListener('click', function(){
+    clearAll();
+    go.disabled = true;
+    go.textContent = 'กำลังเดินทาง...';
+    STAGES.forEach(function(_, i){
+      timers.push(setTimeout(function(){
+        if(i>0) document.getElementById('pn'+(i-1)).classList.remove('on');
+        document.getElementById('pn'+i).classList.add('on');
+        if(i === STAGES.length-1){
+          go.textContent = '✓ หุ้นเป็นของเต้นแล้ว — กดอีกครั้ง';
+          go.disabled = false;
+        }
+      }, 900*i + 250));
+    });
+  });
+  rst.addEventListener('click', clearAll);
+})();
+</script>
+</body>
+</html>

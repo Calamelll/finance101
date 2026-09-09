@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day 20 — หุ้นคืออะไร ผู้ถือหุ้นได้อะไรบ้าง | Finance101</title>
+<style>
+:root{
+  --bg:#191816; --card:#211f1d; --ink:#e8e4dd; --muted:#a09a91;
+  --line:#332f2b; --accent:#6cc394; --accent-soft:#1c2f26;
+  --warn:#e0a86f; --warn-soft:#2e2419; --code:#201e1b; --danger:#e0785c;
+  color-scheme: dark;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; padding:28px 18px 80px; background:var(--bg); color:var(--ink);
+  font-family:"Sarabun","Noto Sans Thai",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:17px; line-height:1.75; -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:720px;margin:0 auto}
+header{margin-bottom:34px}
+.kicker{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--muted);letter-spacing:.02em}
+.pill{background:var(--accent-soft);color:var(--accent);padding:3px 11px;border-radius:99px;font-weight:600}
+h1{font-size:29px;line-height:1.3;margin:12px 0 6px;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:16px;margin:0}
+h2{font-size:21px;margin:38px 0 12px;letter-spacing:-.005em}
+h3{font-size:17px;margin:26px 0 8px}
+p{margin:0 0 15px}
+ul,ol{margin:0 0 15px;padding-left:22px}
+li{margin-bottom:7px}
+strong{font-weight:600}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin:22px 0}
+.card.accent{background:var(--accent-soft);border-color:#2c4a3c}
+.card.warn{background:var(--warn-soft);border-color:#4a3722}
+.card h3{margin-top:0}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15.5px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-weight:600;font-size:13.5px;letter-spacing:.02em}
+td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.calc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;margin:22px 0}
+.calc label{display:block;font-size:14px;color:var(--muted);margin-bottom:6px}
+.calc .row{margin-bottom:18px}
+input[type=range]{width:100%;accent-color:var(--accent);height:24px}
+.val{font-weight:600;color:var(--accent);font-variant-numeric:tabular-nums}
+.bars{margin-top:6px}
+.bar-row{margin-bottom:12px}
+.bar-label{display:flex;justify-content:space-between;font-size:14px;margin-bottom:5px;gap:10px}
+.bar-track{background:#2a2724;border-radius:8px;height:26px;overflow:hidden;position:relative}
+.bar-fill{height:100%;border-radius:8px;transition:width .55s cubic-bezier(.22,.8,.3,1)}
+.bar-principal{background:#3f5c4e}
+.bar-growth{background:var(--accent)}
+.bar-negative{background:#a34a34}
+.bar-bond{background:#4a7fa0}
+.bar-stock{background:var(--accent)}
+.bar-gold{background:var(--warn)}
+.legend{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-top:10px;flex-wrap:wrap}
+.swatch{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:middle}
+.seg{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+.seg button{
+  background:var(--code);color:var(--muted);border:1px solid var(--line);border-radius:99px;
+  padding:6px 16px;font-size:14px;font-family:inherit;cursor:pointer;transition:all .2s;
+}
+.seg button.active{background:var(--accent-soft);color:var(--accent);border-color:#2c4a3c;font-weight:600}
+details{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:12px 16px;margin:10px 0}
+details[open]{background:#1d1b19}
+summary{cursor:pointer;font-weight:600;font-size:15.5px;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"▸ ";color:var(--accent)}
+details[open] summary::before{content:"▾ "}
+.ans{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font-size:15.5px;color:#d6d1c9}
+.q{font-weight:600;margin:22px 0 8px}
+pre{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:14px;line-height:1.6}
+code{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+.summary-box{border-left:3px solid var(--accent);padding-left:18px;margin:26px 0}
+.summary-box p{margin-bottom:8px}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
+footer a{color:var(--accent)}
+.disclaimer{font-size:13px;color:var(--muted);margin-top:18px;line-height:1.6}
+.nav{margin-bottom:20px;font-size:14px}
+.nav a{color:var(--accent);text-decoration:none}
+.src{font-size:12.5px;color:var(--muted);margin-top:8px}
+.steps{display:flex;align-items:flex-end;gap:14px;margin:18px 0 6px;height:150px}
+.step{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px}
+.step-bar{width:100%;border-radius:8px 8px 0 0;transition:height .55s cubic-bezier(.22,.8,.3,1);min-height:2px}
+.step1 .step-bar{background:#3f5c4e}
+.step2 .step-bar{background:var(--danger)}
+.step-label{font-size:13px;color:var(--muted);text-align:center}
+.step-val{font-weight:600;color:var(--ink);font-size:14.5px}
+.mixbar{display:flex;height:30px;border-radius:8px;overflow:hidden;margin:6px 0 10px;background:#2a2724}
+.mixseg{height:100%;transition:width .4s cubic-bezier(.22,.8,.3,1)}
+.stat{display:flex;justify-content:space-between;font-size:15.5px;padding:7px 0;border-bottom:1px solid var(--line)}
+.stat:last-child{border-bottom:none}
+.stat b{font-variant-numeric:tabular-nums;color:var(--accent)}
+@media(max-width:520px){
+  body{font-size:16px;padding:20px 14px 60px}
+  h1{font-size:25px}
+  .card,.calc{padding:16px}
+}
+
+/* Day 20 — โครงสร้างสิทธิเรียกร้อง */
+.wf{margin:18px 0 6px}
+.wf-track{display:flex;height:44px;border-radius:10px;overflow:hidden;background:#2a2724;border:1px solid var(--line)}
+.wf-seg{height:100%;display:flex;align-items:center;justify-content:center;font-size:12.5px;color:#12130f;font-weight:600;overflow:hidden;white-space:nowrap;transition:width .5s cubic-bezier(.22,.8,.3,1)}
+.wf-debt{background:#4a7fa0;color:#0f1b22}
+.wf-eq{background:var(--accent)}
+.wf-gap{background:#7a3d2c;color:#f0ded8}
+.wf-axis{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:6px;font-variant-numeric:tabular-nums}
+.ladder{list-style:none;padding:0;margin:16px 0}
+.ladder li{display:flex;gap:12px;align-items:baseline;padding:9px 14px;border:1px solid var(--line);border-radius:9px;margin-bottom:7px;background:var(--card);font-size:15.5px}
+.ladder li:last-child{background:var(--accent-soft);border-color:#2c4a3c}
+.ladder .rank{font-variant-numeric:tabular-nums;font-size:13px;color:var(--muted);min-width:20px;flex-shrink:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="nav"><a href="../index.html">← สารบัญ</a></div>
+
+<header>
+  <div class="kicker">
+    <span class="pill">Day 20 / 90</span>
+    <span>Phase 2 · การลงทุนระยะยาว</span>
+    <span>·</span>
+    <span>อ่าน 9 นาที</span>
+  </div>
+  <h1>หุ้นคืออะไร ผู้ถือหุ้นได้อะไรบ้าง</h1>
+  <p class="sub">สามวันที่ผ่านมาเราอยู่ฝั่งเจ้าหนี้ ซึ่งกระแสเงินสดถูกล็อกไว้ในสัญญาแล้ว วันนี้ข้ามไปฝั่งเจ้าของ ที่ไม่มีสัญญาอะไรรับประกันเลย — และจะเห็นว่าทำไมการ "ได้เงินเป็นคนสุดท้าย" ถึงเป็นทั้งเหตุผลที่หุ้นผันผวนที่สุด และเหตุผลที่หุ้นให้ผลตอบแทนระยะยาวสูงที่สุด</p>
+</header>
+
+<h2>หุ้นไม่ใช่ตัวเลขบนหน้าจอ มันคือเศษส่วนของกิจการ</h2>
+
+<p>นิยามที่ต้องยึดไว้ตลอด 70 บทที่เหลือ: <strong>หุ้นสามัญ (common stock) คือหน่วยของความเป็นเจ้าของในบริษัท</strong> ถ้าบริษัทออกหุ้นทั้งหมด 4,000,000 หุ้น แล้วเต้นถือ 40,000 หุ้น เต้นเป็นเจ้าของกิจการนั้น 1.00% จริงๆ — ไม่ใช่โดยเปรียบเทียบ แต่โดยกฎหมาย</p>
+
+<p>สิ่งที่เป็นเจ้าของคือ <em>ส่วนที่เหลือ</em> ของบริษัท ตามสมการที่เราเขียนไว้ตั้งแต่ Day 3 ตอนคำนวณความมั่งคั่งสุทธิของตัวเอง:</p>
+
+<div class="card accent">
+  <p style="margin-bottom:0;text-align:center;font-size:18px">ส่วนของผู้ถือหุ้น (Equity) = สินทรัพย์ (Assets) − หนี้สิน (Liabilities)</p>
+</div>
+
+<p>สมการเดียวกันเป๊ะ ต่างแค่ว่าเมื่อวานเราใส่บ้านกับหนี้ กยศ. วันนี้ใส่โรงงานกับหุ้นกู้ ประเด็นสำคัญคือคำว่า "ส่วนที่เหลือ" — นักการเงินเรียกสิทธิแบบนี้ว่า <strong>residual claim</strong> และมันคือคำอธิบายทุกอย่างที่จะตามมาในบทนี้</p>
+
+<h2>ลำดับการได้เงิน: ผู้ถือหุ้นต่อแถวเป็นคนสุดท้ายเสมอ</h2>
+
+<p>เมื่อบริษัทมีเงินเข้ามา เงินก้อนนั้นถูกจ่ายออกตามลำดับที่กฎหมายและสัญญากำหนดไว้ ไม่ใช่ตามใจผู้บริหาร:</p>
+
+<ol class="ladder">
+  <li><span class="rank">1</span><span>เจ้าหนี้การค้าและค่าใช้จ่ายดำเนินงาน — วัตถุดิบ ค่าเช่า ค่าไฟ</span></li>
+  <li><span class="rank">2</span><span>พนักงาน — เงินเดือน (มีบุริมสิทธิตามกฎหมายแรงงานไทย)</span></li>
+  <li><span class="rank">3</span><span>เจ้าหนี้มีประกันและเจ้าหนี้เงินกู้ — ดอกเบี้ยหุ้นกู้และเงินกู้ธนาคาร</span></li>
+  <li><span class="rank">4</span><span>รัฐ — ภาษีเงินได้นิติบุคคล 20% ของกำไรก่อนภาษี</span></li>
+  <li><span class="rank">5</span><span>ผู้ถือหุ้นบุริมสิทธิ (preferred shareholders) — ปันผลอัตราคงที่ก่อนหุ้นสามัญ</span></li>
+  <li><span class="rank">6</span><span><strong>ผู้ถือหุ้นสามัญ — ได้สิ่งที่เหลือ ซึ่งอาจเป็นศูนย์</strong></span></li>
+</ol>
+
+<p>ลำดับนี้เรียกว่า <strong>โครงสร้างสิทธิเรียกร้อง (capital structure / claim seniority)</strong> และมันทำงานทั้งตอนบริษัทกำไรปกติ และตอนบริษัทล้มละลาย ที่น่าสนใจคือ <em>การอยู่ท้ายแถวสร้างเลขคณิตแบบใหม่ขึ้นมา</em> ซึ่งไม่มีในโลกของบอนด์เลย</p>
+
+<h2>ตัวอย่างเป็นเลข: ทำไมเจ้าของถึงโดนขยายผลทุกทาง</h2>
+
+<p>สมมติบริษัทจดทะเบียนสมมุติแห่งหนึ่งในตลาดหุ้นไทย โครงสร้างเงินทุนดังนี้:</p>
+
+<ul>
+  <li>สินทรัพย์รวม <strong>10,000,000 บาท</strong></li>
+  <li>หนี้สิน (หุ้นกู้ ดอกเบี้ย 5%) <strong>6,000,000 บาท</strong> → ดอกเบี้ยจ่ายปีละ 300,000 บาท</li>
+  <li>ส่วนของผู้ถือหุ้น <strong>4,000,000 บาท</strong> แบ่งเป็นหุ้นสามัญ 4,000,000 หุ้น มูลค่าที่ตราไว้ (par value) หุ้นละ 1.00 บาท</li>
+</ul>
+
+<p>ทีนี้ลองให้มูลค่าสินทรัพย์ขยับดู แล้วดูว่าใครได้อะไร (เจ้าหนี้ได้ก่อน ผู้ถือหุ้นได้ที่เหลือ):</p>
+
+<table>
+  <tr><th>มูลค่าสินทรัพย์</th><th class="num">Δ สินทรัพย์</th><th class="num">เจ้าหนี้ได้</th><th class="num">ผู้ถือหุ้นได้</th><th class="num">ต่อหุ้น</th><th class="num">Δ ผู้ถือหุ้น</th></tr>
+  <tr><td>12,000,000</td><td class="num">+20%</td><td class="num">6,000,000</td><td class="num">6,000,000</td><td class="num">1.50</td><td class="num" style="color:var(--accent)">+50%</td></tr>
+  <tr><td>10,000,000</td><td class="num">ฐาน</td><td class="num">6,000,000</td><td class="num">4,000,000</td><td class="num">1.00</td><td class="num">0%</td></tr>
+  <tr><td>8,000,000</td><td class="num">−20%</td><td class="num">6,000,000</td><td class="num">2,000,000</td><td class="num">0.50</td><td class="num" style="color:var(--danger)">−50%</td></tr>
+  <tr><td>7,000,000</td><td class="num">−30%</td><td class="num">6,000,000</td><td class="num">1,000,000</td><td class="num">0.25</td><td class="num" style="color:var(--danger)">−75%</td></tr>
+  <tr><td>6,000,000</td><td class="num">−40%</td><td class="num">6,000,000</td><td class="num">0</td><td class="num">0.00</td><td class="num" style="color:var(--danger)">−100%</td></tr>
+  <tr><td>5,000,000</td><td class="num">−50%</td><td class="num">5,000,000</td><td class="num">0</td><td class="num">0.00</td><td class="num" style="color:var(--danger)">−100%</td></tr>
+</table>
+
+<p>อ่านคอลัมน์สุดท้ายเทียบคอลัมน์ที่สอง: <strong>ทุก 1% ที่มูลค่ากิจการขยับ ส่วนของผู้ถือหุ้นขยับ 2.5%</strong> ตัวคูณนั้นไม่ใช่เรื่องบังเอิญ มันคืออัตราส่วน สินทรัพย์/ส่วนของผู้ถือหุ้น = 10,000,000 ÷ 4,000,000 = 2.5 เป๊ะ นี่คือ <strong>อัตราทดทางการเงิน (financial leverage)</strong> ซึ่งเกิดขึ้นเองโดยอัตโนมัติทันทีที่บริษัทมีหนี้ ไม่ต้องกู้มาเก็งกำไรอะไรทั้งสิ้น</p>
+
+<p>สังเกตอีกสองอย่างจากตารางเดียวกัน:</p>
+
+<ul>
+  <li><strong>เจ้าหนี้ได้ 6,000,000 เท่ากันทุกแถวจนกว่าจะไม่พอจ่าย</strong> — ผลตอบแทนของเขาคงที่ที่ 300,000 ÷ 6,000,000 = 5.00% ต่อปีไม่ว่ากิจการจะดีแค่ไหน กิจการดีขึ้นเขาไม่ได้เพิ่ม เพราะเขาไม่ใช่เจ้าของ</li>
+  <li><strong>แถวสุดท้ายคือความรับผิดจำกัด (limited liability)</strong> — สินทรัพย์เหลือ 5,000,000 เจ้าหนี้ขาดไป 1,000,000 แต่ผู้ถือหุ้นไม่ต้องควักเพิ่มแม้บาทเดียว ขาดทุนสูงสุดคือ 100% ของเงินที่ใส่ไปเท่านั้น นี่คือเหตุผลที่คำว่า "บริษัทจำกัด" มีคำว่าจำกัดอยู่ และเป็นสิ่งประดิษฐ์ทางกฎหมายที่ทำให้ตลาดทุนสมัยใหม่เกิดขึ้นได้</li>
+</ul>
+
+<h2>ลองเลื่อนดูเอง: เค้กก้อนเดียว แบ่งสองฝ่าย</h2>
+<p>แถบสีน้ำเงินคือส่วนของเจ้าหนี้ สีเขียวคือส่วนที่เหลือของผู้ถือหุ้น ลองลากมูลค่ากิจการลงจนสีเขียวหายไป แล้วสังเกตว่าตัวคูณด้านล่างเปลี่ยนไปอย่างไรเมื่อบริษัทมีหนี้มากขึ้น</p>
+
+<div class="calc">
+  <div class="row">
+    <label>มูลค่ากิจการวันนี้ — <span class="val" id="aV">10.0</span> ล้านบาท</label>
+    <input type="range" id="a" min="0" max="20" value="10" step="0.25">
+  </div>
+  <div class="row">
+    <label>หนี้สินรวม — <span class="val" id="dV">6.0</span> ล้านบาท <span style="color:var(--muted);font-weight:400">(มูลค่ากิจการตั้งต้น 10 ล้าน)</span></label>
+    <input type="range" id="d" min="0" max="12" value="6" step="0.25">
+  </div>
+
+  <div class="wf">
+    <div class="wf-track" id="wf"></div>
+    <div class="wf-axis"><span>0</span><span>20 ล้านบาท</span></div>
+  </div>
+  <div class="legend">
+    <span><i class="swatch" style="background:#4a7fa0"></i>เจ้าหนี้ได้รับ</span>
+    <span><i class="swatch" style="background:var(--accent)"></i>ผู้ถือหุ้นได้รับ</span>
+    <span><i class="swatch" style="background:#7a3d2c"></i>ส่วนที่เจ้าหนี้ขาดทุน</span>
+  </div>
+
+  <div style="margin-top:14px">
+    <div class="stat"><span>เจ้าหนี้ได้รับ</span><b id="oDebt"></b></div>
+    <div class="stat"><span>ผู้ถือหุ้นได้รับ</span><b id="oEq"></b></div>
+    <div class="stat"><span>มูลค่าต่อหุ้น (4 ล้านหุ้น)</span><b id="oPS"></b></div>
+    <div class="stat"><span>ตัวคูณอัตราทด (สินทรัพย์ ÷ ส่วนของผู้ถือหุ้น)</span><b id="oLev"></b></div>
+    <div class="stat"><span>Δ มูลค่ากิจการ → Δ ส่วนของผู้ถือหุ้น</span><b id="oDelta"></b></div>
+  </div>
+  <p id="oTxt" style="margin:16px 0 0;font-size:15.5px;color:var(--muted)"></p>
+</div>
+
+<h2>ฝั่งกำไรก็ถูกขยายผลเหมือนกัน</h2>
+
+<p>บริษัทเดียวกัน ทีนี้ดูงบกำไรขาดทุนแทนงบดุล ดอกเบี้ย 300,000 บาทเป็นภาระคงที่ที่ต้องจ่ายก่อน ส่วนภาษีนิติบุคคลไทยคิด 20% ของกำไรก่อนภาษี (และไม่เก็บถ้าขาดทุน):</p>
+
+<table>
+  <tr><th>EBIT</th><th class="num">Δ EBIT</th><th class="num">ดอกเบี้ย</th><th class="num">ภาษี 20%</th><th class="num">กำไรสุทธิ</th><th class="num">EPS</th><th class="num">Δ กำไรสุทธิ</th></tr>
+  <tr><td>200,000</td><td class="num">−75%</td><td class="num">300,000</td><td class="num">0</td><td class="num" style="color:var(--danger)">−100,000</td><td class="num">−0.025</td><td class="num" style="color:var(--danger)">−125%</td></tr>
+  <tr><td>500,000</td><td class="num">−37.5%</td><td class="num">300,000</td><td class="num">40,000</td><td class="num">160,000</td><td class="num">0.04</td><td class="num" style="color:var(--danger)">−60%</td></tr>
+  <tr><td>800,000</td><td class="num">ฐาน</td><td class="num">300,000</td><td class="num">100,000</td><td class="num">400,000</td><td class="num">0.10</td><td class="num">0%</td></tr>
+  <tr><td>1,100,000</td><td class="num">+37.5%</td><td class="num">300,000</td><td class="num">160,000</td><td class="num">640,000</td><td class="num">0.16</td><td class="num" style="color:var(--accent)">+60%</td></tr>
+  <tr><td>1,400,000</td><td class="num">+75%</td><td class="num">300,000</td><td class="num">220,000</td><td class="num">880,000</td><td class="num">0.22</td><td class="num" style="color:var(--accent)">+120%</td></tr>
+</table>
+
+<p class="src">EBIT = กำไรก่อนดอกเบี้ยและภาษี · EPS = กำไรสุทธิ ÷ 4,000,000 หุ้น · อัตราภาษีเงินได้นิติบุคคลไทยมาตรฐาน 20% ของกำไรสุทธิ (บริษัทขนาดกลางและเล็กมีอัตราขั้นบันไดที่ต่ำกว่า) ตัวเลขบริษัทเป็นตัวอย่างสมมุติเพื่อการเรียนรู้ ไม่ใช่บริษัทจริง</p>
+
+<p>ตัวคูณฝั่งกำไรหาได้จากสูตรง่ายๆ: <strong>EBIT ÷ (EBIT − ดอกเบี้ย) = 800,000 ÷ 500,000 = 1.6 เท่า</strong> ตรวจได้เลย EBIT ขยับ +75% × 1.6 = +120% ตรงกับตาราง ส่วนฝั่งลบที่ได้ −125% แรงกว่า 1.6 เท่าเล็กน้อย เพราะรัฐไม่คืนภาษีให้ตอนขาดทุน ความไม่สมมาตรนี้เป็นของจริงและอยู่กับเราไปตลอด</p>
+
+<div class="calc">
+  <div class="row">
+    <label>กำไรก่อนดอกเบี้ยและภาษี (EBIT) — <span class="val" id="eV">800,000</span> บาท</label>
+    <input type="range" id="e" min="0" max="2000000" value="800000" step="25000">
+  </div>
+  <div class="mixbar" id="mix"></div>
+  <div class="legend">
+    <span><i class="swatch" style="background:#4a7fa0"></i>เจ้าหนี้ (ดอกเบี้ย)</span>
+    <span><i class="swatch" style="background:var(--warn)"></i>รัฐ (ภาษี)</span>
+    <span><i class="swatch" style="background:var(--accent)"></i>ผู้ถือหุ้น</span>
+    <span><i class="swatch" style="background:#7a3d2c"></i>ผู้ถือหุ้นรับขาดทุน</span>
+  </div>
+  <div style="margin-top:12px">
+    <div class="stat"><span>เจ้าหนี้ได้ (คงที่เสมอ)</span><b id="mDebt"></b></div>
+    <div class="stat"><span>รัฐได้</span><b id="mTax"></b></div>
+    <div class="stat"><span>ผู้ถือหุ้นได้ (กำไรสุทธิ)</span><b id="mNet"></b></div>
+    <div class="stat"><span>กำไรต่อหุ้น (EPS)</span><b id="mEps"></b></div>
+    <div class="stat"><span>ROE = กำไรสุทธิ ÷ ส่วนของผู้ถือหุ้น 4 ล้าน</span><b id="mRoe"></b></div>
+    <div class="stat"><span>ผลตอบแทนของเจ้าหนี้</span><b id="mCr"></b></div>
+  </div>
+  <p id="mTxt" style="margin:16px 0 0;font-size:15.5px;color:var(--muted)"></p>
+</div>
+
+<h2>สิทธิห้าอย่างที่ติดมากับหุ้นหนึ่งหุ้น</h2>
+
+<p>ความเป็นเจ้าของไม่ได้แปลว่าได้แต่เงิน มันมาเป็นชุดสิทธิ:</p>
+
+<ol>
+  <li><strong>สิทธิในส่วนแบ่งกำไร</strong> — เงินปันผล (dividend) แต่ต้องเน้นว่านี่คือสิทธิที่จะได้รับ <em>ถ้าที่ประชุมผู้ถือหุ้นอนุมัติ</em> ไม่ใช่ภาระผูกพันเหมือนดอกเบี้ยหุ้นกู้ บริษัทงดจ่ายปันผลได้โดยไม่ผิดนัดชำระ</li>
+  <li><strong>สิทธิออกเสียง</strong> — หนึ่งหุ้นหนึ่งเสียงในการประชุมผู้ถือหุ้น ใช้เลือกกรรมการ อนุมัติงบ อนุมัติการควบรวม สิทธินี้คือกลไกควบคุมที่แท้จริงของบริษัทมหาชน</li>
+  <li><strong>สิทธิในทรัพย์สินคงเหลือ</strong> — ที่เห็นในตารางแรก ได้เป็นคนสุดท้ายตอนเลิกกิจการ</li>
+  <li><strong>สิทธิจองซื้อหุ้นเพิ่มทุน (rights offering)</strong> — เมื่อบริษัทออกหุ้นใหม่ ผู้ถือหุ้นเดิมมักได้สิทธิซื้อตามสัดส่วนก่อน เพื่อรักษาสัดส่วนความเป็นเจ้าของไม่ให้ถูกลดทอน (dilution)</li>
+  <li><strong>สิทธิได้รับข้อมูล</strong> — บริษัทจดทะเบียนไทยต้องส่งงบการเงินรายไตรมาส แบบ 56-1 One Report และรายงานสารสนเทศสำคัญผ่านระบบของตลาดหลักทรัพย์ ทำให้เราอ่านงบได้ฟรี ซึ่งเป็นสิ่งที่จะใช้จริงจังตั้งแต่ Day 24</li>
+</ol>
+
+<div class="card warn">
+  <h3>สามราคาของหุ้นหนึ่งตัว อย่าสับสน</h3>
+  <p style="margin-bottom:0">ใช้บริษัทตัวอย่างเดิม สมมติราคาตลาด 1.25 บาท ต่อหุ้น:<br>
+  <strong>มูลค่าที่ตราไว้ (par value) = 1.00 บาท</strong> — ตัวเลขทางกฎหมายที่จดไว้ตอนตั้งบริษัท แทบไม่มีความหมายทางเศรษฐกิจเลย ในไทยมักเห็น 1.00 หรือ 0.50 บาท<br>
+  <strong>มูลค่าตามบัญชี (book value) = 4,000,000 ÷ 4,000,000 = 1.00 บาท</strong> — ส่วนของผู้ถือหุ้นต่อหุ้นตามงบดุล เป็นราคาตามต้นทุนในอดีต<br>
+  <strong>ราคาตลาด (market price) = 1.25 บาท</strong> — สิ่งที่คนอื่นยอมจ่ายวันนี้ สะท้อนความคาดหวังต่อกำไร<em>ในอนาคต</em><br>
+  จากสามตัวนี้ได้อัตราส่วนที่ใช้ทั้งชีวิตการลงทุน: P/BV = 1.25 ÷ 1.00 = 1.25 เท่า และ P/E = 1.25 ÷ 0.10 = 12.5 เท่า <strong>เวลาซื้อขายจริง เราจ่ายราคาตลาด แต่สิ่งที่ได้มาคือกระแสเงินสดในอนาคต</strong> ไม่ใช่ par และไม่ใช่ book</p>
+</div>
+
+<div class="card">
+  <h3>เชื่อมกับชีวิตเด็กฝึกงาน</h3>
+  <p>ดัชนี SET ปิดที่ <strong>1,588.68 จุด</strong> เมื่อ 2 กันยายน 2569 ตัวเลขนี้คือค่าเฉลี่ยถ่วงน้ำหนักด้วยมูลค่าตลาดของหุ้นสามัญทั้งตลาด พูดอีกอย่างคือมันวัดว่า "ส่วนที่เหลือ" ของบริษัทไทยทั้งประเทศรวมกันมีมูลค่าเท่าไร</p>
+  <p>ในทางปฏิบัติ การซื้อหุ้นไทยบนกระดานหลักทำเป็น <strong>board lot ละ 100 หุ้น</strong> ดังนั้นหุ้นราคา 15.20 บาทต้องใช้เงินอย่างน้อย 15.20 × 100 = <strong>1,520 บาท</strong> ต่อหนึ่งไม้ ซึ่งอยู่ในระยะที่เงินเดือนฝึกงานเอื้อมถึงสบายๆ แต่จุดที่ต้องคิดให้ครบคือกฎ Day 7 — เงินสำรองฉุกเฉินต้องเต็มก่อน เพราะหุ้นเป็นสินทรัพย์ที่มูลค่าถูกขยายผล 2–3 เท่าตามตารางข้างบน การถูกบังคับขายตอนตลาดลงจึงเจ็บกว่าบอนด์มาก</p>
+  <p style="margin-bottom:0">และถ้ากลับไปดู Day 13 จะพบว่าเต้นน่าจะเป็นเจ้าของหุ้นไทยอยู่แล้วโดยไม่รู้ตัว — กองทุน ThaiESG กับ SSF ที่ลงทุนในหุ้นไทย คือการถือ residual claim ของบริษัทหลายร้อยแห่งพร้อมกันผ่านกองทุน ต่างจากการซื้อหุ้นเองแค่ตรงที่มีคนกดปุ่มแทนและคิดค่าธรรมเนียม</p>
+  <p class="src">ระดับดัชนี SET ณ วันปิดทำการ 2 ก.ย. 2569 ที่ 1,588.68 จุด (ลดลง 6.48 จุด, −0.41%) รายงานโดยสำนักข่าวการเงินไทยอ้างอิงข้อมูลตลาดหลักทรัพย์แห่งประเทศไทย · ขนาด board lot 100 หุ้นเป็นเกณฑ์ของกระดานหลัก (Main Board) ตลาดหลักทรัพย์ฯ · ตัวเลขดัชนีเปลี่ยนทุกวันทำการ ถ้าอ่านย้อนหลังให้ตรวจกับ set.or.th ใหม่</p>
+</div>
+
+<div class="card accent">
+  <h3>แล้วทำไมถึงยอมอยู่ท้ายแถว</h3>
+  <p style="margin-bottom:0">คำตอบอยู่ในตารางที่สองแล้ว: <strong>เจ้าหนี้ได้ 5.00% ทุกสถานการณ์ ส่วนผู้ถือหุ้นได้ตั้งแต่ −2.5% ถึง +22%</strong> เพดานของเจ้าหนี้ถูกล็อกไว้ในสัญญา แต่เพดานของเจ้าของคือกำไรของกิจการที่โตได้ไม่จำกัด และเมื่อบริษัทกำไรแล้วนำกำไรไปลงทุนต่อ (retained earnings) ส่วนของผู้ถือหุ้นก็โตแบบทบต้นตามกลไก Day 5 นี่คือเหตุผลเชิงโครงสร้างว่าทำไมหุ้นถึงให้ผลตอบแทนระยะยาวสูงกว่าตราสารหนี้ — ไม่ใช่เพราะหุ้น "ดีกว่า" แต่เพราะผู้ถือหุ้นรับความไม่แน่นอนที่เจ้าหนี้ไม่ยอมรับ และได้ค่าชดเชยความเสี่ยง (equity risk premium) เป็นการตอบแทน ตรงกับหลักการที่วางไว้ใน Day 16 ทุกประการ</p>
+</div>
+
+<details>
+  <summary>กล่องโค้ด (ข้ามได้ ไม่นับในเวลาอ่าน)</summary>
+  <div class="ans">
+  <p>ตรรกะทั้งบทเขียนเป็นฟังก์ชันสั้นๆ ได้ และเป็นชุดเดียวกับที่ JS ในเครื่องคำนวณข้างบนใช้:</p>
+  <pre><code>DEBT, SHARES, EQUITY0, COUPON, TAX = 6_000_000, 4_000_000, 4_000_000, 0.05, 0.20
+
+def split_assets(A, debt=DEBT):
+    """แบ่งมูลค่ากิจการตามลำดับสิทธิ: เจ้าหนี้ก่อน ผู้ถือหุ้นได้ที่เหลือ"""
+    to_debt = min(A, debt)
+    to_equity = max(A - debt, 0)      # residual claim — ต่ำสุดคือ 0 ไม่ติดลบ
+    return to_debt, to_equity
+
+for A in (12e6, 10e6, 8e6, 7e6, 6e6, 5e6):
+    d, e = split_assets(A)
+    print(f"A={A/1e6:5.1f}M  dA={(A/10e6-1)*100:+6.1f}%  "
+          f"equity={e/1e6:4.1f}M  /share={e/SHARES:.2f}  "
+          f"dE={(e/EQUITY0-1)*100:+7.1f}%")
+# A= 12.0M  dA= +20.0%  equity= 6.0M  /share=1.50  dE=  +50.0%
+# A=  8.0M  dA= -20.0%  equity= 2.0M  /share=0.50  dE=  -50.0%
+# A=  7.0M  dA= -30.0%  equity= 1.0M  /share=0.25  dE=  -75.0%
+# A=  5.0M  dA= -50.0%  equity= 0.0M  /share=0.00  dE= -100.0%   &lt;- limited liability
+
+def waterfall(ebit):
+    interest = DEBT * COUPON               # 300,000 คงที่เสมอ
+    pretax   = ebit - interest
+    tax      = max(pretax, 0) * TAX        # ขาดทุนไม่เสียภาษี
+    net      = pretax - tax
+    return interest, tax, net
+
+for ebit in (200_000, 500_000, 800_000, 1_100_000, 1_400_000):
+    i, t, n = waterfall(ebit)
+    print(f"EBIT={ebit:9,}  net={n:9,}  EPS={n/SHARES:+.3f}  ROE={n/EQUITY0:+.1%}")
+# EBIT=  200,000  net= -100,000  EPS=-0.025  ROE= -2.5%
+# EBIT=  800,000  net=  400,000  EPS=+0.100  ROE=+10.0%
+# EBIT=1,400,000  net=  880,000  EPS=+0.220  ROE=+22.0%
+
+# ตัวคูณอัตราทดสองแบบ ตรวจว่าตรงกับตาราง
+assert 10e6 / EQUITY0 == 2.5                    # งบดุล: 1% ของกิจการ = 2.5% ของเจ้าของ
+assert 800_000 / (800_000 - 300_000) == 1.6     # งบกำไรขาดทุน: EBIT/(EBIT-ดอกเบี้ย)</code></pre>
+  </div>
+</details>
+
+<h2>ทดสอบความเข้าใจ</h2>
+
+<p class="q">1. บริษัท ก. และ ข. มีสินทรัพย์ 100 ล้านบาทเท่ากัน และดำเนินธุรกิจเหมือนกันทุกอย่าง ต่างกันแค่ ก. มีหนี้ 20 ล้าน ส่วน ข. มีหนี้ 80 ล้าน ถ้ามูลค่ากิจการทั้งคู่ลดลง 15% ส่วนของผู้ถือหุ้นแต่ละบริษัทลดลงกี่ %?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">ใช้ตัวคูณ สินทรัพย์ ÷ ส่วนของผู้ถือหุ้น:<br>
+  บริษัท ก. ส่วนของผู้ถือหุ้น = 100 − 20 = 80 ล้าน ⇒ ตัวคูณ 100/80 = 1.25 ⇒ ลดลง 15% × 1.25 = <strong>18.75%</strong> (เหลือ 65 ล้าน ตรวจได้: 85 − 20 = 65 และ 65/80 − 1 = −18.75% ✓)<br>
+  บริษัท ข. ส่วนของผู้ถือหุ้น = 100 − 80 = 20 ล้าน ⇒ ตัวคูณ 100/20 = 5.0 ⇒ ลดลง 15% × 5.0 = <strong>75%</strong> (เหลือ 5 ล้าน ตรวจได้: 85 − 80 = 5 และ 5/20 − 1 = −75% ✓)<br>
+  บทเรียนที่ต้องเก็บไป: <strong>ธุรกิจเดียวกัน ความเสี่ยงของผู้ถือหุ้นต่างกันได้หลายเท่าเพียงเพราะโครงสร้างหนี้</strong> ตอนอ่านงบใน Day 25 และดูอัตราส่วน D/E ใน Day 27 นี่คือเหตุผลว่าทำไมต้องดู ผู้ถือหุ้นของบริษัท ข. ล้างพอร์ตได้เมื่อมูลค่ากิจการลดแค่ 20% ในขณะที่ผู้ถือหุ้นของบริษัท ก. ต้องรอถึง 80%</div>
+</details>
+
+<p class="q">2. เต้นถือหุ้น 40,000 หุ้นจากทั้งหมด 4,000,000 หุ้น บริษัทออกหุ้นใหม่ 1,000,000 หุ้น สองกรณี: (ก) ขายให้นักลงทุนเฉพาะเจาะจงภายนอก (private placement) (ข) เสนอขายผู้ถือหุ้นเดิมอัตราส่วน 4 หุ้นเดิมต่อ 1 หุ้นใหม่ และเต้นใช้สิทธิเต็มจำนวน สัดส่วนความเป็นเจ้าของของเต้นเหลือเท่าไรในแต่ละกรณี?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">เดิม 40,000 ÷ 4,000,000 = <strong>1.00%</strong><br>
+  (ก) เต้นยังถือ 40,000 หุ้นเท่าเดิม แต่ตัวหารโตเป็น 5,000,000 ⇒ 40,000 ÷ 5,000,000 = <strong>0.80%</strong> สัดส่วนหายไป 20% ของที่เคยมี นี่คือ <strong>การลดสัดส่วน (dilution)</strong><br>
+  (ข) อัตรา 4:1 แปลว่าเต้นได้สิทธิซื้อ 40,000 ÷ 4 = 10,000 หุ้นใหม่ ใช้สิทธิเต็ม ⇒ ถือ 50,000 หุ้น จาก 5,000,000 = <strong>1.00% เท่าเดิมพอดี</strong><br>
+  จุดสำคัญที่คนมักพลาด: สิทธิจองซื้อหุ้นเพิ่มทุนไม่ได้ให้ของฟรี มันให้ <em>ทางเลือกที่จะรักษาสัดส่วนโดยการควักเงินเพิ่ม</em> ถ้าไม่มีเงินหรือไม่ใช้สิทธิ ก็โดน dilute เหมือนกรณี (ก) และถ้าราคาที่เสนอขายต่ำกว่าราคาตลาดมาก การไม่ใช้สิทธิยิ่งเสียเปรียบ เพราะมูลค่าถูกโอนไปให้คนที่ใช้สิทธิ</div>
+</details>
+
+<p class="q">3. บริษัทประกาศงดจ่ายเงินปันผลปีนี้ และในปีเดียวกันก็จ่ายดอกเบี้ยหุ้นกู้ครบถ้วน ผู้ถือหุ้นฟ้องว่าบริษัทผิดนัดชำระกับตนได้หรือไม่ และเหตุผลเชิงโครงสร้างคืออะไร?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">ไม่ได้ เพราะ <strong>เงินปันผลไม่ใช่ภาระผูกพันตามสัญญา แต่ดอกเบี้ยเป็น</strong> — นี่คือความต่างที่แหลมคมที่สุดระหว่างการเป็นเจ้าหนี้กับการเป็นเจ้าของ ผู้ถือหุ้นกู้มีสัญญาระบุจำนวนเงินและวันจ่ายชัดเจน ไม่จ่ายคือผิดนัดชำระ (default) และฟ้องบังคับได้ ส่วนผู้ถือหุ้นมีแค่ <em>สิทธิที่จะได้รับส่วนแบ่งถ้ามีการประกาศจ่าย</em> ซึ่งต้องผ่านมติที่ประชุมผู้ถือหุ้นตามข้อเสนอของคณะกรรมการ<br>
+  แต่คำถามที่ควรถามต่อคือ <em>เงินที่ไม่จ่ายออกมานั้นหายไปไหน</em> คำตอบคือมันอยู่ในกำไรสะสม (retained earnings) ซึ่งยังเป็นของผู้ถือหุ้นอยู่ทุกบาท และไปเพิ่มส่วนของผู้ถือหุ้นในงบดุล ถ้าบริษัทเอาไปลงทุนแล้วได้ผลตอบแทนสูงกว่าที่ผู้ถือหุ้นจะทำได้เอง การไม่จ่ายปันผลก็เป็นเรื่องดี สิ่งที่ผู้ถือหุ้นมีเพื่อคุมเรื่องนี้ไม่ใช่การฟ้อง แต่คือ <strong>สิทธิออกเสียงเลือกกรรมการ</strong> — และถ้าไม่พอใจจริงๆ ก็ขายหุ้นทิ้ง</div>
+</details>
+
+<p class="q"><strong>ทวน:</strong> ในตารางประเภทสินทรัพย์ที่เราจัดไว้ อะไรคือความแตกต่างเชิงโครงสร้างระหว่างสินทรัพย์ที่ให้กระแสเงินสด (cash-flow producing) กับสินทรัพย์ที่ไม่ให้ และหุ้นกับทองคำอยู่ฝั่งไหน?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">สินทรัพย์ที่ให้กระแสเงินสดมี <em>คนหรือกิจการอยู่เบื้องหลังที่ผลิตมูลค่าใหม่ออกมาเรื่อยๆ</em> จึงตีมูลค่าได้จากการคิดลดกระแสเงินสดในอนาคต — หุ้น (ปันผลและกำไรสะสม) ตราสารหนี้ (ดอกเบี้ย) และอสังหาริมทรัพย์ให้เช่า (ค่าเช่า) อยู่ฝั่งนี้ ส่วนทองคำและสินค้าโภคภัณฑ์ไม่ผลิตอะไรเลย ผลตอบแทนมาจากการที่คนถัดไปยอมจ่ายแพงกว่าล้วนๆ จึงตีมูลค่าด้วยสูตรไม่ได้ และเก็บไว้นานแค่ไหนก็ไม่งอกเงย<br>
+  ต่อยอดกับบทวันนี้: หุ้นอยู่ฝั่งกระแสเงินสด <em>แต่เป็นสิทธิลำดับสุดท้าย</em> ในกระแสนั้น จึงเป็นสินทรัพย์ที่มีทั้งเครื่องยนต์ผลิตมูลค่าและอัตราทดในตัวเอง — เป็นเหตุผลว่าทำไมมันถึงอยู่บนสุดของทั้งแกนผลตอบแทนคาดหวังและแกนความผันผวนพร้อมกัน<br>ตอบผิดหรือลังเล? → <a href="finance-day-17-asset-classes.html">ทบทวน Day 17: ประเภทสินทรัพย์ (asset classes)</a></div>
+</details>
+
+<p class="q"><strong>ทวน:</strong> RMF, SSF และ ThaiESG ต่างกันอย่างไรในเงื่อนไขระยะเวลาถือครอง และเงื่อนไขนั้นเกี่ยวอะไรกับเรื่องความเป็นเจ้าของที่เรียนวันนี้?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">แกนหลักคือ <strong>RMF ผูกกับการเกษียณ</strong> (ต้องลงทุนต่อเนื่องและถือจนอายุ 55 ปีบริบูรณ์ โดยลงทุนมาแล้วไม่น้อยกว่า 5 ปี) <strong>SSF เน้นการออมระยะยาว</strong> (ถือครบ 10 ปีนับจากวันซื้อแต่ละครั้ง) ส่วน <strong>ThaiESG บังคับลงทุนในสินทรัพย์ไทยที่ผ่านเกณฑ์ความยั่งยืน</strong> และมีเงื่อนไขระยะเวลาถือครองของตัวเองที่สั้นกว่า RMF ทั้งสามให้สิทธิลดหย่อนภาษีโดยมีเพดานทั้งรายกองและเพดานรวมกับกองทุนเกษียณอื่น ซึ่งต้องตรวจกับประกาศกรมสรรพากรปีนั้นๆ เสมอเพราะเงื่อนไขถูกแก้บ่อย<br>
+  ที่เชื่อมกับบทวันนี้: เงื่อนไขห้ามขายก่อนกำหนดเหล่านี้ <em>บังคับให้เราเป็นเจ้าของระยะยาวจริงๆ</em> ซึ่งบังเอิญตรงกับสิ่งที่ตารางอัตราทดในบทนี้บอก — ความผันผวนที่ถูกขยาย 2–3 เท่าจะกลายเป็นความเสียหายจริงก็ต่อเมื่อถูกบังคับขายตอนราคาต่ำ กฎล็อกระยะเวลาจึงป้องกันความผิดพลาดเชิงพฤติกรรมไปในตัว แต่แลกมาด้วยสภาพคล่องที่หายไป ซึ่งย้ำอีกครั้งว่าเงินสำรองฉุกเฉินต้องมาก่อน<br>ตอบผิดหรือลังเล? → <a href="finance-day-13-rmf-ssf-thaiesg.html">ทบทวน Day 13: ลดหย่อนภาษีด้วยการลงทุน RMF, SSF, ThaiESG</a></div>
+</details>
+
+<div class="summary-box">
+  <h2 style="margin-top:0">สรุป 3 บรรทัด</h2>
+  <p>1. หุ้นสามัญคือสิทธิใน "ส่วนที่เหลือ" ของกิจการตามสมการ Equity = Assets − Liabilities ผู้ถือหุ้นจึงต่อแถวเป็นคนสุดท้ายเสมอ หลังเจ้าหนี้การค้า พนักงาน เจ้าหนี้เงินกู้ รัฐ และผู้ถือหุ้นบุริมสิทธิ</p>
+  <p>2. การอยู่ท้ายแถวสร้างอัตราทดขึ้นเองสองชั้น: ฝั่งงบดุลตัวคูณ = สินทรัพย์ ÷ ส่วนของผู้ถือหุ้น (ตัวอย่างในบท = 2.5 เท่า) และฝั่งงบกำไรขาดทุนตัวคูณ = EBIT ÷ (EBIT − ดอกเบี้ย) (= 1.6 เท่า) ขณะที่เจ้าหนี้ได้ 5.00% เท่าเดิมทุกสถานการณ์</p>
+  <p style="margin-bottom:0">3. ค่าตอบแทนของการรับความไม่แน่นอนนั้นคือเพดานที่ไม่จำกัด บวกกับชุดสิทธิห้าอย่าง — ปันผล ออกเสียง ทรัพย์สินคงเหลือ จองซื้อหุ้นเพิ่มทุน และรับข้อมูล — โดยมีความรับผิดจำกัดที่ 100% ของเงินที่ลงไปเป็นพื้นรองรับ</p>
+</div>
+
+<footer>
+  <p><strong>พรุ่งนี้ Day 21 — ตลาดหลักทรัพย์ไทย (SET/mai) และการเปิดพอร์ต</strong> วันนี้เรารู้แล้วว่าหุ้นคืออะไร พรุ่งนี้ดูว่าจะซื้อมันได้ที่ไหน — SET กับ mai ต่างกันตรงไหน ตลาดแรกกับตลาดรองคืออะไร ใครเป็นคนดูแลไม่ให้เราโดนโกง และขั้นตอนเปิดบัญชีซื้อขายหลักทรัพย์สำหรับนักศึกษาที่ยังไม่มีรายได้ประจำต้องเตรียมอะไรบ้าง</p>
+  <p class="disclaimer">บทเรียนนี้เป็นความรู้เชิงการศึกษา ไม่ใช่คำแนะนำทางการเงินเฉพาะบุคคล และไม่ใช่การชี้ชวนให้ซื้อหรือขายหลักทรัพย์ใดหลักทรัพย์หนึ่ง บริษัทที่ใช้เป็นตัวอย่างตลอดบทเป็นบริษัทสมมุติที่สร้างขึ้นเพื่อให้ตัวเลขคำนวณตามง่าย ไม่ใช่บริษัทจริงในตลาดหลักทรัพย์ ระดับดัชนี SET ที่อ้างอิงเป็นข้อมูล ณ วันที่ระบุเท่านั้นและเปลี่ยนทุกวันทำการ ลำดับสิทธิเรียกร้องที่แสดงเป็นภาพรวมเพื่อการเรียนรู้ ลำดับจริงในการชำระบัญชีขึ้นกับ พ.ร.บ. ล้มละลาย ประเภทหลักประกัน และเงื่อนไขในสัญญาแต่ละฉบับ อัตราภาษีเงินได้นิติบุคคลและเงื่อนไขกองทุนลดหย่อนภาษีเปลี่ยนแปลงได้ ให้ตรวจกับกรมสรรพากรและตลาดหลักทรัพย์แห่งประเทศไทยใหม่เสมอเมื่ออ่านย้อนหลัง</p>
+</footer>
+
+</div>
+
+<script>
+(function(){
+  var SHARES = 4000000, EQ0_ASSET = 10000000, COUPON = 0.05, TAXR = 0.20;
+  var MAXSCALE = 20000000;
+
+  var sa=document.getElementById('a'), sd=document.getElementById('d');
+  var la=document.getElementById('aV'), ld=document.getElementById('dV');
+  var wf=document.getElementById('wf');
+  var oDebt=document.getElementById('oDebt'), oEq=document.getElementById('oEq'),
+      oPS=document.getElementById('oPS'), oLev=document.getElementById('oLev'),
+      oDelta=document.getElementById('oDelta'), oTxt=document.getElementById('oTxt');
+
+  function baht(x){ return x.toLocaleString('en-US',{maximumFractionDigits:0}) + ' บาท'; }
+  function col(el,x){ el.style.color = x>=0 ? 'var(--accent)' : 'var(--danger)'; }
+
+  function renderA(){
+    var A = +sa.value * 1000000, D = +sd.value * 1000000;
+    la.textContent = (+sa.value).toFixed(1);
+    ld.textContent = (+sd.value).toFixed(1);
+
+    var toDebt = Math.min(A, D);
+    var toEq   = Math.max(A - D, 0);
+    var gap    = Math.max(D - A, 0);
+
+    wf.innerHTML =
+      '<div class="wf-seg wf-debt" style="width:'+(toDebt/MAXSCALE*100)+'%">'+(toDebt/MAXSCALE>0.09?'เจ้าหนี้':'')+'</div>'+
+      '<div class="wf-seg wf-eq"   style="width:'+(toEq/MAXSCALE*100)+'%">'+(toEq/MAXSCALE>0.09?'ผู้ถือหุ้น':'')+'</div>'+
+      '<div class="wf-seg wf-gap"  style="width:'+(gap/MAXSCALE*100)+'%">'+(gap/MAXSCALE>0.09?'เจ้าหนี้ขาด':'')+'</div>';
+
+    var eq0 = EQ0_ASSET - D;                       // ส่วนของผู้ถือหุ้นที่มูลค่ากิจการตั้งต้น
+    oDebt.textContent = baht(toDebt);
+    oEq.textContent   = baht(toEq);
+    oPS.textContent   = (toEq/SHARES).toFixed(3) + ' บาท';
+    oDebt.style.color = 'var(--muted)';
+    oEq.style.color   = toEq>0 ? 'var(--accent)' : 'var(--danger)';
+    oPS.style.color   = toEq>0 ? 'var(--accent)' : 'var(--danger)';
+
+    if(eq0 > 0){
+      var lev = EQ0_ASSET / eq0;
+      var dA  = (A/EQ0_ASSET - 1)*100;
+      var dE  = (toEq/eq0 - 1)*100;
+      oLev.textContent = lev.toFixed(2) + ' เท่า';
+      oLev.style.color = 'var(--accent)';
+      oDelta.textContent = (dA>=0?'+':'') + dA.toFixed(1) + '%  →  ' + (dE>=0?'+':'') + dE.toFixed(1) + '%';
+      col(oDelta, dE);
+      var wipeAt = (1 - eq0/EQ0_ASSET)*100;        // มูลค่ากิจการลดกี่ % แล้วเจ้าของเหลือศูนย์
+      oTxt.textContent = 'หนี้ ' + (+sd.value).toFixed(1) + ' ล้าน ทำให้ทุก 1% ที่มูลค่ากิจการขยับ กลายเป็น ' +
+        lev.toFixed(2) + '% สำหรับเจ้าของ — และส่วนของผู้ถือหุ้นจะเหลือศูนย์เมื่อมูลค่ากิจการลดลง ' +
+        wipeAt.toFixed(1) + '% จากฐาน 10 ล้าน ยิ่งหนี้มาก เส้นตายยิ่งใกล้';
+    } else {
+      oLev.textContent = '—';
+      oLev.style.color = 'var(--muted)';
+      oDelta.textContent = '—';
+      oDelta.style.color = 'var(--muted)';
+      oTxt.textContent = 'ที่ระดับหนี้นี้ ส่วนของผู้ถือหุ้นตั้งต้นเป็นศูนย์หรือติดลบอยู่แล้ว (หนี้ ≥ มูลค่ากิจการ 10 ล้าน) ' +
+        'ในทางบัญชีเรียกว่าส่วนของผู้ถือหุ้นติดลบ ซึ่งเป็นสัญญาณอันตรายที่ต้องดูทุกครั้งตอนอ่านงบดุล';
+    }
+  }
+
+  var se=document.getElementById('e'), le=document.getElementById('eV'), mix=document.getElementById('mix');
+  var mDebt=document.getElementById('mDebt'), mTax=document.getElementById('mTax'),
+      mNet=document.getElementById('mNet'), mEps=document.getElementById('mEps'),
+      mRoe=document.getElementById('mRoe'), mCr=document.getElementById('mCr'),
+      mTxt=document.getElementById('mTxt');
+
+  function renderE(){
+    var ebit = +se.value;
+    var D = 6000000, EQ = 4000000;
+    var interest = D * COUPON;                     // 300,000 คงที่
+    var pretax = ebit - interest;
+    var tax = Math.max(pretax, 0) * TAXR;
+    var net = pretax - tax;
+
+    le.textContent = ebit.toLocaleString('en-US');
+
+    var base = interest + tax + Math.abs(net);
+    var wI = interest/base*100, wT = tax/base*100,
+        wP = net>0 ? net/base*100 : 0, wN = net<0 ? (-net)/base*100 : 0;
+    mix.innerHTML =
+      '<div class="mixseg" style="width:'+wI+'%;background:#4a7fa0"></div>'+
+      '<div class="mixseg" style="width:'+wT+'%;background:var(--warn)"></div>'+
+      '<div class="mixseg" style="width:'+wP+'%;background:var(--accent)"></div>'+
+      '<div class="mixseg" style="width:'+wN+'%;background:#7a3d2c"></div>';
+
+    mDebt.textContent = baht(interest);  mDebt.style.color='var(--muted)';
+    mTax.textContent  = baht(tax);       mTax.style.color='var(--muted)';
+    mNet.textContent  = baht(net);       col(mNet, net);
+    mEps.textContent  = (net/SHARES>=0?'+':'') + (net/SHARES).toFixed(3) + ' บาท'; col(mEps, net);
+    mRoe.textContent  = (net/EQ>=0?'+':'') + (net/EQ*100).toFixed(2) + '%'; col(mRoe, net);
+    mCr.textContent   = ebit >= interest ? '+5.00% (ครบเต็ม)' : 'เสี่ยงไม่ได้ครบ — กำไรไม่พอจ่ายดอกเบี้ย';
+    mCr.style.color   = ebit >= interest ? 'var(--muted)' : 'var(--danger)';
+
+    var msg;
+    if(net < 0){
+      msg = 'EBIT ต่ำกว่าดอกเบี้ย 300,000 บาท เจ้าหนี้ยังต้องได้เต็มตามสัญญา ส่วนที่ขาดจึงตกเป็นภาระของเจ้าของทั้งหมด — ' +
+            'สังเกตว่ารัฐไม่เก็บภาษีตอนขาดทุน แต่ก็ไม่คืนให้เช่นกัน ความไม่สมมาตรนี้ทำให้ฝั่งลบเจ็บแรงกว่าตัวคูณ 1.6 เท่าเสมอ';
+    } else if(Math.abs(ebit - 800000) < 1){
+      msg = 'จุดฐาน: ตัวคูณอัตราทดฝั่งกำไร = EBIT ÷ (EBIT − ดอกเบี้ย) = 800,000 ÷ 500,000 = 1.60 เท่า ' +
+            'ลองเลื่อน EBIT ±37.5% แล้วดูว่ากำไรสุทธิขยับ ±60% พอดี';
+    } else {
+      var mult = (pretax !== 0) ? Math.abs((net/400000 - 1) / (ebit/800000 - 1)) : 0;
+      msg = 'EBIT เปลี่ยน ' + ((ebit/800000-1)*100).toFixed(1) + '% จากฐาน แต่กำไรสุทธิของเจ้าของเปลี่ยน ' +
+            ((net/400000-1)*100).toFixed(1) + '% — ขยายผลราว ' + mult.toFixed(2) + ' เท่า ' +
+            'ในขณะที่เจ้าหนี้ยังได้ 300,000 บาทเท่าเดิมทุกกรณี';
+    }
+    mTxt.textContent = msg;
+  }
+
+  [sa,sd].forEach(function(s){ s.addEventListener('input', renderA); });
+  se.addEventListener('input', renderE);
+  renderA(); renderE();
+})();
+</script>
+</body>
+</html>
