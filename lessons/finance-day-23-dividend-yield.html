@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day 23 — เงินปันผล (dividend) และ dividend yield | Finance101</title>
+<style>
+:root{
+  --bg:#191816; --card:#211f1d; --ink:#e8e4dd; --muted:#a09a91;
+  --line:#332f2b; --accent:#6cc394; --accent-soft:#1c2f26;
+  --warn:#e0a86f; --warn-soft:#2e2419; --code:#201e1b; --danger:#e0785c;
+  color-scheme: dark;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; padding:28px 18px 80px; background:var(--bg); color:var(--ink);
+  font-family:"Sarabun","Noto Sans Thai",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:17px; line-height:1.75; -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:720px;margin:0 auto}
+header{margin-bottom:34px}
+.kicker{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--muted);letter-spacing:.02em}
+.pill{background:var(--accent-soft);color:var(--accent);padding:3px 11px;border-radius:99px;font-weight:600}
+h1{font-size:29px;line-height:1.3;margin:12px 0 6px;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:16px;margin:0}
+h2{font-size:21px;margin:38px 0 12px;letter-spacing:-.005em}
+h3{font-size:17px;margin:26px 0 8px}
+p{margin:0 0 15px}
+ul,ol{margin:0 0 15px;padding-left:22px}
+li{margin-bottom:7px}
+strong{font-weight:600}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin:22px 0}
+.card.accent{background:var(--accent-soft);border-color:#2c4a3c}
+.card.warn{background:var(--warn-soft);border-color:#4a3722}
+.card h3{margin-top:0}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15.5px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-weight:600;font-size:13.5px;letter-spacing:.02em}
+td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.calc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;margin:22px 0}
+.calc label{display:block;font-size:14px;color:var(--muted);margin-bottom:6px}
+.calc .row{margin-bottom:18px}
+input[type=range]{width:100%;accent-color:var(--accent);height:24px}
+.val{font-weight:600;color:var(--accent);font-variant-numeric:tabular-nums}
+.bars{margin-top:6px}
+.bar-row{margin-bottom:12px}
+.bar-label{display:flex;justify-content:space-between;font-size:14px;margin-bottom:5px;gap:10px}
+.bar-track{background:#2a2724;border-radius:8px;height:26px;overflow:hidden;position:relative}
+.bar-fill{height:100%;border-radius:8px;transition:width .55s cubic-bezier(.22,.8,.3,1)}
+.bar-principal{background:#3f5c4e}
+.bar-growth{background:var(--accent)}
+.bar-negative{background:#a34a34}
+.bar-bond{background:#4a7fa0}
+.bar-stock{background:var(--accent)}
+.bar-gold{background:var(--warn)}
+.legend{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-top:10px;flex-wrap:wrap}
+.swatch{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:middle}
+.seg{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+.seg button{
+  background:var(--code);color:var(--muted);border:1px solid var(--line);border-radius:99px;
+  padding:6px 16px;font-size:14px;font-family:inherit;cursor:pointer;transition:all .2s;
+}
+.seg button.active{background:var(--accent-soft);color:var(--accent);border-color:#2c4a3c;font-weight:600}
+details{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:12px 16px;margin:10px 0}
+details[open]{background:#1d1b19}
+summary{cursor:pointer;font-weight:600;font-size:15.5px;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"▸ ";color:var(--accent)}
+details[open] summary::before{content:"▾ "}
+.ans{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font-size:15.5px;color:#d6d1c9}
+.q{font-weight:600;margin:22px 0 8px}
+pre{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:14px;line-height:1.6}
+code{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+.summary-box{border-left:3px solid var(--accent);padding-left:18px;margin:26px 0}
+.summary-box p{margin-bottom:8px}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
+footer a{color:var(--accent)}
+.disclaimer{font-size:13px;color:var(--muted);margin-top:18px;line-height:1.6}
+.nav{margin-bottom:20px;font-size:14px}
+.nav a{color:var(--accent);text-decoration:none}
+.src{font-size:12.5px;color:var(--muted);margin-top:8px}
+.steps{display:flex;align-items:flex-end;gap:14px;margin:18px 0 6px;height:150px}
+.step{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px}
+.step-bar{width:100%;border-radius:8px 8px 0 0;transition:height .55s cubic-bezier(.22,.8,.3,1);min-height:2px}
+.step1 .step-bar{background:#3f5c4e}
+.step2 .step-bar{background:var(--danger)}
+.step-label{font-size:13px;color:var(--muted);text-align:center}
+.step-val{font-weight:600;color:var(--ink);font-size:14.5px}
+.mixbar{display:flex;height:30px;border-radius:8px;overflow:hidden;margin:6px 0 10px;background:#2a2724}
+.mixseg{height:100%;transition:width .4s cubic-bezier(.22,.8,.3,1)}
+.stat{display:flex;justify-content:space-between;font-size:15.5px;padding:7px 0;border-bottom:1px solid var(--line)}
+.stat:last-child{border-bottom:none}
+.stat b{font-variant-numeric:tabular-nums;color:var(--accent)}
+@media(max-width:520px){
+  body{font-size:16px;padding:20px 14px 60px}
+  h1{font-size:25px}
+  .card,.calc{padding:16px}
+}
+
+/* โครงสร้างสิทธิเรียกร้อง / แถบสัดส่วน (ใช้ต่อจาก Day 20) */
+.wf{margin:18px 0 6px}
+.wf-track{display:flex;height:44px;border-radius:10px;overflow:hidden;background:#2a2724;border:1px solid var(--line)}
+.wf-seg{height:100%;display:flex;align-items:center;justify-content:center;font-size:12.5px;color:#12130f;font-weight:600;overflow:hidden;white-space:nowrap;transition:width .5s cubic-bezier(.22,.8,.3,1)}
+.wf-debt{background:#4a7fa0;color:#0f1b22}
+.wf-eq{background:var(--accent)}
+.wf-gap{background:#7a3d2c;color:#f0ded8}
+.wf-axis{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:6px;font-variant-numeric:tabular-nums}
+.ladder{list-style:none;padding:0;margin:16px 0}
+.ladder li{display:flex;gap:12px;align-items:baseline;padding:9px 14px;border:1px solid var(--line);border-radius:9px;margin-bottom:7px;background:var(--card);font-size:15.5px}
+.ladder li:last-child{background:var(--accent-soft);border-color:#2c4a3c}
+.ladder .rank{font-variant-numeric:tabular-nums;font-size:13px;color:var(--muted);min-width:20px;flex-shrink:0}
+
+/* Day 21 — เส้นทางคำสั่งซื้อ */
+.pipe{margin:16px 0 4px}
+.pnode{display:flex;gap:12px;align-items:flex-start;padding:11px 14px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;background:var(--card);transition:background .3s,border-color .3s,transform .3s}
+.pnode.on{background:var(--accent-soft);border-color:#2c4a3c;transform:translateX(7px)}
+.pnum{width:25px;height:25px;border-radius:50%;background:#2a2724;color:var(--muted);font-size:12.5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:3px;font-variant-numeric:tabular-nums;transition:background .3s,color .3s}
+.pnode.on .pnum{background:var(--accent);color:#12130f;font-weight:700}
+.pttl{font-weight:600;font-size:15.5px;margin-bottom:2px}
+.pdesc{font-size:14px;color:var(--muted);line-height:1.6}
+.pbtn{background:var(--accent-soft);color:var(--accent);border:1px solid #2c4a3c;border-radius:99px;padding:8px 22px;font-size:15px;font-family:inherit;font-weight:600;cursor:pointer;transition:opacity .2s}
+.pbtn:disabled{opacity:.45;cursor:default}
+.regbar{margin-top:10px;padding:10px 14px;border:1px dashed var(--line);border-radius:10px;font-size:14px;color:var(--muted)}
+.scalebar{background:#2a2724;border-radius:8px;height:22px;overflow:hidden;margin-bottom:5px}
+.scalefill{height:100%;border-radius:8px}
+
+/* Day 22 — กระดานราคา (order book) และปฏิทิน T+2 */
+.book{font-variant-numeric:tabular-nums;font-size:15px;margin:4px 0 2px}
+.brow{display:grid;grid-template-columns:1fr 84px 1fr;gap:8px;align-items:center;padding:3px 0}
+.bqty{display:flex;height:24px;border-radius:6px;overflow:hidden;background:transparent}
+.bqty i{height:100%;border-radius:6px;display:block;transition:width .4s ease,opacity .4s ease}
+.bqty.l{justify-content:flex-end}
+.bprice{text-align:center;font-weight:600;padding:2px 0;border-radius:6px;transition:background .3s,color .3s}
+.bprice.ask{color:var(--danger)}
+.bprice.bid{color:var(--accent)}
+.bprice.hit{background:var(--warn-soft);color:var(--warn)}
+.bqty span{font-size:12.5px;color:var(--muted);padding:0 6px;line-height:24px;white-space:nowrap}
+.bhead{display:grid;grid-template-columns:1fr 84px 1fr;gap:8px;font-size:12.5px;color:var(--muted);padding-bottom:5px;border-bottom:1px solid var(--line);margin-bottom:6px}
+.bhead span:nth-child(1){text-align:right}
+.bhead span:nth-child(2){text-align:center}
+.spreadrow{text-align:center;font-size:13px;color:var(--warn);padding:5px 0;border-top:1px dashed var(--line);border-bottom:1px dashed var(--line);margin:5px 0}
+.cal{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin:16px 0 6px}
+.cday{border:1px solid var(--line);border-radius:10px;padding:9px 6px;text-align:center;background:var(--card);transition:background .35s,border-color .35s}
+.cday .cn{font-size:12px;color:var(--muted)}
+.cday .cv{font-size:14px;font-weight:600;margin-top:3px;min-height:20px}
+.cday.t{background:var(--accent-soft);border-color:#2c4a3c}
+.cday.s{background:var(--warn-soft);border-color:#4a3722}
+.cday.off{opacity:.4}
+</style>
+<style>
+/* Day 23 — โครงเงินปันผล */
+.split{display:flex;height:34px;border-radius:9px;overflow:hidden;background:#2a2724;border:1px solid var(--line);margin:10px 0 4px}
+.split i{height:100%;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;transition:width .45s cubic-bezier(.22,.8,.3,1)}
+.sp-pay{background:var(--accent);color:#12130f}
+.sp-ret{background:#3f5c4e;color:#dfe8e2}
+.idcard{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin:14px 0;font-variant-numeric:tabular-nums;font-size:15.5px;text-align:center}
+.idcard b{color:var(--accent)}
+.tax2{display:flex;gap:14px;align-items:flex-end;height:170px;margin:16px 0 4px}
+.tax2 .col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px}
+.tax2 .cb{width:100%;border-radius:9px 9px 0 0;transition:height .5s cubic-bezier(.22,.8,.3,1);min-height:3px}
+.tax2 .c1 .cb{background:#3f5c4e}
+.tax2 .c2 .cb{background:var(--accent)}
+.tax2 .c2.lose .cb{background:var(--danger)}
+.verdict{text-align:center;font-size:15px;padding:9px 12px;border-radius:9px;margin-top:12px;background:var(--accent-soft);color:var(--accent);border:1px solid #2c4a3c}
+.verdict.bad{background:var(--warn-soft);color:var(--warn);border-color:#4a3722}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="nav"><a href="../index.html">← สารบัญ</a></div>
+
+<header>
+  <div class="kicker">
+    <span class="pill">Day 23 / 90</span>
+    <span>Phase 2 · การลงทุนระยะยาว</span>
+    <span>·</span>
+    <span>อ่าน 9 นาที</span>
+  </div>
+  <h1>เงินปันผล (dividend) และ dividend yield</h1>
+  <p class="sub">เมื่อวานจบเรื่องต้นทุนของการซื้อขาย วันนี้กลับไปหาเหตุผลที่ถือหุ้นตั้งแต่แรก — และไปเจอสองเรื่องที่คนส่วนใหญ่เข้าใจกลับด้าน: เงินปันผลไม่ใช่รายได้ฟรี ส่วน yield ที่สูงมากมักไม่ใช่ข่าวดี</p>
+</header>
+
+<h2>เงินปันผลมาจากไหน</h2>
+
+<p><strong>เงินปันผล (dividend)</strong> คือส่วนของกำไรที่บริษัทจ่ายคืนเป็นเงินสดให้ผู้ถือหุ้น ต้นทางคือกำไรสะสม (retained earnings) คณะกรรมการเป็นผู้เสนอ และที่ประชุมผู้ถือหุ้นเป็นผู้อนุมัติ</p>
+
+<p>จุดที่ต้องแยกให้ขาดตั้งแต่ต้น: <strong>เงินปันผลไม่ใช่ภาระผูกพัน</strong> ดอกเบี้ยหุ้นกู้ที่เจอใน Day 18 เป็นสัญญา ไม่จ่าย = ผิดนัดชำระหนี้ (default) แต่เงินปันผลเป็นการ<em>ตัดสินใจ</em> บริษัทงดจ่ายปีนี้ได้โดยไม่ผิดกฎหมายอะไรเลย นี่คือหน้าตาจริงของ "สิทธิเรียกร้องส่วนที่เหลือ (residual claim)" ที่พูดถึงใน Day 20</p>
+
+<p>เมื่อได้กำไรมาก้อนหนึ่ง บริษัทมีทางแยกสองทางเท่านั้น — จ่ายออก หรือเก็บไว้ลงทุนต่อ สัดส่วนนี้เรียกว่า <strong>อัตราการจ่ายปันผล (payout ratio)</strong> และส่วนที่เหลือคือ <strong>อัตราการเก็บกำไรไว้ (retention ratio)</strong></p>
+
+<div class="idcard">
+  payout = DPS ÷ EPS &nbsp;·&nbsp; retention = 1 − payout &nbsp;·&nbsp; <b>g = ROE × retention</b>
+</div>
+
+<p>สูตรขวาสุดคืออัตราการเติบโตที่บริษัทเลี้ยงตัวเองได้ (sustainable growth) — กำไรที่เก็บไว้ถูกนำไปลงทุนที่ผลตอบแทนต่อส่วนของผู้ถือหุ้น (ROE) จึงกลายเป็นกำไรที่โตขึ้นในปีถัดไป แปลว่า<strong>ปันผลที่จ่ายวันนี้คือการเติบโตที่สละไป</strong> ไม่ใช่ของแถม บริษัทที่จ่าย 100% คือบริษัทที่ประกาศว่าตัวเองไม่มีที่ลงทุนที่ดีกว่ากระเป๋าเราแล้ว ซึ่งอาจจริงและอาจดี แต่ไม่ใช่ "ใจดี"</p>
+
+<h2>dividend yield คำนวณจากอะไร</h2>
+
+<p><strong>อัตราเงินปันผลตอบแทน (dividend yield)</strong> = เงินปันผลต่อหุ้นย้อนหลัง 12 เดือน ÷ ราคาหุ้นปัจจุบัน ตัวเศษเป็นอดีต ตัวส่วนเป็นปัจจุบัน — ความไม่เข้าคู่นี้เองที่สร้างกับดักในหัวข้อท้ายบท</p>
+
+<p>จับสามตัวมาต่อกันจะได้เอกลักษณ์ที่ใช้ตรวจงบได้ทันที:</p>
+
+<div class="idcard">
+  DY = DPS ÷ P = (payout × EPS) ÷ P = <b>payout ÷ (P/E)</b>
+</div>
+
+<p>ลองกับตลาดไทยทั้งตลาด ณ 8 ก.ย. 2569: SET มี market yield <strong>3.93%</strong> และ P/E <strong>16.15 เท่า</strong> ⇒ payout เฉลี่ยของทั้งตลาด = 3.93% × 16.15 = <strong>63.5%</strong> ตรวจอีกทาง: index EPS = 100.43 จุด ⇒ เงินปันผลรวมของดัชนี = 3.93% × (16.15 × 100.43) = 63.7 จุด ⇒ 63.7 ÷ 100.43 = 63.5% เท่ากัน</p>
+
+<p class="src">ที่มา: ตลาดหลักทรัพย์แห่งประเทศไทย — Key Market Statistics and Performance (SET) ณ 8 ก.ย. 2569 · Market Yield 3.93% · P/E 16.15 เท่า · P/BV 1.51 เท่า · Index EPS 100.43 · มูลค่าหลักทรัพย์ตามราคาตลาด 20.46 ล้านล้านบาท (ดึงข้อมูล 10 ก.ย. 2569)</p>
+
+<p>ต่อยอดอีกขั้น ถ้าสมมติ ROE = 15% ⇒ g = 15% × (1 − 0.635) = 5.48% และผลตอบแทนคาดหวังของผู้ถือหุ้นตามแบบจำลองกอร์ดอน (Gordon growth) คือ r ≈ DY + g = 3.93% + 5.48% = <strong>9.41% ต่อปี</strong> นี่คือวิธีที่ตัวเลขหน้าเดียวของตลาดถูกแปลงเป็นสมมติฐานผลตอบแทนระยะยาว — และเป็นเหตุผลที่ Day 17 ให้ตัวเลขคาดหวังของหุ้นไว้ในย่านนี้</p>
+
+<div class="calc">
+  <h3 style="margin-top:0">ลองปรับสามตัวแปร</h3>
+  <div class="row">
+    <label>กำไรต่อหุ้น EPS: <span class="val" id="vE">4.00</span> บาท</label>
+    <input type="range" id="sE" min="0.5" max="10" step="0.25" value="4">
+  </div>
+  <div class="row">
+    <label>อัตราการจ่ายปันผล payout: <span class="val" id="vK">60</span>%</label>
+    <input type="range" id="sK" min="0" max="120" step="5" value="60">
+  </div>
+  <div class="row">
+    <label>ราคาหุ้น: <span class="val" id="vP">50.00</span> บาท</label>
+    <input type="range" id="sP" min="10" max="150" step="1" value="50">
+  </div>
+  <div class="split" id="spl">
+    <i class="sp-pay" id="spPay">จ่ายปันผล</i><i class="sp-ret" id="spRet">เก็บไว้โต</i>
+  </div>
+  <div class="stat"><span>เงินปันผลต่อหุ้น (DPS)</span><b id="oD">2.40 บาท</b></div>
+  <div class="stat"><span>P/E</span><b id="oPE">12.50 เท่า</b></div>
+  <div class="stat"><span>dividend yield</span><b id="oDY">4.80%</b></div>
+  <div class="stat"><span>ตรวจ payout ÷ (P/E)</span><b id="oChk">4.80%</b></div>
+  <div class="stat"><span>g ที่เลี้ยงตัวเองได้ (สมมติ ROE 15%)</span><b id="oG">6.00%</b></div>
+  <div class="regbar" id="oNote">payout เกิน 100% แปลว่าจ่ายเกินกำไรที่หามาได้ ต้องดึงเงินสดสำรองหรือกู้มาจ่าย</div>
+</div>
+
+<h2>วัน XD กับ T+2 — และราคาที่หายไป</h2>
+
+<p><strong>วัน XD (excluding dividend)</strong> คือวันแรกที่ซื้อหุ้นแล้ว<em>ไม่ได้</em>สิทธิรับปันผลงวดนั้น ถ้าอยากได้สิทธิ ต้องซื้อ<strong>อย่างช้าที่สุดในวันทำการก่อนวัน XD</strong> เหตุผลอยู่ที่ T+2 จาก Day 22 — ชื่อเราจะไปโผล่ในทะเบียนผู้ถือหุ้นสองวันทำการหลังวันซื้อ ตลาดจึงต้องกำหนดเส้นตัดล่วงหน้าไว้ให้ระบบชำระราคาตามทัน</p>
+
+<div class="cal" id="cal"></div>
+<p class="src">ลำดับจริงยังมีวัน Record Date (ปิดสมุดทะเบียน) และวันจ่ายเงินซึ่งมักห่างจาก XD อีกหลายสัปดาห์ ปฏิทินนี้ย่อให้เห็นเฉพาะเส้นตัดสิทธิ</p>
+
+<p>เช้าวัน XD ตลาดปรับ<strong>ราคาอ้างอิงเปิด</strong>ลงเท่ากับเงินปันผลต่อหุ้นโดยอัตโนมัติ ไม่ใช่เพราะมีคนเทขาย แต่เพราะหุ้นที่ซื้อวันนี้คือหุ้นที่<em>ไม่มีสิทธิ</em>รับเงินก้อนนั้นแล้ว — ของที่ซื้อคนละชิ้นกัน จึงต้องคนละราคา</p>
+
+<h2>เงินปันผลเป็นรายได้ฟรีจริงหรือ</h2>
+
+<p>คำถามนี้ตอบด้วยเลขได้ตรงๆ สมมติหุ้นราคาปิดก่อน XD 50.00 บาท ประกาศจ่ายปันผล 2.00 บาท (yield 4%):</p>
+
+<div class="seg">
+  <button id="bA" class="active">หัก ณ ที่จ่าย 10% แล้วจบ</button>
+  <button id="bB">ขอเครดิตภาษี (ขั้น 0%)</button>
+</div>
+<div class="tax2">
+  <div class="col c1"><span class="step-val" id="x1">50.00</span><div class="cb" id="xb1"></div><span class="step-label">ก่อน XD<br>ถือหุ้นมูลค่า 50.00</span></div>
+  <div class="col c2" id="xc2"><span class="step-val" id="x2">49.80</span><div class="cb" id="xb2"></div><span class="step-label" id="x2l">หลัง XD<br>หุ้น 48.00 + เงินสด 1.80</span></div>
+</div>
+<div class="verdict" id="xv">มูลค่ารวมลดลง 0.20 บาท หรือ −0.40% — เงินปันผลไม่ได้เพิ่มความมั่งคั่ง มันย้ายความมั่งคั่งจากช่องหนึ่งไปอีกช่อง แล้วรัฐหักไป 10% ระหว่างทาง</div>
+
+<p>ผลนี้ไม่ใช่เรื่องบังเอิญ ในโลกที่ไม่มีภาษีและค่าธรรมเนียม การจ่ายปันผลจะไม่กระทบมูลค่ารวมของผู้ถือหุ้นเลย (ข้อสรุปคลาสสิกของ Modigliani–Miller) พอใส่ภาษีเข้าไป ผลลัพธ์จึง<em>ติดลบเล็กน้อย</em> สำหรับคนที่ปล่อยให้จบที่การหัก ณ ที่จ่าย ข้อสรุปเชิงปฏิบัติจึงคมมาก: <strong>อย่าซื้อหุ้นเพื่อ "เก็บปันผล" ก่อนวัน XD</strong> เพราะนั่นคือการซื้อเงินของตัวเองกลับมาในราคาที่แพงกว่าเดิม 10%</p>
+
+<h2>ภาษีเงินปันผล: ทางเลือกที่คนส่วนใหญ่เลือกผิด</h2>
+
+<p>บริษัทจดทะเบียนหักภาษี ณ ที่จ่าย <strong>10%</strong> จากเงินปันผลเสมอ จากนั้นเรามีสองทาง</p>
+
+<ul>
+  <li><strong>ทางที่ 1 — จบตรงนั้น (final tax)</strong> ไม่ต้องนำไปรวมยื่นภาษีปลายปี ได้เงินสุทธิ 90% ของปันผล</li>
+  <li><strong>ทางที่ 2 — นำไปรวมคำนวณ แล้วขอ<em>เครดิตภาษีเงินปันผล</em></strong> เพราะกำไรก้อนนี้ถูกเก็บภาษีนิติบุคคล 20% ไปแล้วรอบหนึ่ง ก่อนจะโดนหักอีก 10% ในมือเรา รัฐจึงให้เครดิตคืนความซ้ำซ้อนนั้น</li>
+</ul>
+
+<div class="idcard">
+  เครดิตภาษี = ปันผล × <b>อัตราภาษีนิติบุคคล ÷ (1 − อัตราภาษีนิติบุคคล)</b> = ปันผล × 20/80 = <b>ปันผล × 0.25</b>
+</div>
+
+<p>วิธีคิดคือ "ถอดกลับ" (gross-up): ปันผล 100 บาทที่ถึงมือเราแปลว่ากำไรก่อนภาษีนิติบุคคลคือ 125 บาท เรานำ <strong>125</strong> ไปรวมเป็นเงินได้ แล้วเอาเครดิต 25 บวกภาษีหัก ณ ที่จ่าย 10 รวม 35 บาทไปหักออกจากภาษีที่คำนวณได้ พีชคณิตจะยุบลงเหลือรูปสวยมาก:</p>
+
+<div class="idcard">
+  เงินสุทธิทางที่ 2 = <b>1.25 × D × (1 − t)</b> &nbsp;เทียบกับ&nbsp; ทางที่ 1 = <b>0.90 × D</b><br>
+  เท่ากันเมื่อ 1.25(1 − t) = 0.90 ⇒ <b>t = 28%</b>
+</div>
+
+<p>ขั้นภาษีไทยไม่มีขั้น 28% มีแต่ 25% แล้วกระโดดไป 30% กฎจึงคมและจำง่าย: <strong>ขั้นภาษีสูงสุดของเรา ≤ 25% ⇒ ขอเครดิตคุ้มเสมอ · ≥ 30% ⇒ ปล่อยให้จบที่ 10%</strong></p>
+
+<div class="calc">
+  <h3 style="margin-top:0">คุ้มไหม ลองใส่ตัวเลขของตัวเอง</h3>
+  <div class="row">
+    <label>เงินปันผลรับทั้งปี (ก่อนหักภาษี): <span class="val" id="vD">3,930</span> บาท</label>
+    <input type="range" id="sD" min="500" max="60000" step="10" value="3930">
+  </div>
+  <label style="margin-bottom:8px">ขั้นภาษีสูงสุดของเรา (marginal rate)</label>
+  <div class="seg" id="segT">
+    <button data-t="0" class="active">0%</button><button data-t="5">5%</button><button data-t="10">10%</button><button data-t="15">15%</button><button data-t="20">20%</button><button data-t="25">25%</button><button data-t="30">30%</button><button data-t="35">35%</button>
+  </div>
+  <div class="tax2">
+    <div class="col c1"><span class="step-val" id="t1">3,537</span><div class="cb" id="tb1"></div><span class="step-label">ทางที่ 1<br>จบที่หัก 10%</span></div>
+    <div class="col c2" id="tc2"><span class="step-val" id="t2">4,913</span><div class="cb" id="tb2"></div><span class="step-label">ทางที่ 2<br>รวมยื่น + เครดิต</span></div>
+  </div>
+  <div class="verdict" id="tv"></div>
+</div>
+
+<div class="card accent">
+  <h3>ทำไมเรื่องนี้สำคัญกับเต้นเป็นพิเศษตอนนี้</h3>
+  <p>เด็กฝึกงานที่มีเงินได้สุทธิทั้งปีไม่ถึง 150,000 บาท อยู่ขั้นภาษี <strong>0%</strong> ซึ่งเป็นจุดที่เครดิตภาษีเงินปันผลให้ผลสูงสุดในชีวิต</p>
+  <p>ลงทุน 100,000 บาทที่ yield เท่าค่าเฉลี่ยตลาด 3.93% ⇒ ปันผล 3,930 บาท/ปี · ทางที่ 1 ได้ 3,537 บาท · ทางที่ 2 ได้ <strong>4,912.50 บาท</strong> ⇒ ต่างกัน <strong>1,375.50 บาท หรือ +38.9%</strong> จากการกดยื่นภาษีเพิ่มไม่กี่นาที</p>
+  <p style="margin-bottom:0">เทียบกันตรงๆ: Day 22 คำนวณว่าการเลือกโบรกที่ค่าคอมฯ ถูกกว่าช่วยประหยัดหลักสิบสตางค์ต่อร้อยบาท แต่การกดยื่นภาษีถูกช่องเพิ่มผลตอบแทนจากปันผลเกือบ 39% <strong>ต้นทุนที่ควบคุมได้ก้อนใหญ่ที่สุดของนักลงทุนรายย่อยคือภาษี ไม่ใช่ค่าธรรมเนียม</strong></p>
+</div>
+
+<div class="card warn">
+  <h3>ข้อควรระวังของเครดิตภาษี</h3>
+  <ul style="margin-bottom:0">
+    <li>เลือกแล้วต้อง<strong>เหมารวมทุกก้อน</strong> — จะหยิบเฉพาะตัวที่ได้เปรียบมารวมไม่ได้</li>
+    <li>กำไรที่ได้รับส่งเสริมการลงทุน (BOI) ไม่เสียภาษีนิติบุคคล จึง<strong>ไม่มีเครดิตให้</strong> และบางบริษัทจ่ายจากกำไรหลายอัตราปนกัน ตัวคูณจริงจึงต่ำกว่า 0.25 — ดูอัตราที่ระบุในหนังสือรับรองการหักภาษี ณ ที่จ่ายเสมอ</li>
+    <li>เงินปันผลจาก<strong>กองทุนรวม</strong>ถูกหัก 10% เหมือนกันแต่ไม่มีเครดิตภาษี เพราะกองทุนไม่ได้เสียภาษีนิติบุคคลมาก่อน</li>
+    <li>การนำปันผลไปรวมทำให้เงินได้สุทธิสูงขึ้น จึงอาจดันเงินได้บางส่วนขึ้นขั้นถัดไป — เกณฑ์ 28% ใช้กับ<em>ขั้นสุดท้าย</em>ที่ปันผลไปตกลง ไม่ใช่ขั้นเฉลี่ย</li>
+  </ul>
+</div>
+
+<h2>yield สูงคือกับดัก ไม่ใช่ส่วนลด</h2>
+
+<p>ย้อนกลับไปที่ DY = DPS ÷ P ตัวเลขนี้พุ่งขึ้นได้สองทาง — ตัวเศษโต หรือ<strong>ตัวส่วนพัง</strong> และในทางปฏิบัติ ทางที่สองเกิดบ่อยกว่ามาก</p>
+
+<table>
+  <thead><tr><th>บริษัทสมมติ ก.</th><th class="num">ปีที่แล้ว</th><th class="num">วันนี้</th></tr></thead>
+  <tbody>
+    <tr><td>EPS</td><td class="num">4.00</td><td class="num">1.00</td></tr>
+    <tr><td>DPS ที่จ่ายไปแล้ว</td><td class="num">2.00</td><td class="num">2.00</td></tr>
+    <tr><td>ราคา</td><td class="num">40.00</td><td class="num">20.00</td></tr>
+    <tr><td>dividend yield (ย้อนหลัง)</td><td class="num">5.00%</td><td class="num">10.00%</td></tr>
+    <tr><td>payout ที่ต้องใช้</td><td class="num">50%</td><td class="num">200%</td></tr>
+  </tbody>
+</table>
+
+<p>หน้าจอโชว์ 10% แต่ payout 200% แปลว่าจ่ายเกินกำไรที่หามาได้เท่าตัว ซึ่งทำได้ไม่กี่ปีก่อนเงินสดหมด บอร์ดจึงตัดปันผลเหลือ 1.00 บาท ⇒ <strong>yield จริงที่จะได้คือ 1.00 ÷ 20.00 = 5%</strong> เท่าเดิมกับปีที่แล้ว ส่วนคนที่ซื้อเพราะเห็นเลข 10% ขาดทุนราคาไปแล้วครึ่งหนึ่ง นี่คือ <strong>กับดัก yield (yield trap)</strong></p>
+
+<p>เครื่องมือกันตัวเองสามข้อ: (1) ดู <em>forward</em> yield จากปันผลที่ประกาศแล้ว ไม่ใช่ trailing yield (2) ดู payout ควบเสมอ — เกิน 100% ต่อเนื่องคือสัญญาณ (3) ดูว่าเงินปันผลออกมาจาก<strong>กระแสเงินสด</strong>จริงหรือจากการกู้ ซึ่งเป็นเหตุผลที่สามบทถัดไปเราต้องไปอ่านงบการเงินให้เป็น</p>
+
+<details>
+  <summary>กล่องโค้ด (ข้ามได้ ไม่นับในเวลาอ่าน)</summary>
+  <div class="ans">
+<pre><code>CIT = 0.20                      # ภาษีเงินได้นิติบุคคล 20%
+
+def final_tax(D):               # ทางที่ 1: จบที่หัก ณ ที่จ่าย 10%
+    return 0.90 * D
+
+def with_credit(D, t):          # ทางที่ 2: gross-up + เครดิตภาษี
+    taxable = D * (1 + CIT/(1-CIT))        # 1.25 * D
+    credit  = D * CIT/(1-CIT) + 0.10 * D   # 0.25D + WHT 0.10D
+    return 0.90*D + (credit - taxable*t)   # ยุบได้เป็น 1.25*D*(1-t)
+
+for t in (0, .05, .10, .15, .20, .25, .30, .35):
+    a, b = final_tax(3930), with_credit(3930, t)
+    print(f"{t:.0%}  final={a:8,.2f}  credit={b:8,.2f}  -> "
+          f"{'ขอเครดิต' if b &gt; a else 'จบที่ 10%'}")
+
+# จุดคุ้มทุน: 1.25(1-t) = 0.90  =>  t = 1 - 0.90/1.25
+print("break-even =", 1 - 0.90/1.25)       # 0.28
+
+# ตรวจเอกลักษณ์ DY = payout / (P/E) ด้วยข้อมูล SET 8 ก.ย. 2569
+DY, PE = 0.0393, 16.15
+print("payout ตลาด =", round(DY*PE, 4))    # 0.6347
+</code></pre>
+  </div>
+</details>
+
+<h2>ทดสอบความเข้าใจ</h2>
+
+<p class="q">1. หุ้นตัวหนึ่งราคา 25.00 บาท EPS 2.50 บาท จ่ายปันผล 1.50 บาท (ก) payout, P/E และ dividend yield เท่ากับเท่าไร (ข) ตรวจด้วยเอกลักษณ์ payout ÷ (P/E) (ค) ถ้า ROE = 12% บริษัทนี้โตเองได้ปีละกี่ % และผลตอบแทนคาดหวังรวมประมาณเท่าไร?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">(ก) payout = 1.50 ÷ 2.50 = <strong>60%</strong> · P/E = 25.00 ÷ 2.50 = <strong>10 เท่า</strong> · DY = 1.50 ÷ 25.00 = <strong>6%</strong><br>
+  (ข) 0.60 ÷ 10 = 0.06 = <strong>6% ตรงกัน</strong> ✓ เอกลักษณ์นี้ใช้จับตัวเลขผิดได้เร็วมาก ถ้าเว็บไหนโชว์ DY ที่หารกันแล้วไม่ลงตัวกับ payout และ P/E แปลว่ามีตัวใดตัวหนึ่งเป็นคนละงวดกัน<br>
+  (ค) g = 12% × (1 − 0.60) = <strong>4.8%</strong> · r ≈ DY + g = 6% + 4.8% = <strong>10.8% ต่อปี</strong> — สังเกตว่าเราไม่เคยต้องเดาราคาหุ้นในอนาคตเลย ผลตอบแทนคาดหวังถูกประกอบขึ้นจากเงินที่ธุรกิจสร้างได้ล้วนๆ</div>
+</details>
+
+<p class="q">2. เต้นได้เงินปันผลปีนี้รวม 8,000 บาท ปีนี้เงินได้สุทธิอยู่ในขั้นภาษี 10% (ก) แต่ละทางได้เงินสุทธิเท่าไร (ข) ต่างกันกี่บาทและกี่ % (ค) ถ้าปีหน้าเรียนจบ ทำงานจนขึ้นขั้น 30% คำตอบเปลี่ยนไหม?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">(ก) ทางที่ 1 = 0.90 × 8,000 = <strong>7,200 บาท</strong> · ทางที่ 2 = 1.25 × 8,000 × (1 − 0.10) = <strong>9,000 บาท</strong><br>
+  ตรวจแบบยาว: เงินได้ที่นำไปรวม = 10,000 · ภาษี = 1,000 · เครดิตที่ใช้ได้ = 2,000 + 800 = 2,800 ⇒ ได้คืน 1,800 บาท ⇒ 7,200 + 1,800 = 9,000 ✓<br>
+  (ข) ต่างกัน <strong>1,800 บาท คิดเป็น +25%</strong> ของทางที่ 1<br>
+  (ค) เปลี่ยน — ที่ขั้น 30%: 1.25 × 8,000 × 0.70 = <strong>7,000 บาท</strong> ซึ่ง<em>น้อยกว่า</em> 7,200 บาท ⇒ กลับไปเลือกทางที่ 1 เพราะขั้นภาษีข้ามจุดคุ้มทุน 28% ไปแล้ว บทเรียนคือคำตอบไม่ได้ผูกกับหุ้นหรือกับปันผล แต่ผูกกับ<strong>ขั้นภาษีของเราในปีนั้น</strong> จึงต้องคิดใหม่ทุกปี</div>
+</details>
+
+<p class="q">3. หุ้น ข. ราคา 60 บาท ประกาศจ่ายปันผล 3 บาท เต้นซื้อวันสุดท้ายก่อน XD เพื่อ "เก็บปันผล" แล้วขายทิ้งทันทีที่ราคาอ้างอิงเปิดวัน XD (ก) มูลค่ารวมของเต้นเปลี่ยนไปเท่าไร ถ้าปล่อยให้จบที่หัก ณ ที่จ่าย 10% (ข) พอรวมต้นทุนซื้อขายไป-กลับ 0.35% จาก Day 22 ผลเป็นอย่างไร (ค) กลยุทธ์นี้ต้องอาศัยอะไรจึงจะกำไร?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">(ก) ราคาอ้างอิงเปิดวัน XD = 60 − 3 = 57 บาท · เงินสดหลังภาษี = 3 × 0.90 = 2.70 ⇒ รวม 59.70 บาท ⇒ <strong>ขาดทุน 0.30 บาท = −0.50%</strong> ซึ่งเท่ากับ 10% ของปันผลพอดี (ภาษีนั่นเอง)<br>
+  (ข) ค่าซื้อขายไป-กลับราว 0.35% ของ 60 บาท ≈ 0.21 บาท ⇒ ขาดทุนรวม <strong>≈ 0.51 บาท หรือ −0.85%</strong> ภายในข้ามคืนเดียว<br>
+  (ค) ต้องอาศัย<strong>ราคาที่วิ่งกลับขึ้นเกินกว่าที่ถูกหักไป</strong> ในวัน XD ซึ่งเป็นการเดิมพันทิศทางราคาล้วนๆ ไม่ใช่การ "เก็บปันผล" — พูดให้ตรงคือกลยุทธ์นี้เอาต้นทุนที่แน่นอน (ภาษี + ค่าธรรมเนียม) ไปแลกกับผลลัพธ์ที่ไม่แน่นอน ซึ่งเป็นทิศตรงข้ามกับที่ควรทำตามกรอบ Day 16 · ข้อยกเว้นเดียวคือคนที่อยู่ขั้นภาษี 0–25% และตั้งใจขอเครดิตอยู่แล้ว ซึ่งพลิกเป็นบวกได้ แต่นั่นก็คือกำไรจากภาษี ไม่ใช่จากตลาด</div>
+</details>
+
+<p class="q"><strong>ทวน:</strong> ดอกเบี้ยหน้าตั๋ว (coupon) ของหุ้นกู้กับเงินปันผลของหุ้น ต่างกันอย่างไรในแง่ภาระผูกพัน ความแน่นอน และภาษี และเหตุใด yield ของหุ้นกู้จึงเทียบกับ dividend yield ตรงๆ ไม่ได้?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans"><strong>ภาระผูกพัน:</strong> coupon เป็นหนี้ตามสัญญา ไม่จ่าย = ผิดนัดชำระหนี้และเจ้าหนี้บังคับได้ · เงินปันผลเป็นดุลพินิจของบอร์ดและผู้ถือหุ้น งดจ่ายได้โดยไม่มีผลทางกฎหมาย<br>
+  <strong>ความแน่นอน:</strong> coupon คงที่และรู้ล่วงหน้าทุกงวดจนครบอายุ · DPS เปลี่ยนได้ทุกปี ทั้งขึ้นและลง<br>
+  <strong>ภาษี:</strong> ดอกเบี้ยถูกหัก ณ ที่จ่าย <strong>15%</strong> ส่วนเงินปันผลถูกหัก <strong>10%</strong> และมีทางเลือกเครดิตภาษีให้ ส่วนดอกเบี้ยไม่มี<br>
+  <strong>ที่เทียบตรงๆ ไม่ได้:</strong> yield to maturity ของหุ้นกู้เป็นผลตอบแทน<em>ทั้งหมด</em>ที่จะได้ถ้าถือจนครบอายุ เพราะเงินต้นคืนที่ราคาพาร์แน่นอน แต่ dividend yield เป็นเพียง<strong>ส่วนหนึ่ง</strong>ของผลตอบแทนหุ้น อีกส่วนคือ g ที่ไม่มีใครรับประกัน หุ้นที่ DY 3.93% อาจให้ผลตอบแทนรวม 9.4% หรือติดลบก็ได้ ขณะที่หุ้นกู้ YTM 4% ให้ 4% ถ้าไม่ default<br>ตอบผิดหรือลังเล? → <a href="finance-day-18-bonds-yield.html">ทบทวน Day 18: ตราสารหนี้ (bonds): พันธบัตร หุ้นกู้ และ yield</a></div>
+</details>
+
+<p class="q"><strong>ทวน:</strong> ถ้าเงินปันผลเป็นเพียงการย้ายมูลค่าจากช่องหนึ่งไปอีกช่อง ทำไมผู้ถือหุ้นถึงยังอยากได้ และการที่บริษัทจ่ายปันผลสม่ำเสมอบอกอะไรเกี่ยวกับสิทธิของผู้ถือหุ้นบ้าง?</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">เพราะผู้ถือหุ้นถือ<strong>สิทธิเรียกร้องส่วนที่เหลือ (residual claim)</strong> — ได้หลังเจ้าหนี้ทุกราย และ "กำไรบนกระดาษ" ไม่มีค่าจนกว่าจะแปลงเป็นเงินสดถึงมือจริง เงินปันผลคือช่องทางเดียวที่ผู้ถือหุ้นได้รับเงินสดจากบริษัท<em>โดยไม่ต้องขายความเป็นเจ้าของทิ้ง</em><br>
+  สิ่งที่ปันผลสม่ำเสมอบอก: (1) กำไรที่รายงานมีเงินสดหนุนจริง เพราะเงินสดปลอมไม่ได้ (2) ผู้บริหารถูกบังคับให้ส่งเงินคืนแทนที่จะเก็บไว้ลงทุนในโครงการที่ผลตอบแทนต่ำ ซึ่งลด<strong>ปัญหาตัวแทน (agency problem)</strong> ที่เกิดจากการแยกความเป็นเจ้าของออกจากการบริหาร (3) เป็นสัญญาณเชิงความมั่นใจ เพราะการตัดปันผลถูกตลาดลงโทษหนัก บอร์ดจึงขึ้นปันผลเฉพาะตอนที่มั่นใจว่ารักษาระดับได้<br>
+  แต่ต้องระวัง: ข้อ (3) ทำงานสองทาง — บริษัทที่รู้ตัวว่ากำไรกำลังทรุดอาจฝืนจ่ายต่อเพื่อไม่ให้ราคาหุ้นพัง ซึ่งพาเรากลับไปที่ payout 200% ในกับดัก yield ข้างต้นพอดี<br>ตอบผิดหรือลังเล? → <a href="finance-day-20-what-is-a-stock.html">ทบทวน Day 20: หุ้นคืออะไร ผู้ถือหุ้นได้อะไรบ้าง</a></div>
+</details>
+
+<div class="summary-box">
+  <h2 style="margin-top:0">สรุป 3 บรรทัด</h2>
+  <p>1. DY = payout ÷ (P/E) และ g = ROE × (1 − payout) ⇒ ปันผลที่จ่ายวันนี้คือการเติบโตที่สละไป ไม่ใช่ของแถม · ตลาดไทย ณ 8 ก.ย. 2569 มี yield 3.93% กับ P/E 16.15 เท่า ⇒ payout เฉลี่ยทั้งตลาด 63.5%</p>
+  <p>2. วัน XD ราคาถูกปรับลงเท่าปันผลโดยอัตโนมัติ ⇒ หุ้น 50 บาทจ่าย 2 บาทเหลือ 48.00 + เงินสดหลังภาษี 1.80 = 49.80 บาท ⇒ การซื้อเพื่อเก็บปันผลขาดทุน 0.40% ทันที ก่อนค่าธรรมเนียม</p>
+  <p style="margin-bottom:0">3. เงินสุทธิเมื่อขอเครดิตภาษี = 1.25 × ปันผล × (1 − ขั้นภาษี) เทียบกับ 0.90 × ปันผล ⇒ คุ้มเมื่อขั้นภาษี ≤ 25% · ที่ขั้น 0% ได้เพิ่ม 38.9% หรือ 1,375.50 บาทจากปันผล 3,930 บาท</p>
+</div>
+
+<footer>
+  <p><strong>พรุ่งนี้ Day 24 — อ่านงบการเงิน 1: งบกำไรขาดทุน</strong> วันนี้ปิดท้ายด้วยคำถามว่าเงินปันผลออกมาจากกำไรจริงหรือจากการกู้ ซึ่งตอบไม่ได้เลยถ้าอ่านงบไม่เป็น พรุ่งนี้เริ่มที่งบแรก — รายได้ไหลลงมาเป็นกำไรสุทธิผ่านกี่ชั้น อัตรากำไรขั้นต้นกับอัตรากำไรสุทธิบอกอะไรคนละอย่างกัน EPS ที่เราใช้ทั้งบทนี้ถูกคำนวณมาอย่างไร และรายการพิเศษที่ทำให้กำไรดูสวยเกินจริงหน้าตาเป็นแบบไหน</p>
+  <p class="disclaimer">บทเรียนนี้เป็นความรู้เชิงการศึกษา ไม่ใช่คำแนะนำทางการเงินเฉพาะบุคคล และไม่ใช่การชี้ชวนให้ซื้อหรือขายหลักทรัพย์ใดหลักทรัพย์หนึ่ง บริษัทสมมติ ก. และ ข. ราคาหุ้น EPS และเงินปันผลในตัวอย่างทั้งหมดถูกสร้างขึ้นให้ตัวเลขคำนวณตามง่าย ไม่ใช่ข้อมูลจริงของหลักทรัพย์หรือบริษัทใด สถิติตลาดที่อ้างอิงเป็นค่า ณ วันที่ระบุและเปลี่ยนแปลงทุกวัน ส่วนอัตราภาษีหัก ณ ที่จ่าย อัตราภาษีเงินได้นิติบุคคล สูตรและเงื่อนไขของเครดิตภาษีเงินปันผล ขั้นภาษีเงินได้บุคคลธรรมดา และหลักเกณฑ์วัน XD เป็นข้อมูลระดับภาพรวม ณ วันที่เขียน ซึ่งถูกแก้ไขได้ตลอดและมีรายละเอียดปลีกย่อยต่างกันในแต่ละกรณี โดยเฉพาะกรณีบริษัทที่ได้รับส่งเสริมการลงทุน (BOI) หรือจ่ายปันผลจากกำไรหลายอัตรา ให้ตรวจกับกรมสรรพากร ตลาดหลักทรัพย์แห่งประเทศไทย และหนังสือรับรองการหักภาษี ณ ที่จ่ายที่ได้รับจริงใหม่เสมอก่อนตัดสินใจ</p>
+</footer>
+
+</div>
+
+<script>
+(function(){
+  var fmt = function(n,d){ return n.toLocaleString('th-TH',{minimumFractionDigits:d===undefined?2:d, maximumFractionDigits:d===undefined?2:d}); };
+
+  /* ---------- 1) DPS / payout / DY / g ---------- */
+  var sE=document.getElementById('sE'), sK=document.getElementById('sK'), sP=document.getElementById('sP');
+  var ROE=0.15;
+  function calc1(){
+    var E=+sE.value, k=+sK.value/100, P=+sP.value;
+    var D=E*k, PE=P/E, DY=D/P, g=ROE*(1-k);
+    document.getElementById('vE').textContent=fmt(E);
+    document.getElementById('vK').textContent=(+sK.value);
+    document.getElementById('vP').textContent=fmt(P);
+    var pay=Math.min(k,1)*100, ret=Math.max(0,100-pay);
+    document.getElementById('spPay').style.width=pay+'%';
+    document.getElementById('spRet').style.width=ret+'%';
+    document.getElementById('spPay').textContent = pay>=22 ? ('จ่ายปันผล '+Math.round(k*100)+'%') : '';
+    document.getElementById('spRet').textContent = ret>=22 ? ('เก็บไว้โต '+Math.round(ret)+'%') : '';
+    document.getElementById('oD').textContent=fmt(D)+' บาท';
+    document.getElementById('oPE').textContent=fmt(PE)+' เท่า';
+    document.getElementById('oDY').textContent=fmt(DY*100)+'%';
+    document.getElementById('oChk').textContent=fmt((k/PE)*100)+'%';
+    var gEl=document.getElementById('oG');
+    gEl.textContent = (g<0? '−'+fmt(-g*100) : fmt(g*100))+'%';
+    gEl.style.color = g<0 ? 'var(--danger)' : 'var(--accent)';
+    var n=document.getElementById('oNote');
+    if(k>1){ n.textContent='payout '+Math.round(k*100)+'% — จ่ายเกินกำไรที่หามาได้ ต้องดึงเงินสดสำรองหรือกู้มาจ่าย และ g ติดลบ แปลว่าฐานกำไรกำลังหดลงทุกปี'; n.style.color='var(--danger)'; }
+    else if(k===0){ n.textContent='ไม่จ่ายปันผลเลย DY = 0% แต่ g = '+fmt(g*100)+'% ต่อปี ผลตอบแทนทั้งหมดมาจากราคาที่โตตามกำไร ไม่ใช่ว่าไม่มีผลตอบแทน'; n.style.color='var(--muted)'; }
+    else { n.textContent='ผลตอบแทนคาดหวังรวมแบบกอร์ดอน r ≈ DY + g = '+fmt(DY*100+g*100)+'% ต่อปี · สังเกตว่าดัน payout ขึ้น DY โตแต่ g หด ทั้งสองทางแลกกันเสมอ'; n.style.color='var(--muted)'; }
+  }
+  [sE,sK,sP].forEach(function(s){ s.addEventListener('input',calc1); });
+  calc1();
+
+  /* ---------- 2) ปฏิทิน XD / T+2 ---------- */
+  var CAL=[
+    ['จันทร์','ซื้อ → ได้สิทธิ','',''],
+    ['อังคาร','วันสุดท้ายที่ซื้อแล้วได้สิทธิ (cum)','t',''],
+    ['พุธ','XD · ซื้อวันนี้ไม่ได้สิทธิ<br>ราคาเปิดปรับลง','s',''],
+    ['พฤหัสฯ','Record Date · ปิดสมุดทะเบียน','',''],
+    ['ศุกร์','ถือต่อ · เงินเข้าอีกหลายสัปดาห์','off','']
+  ];
+  document.getElementById('cal').innerHTML = CAL.map(function(c){
+    return '<div class="cday '+c[2]+'"><div class="cn">'+c[0]+'</div><div class="cv">'+c[1]+'</div></div>';
+  }).join('');
+
+  /* ---------- 3) XD: 50 บาท จ่าย 2 บาท ---------- */
+  var P0=50, DPS=2, LO=47, HI=51;
+  function h(v){ return Math.max(3, (v-LO)/(HI-LO)*100)+'%'; }
+  var bA=document.getElementById('bA'), bB=document.getElementById('bB');
+  function drawXD(mode){
+    var cash = mode==='A' ? DPS*0.90 : DPS*1.25;
+    var tot  = (P0-DPS) + cash;
+    document.getElementById('x1').textContent=fmt(P0);
+    document.getElementById('xb1').style.height=h(P0);
+    document.getElementById('x2').textContent=fmt(tot);
+    document.getElementById('xb2').style.height=h(tot);
+    document.getElementById('x2l').innerHTML='หลัง XD<br>หุ้น '+fmt(P0-DPS)+' + เงินสด '+fmt(cash);
+    var d=tot-P0, pct=d/P0*100;
+    var c2=document.getElementById('xc2'), v=document.getElementById('xv');
+    if(d<0){
+      c2.classList.add('lose'); v.classList.add('bad');
+      v.textContent='มูลค่ารวมลดลง '+fmt(-d)+' บาท หรือ '+fmt(pct)+'% — เงินปันผลไม่ได้เพิ่มความมั่งคั่ง มันย้ายความมั่งคั่งจากช่องหนึ่งไปอีกช่อง แล้วรัฐหักไป 10% ระหว่างทาง';
+    } else {
+      c2.classList.remove('lose'); v.classList.remove('bad');
+      v.textContent='มูลค่ารวมเพิ่มขึ้น '+fmt(d)+' บาท หรือ +'+fmt(pct)+'% — ส่วนเกินนี้ไม่ได้มาจากตลาด แต่คือภาษีนิติบุคคลที่บริษัทจ่ายไปแล้วและถูกคืนกลับมาให้ผู้ถือหุ้นที่อยู่ขั้นภาษีต่ำ';
+    }
+    bA.classList.toggle('active', mode==='A');
+    bB.classList.toggle('active', mode==='B');
+  }
+  bA.onclick=function(){drawXD('A');}; bB.onclick=function(){drawXD('B');};
+  drawXD('A');
+
+  /* ---------- 4) เครื่องเทียบภาษีเงินปันผล ---------- */
+  var CIT=0.20, GU=1+CIT/(1-CIT);   // 1.25
+  var sD=document.getElementById('sD'), tRate=0;
+  var segT=document.getElementById('segT');
+  function drawTax(){
+    var D=+sD.value;
+    var a=0.90*D, b=GU*D*(1-tRate), m=Math.max(a,b);
+    document.getElementById('vD').textContent=D.toLocaleString('th-TH');
+    document.getElementById('t1').textContent=fmt(a,0);
+    document.getElementById('t2').textContent=fmt(b,0);
+    document.getElementById('tb1').style.height=(a/m*100)+'%';
+    document.getElementById('tb2').style.height=(b/m*100)+'%';
+    var c2=document.getElementById('tc2'), v=document.getElementById('tv');
+    var d=b-a;
+    if(d>0){
+      c2.classList.remove('lose'); v.classList.remove('bad');
+      v.textContent='ขั้นภาษี '+(tRate*100)+'% ⇒ ขอเครดิตคุ้มกว่า '+fmt(d)+' บาท (+'+fmt(d/a*100)+'%) · ยื่นรวมแล้วรอเงินคืนภาษี';
+    } else if(d<0){
+      c2.classList.add('lose'); v.classList.add('bad');
+      v.textContent='ขั้นภาษี '+(tRate*100)+'% ⇒ เกินจุดคุ้มทุน 28% แล้ว การขอเครดิตทำให้เสียเพิ่ม '+fmt(-d)+' บาท · ปล่อยให้จบที่หัก ณ ที่จ่าย 10%';
+    } else {
+      c2.classList.remove('lose'); v.classList.remove('bad');
+      v.textContent='เท่ากันพอดี — จุดนี้คือ t = 28% ที่ 1.25(1 − t) = 0.90';
+    }
+  }
+  Array.prototype.forEach.call(segT.querySelectorAll('button'), function(btn){
+    btn.onclick=function(){
+      Array.prototype.forEach.call(segT.querySelectorAll('button'),function(b){b.classList.remove('active');});
+      btn.classList.add('active'); tRate=+btn.getAttribute('data-t')/100; drawTax();
+    };
+  });
+  sD.addEventListener('input',drawTax);
+  drawTax();
+})();
+</script>
+
+</body>
+</html>
