@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day 25 — อ่านงบการเงิน 2: งบดุล | Finance101</title>
+<style>
+:root{
+  --bg:#191816; --card:#211f1d; --ink:#e8e4dd; --muted:#a09a91;
+  --line:#332f2b; --accent:#6cc394; --accent-soft:#1c2f26;
+  --warn:#e0a86f; --warn-soft:#2e2419; --code:#201e1b; --danger:#e0785c;
+  color-scheme: dark;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; padding:28px 18px 80px; background:var(--bg); color:var(--ink);
+  font-family:"Sarabun","Noto Sans Thai",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:17px; line-height:1.75; -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:720px;margin:0 auto}
+header{margin-bottom:34px}
+.kicker{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--muted);letter-spacing:.02em}
+.pill{background:var(--accent-soft);color:var(--accent);padding:3px 11px;border-radius:99px;font-weight:600}
+h1{font-size:29px;line-height:1.3;margin:12px 0 6px;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:16px;margin:0}
+h2{font-size:21px;margin:38px 0 12px;letter-spacing:-.005em}
+h3{font-size:17px;margin:26px 0 8px}
+p{margin:0 0 15px}
+ul,ol{margin:0 0 15px;padding-left:22px}
+li{margin-bottom:7px}
+strong{font-weight:600}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin:22px 0}
+.card.accent{background:var(--accent-soft);border-color:#2c4a3c}
+.card.warn{background:var(--warn-soft);border-color:#4a3722}
+.card h3{margin-top:0}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15.5px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-weight:600;font-size:13.5px;letter-spacing:.02em}
+td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.calc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;margin:22px 0}
+.calc label{display:block;font-size:14px;color:var(--muted);margin-bottom:6px}
+.calc .row{margin-bottom:18px}
+input[type=range]{width:100%;accent-color:var(--accent);height:24px}
+.val{font-weight:600;color:var(--accent);font-variant-numeric:tabular-nums}
+.bars{margin-top:6px}
+.bar-row{margin-bottom:12px}
+.bar-label{display:flex;justify-content:space-between;font-size:14px;margin-bottom:5px;gap:10px}
+.bar-track{background:#2a2724;border-radius:8px;height:26px;overflow:hidden;position:relative}
+.bar-fill{height:100%;border-radius:8px;transition:width .55s cubic-bezier(.22,.8,.3,1)}
+.bar-principal{background:#3f5c4e}
+.bar-growth{background:var(--accent)}
+.bar-negative{background:#a34a34}
+.bar-bond{background:#4a7fa0}
+.bar-stock{background:var(--accent)}
+.bar-gold{background:var(--warn)}
+.legend{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-top:10px;flex-wrap:wrap}
+.swatch{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:middle}
+.seg{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+.seg button{
+  background:var(--code);color:var(--muted);border:1px solid var(--line);border-radius:99px;
+  padding:6px 16px;font-size:14px;font-family:inherit;cursor:pointer;transition:all .2s;
+}
+.seg button.active{background:var(--accent-soft);color:var(--accent);border-color:#2c4a3c;font-weight:600}
+details{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:12px 16px;margin:10px 0}
+details[open]{background:#1d1b19}
+summary{cursor:pointer;font-weight:600;font-size:15.5px;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"▸ ";color:var(--accent)}
+details[open] summary::before{content:"▾ "}
+.ans{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font-size:15.5px;color:#d6d1c9}
+.q{font-weight:600;margin:22px 0 8px}
+pre{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:14px;line-height:1.6}
+code{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+.summary-box{border-left:3px solid var(--accent);padding-left:18px;margin:26px 0}
+.summary-box p{margin-bottom:8px}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
+footer a{color:var(--accent)}
+.disclaimer{font-size:13px;color:var(--muted);margin-top:18px;line-height:1.6}
+.nav{margin-bottom:20px;font-size:14px}
+.nav a{color:var(--accent);text-decoration:none}
+.src{font-size:12.5px;color:var(--muted);margin-top:8px}
+.steps{display:flex;align-items:flex-end;gap:14px;margin:18px 0 6px;height:150px}
+.step{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px}
+.step-bar{width:100%;border-radius:8px 8px 0 0;transition:height .55s cubic-bezier(.22,.8,.3,1);min-height:2px}
+.step1 .step-bar{background:#3f5c4e}
+.step2 .step-bar{background:var(--danger)}
+.step-label{font-size:13px;color:var(--muted);text-align:center}
+.step-val{font-weight:600;color:var(--ink);font-size:14.5px}
+.mixbar{display:flex;height:30px;border-radius:8px;overflow:hidden;margin:6px 0 10px;background:#2a2724}
+.mixseg{height:100%;transition:width .4s cubic-bezier(.22,.8,.3,1)}
+.stat{display:flex;justify-content:space-between;font-size:15.5px;padding:7px 0;border-bottom:1px solid var(--line)}
+.stat:last-child{border-bottom:none}
+.stat b{font-variant-numeric:tabular-nums;color:var(--accent)}
+@media(max-width:520px){
+  body{font-size:16px;padding:20px 14px 60px}
+  h1{font-size:25px}
+  .card,.calc{padding:16px}
+}
+
+/* โครงสร้างสิทธิเรียกร้อง / แถบสัดส่วน (ใช้ต่อจาก Day 20) */
+.wf{margin:18px 0 6px}
+.wf-track{display:flex;height:44px;border-radius:10px;overflow:hidden;background:#2a2724;border:1px solid var(--line)}
+.wf-seg{height:100%;display:flex;align-items:center;justify-content:center;font-size:12.5px;color:#12130f;font-weight:600;overflow:hidden;white-space:nowrap;transition:width .5s cubic-bezier(.22,.8,.3,1)}
+.wf-debt{background:#4a7fa0;color:#0f1b22}
+.wf-eq{background:var(--accent)}
+.wf-gap{background:#7a3d2c;color:#f0ded8}
+.wf-axis{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:6px;font-variant-numeric:tabular-nums}
+.ladder{list-style:none;padding:0;margin:16px 0}
+.ladder li{display:flex;gap:12px;align-items:baseline;padding:9px 14px;border:1px solid var(--line);border-radius:9px;margin-bottom:7px;background:var(--card);font-size:15.5px}
+.ladder li:last-child{background:var(--accent-soft);border-color:#2c4a3c}
+.ladder .rank{font-variant-numeric:tabular-nums;font-size:13px;color:var(--muted);min-width:20px;flex-shrink:0}
+
+/* Day 21 — เส้นทางคำสั่งซื้อ */
+.pipe{margin:16px 0 4px}
+.pnode{display:flex;gap:12px;align-items:flex-start;padding:11px 14px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;background:var(--card);transition:background .3s,border-color .3s,transform .3s}
+.pnode.on{background:var(--accent-soft);border-color:#2c4a3c;transform:translateX(7px)}
+.pnum{width:25px;height:25px;border-radius:50%;background:#2a2724;color:var(--muted);font-size:12.5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:3px;font-variant-numeric:tabular-nums;transition:background .3s,color .3s}
+.pnode.on .pnum{background:var(--accent);color:#12130f;font-weight:700}
+.pttl{font-weight:600;font-size:15.5px;margin-bottom:2px}
+.pdesc{font-size:14px;color:var(--muted);line-height:1.6}
+.pbtn{background:var(--accent-soft);color:var(--accent);border:1px solid #2c4a3c;border-radius:99px;padding:8px 22px;font-size:15px;font-family:inherit;font-weight:600;cursor:pointer;transition:opacity .2s}
+.pbtn:disabled{opacity:.45;cursor:default}
+.regbar{margin-top:10px;padding:10px 14px;border:1px dashed var(--line);border-radius:10px;font-size:14px;color:var(--muted)}
+.scalebar{background:#2a2724;border-radius:8px;height:22px;overflow:hidden;margin-bottom:5px}
+.scalefill{height:100%;border-radius:8px}
+
+/* Day 22 — กระดานราคา (order book) และปฏิทิน T+2 */
+.book{font-variant-numeric:tabular-nums;font-size:15px;margin:4px 0 2px}
+.brow{display:grid;grid-template-columns:1fr 84px 1fr;gap:8px;align-items:center;padding:3px 0}
+.bqty{display:flex;height:24px;border-radius:6px;overflow:hidden;background:transparent}
+.bqty i{height:100%;border-radius:6px;display:block;transition:width .4s ease,opacity .4s ease}
+.bqty.l{justify-content:flex-end}
+.bprice{text-align:center;font-weight:600;padding:2px 0;border-radius:6px;transition:background .3s,color .3s}
+.bprice.ask{color:var(--danger)}
+.bprice.bid{color:var(--accent)}
+.bprice.hit{background:var(--warn-soft);color:var(--warn)}
+.bqty span{font-size:12.5px;color:var(--muted);padding:0 6px;line-height:24px;white-space:nowrap}
+.bhead{display:grid;grid-template-columns:1fr 84px 1fr;gap:8px;font-size:12.5px;color:var(--muted);padding-bottom:5px;border-bottom:1px solid var(--line);margin-bottom:6px}
+.bhead span:nth-child(1){text-align:right}
+.bhead span:nth-child(2){text-align:center}
+.spreadrow{text-align:center;font-size:13px;color:var(--warn);padding:5px 0;border-top:1px dashed var(--line);border-bottom:1px dashed var(--line);margin:5px 0}
+.cal{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin:16px 0 6px}
+.cday{border:1px solid var(--line);border-radius:10px;padding:9px 6px;text-align:center;background:var(--card);transition:background .35s,border-color .35s}
+.cday .cn{font-size:12px;color:var(--muted)}
+.cday .cv{font-size:14px;font-weight:600;margin-top:3px;min-height:20px}
+.cday.t{background:var(--accent-soft);border-color:#2c4a3c}
+.cday.s{background:var(--warn-soft);border-color:#4a3722}
+.cday.off{opacity:.4}
+
+/* Day 23 — โครงเงินปันผล */
+.split{display:flex;height:34px;border-radius:9px;overflow:hidden;background:#2a2724;border:1px solid var(--line);margin:10px 0 4px}
+.split i{height:100%;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;transition:width .45s cubic-bezier(.22,.8,.3,1)}
+.sp-pay{background:var(--accent);color:#12130f}
+.sp-ret{background:#3f5c4e;color:#dfe8e2}
+.idcard{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin:14px 0;font-variant-numeric:tabular-nums;font-size:15.5px;text-align:center}
+.idcard b{color:var(--accent)}
+.tax2{display:flex;gap:14px;align-items:flex-end;height:170px;margin:16px 0 4px}
+.tax2 .col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px}
+.tax2 .cb{width:100%;border-radius:9px 9px 0 0;transition:height .5s cubic-bezier(.22,.8,.3,1);min-height:3px}
+.tax2 .c1 .cb{background:#3f5c4e}
+.tax2 .c2 .cb{background:var(--accent)}
+.tax2 .c2.lose .cb{background:var(--danger)}
+.verdict{text-align:center;font-size:15px;padding:9px 12px;border-radius:9px;margin-top:12px;background:var(--accent-soft);color:var(--accent);border:1px solid #2c4a3c}
+.verdict.bad{background:var(--warn-soft);color:var(--warn);border-color:#4a3722}
+</style>
+<style>
+/* Day 24 — น้ำตกงบกำไรขาดทุน */
+.wfall{margin:16px 0 6px;font-variant-numeric:tabular-nums}
+.wrow{display:grid;grid-template-columns:112px 1fr 92px;gap:10px;align-items:center;margin-bottom:6px;font-size:14.5px}
+.wrow .wlab{color:var(--muted);font-size:13.5px;line-height:1.4}
+.wrow.tot .wlab{color:var(--ink);font-weight:600}
+.wtrack{position:relative;height:26px;background:#2a2724;border-radius:7px;overflow:hidden}
+.wseg{position:absolute;top:0;height:100%;border-radius:7px;transition:left .5s cubic-bezier(.22,.8,.3,1),width .5s cubic-bezier(.22,.8,.3,1)}
+.w-rev{background:#3f5c4e}
+.w-gp{background:#4d7a63}
+.w-ebit{background:#5aa47e}
+.w-np{background:var(--accent)}
+.w-cut{background:var(--danger);opacity:.85}
+.wval{text-align:right;font-weight:600;font-size:14.5px}
+.wrow.cut .wval{color:var(--danger)}
+.wrow.tot .wval{color:var(--accent)}
+.mgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0 4px}
+.mbox{background:var(--code);border:1px solid var(--line);border-radius:11px;padding:11px 8px;text-align:center}
+.mbox .mv{font-size:20px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums;line-height:1.3}
+.mbox .mn{font-size:12px;color:var(--muted);line-height:1.45;margin-top:2px}
+.mbox.neg .mv{color:var(--danger)}
+@media(max-width:520px){
+  .wrow{grid-template-columns:92px 1fr 78px;gap:7px;font-size:13.5px}
+  .wrow .wlab{font-size:12.5px}
+  .mbox .mv{font-size:17px}
+}
+</style>
+<style>
+/* Day 25 — งบดุลสองฝั่ง และวงจรเงินสด */
+.bswrap{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0 6px}
+.bscol{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:11px;overflow:hidden;min-height:230px}
+.bshead{font-size:12.5px;color:var(--muted);text-align:center;margin-bottom:6px;letter-spacing:.02em}
+.bsseg{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:0 9px;font-size:12px;font-weight:600;color:#12130f;overflow:hidden;white-space:nowrap;transition:height .5s cubic-bezier(.22,.8,.3,1);min-height:0}
+.bsseg span:last-child{font-variant-numeric:tabular-nums}
+.a-cash{background:#6cc394}.a-ar{background:#4d7a63;color:#e8f2ec}.a-inv{background:#3f5c4e;color:#e8f2ec}
+.a-ppe{background:#4a7fa0;color:#0f1b22}.a-int{background:#5b6b7a;color:#e6edf3}
+.l-cl{background:#e0a86f;color:#241a0d}.l-ltd{background:#a8703f;color:#f6e8da}
+.e-eq{background:#6cc394}.e-re{background:#3f5c4e;color:#e8f2ec}
+.bsseg.neg{background:var(--danger);color:#fff}
+.eqline{display:flex;justify-content:center;gap:10px;font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums;margin-top:4px}
+.eqline b{color:var(--accent)}
+.gantt{margin:16px 0 6px}
+.grow{display:grid;grid-template-columns:116px 1fr;gap:10px;align-items:center;margin-bottom:7px;font-size:13.5px;color:var(--muted)}
+.gtrack{position:relative;height:25px;background:#2a2724;border-radius:7px;overflow:hidden}
+.gbar{position:absolute;top:0;height:100%;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;overflow:hidden;white-space:nowrap;transition:left .5s cubic-bezier(.22,.8,.3,1),width .5s cubic-bezier(.22,.8,.3,1)}
+.g-dio{background:#3f5c4e;color:#e8f2ec}
+.g-dso{background:#4a7fa0;color:#0f1b22}
+.g-dpo{background:var(--warn);color:#241a0d}
+.g-ccc{background:var(--danger);color:#fff}
+@media(max-width:520px){
+  .bswrap{gap:8px}
+  .bsseg{font-size:11px;padding:0 6px}
+  .grow{grid-template-columns:92px 1fr;gap:7px;font-size:12.5px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="nav"><a href="../index.html">← สารบัญ</a></div>
+
+<header>
+  <div class="kicker">
+    <span class="pill">Day 25 / 90</span>
+    <span>Phase 2 · การลงทุนระยะยาว</span>
+    <span>·</span>
+    <span>อ่าน 9 นาที</span>
+  </div>
+  <h1>อ่านงบการเงิน 2: งบดุล</h1>
+  <p class="sub">เมื่อวานจบด้วยข้อสังเกตว่ากำไรสุทธิไม่เท่ากับเงินสด และส่วนที่หายไประหว่างทางไปกองอยู่ที่ลูกหนี้การค้ากับสินค้าคงเหลือ วันนี้เราเปิดงบที่เก็บของพวกนั้นไว้ — และเจอว่ามันคืองบเดียวกับที่บอกว่าบริษัทจะรอดหรือไม่รอดถ้าพรุ่งนี้ยอดขายหยุดลง</p>
+</header>
+
+<h2>ภาพนิ่ง ณ วันหนึ่ง ไม่ใช่ยอดสะสมของทั้งปี</h2>
+
+<p><strong>งบดุล (balance sheet / statement of financial position)</strong> ถ่ายภาพฐานะของบริษัท ณ วันสิ้นงวดเพียงวันเดียว ต่างจากงบกำไรขาดทุนที่เป็นยอดสะสมทั้งงวด ศัพท์บัญชีเรียกความต่างนี้ว่า <strong>ยอดคงเหลือ (stock)</strong> กับ <strong>ยอดไหล (flow)</strong> และมันสำคัญกว่าที่ฟัง เพราะอัตราส่วนไหนก็ตามที่เอา stock หารด้วย flow จะมีหน่วยเป็น "เวลา" ไม่ใช่ "เปอร์เซ็นต์" แม้เราจะเขียนมันด้วยเครื่องหมาย %</p>
+
+<div class="card warn">
+  <h3>ตัวอย่างที่เจอทุกวันในข่าว: หนี้ครัวเรือน 85.9% ต่อ GDP</h3>
+  <p style="margin-bottom:0">หนี้ครัวเรือนไทยสิ้นไตรมาส 1 ปี 2569 อยู่ที่ <strong>16.41 ล้านล้านบาท</strong> คิดเป็น <strong>85.9% ของ GDP</strong> — แต่ 16.41 ล้านล้านคือ<em>ยอดหนี้คงค้าง</em> (stock) ส่วน GDP คือ<em>รายได้ของทั้งประเทศต่อปี</em> (flow) ตัวเลข 85.9% จึงไม่ได้แปลว่า "ครัวเรือนเอารายได้ 85.9% ไปจ่ายหนี้" แต่แปลว่า<strong>ยอดหนี้เท่ากับรายได้ทั้งประเทศประมาณ 10.3 เดือน</strong> · ย้อนกลับได้ว่า GDP ไทยที่ใช้คำนวณอยู่ราว 16.41 ÷ 0.859 = <strong>19.1 ล้านล้านบาท</strong></p>
+  <p class="src">ที่มา: สภาพัฒนาการเศรษฐกิจและสังคมแห่งชาติ (สศช.) — รายงานภาวะสังคมไทยไตรมาสสอง ปี 2569 แถลง 24 ส.ค. 2569 · หนี้ครัวเรือน ณ สิ้น Q1/2569 = 16.41 ล้านล้านบาท (+0.50% YoY) = 85.9% ของ GDP ต่ำสุดนับจาก Q2/2563 · NPLs บุคคลธรรมดาจากเครดิตบูโร 1.25 ล้านล้านบาท = 9.20% ของสินเชื่อรวม (ลดจาก 9.59%) · หนี้ค้าง 31–90 วัน (SMLs) 5.53 แสนล้านบาท = 4.07% เพิ่มจาก 3.51% และ 3.09% · สินเชื่อส่วนบุคคล +4.82% อสังหาฯ +1.73% ยานยนต์ −7.51% (ติดลบ 10 ไตรมาสติดกัน) · ดึงข้อมูล 12 ก.ย. 2569</p>
+</div>
+
+<p>ข้อสังเกตจากตัวเลขชุดนี้เป็นบทเรียนการอ่านงบดุลโดยตรง: <strong>สัดส่วนหนี้ที่ลดลงไม่ได้แปลว่าหนี้ลดลง</strong> หนี้โตขึ้น 0.50% ตัวเศษยังเพิ่ม แต่ตัวส่วน (GDP) โตเร็วกว่า ขณะเดียวกัน NPLs ที่ลดลงเหลือ 9.20% ดูดี แต่หนี้ค้าง 31–90 วันกลับไต่ขึ้นสามไตรมาสติดจาก 3.09% เป็น 4.07% ซึ่งเป็นน้ำที่กำลังจะไหลลงมาเป็นหนี้เสียในไตรมาสหน้า — <strong>อ่านงบดุลต้องดูทั้งระดับและทิศทางของแต่ละชั้นพร้อมกัน เหมือนสามอัตรากำไรเมื่อวาน</strong></p>
+
+<h2>สมการเดียวที่ต้องจำ</h2>
+
+<div class="idcard" style="font-size:17px">
+  <b>สินทรัพย์ = หนี้สิน + ส่วนของผู้ถือหุ้น</b><br>
+  <span style="font-size:14px;color:var(--muted)">Assets = Liabilities + Equity</span>
+</div>
+
+<p>ฝั่งซ้ายคือ<strong>บริษัทมีอะไรอยู่</strong> ฝั่งขวาคือ<strong>ของพวกนั้นซื้อมาด้วยเงินของใคร</strong> สมการนี้สมดุลเสมอไม่ใช่เพราะโชคดี แต่เพราะทุกรายการถูกบันทึกสองด้านพร้อมกัน (double-entry) และเพราะ<strong>ส่วนของผู้ถือหุ้นถูกนิยามให้เป็นเศษที่เหลือ (residual claim)</strong> — เจ้าหนี้ได้ก่อนเสมอ ผู้ถือหุ้นได้สิ่งที่เหลือ ตรงกับบันไดสิทธิเรียกร้องใน Day 20 เป๊ะ นี่คือเหตุผลที่หุ้นเสี่ยงกว่าหุ้นกู้ของบริษัทเดียวกัน</p>
+
+<p>ลองกับบริษัท ก. ตัวเดิมจาก Day 24 (รายได้ 1,000 ต้นทุนขาย 620 กำไรสุทธิ 120 ล้านบาท · 160 ล้านหุ้น) งบดุล ณ สิ้นปีเป็นแบบนี้ ลองขยับดูว่าธุรกรรมสามอย่างทำอะไรกับมัน:</p>
+
+<div class="calc">
+  <h3 style="margin-top:0">งบดุลบริษัท ก. — ลองทำธุรกรรมดู (ล้านบาท)</h3>
+  <div class="row">
+    <label>1. กู้ยืมระยะยาวเพิ่ม: <span class="val" id="vB">0</span> ล้านบาท <span style="color:var(--muted)">(เงินสด ↑ หนี้ ↑)</span></label>
+    <input type="range" id="sB" min="0" max="400" step="25" value="0">
+  </div>
+  <div class="row">
+    <label>2. ซื้อเครื่องจักรด้วยเงินสด: <span class="val" id="vK">0</span> ล้านบาท <span style="color:var(--muted)">(เงินสด ↓ ที่ดินอาคารอุปกรณ์ ↑)</span></label>
+    <input type="range" id="sK" min="0" max="300" step="25" value="0">
+  </div>
+  <div class="row">
+    <label>3. ยืดเครดิตให้ลูกค้า: <span class="val" id="vC">0</span> ล้านบาท <span style="color:var(--muted)">(เงินสด ↓ ลูกหนี้การค้า ↑)</span></label>
+    <input type="range" id="sC" min="0" max="200" step="25" value="0">
+  </div>
+  <div class="row">
+    <label>ราคาหุ้นในตลาด: <span class="val" id="vP">9.00</span> บาท</label>
+    <input type="range" id="sP" min="2" max="15" step="0.25" value="9">
+  </div>
+
+  <div class="bswrap">
+    <div>
+      <div class="bshead">สินทรัพย์</div>
+      <div class="bscol" id="colA"></div>
+    </div>
+    <div>
+      <div class="bshead">หนี้สิน + ส่วนของผู้ถือหุ้น</div>
+      <div class="bscol" id="colL"></div>
+    </div>
+  </div>
+  <div class="eqline" id="eqline"></div>
+
+  <div class="mgrid" style="margin-top:16px">
+    <div class="mbox"><div class="mv" id="kDE">1.00</div><div class="mn">หนี้สินรวม ÷ ส่วนของผู้ถือหุ้น<br>D/E</div></div>
+    <div class="mbox"><div class="mv" id="kCR">1.80</div><div class="mn">สินทรัพย์หมุนเวียน ÷ หนี้สินหมุนเวียน<br>current ratio</div></div>
+    <div class="mbox"><div class="mv" id="kQR">1.20</div><div class="mn">หักสินค้าคงเหลือแล้ว<br>quick ratio</div></div>
+  </div>
+  <div class="stat"><span>มูลค่าตามบัญชีต่อหุ้น (BVPS) · 160 ล้านหุ้น</span><b id="kBV">3.75 บาท</b></div>
+  <div class="stat"><span>P/BV ที่ราคาปัจจุบัน</span><b id="kPB">2.40 เท่า</b></div>
+  <div class="stat"><span>เงินทุนหมุนเวียน (working capital)</span><b id="kWC">200 ล้านบาท</b></div>
+  <div class="regbar" id="kNote"></div>
+</div>
+
+<p>สามสิ่งที่ควรสังเกตจากการเล่นสไลเดอร์:</p>
+
+<ul>
+  <li><strong>BVPS ไม่ขยับเลยสักบาท</strong> ไม่ว่าจะกู้เท่าไร ซื้อเครื่องจักรเท่าไร หรือปล่อยเครดิตเท่าไร เพราะทั้งสามเป็นการ<em>สลับที่</em>ภายในสมการ ไม่ใช่การสร้างหรือทำลายส่วนของผู้ถือหุ้น สิ่งที่เปลี่ยน BVPS ได้จริงมีแค่สี่อย่าง: กำไร/ขาดทุน, เงินปันผล, การเพิ่มทุน และการซื้อหุ้นคืน</li>
+  <li><strong>กู้เงินทำให้ D/E แย่ลงแต่ current ratio ดีขึ้น</strong> เพราะเงินกู้ระยะยาวเพิ่มเงินสด (สินทรัพย์หมุนเวียน) โดยไม่เพิ่มหนี้สินหมุนเวียน — อัตราส่วนสภาพคล่องระยะสั้นกับความเสี่ยงระยะยาวจึงต้องดูแยกกัน</li>
+  <li><strong>ซื้อเครื่องจักรด้วยเงินสดอันตรายกว่าที่คิด</strong> เงินสดเป็นสินทรัพย์ที่จ่ายหนี้ได้ เครื่องจักรไม่ใช่ current ratio จึงดิ่งทันทีทั้งที่สินทรัพย์รวมเท่าเดิม และถ้ากดเกิน 120 เงินสดจะไม่พอ กลายเป็นเงินเบิกเกินบัญชีซึ่งบัญชีจัดเป็น<em>หนี้สินหมุนเวียน</em> ⇒ สมการยังสมดุลเป๊ะ แต่บริษัทเดือดร้อนจริง</li>
+</ul>
+
+<h2>BVPS, P/BV และเอกลักษณ์ที่ทำให้ทุกอย่างเข้าที่</h2>
+
+<p><strong>มูลค่าตามบัญชีต่อหุ้น (book value per share, BVPS)</strong> = ส่วนของผู้ถือหุ้น ÷ จำนวนหุ้น = 600 ÷ 160 = <strong>3.75 บาท</strong> ซึ่งเป็นตัวเลขเดียวกับที่ใช้คำนวณ P/BV = 2.40 เท่าใน Day 21 ตอนนี้เรารู้แล้วว่ามันมาจากบรรทัดไหน</p>
+
+<p>คำถามที่ตามมาเสมอคือ P/BV เท่าไรถึงเรียกว่าแพง คำตอบไม่ใช่ตัวเลขตายตัว แต่เป็นเอกลักษณ์ทางพีชคณิตที่ผูก P/BV เข้ากับความสามารถทำกำไร:</p>
+
+<div class="idcard">
+  P/BV = ราคา ÷ BVPS = (ราคา ÷ EPS) × (EPS ÷ BVPS) = <b>P/E × ROE</b><br>
+  <span style="font-size:14px;color:var(--muted)">บริษัท ก.: ROE = 120 ÷ 600 = 20% · P/E = 12 ⇒ P/BV = 12 × 0.20 = 2.40 ✓</span>
+</div>
+
+<p>เอกลักษณ์นี้อธิบายสิ่งที่นักลงทุนมือใหม่งงบ่อยที่สุด: <strong>หุ้นที่ P/BV ต่ำกว่า 1 ไม่ได้แปลว่าถูก</strong> ถ้าบริษัทหนึ่งมี ROE เพียง 3% ต่อให้ตลาดให้ P/E สูงถึง 20 เท่า P/BV ก็ยังได้แค่ 0.60 เท่า — ราคาที่ต่ำกว่ามูลค่าทางบัญชีคือ<em>คำพิพากษาของตลาด</em>ว่าสินทรัพย์กองนั้นสร้างผลตอบแทนไม่คุ้มทุน ไม่ใช่ส่วนลด และในทางกลับกัน บริษัทที่ ROE 25% ซื้อขายที่ P/BV 4 เท่าอาจมีเหตุผลรองรับเต็มที่ ลองเลื่อนดู:</p>
+
+<div class="calc">
+  <div class="row">
+    <label>ROE ของบริษัท: <span class="val" id="vR">20</span>% &nbsp;·&nbsp; ตลาดให้ P/E: <span class="val" id="vE">12</span> เท่า</label>
+    <input type="range" id="sR" min="1" max="35" step="1" value="20">
+    <input type="range" id="sE" min="3" max="40" step="1" value="12" style="margin-top:8px">
+  </div>
+  <div class="split" id="pbvbar"></div>
+  <div class="verdict" id="pbvv"></div>
+</div>
+
+<p>ข้อควรระวังสองข้อกับ BVPS: (1) <strong>สินทรัพย์ส่วนใหญ่บันทึกด้วยราคาทุน</strong> ที่ดินที่บริษัทซื้อไว้ 30 ปีก่อนยังอยู่ในงบด้วยราคาปี 2539 ⇒ BVPS ต่ำกว่าความจริง (2) <strong>ค่าความนิยม (goodwill) และสินทรัพย์ไม่มีตัวตนอาจไม่มีมูลค่าจริงเลยเมื่อต้องขาย</strong> ⇒ นักวิเคราะห์จึงมี <strong>มูลค่าตามบัญชีที่มีตัวตน (tangible book value)</strong> ของบริษัท ก. = (600 − 150) ÷ 160 = <strong>2.8125 บาท</strong> ⇒ P/TBV = 9 ÷ 2.8125 = <strong>3.20 เท่า</strong> สูงกว่า P/BV ที่เห็นถึงหนึ่งในสาม</p>
+
+<h2>เงินทุนหมุนเวียนและวงจรเงินสด</h2>
+
+<p>ลูกหนี้การค้ากับสินค้าคงเหลือที่ค้างไว้เมื่อวาน คือเงินที่บริษัทจ่ายออกไปแล้วแต่ยังกลับมาไม่ถึงมือ ส่วนเจ้าหนี้การค้าคือเงินที่บริษัทยังไม่ต้องจ่าย รวมกันเป็น<strong>วงจรเงินสด (cash conversion cycle, CCC)</strong> ซึ่งวัดเป็น "วัน":</p>
+
+<div class="seg" id="segC">
+  <button data-k="0" class="active">บริษัท ก.</button>
+  <button data-k="1">ร้านสะดวกซื้อ</button>
+  <button data-k="2">ผู้รับเหมาก่อสร้าง</button>
+</div>
+<div class="gantt">
+  <div class="grow"><div>สินค้าคงเหลือ (DIO)</div><div class="gtrack"><div class="gbar g-dio" id="gb1"></div></div></div>
+  <div class="grow"><div>เก็บเงินลูกหนี้ (DSO)</div><div class="gtrack"><div class="gbar g-dso" id="gb2"></div></div></div>
+  <div class="grow"><div>จ่ายเจ้าหนี้ (DPO)</div><div class="gtrack"><div class="gbar g-dpo" id="gb3"></div></div></div>
+  <div class="grow"><div><strong style="color:var(--ink)">วงจรเงินสด</strong></div><div class="gtrack"><div class="gbar g-ccc" id="gb4"></div></div></div>
+</div>
+<div class="verdict" id="cccv"></div>
+
+<p>บริษัท ก. มี DIO = 150 ÷ 620 × 365 = 88.3 วัน · DSO = 180 ÷ 1,000 × 365 = 65.7 วัน · DPO = 130 ÷ 620 × 365 = 76.5 วัน ⇒ <strong>CCC = 88.3 + 65.7 − 76.5 = 77.5 วัน</strong> แปลว่าบริษัทต้องหาเงินมาอุ้มกิจการของตัวเองล่วงหน้าเกือบสองเดือนครึ่งทุกรอบ ถ้าโตเร็วขึ้นเท่าตัว ความต้องการเงินก้อนนี้ก็โตเท่าตัวตาม — <strong>นี่คือสาเหตุที่บริษัทกำไรดีล้มละลายได้</strong> ธุรกิจที่ CCC ติดลบ (เก็บเงินสดจากลูกค้าทันทีแต่จ่ายซัพพลายเออร์ใน 45 วัน) ได้เงินทุนหมุนเวียนฟรีจากคู่ค้า และเป็นโมเดลที่แข็งแรงที่สุดแบบหนึ่งในโลก</p>
+
+<details>
+  <summary>กล่องโค้ด (ข้ามได้ ไม่นับในเวลาอ่าน)</summary>
+  <div class="ans">
+<pre><code>SH = 160  # ล้านหุ้น
+bs = dict(cash=120, ar=180, inv=150, ppe=600, intang=150,   # สินทรัพย์
+          ap=130, std=120, ltd=350,                          # หนี้สิน
+          paid=160, premium=200, re=240)                     # ส่วนของผู้ถือหุ้น
+
+CA = bs['cash']+bs['ar']+bs['inv']; A = CA+bs['ppe']+bs['intang']
+CL = bs['ap']+bs['std'];            L = CL+bs['ltd']
+E  = bs['paid']+bs['premium']+bs['re']
+assert A == L + E == 1200          # สมการบัญชีต้องสมดุลเสมอ
+
+NP, REV, COGS, PRICE = 120, 1000, 620, 9.00
+bvps = E/SH                        # 3.75
+roe  = NP/E                        # 0.20
+pe   = PRICE/(NP/SH)               # 12.0
+assert abs(PRICE/bvps - pe*roe) &lt; 1e-12     # P/BV = P/E x ROE = 2.40
+
+# DuPont: ROE = net margin x asset turnover x equity multiplier
+assert abs((NP/REV)*(REV/A)*(A/E) - roe) &lt; 1e-12   # 0.12 x 0.8333 x 2
+
+DSO = bs['ar']/REV*365; DIO = bs['inv']/COGS*365; DPO = bs['ap']/COGS*365
+print(round(DSO,1), round(DIO,1), round(DPO,1), round(DIO+DSO-DPO,1))
+# 65.7 88.3 76.5 77.5  -> วงจรเงินสด 77.5 วัน
+
+# จ่ายปันผลเงินสด 60 ล้านบาท: BVPS ลดลงเท่ากับ DPS พอดี
+E2 = E - 60
+print(bvps - E2/SH, 60/SH)   # 0.375 0.375
+</code></pre>
+  </div>
+</details>
+
+<h2>ทดสอบความเข้าใจ</h2>
+
+<p class="q">1. บริษัท ข. มีสินทรัพย์รวม 800 ล้านบาท (เป็นสินทรัพย์หมุนเวียน 300 ซึ่งในนั้นเป็นสินค้าคงเหลือ 120) หนี้สินหมุนเวียน 180 หนี้สินไม่หมุนเวียน 220 กำไรสุทธิ 64 มีหุ้น 100 ล้านหุ้น ราคาหุ้น 6.00 บาท หา (ก) BVPS และ P/BV (ข) current ratio และ quick ratio (ค) ROE แล้วตรวจด้วยเอกลักษณ์ P/BV = P/E × ROE</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">(ก) ส่วนของผู้ถือหุ้น = 800 − (180 + 220) = <strong>400 ล้านบาท</strong> ⇒ BVPS = 400 ÷ 100 = <strong>4.00 บาท</strong> ⇒ P/BV = 6 ÷ 4 = <strong>1.50 เท่า</strong> · D/E = 400 ÷ 400 = 1.00<br>
+  (ข) current ratio = 300 ÷ 180 = <strong>1.67</strong> · quick ratio = (300 − 120) ÷ 180 = 180 ÷ 180 = <strong>1.00</strong> ⇒ ถ้าขายสินค้าคงเหลือไม่ออกเลย บริษัทมีสินทรัพย์สภาพคล่องพอดีกับหนี้ระยะสั้นเป๊ะ ไม่มีเหลือ<br>
+  (ค) ROE = 64 ÷ 400 = <strong>16%</strong> · EPS = 0.64 ⇒ P/E = 6 ÷ 0.64 = 9.375 ⇒ P/E × ROE = 9.375 × 0.16 = <strong>1.50 ✓</strong> ตรงกับข้อ (ก) พอดี</div>
+</details>
+
+<p class="q">2. บริษัท ก. (เงินสด 120 ส่วนของผู้ถือหุ้น 600 หนี้สิน 600 หุ้น 160 ล้านหุ้น) ประกาศจ่ายเงินปันผลเป็นเงินสด 60 ล้านบาท หลังจ่ายแล้ว สินทรัพย์รวม หนี้สิน ส่วนของผู้ถือหุ้น D/E BVPS และ current ratio เปลี่ยนเป็นเท่าไร และตัวเลขที่ได้เกี่ยวข้องกับราคาหุ้นวัน XD ใน Day 23 อย่างไร</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">เงินสด 120 → 60 · กำไรสะสม 240 → 180 ⇒ สินทรัพย์รวม 1,200 → <strong>1,140</strong> · หนี้สิน <strong>600 เท่าเดิม</strong> · ส่วนของผู้ถือหุ้น 600 → <strong>540</strong> (สมการยังสมดุล: 1,140 = 600 + 540)<br>
+  D/E = 600 ÷ 540 = <strong>1.11</strong> (แย่ลงทั้งที่ไม่ได้กู้เพิ่มเลย) · current ratio = 390 ÷ 250 = <strong>1.56</strong> · BVPS = 540 ÷ 160 = <strong>3.375 บาท</strong><br>
+  จุดเชื่อม: BVPS ลดลง 3.75 − 3.375 = <strong>0.375 บาท</strong> ซึ่งเท่ากับ DPS = 60 ÷ 160 = 0.375 บาทพอดี <strong>เงินปันผลไม่ได้สร้างมูลค่าใหม่ มันย้ายมูลค่าออกจากบริษัทมาที่กระเป๋าผู้ถือหุ้น</strong> — เป็นเหตุผลทางบัญชีของราคาหุ้นที่ถูกปรับลงในวัน XD เท่ากับเงินปันผลต่อหุ้นนั่นเอง</div>
+</details>
+
+<p class="q">3. บริษัท ค. กับ ง. อยู่ในอุตสาหกรรมเดียวกัน ทั้งคู่มี BVPS 10 บาทและราคาหุ้น 7 บาท (P/BV 0.70 ทั้งคู่) แต่ ค. มี ROE 2% ส่วน ง. มี ROE 14% ตลาดกำลังบอกอะไรเกี่ยวกับบริษัททั้งสอง และควรตรวจอะไรในงบดุลต่อ</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">ใช้ P/E = P/BV ÷ ROE: บริษัท ค. ⇒ 0.70 ÷ 0.02 = <strong>P/E 35 เท่า</strong> · บริษัท ง. ⇒ 0.70 ÷ 0.14 = <strong>P/E 5 เท่า</strong><br>
+  แปลว่า ค. ราคา "ต่ำกว่าบุ๊ค" แต่<strong>แพงมากเมื่อวัดด้วยกำไร</strong> — ตลาดไม่เชื่อว่าสินทรัพย์ก้อนนั้นจะสร้างผลตอบแทนได้ ส่วน ง. ต่ำกว่าบุ๊ค<em>และ</em>ถูกเมื่อวัดด้วยกำไรด้วย ซึ่งอาจเป็นโอกาสหรือเป็นสัญญาณว่าตลาดคาดว่ากำไรกำลังจะหายไป<br>
+  สิ่งที่ต้องตรวจต่อในงบดุล: (1) <strong>สัดส่วนค่าความนิยมและสินทรัพย์ไม่มีตัวตน</strong> ถ้าสูงมาก BVPS จริงอาจต่ำกว่าที่เห็นและเสี่ยงถูกตัดด้อยค่า (2) <strong>D/E และโครงสร้างอายุหนี้</strong> ถ้า ROE ต่ำแต่หนี้สูง ส่วนของผู้ถือหุ้นอาจถูกกลืนได้เร็ว (3) <strong>คุณภาพของลูกหนี้และสินค้าคงเหลือ</strong> ถ้าสองก้อนนี้บวมขึ้นทุกปีเร็วกว่ายอดขาย แปลว่าสินทรัพย์ในงบอาจแปลงเป็นเงินสดไม่ได้จริงตามราคาที่บันทึกไว้</div>
+</details>
+
+<p class="q"><strong>ทวน:</strong> ในงบดุลของบริษัท ก. มีเงินสด 120, ที่ดิน–อาคาร–อุปกรณ์ 600 และค่าความนิยม 150 ล้านบาท จัดสามก้อนนี้เข้ากรอบประเภทสินทรัพย์ที่เรียนไปแล้ว และก้อนไหนที่ "มูลค่าตามบัญชี" มีโอกาสห่างจาก "มูลค่าตลาด" มากที่สุด เพราะอะไร</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">เงินสดคือ<strong>สินทรัพย์เทียบเท่าเงินสด (cash equivalents)</strong> — มูลค่าตามบัญชี = มูลค่าตลาดเสมอ ความเสี่ยงเดียวคือเงินเฟ้อกัดอำนาจซื้อ · ที่ดิน–อาคาร–อุปกรณ์เป็น<strong>สินทรัพย์จริง (real assets)</strong> บันทึกด้วยราคาทุนหักค่าเสื่อมสะสม ที่ดินในทำเลดีจึงมักมีมูลค่าตลาด<em>สูงกว่า</em>บัญชีมาก ส่วนเครื่องจักรเฉพาะทางอาจ<em>ต่ำกว่า</em>เพราะขายต่อไม่ได้ราคา<br>
+  ก้อนที่ห่างที่สุดคือ<strong>ค่าความนิยม (goodwill)</strong> เพราะมันไม่ใช่ของที่จับต้องได้เลย แต่คือส่วนต่างที่บริษัทจ่ายเกินมูลค่าสินทรัพย์สุทธิตอนซื้อกิจการอื่น ถ้ากิจการที่ซื้อมาทำผลงานไม่ถึงเป้า ตัวเลขนี้ถูก<strong>ตัดด้อยค่า (impairment)</strong> ได้ทั้งก้อนในวันเดียว ซึ่งลดทั้งสินทรัพย์และส่วนของผู้ถือหุ้นพร้อมกันโดยที่เงินสดไม่ได้ไหลออกแม้แต่บาทเดียว<br>ตอบผิดหรือลังเล? → <a href="finance-day-17-asset-classes.html">ทบทวน Day 17: ประเภทสินทรัพย์ (asset classes)</a></div>
+</details>
+
+<p class="q"><strong>ทวน:</strong> เราส่งคำสั่งซื้อหุ้นและจับคู่สำเร็จในวัน T แต่เงินถูกตัดจากบัญชีในวัน T+2 ถ้าถ่ายภาพงบดุลส่วนตัวของเราในวัน T+1 รายการนี้ปรากฏอย่างไร และความมั่งคั่งสุทธิของเราเปลี่ยนไปเท่าไร</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">วัน T+1 ฝั่งสินทรัพย์มี<strong>หุ้นตามมูลค่าที่ซื้อมา</strong> เพิ่มเข้ามาแล้ว (กรรมสิทธิ์เกิดตั้งแต่จับคู่สำเร็จ) ขณะที่เงินสดยังอยู่ครบ พร้อมกันนั้นฝั่งหนี้สินมี<strong>เจ้าหนี้ค่าซื้อหลักทรัพย์</strong> เท่ากับค่าหุ้นบวกค่าคอมมิชชันและ VAT ⇒ สินทรัพย์เพิ่มและหนี้สินเพิ่มพร้อมกัน สมการยังสมดุล<br>
+  ความมั่งคั่งสุทธิ (net worth) จึง<strong>ไม่เปลี่ยนจากตัวการซื้อเอง</strong> — การซื้อสินทรัพย์ด้วยเงิน (หรือด้วยหนี้ที่จะจ่ายใน 2 วัน) เป็นการสลับรูปของความมั่งคั่ง ไม่ใช่การสร้างหรือทำลาย สิ่งที่ทำให้ net worth ลดลงจริงคือ<strong>ค่าคอมมิชชันและ VAT</strong> ซึ่งเป็นค่าใช้จ่ายที่หายไปเลย และเป็นเหตุผลที่ราคาต้องขยับขึ้นประมาณ 0.35% ก่อนจึงจะเริ่มคุ้มทุน พอถึงวัน T+2 เงินสดออก เจ้าหนี้หายไป ทั้งสองฝั่งหดลงเท่ากัน net worth ยังเท่าเดิม<br>ตอบผิดหรือลังเล? → <a href="finance-day-22-orders-fees-tax-t2.html">ทบทวน Day 22: คำสั่งซื้อขาย ค่าคอมมิชชัน ภาษี และ T+2</a></div>
+</details>
+
+<div class="summary-box">
+  <h2 style="margin-top:0">สรุป 3 บรรทัด</h2>
+  <p>1. งบดุลเป็นภาพนิ่ง ณ วันเดียว (stock) ไม่ใช่ยอดสะสมทั้งงวด (flow) · สมการ สินทรัพย์ = หนี้สิน + ส่วนของผู้ถือหุ้น สมดุลเสมอ เพราะส่วนของผู้ถือหุ้นถูกนิยามให้เป็นเศษที่เหลือหลังเจ้าหนี้ได้ก่อน</p>
+  <p>2. P/BV = P/E × ROE ⇒ บริษัท ก. ROE 20% × P/E 12 = P/BV 2.40 เท่า · <strong>P/BV ต่ำกว่า 1 ไม่ใช่ส่วนลด แต่คือคำพิพากษาของตลาดว่าสินทรัพย์กองนั้นสร้างผลตอบแทนไม่คุ้ม</strong> และ BVPS เปลี่ยนได้จากแค่ 4 อย่าง: กำไร/ขาดทุน ปันผล เพิ่มทุน ซื้อหุ้นคืน</p>
+  <p style="margin-bottom:0">3. วงจรเงินสด = DIO + DSO − DPO ⇒ บริษัท ก. = 88.3 + 65.7 − 76.5 = 77.5 วัน คือระยะเวลาที่ต้องหาเงินมาอุ้มกิจการตัวเองล่วงหน้า · ยิ่งโตเร็วยิ่งต้องการเงินก้อนนี้มาก นี่คือกลไกที่ทำให้บริษัทกำไรดีล้มละลายได้</p>
+</div>
+
+<footer>
+  <p><strong>พรุ่งนี้ Day 26 — อ่านงบการเงิน 3: งบกระแสเงินสด</strong> สองวันที่ผ่านมาทิ้งคำถามเดียวกันไว้: กำไร 120 ล้านบาทที่รายงาน กับเงินสด 120 ล้านบาทในงบดุล เป็นเงินก้อนเดียวกันหรือเปล่า พรุ่งนี้เปิดงบสุดท้ายที่ตอบคำถามนี้ตรงๆ — เงินสดจากการดำเนินงาน จากการลงทุน และจากการจัดหาเงิน ต่างกันอย่างไร ทำไมนักลงทุนหลายคนอ่านงบนี้ก่อนงบอื่น และกระแสเงินสดอิสระ (free cash flow) ที่จะใช้ตีมูลค่าใน Day 28 คำนวณจากบรรทัดไหน</p>
+  <p class="disclaimer">บทเรียนนี้เป็นความรู้เชิงการศึกษา ไม่ใช่คำแนะนำทางการเงินเฉพาะบุคคล และไม่ใช่การชี้ชวนให้ซื้อหรือขายหลักทรัพย์ใดหลักทรัพย์หนึ่ง บริษัทสมมติ ก. ข. ค. และ ง. รวมถึงตัวเลขในงบดุล จำนวนหุ้นและราคาหุ้นทั้งหมดถูกสร้างขึ้นให้คำนวณตามง่าย ไม่ใช่ข้อมูลจริงของบริษัทใด สถิติหนี้ครัวเรือน สัดส่วนต่อ GDP และคุณภาพหนี้ที่อ้างอิงเป็นค่า ณ งวดและวันที่ที่ระบุ ซึ่งเปลี่ยนแปลงทุกไตรมาสและอาจถูกปรับปรุงย้อนหลังได้ การจัดประเภทรายการในงบแสดงฐานะการเงินตามมาตรฐานการรายงานทางการเงินมีรายละเอียดต่างกันมากในแต่ละอุตสาหกรรม โดยเฉพาะกลุ่มธนาคาร ประกัน และกองทรัสต์เพื่อการลงทุนในอสังหาริมทรัพย์ ซึ่งนิยาม "สินทรัพย์หมุนเวียน" และอัตราส่วนสภาพคล่องแบบในบทนี้ใช้ไม่ได้เลย ให้ตรวจกับงบการเงินฉบับเต็มและหมายเหตุประกอบงบที่บริษัทเผยแพร่ผ่านตลาดหลักทรัพย์แห่งประเทศไทยใหม่เสมอก่อนตัดสินใจ</p>
+</footer>
+
+</div>
+<script>
+(function(){
+  var fmt=function(n,d){ d=(d===undefined?2:d);
+    return n.toLocaleString('th-TH',{minimumFractionDigits:d,maximumFractionDigits:d}); };
+  var f0=function(n){ return fmt(n,0); };
+  var $=function(id){ return document.getElementById(id); };
+
+  /* ---------- 1) งบดุลสองฝั่ง ---------- */
+  var B0={cash:120,ar:180,inv:150,ppe:600,intang:150,ap:130,std:120,ltd:350,
+          paid:160,premium:200,re:240}, SH=160;
+  var sB=$('sB'), sK=$('sK'), sC=$('sC'), sP=$('sP');
+
+  function seg(cls,label,val,total){
+    var h=Math.abs(val)/total*100;
+    var neg=val<0?' neg':'';
+    var txt=(h>=9)?('<span>'+label+'</span><span>'+f0(val)+'</span>'):'';
+    return '<div class="bsseg '+cls+neg+'" style="height:'+h+'%" title="'+label+' '+f0(val)+'">'+txt+'</div>';
+  }
+
+  function draw1(){
+    var b=+sB.value, k=+sK.value, c=+sC.value, P=+sP.value;
+    $('vB').textContent=f0(b); $('vK').textContent=f0(k);
+    $('vC').textContent=f0(c); $('vP').textContent=fmt(P);
+
+    var raw=B0.cash+b-k-c, ar=B0.ar+c, inv=B0.inv, ppe=B0.ppe+k, intang=B0.intang;
+    var ltd=B0.ltd+b;
+    /* เงินสดติดลบ = เงินเบิกเกินบัญชี ซึ่งทางบัญชีคือหนี้สินหมุนเวียน ไม่ใช่สินทรัพย์ติดลบ */
+    var cash=Math.max(raw,0), od=Math.max(-raw,0);
+    var CL=B0.ap+B0.std+od;
+    var CA=cash+ar+inv, A=CA+ppe+intang, L=CL+ltd, E=A-L;
+    var scale=Math.max(A,1200);
+
+    var htmlA = seg('a-cash','เงินสด',cash,scale)
+      + seg('a-ar','ลูกหนี้การค้า',ar,scale)
+      + seg('a-inv','สินค้าคงเหลือ',inv,scale)
+      + seg('a-ppe','ที่ดิน อาคาร อุปกรณ์',ppe,scale)
+      + seg('a-int','สินทรัพย์ไม่มีตัวตน',intang,scale);
+    var htmlL = seg('l-cl','หนี้สินหมุนเวียน',CL,scale)
+      + seg('l-ltd','หนี้สินระยะยาว',ltd,scale)
+      + seg('e-eq','ทุน + ส่วนเกินมูลค่าหุ้น',B0.paid+B0.premium,scale)
+      + seg('e-re','กำไรสะสม',B0.re,scale);
+    $('colA').innerHTML=htmlA; $('colL').innerHTML=htmlL;
+
+    $('eqline').innerHTML='สินทรัพย์ <b>'+f0(A)+'</b> = หนี้สิน <b>'+f0(L)
+      +'</b> + ส่วนของผู้ถือหุ้น <b>'+f0(E)+'</b>';
+
+    $('kDE').textContent=fmt(L/E);
+    $('kCR').textContent=fmt(CA/CL);
+    $('kQR').textContent=fmt((CA-inv)/CL);
+    $('kBV').textContent=fmt(E/SH)+' บาท';
+    $('kPB').textContent=fmt(P/(E/SH))+' เท่า';
+    $('kWC').textContent=f0(CA-CL)+' ล้านบาท';
+
+    var n=$('kNote');
+    if(od>0){
+      n.innerHTML='เงินสดไม่พอ ขาดอีก <b>'+f0(od)+' ล้านบาท</b> ⇒ กลายเป็นเงินเบิกเกินบัญชี ซึ่งทางบัญชีถูกจัดเป็น<b>หนี้สินหมุนเวียน</b> ไม่ใช่สินทรัพย์ติดลบ · สมการยังสมดุลเป๊ะและ BVPS ยังเท่าเดิม แต่บริษัทกำลังเดือดร้อนจริง — <b>งบดุลที่สมดุลไม่ได้แปลว่าปลอดภัย</b>';
+      n.style.color='var(--danger)';
+    } else if(CA/CL<1){
+      n.innerHTML='current ratio ต่ำกว่า 1 ⇒ สินทรัพย์หมุนเวียนไม่พอจ่ายหนี้ที่ครบกำหนดใน 1 ปี · BVPS ยังเท่าเดิมที่ <b>'+fmt(E/SH)+' บาท</b> ทั้งที่ความเสี่ยงเปลี่ยนไปคนละเรื่อง';
+      n.style.color='var(--warn)';
+    } else {
+      n.innerHTML='สังเกตว่า BVPS ยังเป็น <b>'+fmt(E/SH)+' บาท</b> เท่าเดิมทุกครั้ง ⇒ ธุรกรรมทั้งสามสลับที่ภายในสมการเท่านั้น ไม่ได้สร้างหรือทำลายส่วนของผู้ถือหุ้น';
+      n.style.color='var(--muted)';
+    }
+  }
+  [sB,sK,sC,sP].forEach(function(s){ s.addEventListener('input',draw1); });
+  draw1();
+
+  /* ---------- 2) P/BV = P/E x ROE ---------- */
+  var sR=$('sR'), sE=$('sE');
+  function draw2(){
+    var roe=+sR.value/100, pe=+sE.value, pbv=pe*roe;
+    $('vR').textContent=(+sR.value); $('vE').textContent=(+sE.value);
+    var w=Math.min(pbv/5*100,100);
+    $('pbvbar').innerHTML='<i class="sp-pay" style="width:'+w+'%">P/BV '+fmt(pbv)
+      +' เท่า</i><i class="sp-ret" style="width:'+(100-w)+'%"></i>';
+    var v=$('pbvv');
+    v.classList.toggle('bad', pbv<1);
+    if(pbv<1){
+      v.innerHTML='P/E '+(+sE.value)+' × ROE '+(+sR.value)+'% = <b>P/BV '+fmt(pbv)
+        +' เท่า</b> ⇒ ต่ำกว่ามูลค่าทางบัญชี แต่ P/E สูงถึง '+(+sE.value)
+        +' เท่า · ราคาถูกเมื่อเทียบกับ "ของ" ที่มี แต่แพงเมื่อเทียบกับ "กำไร" ที่ของนั้นสร้างได้';
+    } else {
+      v.innerHTML='P/E '+(+sE.value)+' × ROE '+(+sR.value)+'% = <b>P/BV '+fmt(pbv)
+        +' เท่า</b> ⇒ ทุก 1 บาทของส่วนของผู้ถือหุ้น ตลาดยอมจ่าย '+fmt(pbv)
+        +' บาท เพราะบริษัทปั่นผลตอบแทนจากทุนได้ '+(+sR.value)+'% ต่อปี';
+    }
+  }
+  [sR,sE].forEach(function(s){ s.addEventListener('input',draw2); });
+  draw2();
+
+  /* ---------- 3) วงจรเงินสด ---------- */
+  var CASES=[
+    {n:'บริษัท ก.', dio:88.3, dso:65.7, dpo:76.5,
+     t:'CCC = 88.3 + 65.7 − 76.5 = <b>77.5 วัน</b> ⇒ ต้องหาเงินอุ้มกิจการตัวเองล่วงหน้าเกือบ 2 เดือนครึ่งทุกรอบ'},
+    {n:'ร้านสะดวกซื้อ', dio:30, dso:1, dpo:45,
+     t:'CCC = 30 + 1 − 45 = <b>−14 วัน</b> ⇒ ติดลบ! ขายเป็นเงินสดทันทีแต่จ่ายซัพพลายเออร์ทีหลัง <b>ได้เงินทุนหมุนเวียนฟรีจากคู่ค้า</b> ยิ่งเปิดสาขาเพิ่มยิ่งมีเงินสดเข้า'},
+    {n:'ผู้รับเหมาก่อสร้าง', dio:120, dso:90, dpo:60,
+     t:'CCC = 120 + 90 − 60 = <b>150 วัน</b> ⇒ จมทุนครึ่งปีก่อนเห็นเงิน · รับงานใหญ่ขึ้นโดยไม่มีวงเงินสำรอง คือสูตรล้มละลายทั้งที่มี backlog เต็มมือ'}
+  ];
+  var segC=$('segC');
+  function draw3(k){
+    var c=CASES[k], ccc=c.dio+c.dso-c.dpo;
+    var span=Math.max(c.dio+c.dso, c.dpo, 60);
+    var px=function(v){ return v/span*100; };
+    var put=function(id,left,width,txt){
+      var el=$(id);
+      el.style.left=Math.max(0,left)+'%';
+      el.style.width=Math.max(1.5,width)+'%';
+      el.textContent=(width>13?txt:'');
+    };
+    /* เส้นเวลาเริ่มนับวันที่รับสินค้าเข้าคลัง (วันที่ 0) */
+    put('gb1', 0,               px(c.dio), c.dio+' วัน');
+    put('gb2', px(c.dio),       px(c.dso), c.dso+' วัน');
+    put('gb3', 0,               px(c.dpo), c.dpo+' วัน');
+    if(ccc>=0){ put('gb4', px(c.dpo),        px(ccc),  fmt(ccc,1)+' วัน'); }
+    else      { put('gb4', px(c.dio+c.dso),  px(-ccc), fmt(ccc,1)+' วัน'); }
+    $('cccv').innerHTML=c.t;
+    $('cccv').classList.toggle('bad', ccc>90);
+    Array.prototype.forEach.call(segC.querySelectorAll('button'),function(b){
+      b.classList.toggle('active', +b.getAttribute('data-k')===k);
+    });
+  }
+  Array.prototype.forEach.call(segC.querySelectorAll('button'),function(b){
+    b.onclick=function(){ draw3(+b.getAttribute('data-k')); };
+  });
+  draw3(0);
+})();
+</script>
+
+</body>
+</html>
