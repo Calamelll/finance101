@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day 27 — อัตราส่วนทางการเงิน: P/E, P/BV, ROE, D/E | Finance101</title>
+<style>
+:root{
+  --bg:#191816; --card:#211f1d; --ink:#e8e4dd; --muted:#a09a91;
+  --line:#332f2b; --accent:#6cc394; --accent-soft:#1c2f26;
+  --warn:#e0a86f; --warn-soft:#2e2419; --code:#201e1b; --danger:#e0785c;
+  color-scheme: dark;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; padding:28px 18px 80px; background:var(--bg); color:var(--ink);
+  font-family:"Sarabun","Noto Sans Thai",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:17px; line-height:1.75; -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:720px;margin:0 auto}
+header{margin-bottom:34px}
+.kicker{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--muted);letter-spacing:.02em}
+.pill{background:var(--accent-soft);color:var(--accent);padding:3px 11px;border-radius:99px;font-weight:600}
+h1{font-size:29px;line-height:1.3;margin:12px 0 6px;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:16px;margin:0}
+h2{font-size:21px;margin:38px 0 12px;letter-spacing:-.005em}
+h3{font-size:17px;margin:26px 0 8px}
+p{margin:0 0 15px}
+ul,ol{margin:0 0 15px;padding-left:22px}
+li{margin-bottom:7px}
+strong{font-weight:600}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin:22px 0}
+.card.accent{background:var(--accent-soft);border-color:#2c4a3c}
+.card.warn{background:var(--warn-soft);border-color:#4a3722}
+.card h3{margin-top:0}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15.5px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-weight:600;font-size:13.5px;letter-spacing:.02em}
+td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.calc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;margin:22px 0}
+.calc label{display:block;font-size:14px;color:var(--muted);margin-bottom:6px}
+.calc .row{margin-bottom:18px}
+input[type=range]{width:100%;accent-color:var(--accent);height:24px}
+.val{font-weight:600;color:var(--accent);font-variant-numeric:tabular-nums}
+.bars{margin-top:6px}
+.bar-row{margin-bottom:12px}
+.bar-label{display:flex;justify-content:space-between;font-size:14px;margin-bottom:5px;gap:10px}
+.bar-track{background:#2a2724;border-radius:8px;height:26px;overflow:hidden;position:relative}
+.bar-fill{height:100%;border-radius:8px;transition:width .55s cubic-bezier(.22,.8,.3,1)}
+.bar-principal{background:#3f5c4e}
+.bar-growth{background:var(--accent)}
+.bar-negative{background:#a34a34}
+.bar-bond{background:#4a7fa0}
+.bar-stock{background:var(--accent)}
+.bar-gold{background:var(--warn)}
+.legend{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-top:10px;flex-wrap:wrap}
+.swatch{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:middle}
+.seg{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+.seg button{
+  background:var(--code);color:var(--muted);border:1px solid var(--line);border-radius:99px;
+  padding:6px 16px;font-size:14px;font-family:inherit;cursor:pointer;transition:all .2s;
+}
+.seg button.active{background:var(--accent-soft);color:var(--accent);border-color:#2c4a3c;font-weight:600}
+details{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:12px 16px;margin:10px 0}
+details[open]{background:#1d1b19}
+summary{cursor:pointer;font-weight:600;font-size:15.5px;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"▸ ";color:var(--accent)}
+details[open] summary::before{content:"▾ "}
+.ans{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font-size:15.5px;color:#d6d1c9}
+.q{font-weight:600;margin:22px 0 8px}
+pre{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:14px;line-height:1.6}
+code{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+.summary-box{border-left:3px solid var(--accent);padding-left:18px;margin:26px 0}
+.summary-box p{margin-bottom:8px}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
+footer a{color:var(--accent)}
+.disclaimer{font-size:13px;color:var(--muted);margin-top:18px;line-height:1.6}
+.nav{margin-bottom:20px;font-size:14px}
+.nav a{color:var(--accent);text-decoration:none}
+.src{font-size:12.5px;color:var(--muted);margin-top:8px}
+.steps{display:flex;align-items:flex-end;gap:14px;margin:18px 0 6px;height:150px}
+.step{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px}
+.step-bar{width:100%;border-radius:8px 8px 0 0;transition:height .55s cubic-bezier(.22,.8,.3,1);min-height:2px}
+.step1 .step-bar{background:#3f5c4e}
+.step2 .step-bar{background:var(--danger)}
+.step-label{font-size:13px;color:var(--muted);text-align:center}
+.step-val{font-weight:600;color:var(--ink);font-size:14.5px}
+.mixbar{display:flex;height:30px;border-radius:8px;overflow:hidden;margin:6px 0 10px;background:#2a2724}
+.mixseg{height:100%;transition:width .4s cubic-bezier(.22,.8,.3,1)}
+.stat{display:flex;justify-content:space-between;font-size:15.5px;padding:7px 0;border-bottom:1px solid var(--line)}
+.stat:last-child{border-bottom:none}
+.stat b{font-variant-numeric:tabular-nums;color:var(--accent)}
+@media(max-width:520px){
+  body{font-size:16px;padding:20px 14px 60px}
+  h1{font-size:25px}
+  .card,.calc{padding:16px}
+}
+
+/* โครงสร้างสิทธิเรียกร้อง / แถบสัดส่วน (ใช้ต่อจาก Day 20) */
+.wf{margin:18px 0 6px}
+.wf-track{display:flex;height:44px;border-radius:10px;overflow:hidden;background:#2a2724;border:1px solid var(--line)}
+.wf-seg{height:100%;display:flex;align-items:center;justify-content:center;font-size:12.5px;color:#12130f;font-weight:600;overflow:hidden;white-space:nowrap;transition:width .5s cubic-bezier(.22,.8,.3,1)}
+.wf-debt{background:#4a7fa0;color:#0f1b22}
+.wf-eq{background:var(--accent)}
+.wf-gap{background:#7a3d2c;color:#f0ded8}
+.wf-axis{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:6px;font-variant-numeric:tabular-nums}
+.ladder{list-style:none;padding:0;margin:16px 0}
+.ladder li{display:flex;gap:12px;align-items:baseline;padding:9px 14px;border:1px solid var(--line);border-radius:9px;margin-bottom:7px;background:var(--card);font-size:15.5px}
+.ladder li:last-child{background:var(--accent-soft);border-color:#2c4a3c}
+.ladder .rank{font-variant-numeric:tabular-nums;font-size:13px;color:var(--muted);min-width:20px;flex-shrink:0}
+
+/* Day 21 — เส้นทางคำสั่งซื้อ */
+.pipe{margin:16px 0 4px}
+.pnode{display:flex;gap:12px;align-items:flex-start;padding:11px 14px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;background:var(--card);transition:background .3s,border-color .3s,transform .3s}
+.pnode.on{background:var(--accent-soft);border-color:#2c4a3c;transform:translateX(7px)}
+.pnum{width:25px;height:25px;border-radius:50%;background:#2a2724;color:var(--muted);font-size:12.5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:3px;font-variant-numeric:tabular-nums;transition:background .3s,color .3s}
+.pnode.on .pnum{background:var(--accent);color:#12130f;font-weight:700}
+.pttl{font-weight:600;font-size:15.5px;margin-bottom:2px}
+.pdesc{font-size:14px;color:var(--muted);line-height:1.6}
+.pbtn{background:var(--accent-soft);color:var(--accent);border:1px solid #2c4a3c;border-radius:99px;padding:8px 22px;font-size:15px;font-family:inherit;font-weight:600;cursor:pointer;transition:opacity .2s}
+.pbtn:disabled{opacity:.45;cursor:default}
+.regbar{margin-top:10px;padding:10px 14px;border:1px dashed var(--line);border-radius:10px;font-size:14px;color:var(--muted)}
+.scalebar{background:#2a2724;border-radius:8px;height:22px;overflow:hidden;margin-bottom:5px}
+.scalefill{height:100%;border-radius:8px}
+
+/* Day 22 — กระดานราคา (order book) และปฏิทิน T+2 */
+.book{font-variant-numeric:tabular-nums;font-size:15px;margin:4px 0 2px}
+.brow{display:grid;grid-template-columns:1fr 84px 1fr;gap:8px;align-items:center;padding:3px 0}
+.bqty{display:flex;height:24px;border-radius:6px;overflow:hidden;background:transparent}
+.bqty i{height:100%;border-radius:6px;display:block;transition:width .4s ease,opacity .4s ease}
+.bqty.l{justify-content:flex-end}
+.bprice{text-align:center;font-weight:600;padding:2px 0;border-radius:6px;transition:background .3s,color .3s}
+.bprice.ask{color:var(--danger)}
+.bprice.bid{color:var(--accent)}
+.bprice.hit{background:var(--warn-soft);color:var(--warn)}
+.bqty span{font-size:12.5px;color:var(--muted);padding:0 6px;line-height:24px;white-space:nowrap}
+.bhead{display:grid;grid-template-columns:1fr 84px 1fr;gap:8px;font-size:12.5px;color:var(--muted);padding-bottom:5px;border-bottom:1px solid var(--line);margin-bottom:6px}
+.bhead span:nth-child(1){text-align:right}
+.bhead span:nth-child(2){text-align:center}
+.spreadrow{text-align:center;font-size:13px;color:var(--warn);padding:5px 0;border-top:1px dashed var(--line);border-bottom:1px dashed var(--line);margin:5px 0}
+.cal{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin:16px 0 6px}
+.cday{border:1px solid var(--line);border-radius:10px;padding:9px 6px;text-align:center;background:var(--card);transition:background .35s,border-color .35s}
+.cday .cn{font-size:12px;color:var(--muted)}
+.cday .cv{font-size:14px;font-weight:600;margin-top:3px;min-height:20px}
+.cday.t{background:var(--accent-soft);border-color:#2c4a3c}
+.cday.s{background:var(--warn-soft);border-color:#4a3722}
+.cday.off{opacity:.4}
+
+/* Day 23 — โครงเงินปันผล */
+.split{display:flex;height:34px;border-radius:9px;overflow:hidden;background:#2a2724;border:1px solid var(--line);margin:10px 0 4px}
+.split i{height:100%;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;transition:width .45s cubic-bezier(.22,.8,.3,1)}
+.sp-pay{background:var(--accent);color:#12130f}
+.sp-ret{background:#3f5c4e;color:#dfe8e2}
+.idcard{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin:14px 0;font-variant-numeric:tabular-nums;font-size:15.5px;text-align:center}
+.idcard b{color:var(--accent)}
+.tax2{display:flex;gap:14px;align-items:flex-end;height:170px;margin:16px 0 4px}
+.tax2 .col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px}
+.tax2 .cb{width:100%;border-radius:9px 9px 0 0;transition:height .5s cubic-bezier(.22,.8,.3,1);min-height:3px}
+.tax2 .c1 .cb{background:#3f5c4e}
+.tax2 .c2 .cb{background:var(--accent)}
+.tax2 .c2.lose .cb{background:var(--danger)}
+.verdict{text-align:center;font-size:15px;padding:9px 12px;border-radius:9px;margin-top:12px;background:var(--accent-soft);color:var(--accent);border:1px solid #2c4a3c}
+.verdict.bad{background:var(--warn-soft);color:var(--warn);border-color:#4a3722}
+</style>
+<style>
+/* Day 24 — น้ำตกงบกำไรขาดทุน */
+.wfall{margin:16px 0 6px;font-variant-numeric:tabular-nums}
+.wrow{display:grid;grid-template-columns:112px 1fr 92px;gap:10px;align-items:center;margin-bottom:6px;font-size:14.5px}
+.wrow .wlab{color:var(--muted);font-size:13.5px;line-height:1.4}
+.wrow.tot .wlab{color:var(--ink);font-weight:600}
+.wtrack{position:relative;height:26px;background:#2a2724;border-radius:7px;overflow:hidden}
+.wseg{position:absolute;top:0;height:100%;border-radius:7px;transition:left .5s cubic-bezier(.22,.8,.3,1),width .5s cubic-bezier(.22,.8,.3,1)}
+.w-rev{background:#3f5c4e}
+.w-gp{background:#4d7a63}
+.w-ebit{background:#5aa47e}
+.w-np{background:var(--accent)}
+.w-cut{background:var(--danger);opacity:.85}
+.wval{text-align:right;font-weight:600;font-size:14.5px}
+.wrow.cut .wval{color:var(--danger)}
+.wrow.tot .wval{color:var(--accent)}
+.mgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0 4px}
+.mbox{background:var(--code);border:1px solid var(--line);border-radius:11px;padding:11px 8px;text-align:center}
+.mbox .mv{font-size:20px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums;line-height:1.3}
+.mbox .mn{font-size:12px;color:var(--muted);line-height:1.45;margin-top:2px}
+.mbox.neg .mv{color:var(--danger)}
+@media(max-width:520px){
+  .wrow{grid-template-columns:92px 1fr 78px;gap:7px;font-size:13.5px}
+  .wrow .wlab{font-size:12.5px}
+  .mbox .mv{font-size:17px}
+}
+</style>
+<style>
+/* Day 25 — งบดุลสองฝั่ง และวงจรเงินสด */
+.bswrap{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0 6px}
+.bscol{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:11px;overflow:hidden;min-height:230px}
+.bshead{font-size:12.5px;color:var(--muted);text-align:center;margin-bottom:6px;letter-spacing:.02em}
+.bsseg{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:0 9px;font-size:12px;font-weight:600;color:#12130f;overflow:hidden;white-space:nowrap;transition:height .5s cubic-bezier(.22,.8,.3,1);min-height:0}
+.bsseg span:last-child{font-variant-numeric:tabular-nums}
+.a-cash{background:#6cc394}.a-ar{background:#4d7a63;color:#e8f2ec}.a-inv{background:#3f5c4e;color:#e8f2ec}
+.a-ppe{background:#4a7fa0;color:#0f1b22}.a-int{background:#5b6b7a;color:#e6edf3}
+.l-cl{background:#e0a86f;color:#241a0d}.l-ltd{background:#a8703f;color:#f6e8da}
+.e-eq{background:#6cc394}.e-re{background:#3f5c4e;color:#e8f2ec}
+.bsseg.neg{background:var(--danger);color:#fff}
+.eqline{display:flex;justify-content:center;gap:10px;font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums;margin-top:4px}
+.eqline b{color:var(--accent)}
+.gantt{margin:16px 0 6px}
+.grow{display:grid;grid-template-columns:116px 1fr;gap:10px;align-items:center;margin-bottom:7px;font-size:13.5px;color:var(--muted)}
+.gtrack{position:relative;height:25px;background:#2a2724;border-radius:7px;overflow:hidden}
+.gbar{position:absolute;top:0;height:100%;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;overflow:hidden;white-space:nowrap;transition:left .5s cubic-bezier(.22,.8,.3,1),width .5s cubic-bezier(.22,.8,.3,1)}
+.g-dio{background:#3f5c4e;color:#e8f2ec}
+.g-dso{background:#4a7fa0;color:#0f1b22}
+.g-dpo{background:var(--warn);color:#241a0d}
+.g-ccc{background:var(--danger);color:#fff}
+@media(max-width:520px){
+  .bswrap{gap:8px}
+  .bsseg{font-size:11px;padding:0 6px}
+  .grow{grid-template-columns:92px 1fr;gap:7px;font-size:12.5px}
+}
+</style>
+<style>
+/* Day 26 — สามกระแสเงินสด (แท่งบวก/ลบรอบเส้นศูนย์) */
+.zwrap{margin:18px 0 4px}
+.zbar{position:relative;height:150px;display:flex;gap:16px}
+.zaxis{position:absolute;left:0;right:0;top:75px;border-top:1px dashed #4a453f;z-index:0}
+.zc{flex:1;position:relative;z-index:1}
+.zfill{position:absolute;left:0;right:0;border-radius:7px;transition:top .5s cubic-bezier(.22,.8,.3,1),height .5s cubic-bezier(.22,.8,.3,1);min-height:3px}
+.zfill.p{background:var(--accent)}
+.zfill.n{background:var(--danger)}
+.zv{position:absolute;left:0;right:0;text-align:center;font-size:13.5px;font-weight:700;font-variant-numeric:tabular-nums;transition:top .5s cubic-bezier(.22,.8,.3,1)}
+.zv.p{color:var(--accent)} .zv.n{color:var(--danger)}
+.zlab{display:flex;gap:16px;margin-top:8px}
+.zlab div{flex:1;text-align:center;font-size:12.5px;color:var(--muted);line-height:1.45}
+.tax2 .c3 .cb{background:#4a7fa0}
+.sign{display:inline-block;min-width:18px;font-weight:700;font-variant-numeric:tabular-nums}
+.sign.p{color:var(--accent)} .sign.n{color:var(--danger)}
+.cfs td:first-child{padding-left:12px}
+.cfs tr.head td{color:var(--muted);font-size:13.5px;font-weight:600;padding-top:16px}
+.cfs tr.sum td{font-weight:700;border-top:1px solid var(--line);border-bottom:2px solid var(--line)}
+.cfs tr.sum td.num{color:var(--accent)}
+.cfs tr.sum.neg td.num{color:var(--danger)}
+.cfs td.ind{padding-left:26px;color:#cdc7be;font-size:14.5px}
+@media(max-width:520px){
+  .zbar{gap:9px;height:135px}
+  .zaxis{top:67px}
+  .zlab{gap:9px}
+  .zlab div{font-size:11.5px}
+  .cfs td.ind{padding-left:14px;font-size:13.5px}
+}
+</style>
+<style>
+/* Day 27 — DuPont และห้องทดลองเลเวอเรจ */
+.dp{margin:16px 0 4px}
+.dprow{display:grid;grid-template-columns:136px 1fr 74px;gap:10px;align-items:center;margin-bottom:8px;font-size:14px}
+.dprow .dlab{color:var(--muted);font-size:13.5px;line-height:1.45}
+.dtrack{height:24px;background:#2a2724;border-radius:7px;overflow:hidden}
+.dfill{height:100%;border-radius:7px;transition:width .5s cubic-bezier(.22,.8,.3,1);min-width:3px}
+.d-nm{background:var(--accent)}
+.d-at{background:#4a7fa0}
+.d-em{background:var(--warn)}
+.dval{text-align:right;font-weight:600;font-variant-numeric:tabular-nums;font-size:14.5px}
+.dprod{text-align:center;font-size:15.5px;padding:10px 12px;border-radius:9px;background:var(--accent-soft);
+  border:1px solid #2c4a3c;color:var(--accent);margin-top:6px;font-variant-numeric:tabular-nums}
+.dnote{font-size:14px;color:var(--muted);margin-top:10px;line-height:1.65}
+.rid{display:grid;grid-template-columns:1fr 1fr;gap:8px 18px;margin:16px 0 4px}
+.rid .r{display:flex;justify-content:space-between;gap:8px;font-size:15px;padding:7px 0;border-bottom:1px solid var(--line)}
+.rid .r b{font-variant-numeric:tabular-nums;color:var(--accent);white-space:nowrap}
+.rid .r.warnv b{color:var(--warn)}
+.rid .r.badv b{color:var(--danger)}
+.tax2 .c3.lose .cb{background:var(--danger)}
+@media(max-width:520px){
+  .dprow{grid-template-columns:104px 1fr 62px;gap:7px;font-size:13px}
+  .dprow .dlab{font-size:12.5px}
+  .rid{grid-template-columns:1fr;gap:0 0}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="nav"><a href="../index.html">← สารบัญ</a></div>
+
+<header>
+  <div class="kicker">
+    <span class="pill">Day 27 / 90</span>
+    <span>Phase 2 · การลงทุนระยะยาว</span>
+    <span>·</span>
+    <span>อ่าน 9 นาที</span>
+  </div>
+  <h1>อัตราส่วนทางการเงิน: P/E, P/BV, ROE, D/E</h1>
+  <p class="sub">สามวันที่ผ่านมาเราแกะงบครบทั้งสามฉบับของบริษัท ก. แล้ว วันนี้ยุบตัวเลขหลายสิบบรรทัดให้เหลือชุดอัตราส่วนที่เทียบข้ามบริษัทได้ — พร้อมเหตุผลว่าทำไม "P/E ต่ำ = ถูก" กับ "ROE สูง = เก่ง" ถึงเป็นสองประโยคที่ทำให้คนขาดทุนบ่อยที่สุด</p>
+</header>
+
+<h2>ทำไมต้องหาร</h2>
+
+<p>ตัวเลขดิบเทียบกันไม่ได้ กำไร 120 ล้านบาทของบริษัท ก. เทียบกับกำไร 12,000 ล้านบาทของบริษัทยักษ์ไม่ได้บอกอะไรเลย จนกว่าจะรู้ว่าแต่ละบริษัทใช้ทุนเท่าไรและเราจ่ายเงินซื้อมันที่ราคาเท่าไร <strong>อัตราส่วน (ratio) คือการหารตัวเลขหนึ่งด้วยอีกตัวเพื่อลบขนาดทิ้ง</strong> เหลือไว้แต่คุณภาพ และอัตราส่วนทุกตัวในบทนี้ดึงวัตถุดิบจากสามงบที่เราเพิ่งอ่านจบ บวกตัวแปรที่สี่ที่ไม่ได้อยู่ในงบเลย คือ<strong>ราคาตลาด</strong></p>
+
+<p>ทวนชุดตัวเลขบริษัท ก. ที่ใช้ทั้งบท: รายได้ 1,000 · EBIT 180 · ดอกเบี้ยจ่าย 30 · กำไรก่อนภาษี 150 · ภาษี 30 (20%) · <strong>กำไรสุทธิ 120</strong> · สินทรัพย์รวม 1,200 · หนี้สินรวม 600 (เป็นหนี้ที่มีดอกเบี้ย 470) · <strong>ส่วนของผู้ถือหุ้น 600</strong> · ค่าเสื่อมและค่าตัดจำหน่าย 90 · CFO 130 · capex 150 · หุ้น 160 ล้านหุ้น · ราคา 9.00 บาท (ทุกตัวหน่วยล้านบาท)</p>
+
+<h2>ฝั่งราคา: P/E และ P/BV</h2>
+
+<p><strong>P/E (price-to-earnings)</strong> = ราคาต่อหุ้น ÷ กำไรต่อหุ้น = 9.00 ÷ 0.75 = <strong>12 เท่า</strong> อ่านตรงตัวว่า "จ่าย 12 บาทเพื่อซื้อกำไรปีละ 1 บาท" กลับด้านมันจะได้ตัวที่มีประโยชน์กว่า คือ<strong>อัตราผลตอบแทนกำไร (earnings yield)</strong> = 1 ÷ 12 = <strong>8.33%</strong> ซึ่งเทียบตรงๆ กับ yield ของหุ้นกู้หรือดอกเบี้ยเงินฝากได้ทันที — แต่ต้องจำว่าเป็นกำไรที่บริษัทได้ ไม่ใช่เงินที่เข้ากระเป๋าเรา ส่วนที่ถึงเราจริงคือเงินปันผล</p>
+
+<p><strong>P/BV (price-to-book value)</strong> = ราคา ÷ มูลค่าทางบัญชีต่อหุ้น = 9.00 ÷ 3.75 = <strong>2.40 เท่า</strong> บอกว่าตลาดยอมจ่ายสูงกว่าทุนที่ผู้ถือหุ้นใส่ไว้ 2.4 เท่า ซึ่งจะสมเหตุสมผลก็ต่อเมื่อบริษัทเอาทุนนั้นไปทำเงินได้ดีกว่าค่าเฉลี่ย และนี่คือที่มาของเอกลักษณ์ที่ควรท่องให้ขึ้นใจ:</p>
+
+<div class="idcard" style="font-size:16.5px">
+  <b>P/BV = P/E × ROE</b><br>
+  <span style="font-size:13.5px;color:var(--muted)">12 × 20% = 2.40 · เพราะ (P/E) × (E/BV) ตัด E ทิ้ง เหลือ P/BV พอดี</span>
+</div>
+
+<p>เอกลักษณ์นี้แปลว่า <strong>อัตราส่วนราคาสามตัวมีอิสระแค่สองตัว</strong> ถ้าใครบอกว่าหุ้นตัวหนึ่ง P/E ต่ำและ P/BV ต่ำพร้อมกัน สิ่งที่เขากำลังพูดจริงๆ คือ ROE ของบริษัทนั้นอยู่ในระดับปกติ ส่วนหุ้นที่ P/E สูงแต่ P/BV ต่ำ แปลว่า ROE ต่ำมาก</p>
+
+<div class="card warn">
+  <h3>ตลาดไทยวันนี้: SET เทียบ mai</h3>
+  <table>
+    <tr><th></th><th style="text-align:right">SET</th><th style="text-align:right">mai</th></tr>
+    <tr><td>P/E</td><td class="num">15.75 เท่า</td><td class="num">66.84 เท่า</td></tr>
+    <tr><td>P/BV</td><td class="num">1.48 เท่า</td><td class="num">1.16 เท่า</td></tr>
+    <tr><td>Market Yield</td><td class="num">4.02%</td><td class="num">3.56%</td></tr>
+    <tr><td>Index EPS</td><td class="num">100.50</td><td class="num">3.35</td></tr>
+  </table>
+  <p style="margin-top:14px">ลองใช้เอกลักษณ์ย้อนกลับ: <strong>ROE ของทั้งตลาด = P/BV ÷ P/E</strong> ⇒ SET ได้ 1.48 ÷ 15.75 = <strong>9.40%</strong> ส่วน mai ได้ 1.16 ÷ 66.84 = <strong>1.74%</strong> ต่างกัน <strong>5.4 เท่า</strong> — นี่คือคำตอบว่าทำไม mai ถึงมี P/E สูงกว่า SET ถึง 4.2 เท่าทั้งที่ P/BV ต่ำกว่า ไม่ใช่เพราะนักลงทุนคาดหวังการเติบโตมหาศาล แต่เพราะ<strong>ตัวหารมันเล็ก</strong> บริษัทใน mai โดยรวมทำกำไรจากทุนได้น้อยมาก · และอีกตัวที่น่าสนใจ: payout ratio ทั้งตลาด = Market Yield × P/E ⇒ SET = 4.02% × 15.75 = <strong>63.3%</strong> (ตรงกับที่เราคำนวณไว้ใน Day 23) แต่ mai = 3.56% × 66.84 = <strong>238%</strong> คือจ่ายปันผลมากกว่ากำไรที่ทำได้กว่าสองเท่า</p>
+  <p class="src">ที่มา: ตลาดหลักทรัพย์แห่งประเทศไทย หน้า Market Overview · Key Market Statistics and Performance ณ 17 ก.ย. 2569 (P/E, P/BV, Market Yield, Index EPS, Market Cap SET 19,974,754.13 ล้านบาท · mai 219,136.82 ล้านบาท) · ดัชนี SET ปิด 1,583.34 จุด (+1.32%) และ mai 224.38 จุด ณ 18 ก.ย. 2569 · ดึงข้อมูล 18 ก.ย. 2569 · ตัวเลข ROE 9.40% / 1.74% และ payout 63.3% / 238% เป็นการคำนวณจากตัวเลขข้างต้นในบทเรียนนี้เอง · หมายเหตุ: SET ไม่รวมหลักทรัพย์ต่างประเทศและกลุ่มกองทุนรวมอสังหาริมทรัพย์ในการคำนวณ</p>
+</div>
+
+<h3>P/E ไหน — และกับดักที่ใหญ่ที่สุด</h3>
+
+<p>"P/E ของ SET" ในวันเดียวกันมีได้หลายค่า ขึ้นกับว่าใช้กำไรของช่วงไหน <strong>trailing P/E</strong> ใช้กำไร 4 ไตรมาสที่ผ่านมา (คือ 15.75 เท่าข้างบน) ส่วน <strong>forward P/E</strong> ใช้กำไรที่นักวิเคราะห์คาดไว้ข้างหน้า — ช่วงกลางเดือน ส.ค. 2569 UBS ปรับเป้าดัชนี SET ปี 2569 ขึ้นเป็น 1,680 จุด โดยอิงคาดการณ์ EPS 12 เดือนข้างหน้าที่ 97 บาท คิดเป็น P/E ราว 17.2 เท่า ถ้าเอา EPS ชุดนั้นมาหารดัชนีวันนี้ (1,583.34 ÷ 97) จะได้ forward P/E <strong>16.3 เท่า</strong> — เลขสามตัวสำหรับตลาดเดียวกันในวันเดียวกัน ก่อนเถียงกันเรื่อง P/E จึงต้องถามก่อนว่าใช้กำไรตัวไหน</p>
+
+<p>แต่กับดักที่แพงที่สุดคือ <strong>กำไรวัฏจักร (cyclical earnings)</strong> ลองดูบริษัทปิโตรเคมีสมมติที่ราคาหุ้น 40 บาทเท่ากันทั้งสามปี:</p>
+
+<div class="tax2" style="height:190px">
+  <div class="col c1"><div class="step-val">8 เท่า</div><div class="cb" style="height:38px"></div><div class="step-label">ปีพีค<br>EPS 5.00</div></div>
+  <div class="col c3"><div class="step-val">16 เท่า</div><div class="cb" style="height:76px"></div><div class="step-label">กลางรอบ<br>EPS 2.50</div></div>
+  <div class="col c2 lose"><div class="step-val">40 เท่า</div><div class="cb" style="height:150px"></div><div class="step-label">ปีก้นเหว<br>EPS 1.00</div></div>
+</div>
+
+<p>P/E 8 เท่าในปีพีคดู "ถูก" ที่สุด ทั้งที่มันคือจุดอันตรายที่สุด เพราะกำไรกำลังจะกลับสู่ค่าเฉลี่ย ส่วน P/E 40 เท่าในปีก้นเหวดูแพงที่สุด ทั้งที่มักเป็นจุดซื้อที่ดีกว่า — สำหรับหุ้นวัฏจักร กฎที่คนทำงานสายนี้ใช้จึงกลับด้านจากสัญชาตญาณ: <strong>ซื้อตอน P/E สูง ขายตอน P/E ต่ำ</strong> ทางแก้คือใช้ <strong>normalized EPS</strong> คือกำไรเฉลี่ยตลอดรอบ (ที่นี่คือ 2.50 บาท ⇒ P/E 16 เท่า) แทนกำไรปีล่าสุด</p>
+
+<h2>ฝั่งผลตอบแทน: ROE และ DuPont</h2>
+
+<p><strong>ROE (return on equity)</strong> = กำไรสุทธิ ÷ ส่วนของผู้ถือหุ้น = 120 ÷ 600 = <strong>20%</strong> ตอบว่าทุกบาทที่ผู้ถือหุ้นฝากไว้ในบริษัททำกำไรได้ปีละกี่สตางค์ ส่วน <strong>ROA (return on assets)</strong> = 120 ÷ 1,200 = 10% ใช้สินทรัพย์ทั้งหมดเป็นฐาน ไม่สนว่าเงินนั้นมาจากเจ้าของหรือเจ้าหนี้</p>
+
+<p>ตัวเลข 20% เดี่ยวๆ ไม่บอกว่าเก่งตรงไหน <strong>DuPont analysis</strong> แก้ปัญหานั้นด้วยการแยก ROE เป็นสามชิ้นที่คูณกันแล้วตัดกันพอดี:</p>
+
+<div class="idcard">
+  <b>ROE = (กำไรสุทธิ/ยอดขาย) × (ยอดขาย/สินทรัพย์) × (สินทรัพย์/ส่วนของผู้ถือหุ้น)</b><br>
+  <span style="font-size:13.5px;color:var(--muted)">อัตรากำไรสุทธิ × อัตราหมุนสินทรัพย์ × ตัวคูณส่วนของผู้ถือหุ้น</span>
+</div>
+
+<p>สามธุรกิจที่ ROE เท่ากันเป๊ะ แต่หาเงินมาจากคนละทาง กดสลับดูได้:</p>
+
+<div class="calc">
+  <div class="seg" id="segD">
+    <button class="active" data-k="0">ร้านค้าปลีก</button>
+    <button data-k="1">โรงงานผลิต</button>
+    <button data-k="2">ธนาคาร</button>
+    <button data-k="3">บริษัท ก.</button>
+  </div>
+  <div class="dp">
+    <div class="dprow"><div class="dlab">อัตรากำไรสุทธิ<br><span style="font-size:12px">net margin</span></div><div class="dtrack"><div class="dfill d-nm" id="dfNM"></div></div><div class="dval" id="dvNM"></div></div>
+    <div class="dprow"><div class="dlab">อัตราหมุนสินทรัพย์<br><span style="font-size:12px">asset turnover</span></div><div class="dtrack"><div class="dfill d-at" id="dfAT"></div></div><div class="dval" id="dvAT"></div></div>
+    <div class="dprow"><div class="dlab">ตัวคูณส่วนของผู้ถือหุ้น<br><span style="font-size:12px">equity multiplier</span></div><div class="dtrack"><div class="dfill d-em" id="dfEM"></div></div><div class="dval" id="dvEM"></div></div>
+  </div>
+  <div class="dprod" id="dProd"></div>
+  <div class="dnote" id="dNote"></div>
+</div>
+
+<p>บทเรียนคือ <strong>ROE เท่ากันไม่ได้แปลว่าเสี่ยงเท่ากัน</strong> ร้านค้าปลีกทำกำไรบางเฉียบแต่หมุนของเร็วมาก ถ้ายอดขายสะดุด ROE จะหายไปเกือบหมดเพราะ margin ไม่มีกันชน ส่วนธนาคารได้ ROE เท่ากันจาก equity multiplier 8 เท่า คือทุกบาทของผู้ถือหุ้นแบกสินทรัพย์ 8 บาท สินทรัพย์เสียแค่ 12.5% ก็กินทุนหมดพอดี นั่นคือเหตุผลที่ธนาคารถูกกำกับเรื่องเงินกองทุนอย่างเข้มงวด ไม่ใช่เพราะธนาคารทำธุรกิจแย่</p>
+
+<p>ถ้าอยากละเอียดกว่านั้น แยกต่อเป็นห้าชั้นได้โดยผ่า margin ออกเป็นภาระภาษี ภาระดอกเบี้ย และอัตรากำไรจากการดำเนินงาน — บริษัท ก. คือ 0.80 × 0.8333 × 0.18 × 0.8333 × 2.00 = 20% ประโยชน์คือเห็นชัดว่า ROE ที่ลดลงปีนี้มาจากภาษีที่สูงขึ้น ดอกเบี้ยที่หนักขึ้น หรือธุรกิจที่แย่ลงจริง</p>
+
+<h2>ฝั่งความเสี่ยง: D/E และห้องทดลองเลเวอเรจ</h2>
+
+<p><strong>D/E (debt-to-equity)</strong> = หนี้สินรวม ÷ ส่วนของผู้ถือหุ้น = 600 ÷ 600 = <strong>1.00 เท่า</strong> แต่ตัวเลขนี้นับเจ้าหนี้การค้าที่ไม่มีดอกเบี้ยรวมไปด้วย ซึ่งไม่ใช่หนี้ที่ทำให้บริษัทล้ม เวอร์ชันที่ใช้จริงจึงมีสองตัว: <strong>IBD/E</strong> = หนี้ที่มีดอกเบี้ย 470 ÷ 600 = 0.78 เท่า และ <strong>หนี้สินสุทธิต่อ EBITDA</strong> = (470 − เงินสด 120) ÷ 270 = <strong>1.30 เท่า</strong> ซึ่งวัดว่าถ้าเอากำไรก่อนดอกเบี้ย ภาษี และค่าเสื่อมไปใช้หนี้ทั้งหมด จะใช้เวลากี่ปี · คู่กันคือ <strong>ความสามารถจ่ายดอกเบี้ย (interest coverage)</strong> = EBIT 180 ÷ ดอกเบี้ย 30 = 6.0 เท่า</p>
+
+<p>หนี้เป็นตัวขยายสัญญาณสองทาง สูตรที่ยุบจาก DuPont ให้ภาพนี้ตรงที่สุด — เมื่อ r คือดอกเบี้ยเงินกู้และ t คืออัตราภาษี:</p>
+
+<div class="idcard">
+  <b>ROE = ROA<sub>NOPAT</sub> + [ ROA<sub>NOPAT</sub> − r(1−t) ] × D/E</b><br>
+  <span style="font-size:13.5px;color:var(--muted)">ถ้าธุรกิจให้ผลตอบแทนสูงกว่าต้นทุนหนี้หลังภาษี หนี้ยิ่งมาก ROE ยิ่งพุ่ง — และกลับกันเมื่อวงเล็บติดลบ</span>
+</div>
+
+<p>ลองเองในห้องทดลองนี้: บริษัทหนึ่งมีเงินทุนรวม 1,000 ล้านบาท (หนี้ + ทุน) ทำ EBIT ได้ปีละ 150 ล้านบาท ดอกเบี้ยเงินกู้ 6% ภาษี 20% เลื่อนดูว่าถ้าเปลี่ยนสัดส่วนหนี้ และถ้าปีหน้าเศรษฐกิจทำให้ EBIT หดลง จะเกิดอะไรขึ้น</p>
+
+<div class="calc">
+  <div class="row">
+    <label>หนี้ที่ใช้ (ส่วนที่เหลือคือทุนของผู้ถือหุ้น): <span class="val" id="vD">500</span> ล้านบาท</label>
+    <input type="range" id="sD" min="0" max="800" step="50" value="500">
+  </div>
+  <div class="row">
+    <label>ปีแย่ EBIT หดลง: <span class="val" id="vS">40</span>%</label>
+    <input type="range" id="sS" min="0" max="70" step="5" value="40">
+  </div>
+  <div class="tax2" style="height:200px">
+    <div class="col c1"><div class="step-val" id="bv0">—</div><div class="cb" id="bb0"></div><div class="step-label">ROE ถ้าไม่ก่อหนี้เลย<br>(ปีปกติ)</div></div>
+    <div class="col c2"><div class="step-val" id="bv1">—</div><div class="cb" id="bb1"></div><div class="step-label">ROE ปีปกติ<br>ที่หนี้ระดับนี้</div></div>
+    <div class="col c3" id="col2"><div class="step-val" id="bv2">—</div><div class="cb" id="bb2"></div><div class="step-label">ROE ปีแย่<br>ที่หนี้ระดับนี้</div></div>
+  </div>
+  <div class="stat"><span>D/E</span><b id="kDE">—</b></div>
+  <div class="stat"><span>ดอกเบี้ยจ่ายต่อปี</span><b id="kI">—</b></div>
+  <div class="stat"><span>Interest coverage ในปีแย่</span><b id="kC">—</b></div>
+  <div class="verdict" id="kV"></div>
+</div>
+
+<p>สิ่งที่ควรเห็นจากการเล่น: ที่หนี้ 0 ROE ปีปกติคือ 12% และปีที่ EBIT หด 40% ยังได้ 7.2% — ลดลงตามสัดส่วนพอดี แต่ที่หนี้ 800 ล้านบาท ROE ปีปกติพุ่งเป็น <strong>40.8%</strong> ดูเหมือนผู้บริหารเก่งขึ้นสามเท่า ทั้งที่ธุรกิจข้างใต้ไม่เปลี่ยนเลยแม้แต่บาทเดียว และปีที่ EBIT หด 40% เหลือ 16.8% ยังชนะกรณีไม่มีหนี้อยู่ดี · จุดพลิกอยู่ที่ EBIT = 48 ล้านบาท (หดลง 68%) ซึ่งเท่ากับดอกเบี้ยพอดี ⇒ กำไรเป็นศูนย์ ⇒ <strong>ROE เป็นศูนย์ ทั้งที่ธุรกิจยังมี EBIT เป็นบวก</strong> เกินจากนั้นไปคือขาดทุนและกินทุน · ดังนั้นเวลาเห็น ROE 30–40% คำถามแรกไม่ใช่ "เก่งจัง" แต่คือ <strong>"เก่งหรือแค่กู้เยอะ"</strong> ให้เปิด DuPont ดู equity multiplier ทันที</p>
+
+<h2>บัตรประชาชนของบริษัท ก.</h2>
+
+<div class="rid">
+  <div class="r"><span>EPS</span><b>0.75 บาท</b></div>
+  <div class="r"><span>BVPS</span><b>3.75 บาท</b></div>
+  <div class="r"><span>P/E</span><b>12.00 เท่า</b></div>
+  <div class="r"><span>P/BV</span><b>2.40 เท่า</b></div>
+  <div class="r"><span>Earnings yield</span><b>8.33%</b></div>
+  <div class="r"><span>Dividend yield</span><b>4.17%</b></div>
+  <div class="r"><span>ROE</span><b>20.00%</b></div>
+  <div class="r"><span>ROA</span><b>10.00%</b></div>
+  <div class="r"><span>ROIC</span><b>13.46%</b></div>
+  <div class="r"><span>D/E · IBD/E</span><b>1.00 · 0.78</b></div>
+  <div class="r"><span>หนี้สินสุทธิ/EBITDA</span><b>1.30 เท่า</b></div>
+  <div class="r"><span>Interest coverage</span><b>6.00 เท่า</b></div>
+  <div class="r"><span>คุณภาพกำไร (CFO/NP)</span><b>1.08 เท่า</b></div>
+  <div class="r badv"><span>FCF ต่อหุ้น</span><b>−0.125 บาท</b></div>
+</div>
+
+<p>สิบสี่บรรทัดนี้คือทั้งสามงบที่ถูกบีบจนเหลือหน้าเดียว และบรรทัดสุดท้ายคือเหตุผลว่าทำไมต้องอ่านทั้งชุด ไม่ใช่ตัวเดียว: P/E 12 เท่ากับ ROE 20% ดูดีทั้งคู่ แต่ FCF ต่อหุ้นติดลบ · <strong>ROIC (return on invested capital)</strong> = NOPAT 144 ÷ (หนี้มีดอกเบี้ย 470 + ทุน 600) = 13.46% เป็นตัวที่หลอกด้วยหนี้ไม่ได้ เพราะใส่หนี้ไว้ในตัวหารตั้งแต่แรก จึงเป็นเพื่อนคู่กับ ROE เสมอ: <strong>ROE สูงแต่ ROIC ต่ำ = เลเวอเรจ ไม่ใช่ฝีมือ</strong></p>
+
+<details>
+  <summary>กล่องโค้ด (ข้ามได้ ไม่นับในเวลาอ่าน)</summary>
+  <div class="ans">
+<pre><code>REV, EBIT, INT, NP = 1000, 180, 30, 120
+A, L, E, CASH, IBD, DA = 1200, 600, 600, 120, 470, 90
+SH, PRICE, DPS = 160, 9.00, 0.375          # ปันผล 60 ลบ. / 160 ล้านหุ้น
+
+EPS, BVPS = NP/SH, E/SH                    # 0.75 , 3.75
+PE, PBV   = PRICE/EPS, PRICE/BVPS          # 12.0 , 2.40
+ROE, ROA  = NP/E, NP/A                     # 0.20 , 0.10
+assert abs(PE*ROE - PBV) &lt; 1e-12           # P/BV = P/E x ROE
+assert abs(DPS/PRICE - (1/PE)*(DPS/EPS)) &lt; 1e-12   # DY = earnings yield x payout
+
+nm, at, em = NP/REV, REV/A, A/E
+assert abs(nm*at*em - ROE) &lt; 1e-12                 # DuPont 3 ชั้น
+tb, ib, om = NP/(EBIT-INT), (EBIT-INT)/EBIT, EBIT/REV
+assert abs(tb*ib*om*at*em - ROE) &lt; 1e-12           # DuPont 5 ชั้น
+
+t = 0.20
+NOPAT = EBIT*(1-t)                                 # 144
+ROIC  = NOPAT/(IBD + E)                            # 0.13458
+print(round(ROIC*100, 2), (IBD-CASH)/(EBIT+DA), EBIT/INT)   # 13.46 1.296 6.0
+
+# ห้องทดลองเลเวอเรจ: ยืนยันสูตรยุบกับการคำนวณตรง
+CAP, EBIT_L, r = 1000, 150, 0.06
+def roe_direct(D, ebit): return (ebit - r*D)*(1-t) / (CAP-D)
+def roe_formula(D, ebit):
+    roa_n = ebit*(1-t)/CAP
+    return roa_n + (roa_n - r*(1-t))*(D/(CAP-D))
+for D in range(0, 801, 50):
+    for s in range(0, 71, 5):
+        assert abs(roe_direct(D, 150*(1-s/100)) - roe_formula(D, 150*(1-s/100))) &lt; 1e-12
+print(roe_direct(0,150), roe_direct(800,150), roe_direct(800,90))   # 0.12 0.408 0.168
+assert roe_direct(800, 48) == 0.0                  # EBIT = ดอกเบี้ยพอดี -> ROE = 0
+</code></pre>
+  </div>
+</details>
+
+<h2>ทดสอบความเข้าใจ</h2>
+
+<p class="q">1. หุ้น ข. ราคา 24.00 บาท EPS 2.00 บาท BVPS 8.00 บาท หา P/E, P/BV และ ROE แล้วตรวจว่าเอกลักษณ์ยังใช้ได้ไหม · ถ้ารู้เพิ่มว่า equity multiplier ของบริษัทนี้คือ 2.5 เท่า ROA เป็นเท่าไร และมันบอกอะไรเมื่อเทียบกับบริษัท ก.</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">P/E = 24 ÷ 2 = <strong>12 เท่า</strong> · P/BV = 24 ÷ 8 = <strong>3.00 เท่า</strong> · ROE = EPS ÷ BVPS = 2 ÷ 8 = <strong>25%</strong> · ตรวจ: 12 × 25% = 3.00 ✓<br>
+  ROA = ROE ÷ equity multiplier = 25% ÷ 2.5 = <strong>10%</strong> — เท่ากับบริษัท ก. พอดี แปลว่า<strong>สองบริษัทนี้ใช้สินทรัพย์ทำกำไรได้เก่งเท่ากันเป๊ะ</strong> ส่วนต่าง ROE ทั้งหมด (25% กับ 20%) มาจากหนี้ล้วนๆ เพราะ ข. แบกสินทรัพย์ 2.5 บาทต่อทุน 1 บาท ขณะที่ ก. แบก 2.0 · และเพราะ P/E เท่ากันที่ 12 ตลาดจึงคิดค่า P/BV ของ ข. แพงกว่า (3.00 vs 2.40) ตามส่วนต่าง ROE พอดี — ซึ่งน่าคิดว่าควรแพงกว่าจริงไหม ในเมื่อผลตอบแทนส่วนเกินนั้นแลกมาด้วยความเสี่ยงที่สูงขึ้น ไม่ใช่ฝีมือที่ดีขึ้น</div>
+</details>
+
+<p class="q">2. บริษัท ค. มี net margin 3% asset turnover 3.0 equity multiplier 2.0 · บริษัท ง. มี net margin 9% asset turnover 1.0 equity multiplier 2.0 · ROE ของทั้งคู่เป็นเท่าไร และถ้าปีหน้าทั้งคู่โดนยอดขายหดลง 20% เท่ากัน โดยค่าใช้จ่ายคงที่ไม่ลดตาม บริษัทไหนเจ็บหนักกว่า เพราะอะไร</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">ROE = 0.03 × 3.0 × 2.0 = <strong>18%</strong> และ 0.09 × 1.0 × 2.0 = <strong>18%</strong> เท่ากันทั้งคู่<br>
+  <strong>บริษัท ค. เจ็บหนักกว่ามาก</strong> เพราะกำไร 3 สตางค์ต่อยอดขาย 1 บาท คือกันชนที่บางมาก ยอดขายหด 20% โดยที่ค่าใช้จ่ายคงที่ยังอยู่ครบ กินกำไรทั้งก้อนได้ในพริบตาและพลิกเป็นขาดทุนได้ง่าย ขณะที่ ง. มีกันชน 9 สตางค์ให้ถูกกินก่อน<br>
+  นี่คือ <strong>ความเสี่ยงจาก margin บาง</strong> ซึ่งเป็นคนละแกนกับความเสี่ยงจากหนี้ (ที่นี่ทั้งคู่มี equity multiplier 2.0 เท่ากัน) · ROE ตัวเดียวมองไม่เห็นความต่างนี้เลย ต้องแยก DuPont ถึงจะเห็น และถ้าจำ Day 24 ได้ นี่คือ degree of operating leverage นั่นเอง</div>
+</details>
+
+<p class="q">3. บริษัท ก. เอาเงินสด 90 ล้านบาทไปซื้อหุ้นคืน (buyback) ที่ราคา 9.00 บาท แล้วยกเลิกหุ้นนั้น กำไรสุทธิยังเท่าเดิม 120 ล้านบาท หา EPS, BVPS, ROE, P/E และ P/BV ชุดใหม่ที่ราคา 9.00 บาทเท่าเดิม แล้วตอบว่าผู้ถือหุ้นรวยขึ้นจริงไหม</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">ซื้อคืนได้ 90 ÷ 9 = 10 ล้านหุ้น ⇒ เหลือ <strong>150 ล้านหุ้น</strong> · ส่วนของผู้ถือหุ้นลดลงเท่าเงินที่จ่ายออก ⇒ 600 − 90 = <strong>510 ล้านบาท</strong><br>
+  EPS = 120 ÷ 150 = <strong>0.80 บาท</strong> (+6.7%) · BVPS = 510 ÷ 150 = <strong>3.40 บาท</strong> (−9.3%) · ROE = 120 ÷ 510 = <strong>23.53%</strong> (จาก 20%) · P/E = 9 ÷ 0.80 = <strong>11.25 เท่า</strong> · P/BV = 9 ÷ 3.40 = <strong>2.65 เท่า</strong> · ตรวจเอกลักษณ์: 11.25 × 23.53% = 2.65 ✓<br>
+  <strong>ยังไม่รวยขึ้นจากตัวเลขเหล่านี้</strong> — EPS และ ROE ที่สวยขึ้นเกิดจากตัวหารที่เล็กลง ไม่ใช่กำไรที่มากขึ้น มูลค่ากิจการก็ลดลงเท่าเงินสดที่จ่ายออกไปพอดี สิ่งที่เปลี่ยนจริงคือแต่ละหุ้นถือสัดส่วนในบริษัทมากขึ้น · จะรวยขึ้นก็ต่อเมื่อ<strong>ซื้อคืนตอนหุ้นถูกกว่ามูลค่าที่แท้จริง</strong> และเงินก้อนนั้นไม่มีที่ลงทุนที่ให้ผลตอบแทนดีกว่า · แต่บริษัท ก. มี FCF ติดลบ 20 ล้านบาทและเพิ่งกู้มาจ่ายปันผล การเอาเงินสดที่เหลือ 120 ไปใช้ 90 แล้วเหลือ 30 ทำให้หนี้สินสุทธิเพิ่มเป็น 440 ⇒ หนี้สินสุทธิ/EBITDA ขยับจาก 1.30 เป็น <strong>1.63 เท่า</strong> — นี่คือตัวอย่างคลาสสิกของ buyback ที่ทำให้อัตราส่วนสวยขึ้นพร้อมกับงบดุลที่เปราะลง</div>
+</details>
+
+<p class="q"><strong>ทวน:</strong> ใน Day 24 บริษัท ก. มีหุ้นถัวเฉลี่ยถ่วงน้ำหนัก 170 ล้านหุ้น และหุ้นแบบปรับลด (diluted) 190 ล้านหุ้น จากใบสำคัญแสดงสิทธิและ ESOP ที่ยังไม่ถูกใช้ ที่ราคา 9.00 บาท P/E แบบ basic กับแบบ diluted ต่างกันเท่าไร และควรใช้ตัวไหนตัดสินใจ</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">EPS basic = 120 ÷ 170 = 0.7059 บาท ⇒ P/E = 9 ÷ 0.7059 = <strong>12.75 เท่า</strong><br>
+  EPS diluted = 120 ÷ 190 = 0.6316 บาท ⇒ P/E = 9 ÷ 0.6316 = <strong>14.25 เท่า</strong> แพงกว่า <strong>11.76%</strong> ซึ่งเท่ากับ 190 ÷ 170 พอดี<br>
+  ใช้ <strong>diluted</strong> เสมอ เพราะสิทธิที่ออกไปแล้วจะถูกใช้เมื่อราคาหุ้นดี ซึ่งก็คือตอนที่เรากำลังจะได้กำไรพอดี ส่วนแบ่งของเราจะเจือจางลงจริงในวันนั้น การใช้ basic คือการแกล้งไม่เห็นหนี้ที่ชำระด้วยหุ้น · เวลาเทียบหุ้นสองตัว ต้องมั่นใจว่าทั้งคู่ใช้ฐานเดียวกัน ไม่งั้นกำลังเทียบคนละหน่วย<br>ตอบผิดหรือลังเล? → <a href="finance-day-24-income-statement.html">ทบทวน Day 24: อ่านงบการเงิน 1: งบกำไรขาดทุน</a></div>
+</details>
+
+<p class="q"><strong>ทวน:</strong> earnings yield ของบริษัท ก. คือ 8.33% ถ้าหุ้นกู้ของบริษัทเดียวกัน อายุคงเหลือ 5 ปี คูปอง 4.5% ต่อปี ซื้อขายที่ราคา 96 บาทต่อหน้าตั๋ว 100 บาท current yield เป็นเท่าไร YTM สูงหรือต่ำกว่านั้น และการที่ earnings yield สูงกว่า yield ของหุ้นกู้ตัวเดียวกันเป็นเรื่องปกติหรือผิดปกติ</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">Current yield = 4.5 ÷ 96 = <strong>4.6875%</strong> · YTM <strong>สูงกว่า</strong> current yield เพราะซื้อต่ำกว่าพาร์ ยังได้ส่วนต่างราคาอีก 4 บาททยอยรับรู้จนครบอายุ (ราคาต่ำกว่าพาร์ ⇒ coupon &lt; current yield &lt; YTM)<br>
+  การที่ earnings yield 8.33% สูงกว่าเป็นเรื่อง<strong>ปกติและควรเป็นแบบนั้น</strong> — ผู้ถือหุ้นอยู่ท้ายแถวสิทธิเรียกร้อง รับความเสี่ยงมากกว่าเจ้าหนี้ จึงต้องได้ผลตอบแทนคาดหวังสูงกว่า ส่วนต่างนั้นคือ <strong>equity risk premium</strong> · แต่ต้องระวังสองข้อ: earnings yield เป็นกำไรทางบัญชีที่บริษัทได้ ไม่ใช่เงินสดที่เราได้ (บริษัท ก. จ่ายปันผลจริงแค่ 4.17%) ส่วน yield ของหุ้นกู้เป็นกระแสเงินสดตามสัญญาที่ชัดเจน · และถ้าวันไหนส่วนต่างนี้แคบลงจนเกือบเท่ากัน แปลว่าหุ้นแพงเมื่อเทียบกับตราสารหนี้<br>ตอบผิดหรือลังเล? → <a href="finance-day-18-bonds-yield.html">ทบทวน Day 18: ตราสารหนี้ (bonds): พันธบัตร หุ้นกู้ และ yield</a></div>
+</details>
+
+<div class="summary-box">
+  <h2 style="margin-top:0">สรุป 3 บรรทัด</h2>
+  <p>1. <strong>P/BV = P/E × ROE</strong> ทำให้อัตราส่วนราคาสามตัวเหลืออิสระแค่สองตัว · ใช้ย้อนกลับได้ด้วย: ROE ของ SET = 1.48 ÷ 15.75 = 9.40% ส่วน mai = 1.16 ÷ 66.84 = 1.74% ซึ่งอธิบายว่าทำไม P/E ของ mai ถึงสูงกว่า 4 เท่าทั้งที่ P/BV ต่ำกว่า</p>
+  <p>2. P/E ต่ำไม่ได้แปลว่าถูก — หุ้นวัฏจักรที่ P/E 8 เท่าในปีพีคอันตรายกว่า P/E 40 เท่าในปีก้นเหว ใช้ normalized EPS และถามเสมอว่ากำไรตัวไหน trailing หรือ forward</p>
+  <p style="margin-bottom:0">3. ROE สูงมีได้สองสาเหตุ: เก่งจริง หรือกู้เยอะ · แยกด้วย DuPont (margin × turnover × equity multiplier) และเช็กกับ ROIC ที่หลอกด้วยหนี้ไม่ได้ · หนี้ขยาย ROE ขึ้นได้ถึง 40.8% ในปีดี และพาไปศูนย์ในปีที่ EBIT หดลง 68%</p>
+</div>
+
+<footer>
+  <p><strong>พรุ่งนี้ Day 28 — Valuation เบื้องต้น: DCF อย่างง่ายและ multiple</strong> วันนี้เรารู้แล้วว่า P/E 12 เท่าแปลว่าอะไร แต่ยังไม่รู้ว่า 12 เท่า<em>ควร</em>เป็นเท่าไร พรุ่งนี้กลับด้านคำถาม: แทนที่จะอ่านราคาที่ตลาดตั้งไว้ เราจะคำนวณมูลค่าขึ้นมาเองจากกระแสเงินสดในอนาคตด้วย DCF แบบง่ายที่สุด แล้วดูว่าอัตราคิดลดกับอัตราการเติบโตเปลี่ยนคำตอบได้มากแค่ไหน พร้อมวิธีใช้ multiple เทียบเพื่อนร่วมกลุ่มโดยไม่ตกหลุม "ถูกกว่าเพื่อนเลยน่าซื้อ"</p>
+  <p class="disclaimer">บทเรียนนี้เป็นความรู้เชิงการศึกษา ไม่ใช่คำแนะนำทางการเงินเฉพาะบุคคล และไม่ใช่การชี้ชวนให้ซื้อหรือขายหลักทรัพย์ใดหลักทรัพย์หนึ่ง บริษัทสมมติ ก. ข. ค. และ ง. รวมถึงตัวเลขในงบและตัวอย่างหุ้นวัฏจักรทั้งหมด ถูกสร้างขึ้นให้คำนวณตามง่าย ไม่ใช่ข้อมูลจริงของบริษัทใด ตัวเลขสถิติของ SET และ mai เป็นข้อมูลที่ตลาดหลักทรัพย์แห่งประเทศไทยเผยแพร่ ณ วันที่ระบุ และเปลี่ยนแปลงทุกวันทำการ ส่วนเป้าดัชนีและคาดการณ์ EPS ของ UBS เป็นความเห็นของสำนักวิจัยหนึ่ง ณ วันที่เผยแพร่ ไม่ใช่ข้อเท็จจริงและไม่ใช่การรับรองของบทเรียนนี้ ยกมาเพื่อแสดงความต่างระหว่าง trailing P/E กับ forward P/E เท่านั้น · อัตราส่วนทุกตัวคำนวณจากงบที่ผ่านการตรวจสอบแล้วเท่านั้นจึงจะเชื่อถือได้ และนิยามของแต่ละตัว เช่น จะใช้ส่วนของผู้ถือหุ้นต้นงวด ปลายงวด หรือค่าเฉลี่ย จะรวมส่วนได้เสียที่ไม่มีอำนาจควบคุมหรือไม่ แต่ละแหล่งข้อมูลกำหนดต่างกัน ตัวเลขจากคนละเว็บจึงไม่เท่ากันได้ ให้ตรวจนิยามก่อนเทียบเสมอ</p>
+</footer>
+
+</div>
+<script>
+(function(){
+  var fmt=function(n,d){ d=(d===undefined?2:d);
+    return n.toLocaleString('th-TH',{minimumFractionDigits:d,maximumFractionDigits:d}); };
+  var f1=function(n){ return fmt(n,1); };
+  var f0=function(n){ return fmt(n,0); };
+  var $=function(id){ return document.getElementById(id); };
+
+  /* ---------- 1) DuPont สามชั้น ---------- */
+  var DP=[
+    {nm:0.03, at:3.00, em:2.00, t:'ร้านค้าปลีก: กำไรบางเฉียบ 3 สตางค์ต่อยอดขาย 1 บาท แต่หมุนสินทรัพย์ปีละ 3 รอบ · จุดตายคือยอดขายสะดุด เพราะกันชนกำไรแทบไม่มี'},
+    {nm:0.09, at:1.00, em:2.00, t:'โรงงานผลิต: กำไรหนากว่าสามเท่า แต่สินทรัพย์หนักหมุนได้ปีละรอบเดียว · จุดตายคือกำลังการผลิตว่าง เพราะเครื่องจักรกินค่าเสื่อมเท่าเดิมไม่ว่าจะขายได้หรือไม่'},
+    {nm:0.25, at:0.09, em:8.00, t:'ธนาคาร: margin สูงมากแต่หมุนสินทรัพย์ได้แค่ 0.09 รอบ · ROE 18% เท่ากันมาจาก equity multiplier 8 เท่าล้วนๆ ⇒ สินทรัพย์เสีย 12.5% ก็กินทุนหมด นี่คือเหตุผลที่มีเกณฑ์เงินกองทุนกำกับ'},
+    {nm:0.12, at:1000/1200, em:2.00, t:'บริษัท ก. ของเรา: 12% x 0.83 x 2.00 = ROE 20% · กำไรหนาพอควร หมุนสินทรัพย์ไม่เร็ว และใช้หนี้ครึ่งหนึ่งของงบดุล — ครึ่งหนึ่งของ ROE มาจาก equity multiplier'}
+  ];
+  var MAXN=0.25, MAXA=3.00, MAXE=8.00;
+  function drawD(k){
+    var d=DP[k];
+    $('dfNM').style.width=(d.nm/MAXN*100)+'%';
+    $('dfAT').style.width=(d.at/MAXA*100)+'%';
+    $('dfEM').style.width=(d.em/MAXE*100)+'%';
+    $('dvNM').textContent=fmt(d.nm*100,1)+'%';
+    $('dvAT').textContent=fmt(d.at,2)+'x';
+    $('dvEM').textContent=fmt(d.em,2)+'x';
+    var roe=d.nm*d.at*d.em;
+    $('dProd').textContent=fmt(d.nm*100,1)+'% × '+fmt(d.at,2)+' × '+fmt(d.em,2)+'  =  ROE '+fmt(roe*100,1)+'%';
+    $('dNote').textContent=d.t;
+  }
+  var segD=$('segD');
+  segD.addEventListener('click',function(e){
+    var b=e.target.closest('button'); if(!b) return;
+    Array.prototype.forEach.call(segD.children,function(x){ x.classList.remove('active'); });
+    b.classList.add('active');
+    drawD(+b.getAttribute('data-k'));
+  });
+  drawD(0);
+
+  /* ---------- 2) ห้องทดลองเลเวอเรจ ---------- */
+  var CAP=1000, EBIT0=150, R=0.06, TAX=0.20;
+  var sD=$('sD'), sS=$('sS');
+  function roe(D, ebit){ return (ebit - R*D)*(1-TAX)/(CAP-D); }
+  function drawL(){
+    var D=+sD.value, s=+sS.value;
+    $('vD').textContent=f0(D); $('vS').textContent=f0(s);
+    var ebitBad=EBIT0*(1-s/100);
+    var r0=roe(0,EBIT0), r1=roe(D,EBIT0), r2=roe(D,ebitBad);
+    var mx=Math.max(Math.abs(r0),Math.abs(r1),Math.abs(r2),0.0001);
+    var set=function(i,v){
+      $('bb'+i).style.height=(Math.abs(v)/mx*150)+'px';
+      $('bv'+i).textContent=fmt(v*100,1)+'%';
+    };
+    set(0,r0); set(1,r1); set(2,r2);
+    $('col2').className='col c3'+(r2<r0?' lose':'');
+    $('bv2').style.color = r2<0 ? 'var(--danger)' : '';
+
+    var interest=R*D;
+    $('kDE').textContent = (D>=CAP ? '—' : fmt(D/(CAP-D),2)+' เท่า');
+    $('kI').textContent  = f1(interest)+' ล้านบาท';
+    $('kC').textContent  = (interest>0 ? fmt(ebitBad/interest,2)+' เท่า' : 'ไม่มีดอกเบี้ย');
+
+    var v=$('kV'), msg;
+    if(interest===0){
+      v.className='verdict';
+      msg='ไม่มีหนี้เลย ⇒ ROE เท่ากับผลตอบแทนของธุรกิจล้วนๆ และหดตามสัดส่วน EBIT พอดี ไม่มีอะไรมาขยายทั้งขาขึ้นและขาลง';
+    } else if(ebitBad < interest){
+      v.className='verdict bad';
+      msg='ปีแย่ EBIT '+f1(ebitBad)+' ล้านบาท ต่ำกว่าดอกเบี้ย '+f1(interest)+' ล้านบาท ⇒ ขาดทุนและกินทุน · ROE ที่สวยในปีปกติเป็นของยืมมาทั้งหมด';
+    } else if(ebitBad/interest < 2){
+      v.className='verdict bad';
+      msg='ปีแย่จ่ายดอกเบี้ยได้แค่ '+fmt(ebitBad/interest,2)+' เท่า ⇒ เหลือกันชนบางมาก เจ้าหนี้เริ่มกดดันและการต่อสัญญาเงินกู้จะแพงขึ้น แม้กำไรยังเป็นบวก';
+    } else {
+      v.className='verdict';
+      msg='หนี้ช่วยดัน ROE จาก '+fmt(r0*100,1)+'% เป็น '+fmt(r1*100,1)+'% ในปีปกติ และปีแย่ยังเหลือ '+fmt(r2*100,1)+'% โดยจ่ายดอกเบี้ยได้ '+fmt(ebitBad/interest,2)+' เท่า ⇒ ยังอยู่ในระดับที่รับได้';
+    }
+    v.textContent=msg;
+  }
+  [sD,sS].forEach(function(x){ x.addEventListener('input',drawL); });
+  drawL();
+})();
+</script>
+</body>
+</html>
