@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day 29 — Growth vs Value investing | Finance101</title>
+<style>
+:root{
+  --bg:#191816; --card:#211f1d; --ink:#e8e4dd; --muted:#a09a91;
+  --line:#332f2b; --accent:#6cc394; --accent-soft:#1c2f26;
+  --warn:#e0a86f; --warn-soft:#2e2419; --code:#201e1b; --danger:#e0785c;
+  color-scheme: dark;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; padding:28px 18px 80px; background:var(--bg); color:var(--ink);
+  font-family:"Sarabun","Noto Sans Thai",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:17px; line-height:1.75; -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:720px;margin:0 auto}
+header{margin-bottom:34px}
+.kicker{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--muted);letter-spacing:.02em}
+.pill{background:var(--accent-soft);color:var(--accent);padding:3px 11px;border-radius:99px;font-weight:600}
+h1{font-size:29px;line-height:1.3;margin:12px 0 6px;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:16px;margin:0}
+h2{font-size:21px;margin:38px 0 12px;letter-spacing:-.005em}
+h3{font-size:17px;margin:26px 0 8px}
+p{margin:0 0 15px}
+ul,ol{margin:0 0 15px;padding-left:22px}
+li{margin-bottom:7px}
+strong{font-weight:600}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin:22px 0}
+.card.accent{background:var(--accent-soft);border-color:#2c4a3c}
+.card.warn{background:var(--warn-soft);border-color:#4a3722}
+.card h3{margin-top:0}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15.5px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-weight:600;font-size:13.5px;letter-spacing:.02em}
+td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.calc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;margin:22px 0}
+.calc label{display:block;font-size:14px;color:var(--muted);margin-bottom:6px}
+.calc .row{margin-bottom:18px}
+input[type=range]{width:100%;accent-color:var(--accent);height:24px}
+.val{font-weight:600;color:var(--accent);font-variant-numeric:tabular-nums}
+.bars{margin-top:6px}
+.bar-row{margin-bottom:12px}
+.bar-label{display:flex;justify-content:space-between;font-size:14px;margin-bottom:5px;gap:10px}
+.bar-track{background:#2a2724;border-radius:8px;height:26px;overflow:hidden;position:relative}
+.bar-fill{height:100%;border-radius:8px;transition:width .55s cubic-bezier(.22,.8,.3,1)}
+.bar-principal{background:#3f5c4e}
+.bar-growth{background:var(--accent)}
+.bar-negative{background:#a34a34}
+.bar-bond{background:#4a7fa0}
+.bar-stock{background:var(--accent)}
+.bar-gold{background:var(--warn)}
+.legend{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-top:10px;flex-wrap:wrap}
+.swatch{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:middle}
+.seg{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+.seg button{
+  background:var(--code);color:var(--muted);border:1px solid var(--line);border-radius:99px;
+  padding:6px 16px;font-size:14px;font-family:inherit;cursor:pointer;transition:all .2s;
+}
+.seg button.active{background:var(--accent-soft);color:var(--accent);border-color:#2c4a3c;font-weight:600}
+details{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:12px 16px;margin:10px 0}
+details[open]{background:#1d1b19}
+summary{cursor:pointer;font-weight:600;font-size:15.5px;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"▸ ";color:var(--accent)}
+details[open] summary::before{content:"▾ "}
+.ans{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font-size:15.5px;color:#d6d1c9}
+.q{font-weight:600;margin:22px 0 8px}
+pre{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:14px;line-height:1.6}
+code{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+.summary-box{border-left:3px solid var(--accent);padding-left:18px;margin:26px 0}
+.summary-box p{margin-bottom:8px}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
+footer a{color:var(--accent)}
+.disclaimer{font-size:13px;color:var(--muted);margin-top:18px;line-height:1.6}
+.nav{margin-bottom:20px;font-size:14px}
+.nav a{color:var(--accent);text-decoration:none}
+.src{font-size:12.5px;color:var(--muted);margin-top:8px}
+.steps{display:flex;align-items:flex-end;gap:14px;margin:18px 0 6px;height:150px}
+.step{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px}
+.step-bar{width:100%;border-radius:8px 8px 0 0;transition:height .55s cubic-bezier(.22,.8,.3,1);min-height:2px}
+.step1 .step-bar{background:#3f5c4e}
+.step2 .step-bar{background:var(--danger)}
+.step-label{font-size:13px;color:var(--muted);text-align:center}
+.step-val{font-weight:600;color:var(--ink);font-size:14.5px}
+.mixbar{display:flex;height:30px;border-radius:8px;overflow:hidden;margin:6px 0 10px;background:#2a2724}
+.mixseg{height:100%;transition:width .4s cubic-bezier(.22,.8,.3,1)}
+.stat{display:flex;justify-content:space-between;font-size:15.5px;padding:7px 0;border-bottom:1px solid var(--line)}
+.stat:last-child{border-bottom:none}
+.stat b{font-variant-numeric:tabular-nums;color:var(--accent)}
+@media(max-width:520px){
+  body{font-size:16px;padding:20px 14px 60px}
+  h1{font-size:25px}
+  .card,.calc{padding:16px}
+}
+
+/* โครงสร้างสิทธิเรียกร้อง / แถบสัดส่วน (ใช้ต่อจาก Day 20) */
+.wf{margin:18px 0 6px}
+.wf-track{display:flex;height:44px;border-radius:10px;overflow:hidden;background:#2a2724;border:1px solid var(--line)}
+.wf-seg{height:100%;display:flex;align-items:center;justify-content:center;font-size:12.5px;color:#12130f;font-weight:600;overflow:hidden;white-space:nowrap;transition:width .5s cubic-bezier(.22,.8,.3,1)}
+.wf-debt{background:#4a7fa0;color:#0f1b22}
+.wf-eq{background:var(--accent)}
+.wf-gap{background:#7a3d2c;color:#f0ded8}
+.wf-axis{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:6px;font-variant-numeric:tabular-nums}
+.ladder{list-style:none;padding:0;margin:16px 0}
+.ladder li{display:flex;gap:12px;align-items:baseline;padding:9px 14px;border:1px solid var(--line);border-radius:9px;margin-bottom:7px;background:var(--card);font-size:15.5px}
+.ladder li:last-child{background:var(--accent-soft);border-color:#2c4a3c}
+.ladder .rank{font-variant-numeric:tabular-nums;font-size:13px;color:var(--muted);min-width:20px;flex-shrink:0}
+
+/* Day 21 — เส้นทางคำสั่งซื้อ */
+.pipe{margin:16px 0 4px}
+.pnode{display:flex;gap:12px;align-items:flex-start;padding:11px 14px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;background:var(--card);transition:background .3s,border-color .3s,transform .3s}
+.pnode.on{background:var(--accent-soft);border-color:#2c4a3c;transform:translateX(7px)}
+.pnum{width:25px;height:25px;border-radius:50%;background:#2a2724;color:var(--muted);font-size:12.5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:3px;font-variant-numeric:tabular-nums;transition:background .3s,color .3s}
+.pnode.on .pnum{background:var(--accent);color:#12130f;font-weight:700}
+.pttl{font-weight:600;font-size:15.5px;margin-bottom:2px}
+.pdesc{font-size:14px;color:var(--muted);line-height:1.6}
+.pbtn{background:var(--accent-soft);color:var(--accent);border:1px solid #2c4a3c;border-radius:99px;padding:8px 22px;font-size:15px;font-family:inherit;font-weight:600;cursor:pointer;transition:opacity .2s}
+.pbtn:disabled{opacity:.45;cursor:default}
+.regbar{margin-top:10px;padding:10px 14px;border:1px dashed var(--line);border-radius:10px;font-size:14px;color:var(--muted)}
+.scalebar{background:#2a2724;border-radius:8px;height:22px;overflow:hidden;margin-bottom:5px}
+.scalefill{height:100%;border-radius:8px}
+
+/* Day 22 — กระดานราคา (order book) และปฏิทิน T+2 */
+.book{font-variant-numeric:tabular-nums;font-size:15px;margin:4px 0 2px}
+.brow{display:grid;grid-template-columns:1fr 84px 1fr;gap:8px;align-items:center;padding:3px 0}
+.bqty{display:flex;height:24px;border-radius:6px;overflow:hidden;background:transparent}
+.bqty i{height:100%;border-radius:6px;display:block;transition:width .4s ease,opacity .4s ease}
+.bqty.l{justify-content:flex-end}
+.bprice{text-align:center;font-weight:600;padding:2px 0;border-radius:6px;transition:background .3s,color .3s}
+.bprice.ask{color:var(--danger)}
+.bprice.bid{color:var(--accent)}
+.bprice.hit{background:var(--warn-soft);color:var(--warn)}
+.bqty span{font-size:12.5px;color:var(--muted);padding:0 6px;line-height:24px;white-space:nowrap}
+.bhead{display:grid;grid-template-columns:1fr 84px 1fr;gap:8px;font-size:12.5px;color:var(--muted);padding-bottom:5px;border-bottom:1px solid var(--line);margin-bottom:6px}
+.bhead span:nth-child(1){text-align:right}
+.bhead span:nth-child(2){text-align:center}
+.spreadrow{text-align:center;font-size:13px;color:var(--warn);padding:5px 0;border-top:1px dashed var(--line);border-bottom:1px dashed var(--line);margin:5px 0}
+.cal{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin:16px 0 6px}
+.cday{border:1px solid var(--line);border-radius:10px;padding:9px 6px;text-align:center;background:var(--card);transition:background .35s,border-color .35s}
+.cday .cn{font-size:12px;color:var(--muted)}
+.cday .cv{font-size:14px;font-weight:600;margin-top:3px;min-height:20px}
+.cday.t{background:var(--accent-soft);border-color:#2c4a3c}
+.cday.s{background:var(--warn-soft);border-color:#4a3722}
+.cday.off{opacity:.4}
+
+/* Day 23 — โครงเงินปันผล */
+.split{display:flex;height:34px;border-radius:9px;overflow:hidden;background:#2a2724;border:1px solid var(--line);margin:10px 0 4px}
+.split i{height:100%;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;transition:width .45s cubic-bezier(.22,.8,.3,1)}
+.sp-pay{background:var(--accent);color:#12130f}
+.sp-ret{background:#3f5c4e;color:#dfe8e2}
+.idcard{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin:14px 0;font-variant-numeric:tabular-nums;font-size:15.5px;text-align:center}
+.idcard b{color:var(--accent)}
+.tax2{display:flex;gap:14px;align-items:flex-end;height:170px;margin:16px 0 4px}
+.tax2 .col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px}
+.tax2 .cb{width:100%;border-radius:9px 9px 0 0;transition:height .5s cubic-bezier(.22,.8,.3,1);min-height:3px}
+.tax2 .c1 .cb{background:#3f5c4e}
+.tax2 .c2 .cb{background:var(--accent)}
+.tax2 .c2.lose .cb{background:var(--danger)}
+.verdict{text-align:center;font-size:15px;padding:9px 12px;border-radius:9px;margin-top:12px;background:var(--accent-soft);color:var(--accent);border:1px solid #2c4a3c}
+.verdict.bad{background:var(--warn-soft);color:var(--warn);border-color:#4a3722}
+</style>
+<style>
+/* Day 24 — น้ำตกงบกำไรขาดทุน */
+.wfall{margin:16px 0 6px;font-variant-numeric:tabular-nums}
+.wrow{display:grid;grid-template-columns:112px 1fr 92px;gap:10px;align-items:center;margin-bottom:6px;font-size:14.5px}
+.wrow .wlab{color:var(--muted);font-size:13.5px;line-height:1.4}
+.wrow.tot .wlab{color:var(--ink);font-weight:600}
+.wtrack{position:relative;height:26px;background:#2a2724;border-radius:7px;overflow:hidden}
+.wseg{position:absolute;top:0;height:100%;border-radius:7px;transition:left .5s cubic-bezier(.22,.8,.3,1),width .5s cubic-bezier(.22,.8,.3,1)}
+.w-rev{background:#3f5c4e}
+.w-gp{background:#4d7a63}
+.w-ebit{background:#5aa47e}
+.w-np{background:var(--accent)}
+.w-cut{background:var(--danger);opacity:.85}
+.wval{text-align:right;font-weight:600;font-size:14.5px}
+.wrow.cut .wval{color:var(--danger)}
+.wrow.tot .wval{color:var(--accent)}
+.mgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0 4px}
+.mbox{background:var(--code);border:1px solid var(--line);border-radius:11px;padding:11px 8px;text-align:center}
+.mbox .mv{font-size:20px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums;line-height:1.3}
+.mbox .mn{font-size:12px;color:var(--muted);line-height:1.45;margin-top:2px}
+.mbox.neg .mv{color:var(--danger)}
+@media(max-width:520px){
+  .wrow{grid-template-columns:92px 1fr 78px;gap:7px;font-size:13.5px}
+  .wrow .wlab{font-size:12.5px}
+  .mbox .mv{font-size:17px}
+}
+</style>
+<style>
+/* Day 25 — งบดุลสองฝั่ง และวงจรเงินสด */
+.bswrap{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0 6px}
+.bscol{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:11px;overflow:hidden;min-height:230px}
+.bshead{font-size:12.5px;color:var(--muted);text-align:center;margin-bottom:6px;letter-spacing:.02em}
+.bsseg{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:0 9px;font-size:12px;font-weight:600;color:#12130f;overflow:hidden;white-space:nowrap;transition:height .5s cubic-bezier(.22,.8,.3,1);min-height:0}
+.bsseg span:last-child{font-variant-numeric:tabular-nums}
+.a-cash{background:#6cc394}.a-ar{background:#4d7a63;color:#e8f2ec}.a-inv{background:#3f5c4e;color:#e8f2ec}
+.a-ppe{background:#4a7fa0;color:#0f1b22}.a-int{background:#5b6b7a;color:#e6edf3}
+.l-cl{background:#e0a86f;color:#241a0d}.l-ltd{background:#a8703f;color:#f6e8da}
+.e-eq{background:#6cc394}.e-re{background:#3f5c4e;color:#e8f2ec}
+.bsseg.neg{background:var(--danger);color:#fff}
+.eqline{display:flex;justify-content:center;gap:10px;font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums;margin-top:4px}
+.eqline b{color:var(--accent)}
+.gantt{margin:16px 0 6px}
+.grow{display:grid;grid-template-columns:116px 1fr;gap:10px;align-items:center;margin-bottom:7px;font-size:13.5px;color:var(--muted)}
+.gtrack{position:relative;height:25px;background:#2a2724;border-radius:7px;overflow:hidden}
+.gbar{position:absolute;top:0;height:100%;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;overflow:hidden;white-space:nowrap;transition:left .5s cubic-bezier(.22,.8,.3,1),width .5s cubic-bezier(.22,.8,.3,1)}
+.g-dio{background:#3f5c4e;color:#e8f2ec}
+.g-dso{background:#4a7fa0;color:#0f1b22}
+.g-dpo{background:var(--warn);color:#241a0d}
+.g-ccc{background:var(--danger);color:#fff}
+@media(max-width:520px){
+  .bswrap{gap:8px}
+  .bsseg{font-size:11px;padding:0 6px}
+  .grow{grid-template-columns:92px 1fr;gap:7px;font-size:12.5px}
+}
+</style>
+<style>
+/* Day 26 — สามกระแสเงินสด (แท่งบวก/ลบรอบเส้นศูนย์) */
+.zwrap{margin:18px 0 4px}
+.zbar{position:relative;height:150px;display:flex;gap:16px}
+.zaxis{position:absolute;left:0;right:0;top:75px;border-top:1px dashed #4a453f;z-index:0}
+.zc{flex:1;position:relative;z-index:1}
+.zfill{position:absolute;left:0;right:0;border-radius:7px;transition:top .5s cubic-bezier(.22,.8,.3,1),height .5s cubic-bezier(.22,.8,.3,1);min-height:3px}
+.zfill.p{background:var(--accent)}
+.zfill.n{background:var(--danger)}
+.zv{position:absolute;left:0;right:0;text-align:center;font-size:13.5px;font-weight:700;font-variant-numeric:tabular-nums;transition:top .5s cubic-bezier(.22,.8,.3,1)}
+.zv.p{color:var(--accent)} .zv.n{color:var(--danger)}
+.zlab{display:flex;gap:16px;margin-top:8px}
+.zlab div{flex:1;text-align:center;font-size:12.5px;color:var(--muted);line-height:1.45}
+.tax2 .c3 .cb{background:#4a7fa0}
+.sign{display:inline-block;min-width:18px;font-weight:700;font-variant-numeric:tabular-nums}
+.sign.p{color:var(--accent)} .sign.n{color:var(--danger)}
+.cfs td:first-child{padding-left:12px}
+.cfs tr.head td{color:var(--muted);font-size:13.5px;font-weight:600;padding-top:16px}
+.cfs tr.sum td{font-weight:700;border-top:1px solid var(--line);border-bottom:2px solid var(--line)}
+.cfs tr.sum td.num{color:var(--accent)}
+.cfs tr.sum.neg td.num{color:var(--danger)}
+.cfs td.ind{padding-left:26px;color:#cdc7be;font-size:14.5px}
+@media(max-width:520px){
+  .zbar{gap:9px;height:135px}
+  .zaxis{top:67px}
+  .zlab{gap:9px}
+  .zlab div{font-size:11.5px}
+  .cfs td.ind{padding-left:14px;font-size:13.5px}
+}
+</style>
+<style>
+/* Day 27 — DuPont และห้องทดลองเลเวอเรจ */
+.dp{margin:16px 0 4px}
+.dprow{display:grid;grid-template-columns:136px 1fr 74px;gap:10px;align-items:center;margin-bottom:8px;font-size:14px}
+.dprow .dlab{color:var(--muted);font-size:13.5px;line-height:1.45}
+.dtrack{height:24px;background:#2a2724;border-radius:7px;overflow:hidden}
+.dfill{height:100%;border-radius:7px;transition:width .5s cubic-bezier(.22,.8,.3,1);min-width:3px}
+.d-nm{background:var(--accent)}
+.d-at{background:#4a7fa0}
+.d-em{background:var(--warn)}
+.dval{text-align:right;font-weight:600;font-variant-numeric:tabular-nums;font-size:14.5px}
+.dprod{text-align:center;font-size:15.5px;padding:10px 12px;border-radius:9px;background:var(--accent-soft);
+  border:1px solid #2c4a3c;color:var(--accent);margin-top:6px;font-variant-numeric:tabular-nums}
+.dnote{font-size:14px;color:var(--muted);margin-top:10px;line-height:1.65}
+.rid{display:grid;grid-template-columns:1fr 1fr;gap:8px 18px;margin:16px 0 4px}
+.rid .r{display:flex;justify-content:space-between;gap:8px;font-size:15px;padding:7px 0;border-bottom:1px solid var(--line)}
+.rid .r b{font-variant-numeric:tabular-nums;color:var(--accent);white-space:nowrap}
+.rid .r.warnv b{color:var(--warn)}
+.rid .r.badv b{color:var(--danger)}
+.tax2 .c3.lose .cb{background:var(--danger)}
+@media(max-width:520px){
+  .dprow{grid-template-columns:104px 1fr 62px;gap:7px;font-size:13px}
+  .dprow .dlab{font-size:12.5px}
+  .rid{grid-template-columns:1fr;gap:0 0}
+}
+</style>
+<style>
+/* Day 28 — DCF: แถบมูลค่าปลายทาง ตารางความไว และมาตรวัดราคา */
+.d-y{background:#4d7a63}
+.d-tv{background:var(--warn)}
+.heat{font-variant-numeric:tabular-nums;font-size:14.5px}
+.heat th,.heat td{padding:8px 6px;text-align:center}
+.heat td.rowh,.heat th{color:var(--muted);font-size:13px}
+.heat td.v{border-radius:7px;font-weight:600}
+.h0{background:#241f1c;color:#c9b7ad}
+.h1{background:#2b2a20;color:#d4c59f}
+.h2{background:#26302a;color:#9fd0b4}
+.h3{background:#1f3b2c;color:#8ee0b0}
+.heat td.mid{outline:2px solid var(--accent);outline-offset:-2px}
+.gauge{position:relative;height:56px;margin:18px 0 6px}
+.gtrk{position:absolute;left:0;right:0;top:22px;height:14px;border-radius:7px;background:linear-gradient(90deg,#1f3b2c,#2b2a20,#4a2b22)}
+.gmk{position:absolute;top:8px;width:2px;height:42px;background:var(--ink);transition:left .5s cubic-bezier(.22,.8,.3,1)}
+.gmk.price{background:var(--danger)}
+.gmk i{position:absolute;top:-16px;left:50%;transform:translateX(-50%);font-size:12px;font-style:normal;white-space:nowrap;color:var(--muted)}
+.gscale{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+@media(max-width:520px){
+  .heat{font-size:12.5px}
+  .heat th,.heat td{padding:6px 3px}
+}
+</style>
+<style>
+/* Day 29 — Growth vs Value: การ์ดสองฝั่ง ทฤษฎีบท และแถบแยกผลตอบแทน */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0 6px}
+.duo .dcard{border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:var(--card)}
+.duo .dcard.g{border-color:#4a3722;background:var(--warn-soft)}
+.duo .dcard.v{border-color:#2c4a3c;background:var(--accent-soft)}
+.duo .dh{font-size:13px;color:var(--muted);letter-spacing:.02em;margin-bottom:8px;font-weight:600}
+.duo .dl{display:flex;justify-content:space-between;gap:8px;font-size:14.5px;padding:5px 0;border-bottom:1px solid var(--line)}
+.duo .dl:last-child{border-bottom:none}
+.duo .dl b{font-variant-numeric:tabular-nums;white-space:nowrap}
+.duo .dcard.g .dl b{color:var(--warn)}
+.duo .dcard.v .dl b{color:var(--accent)}
+.sp-a{background:#4a7fa0;color:#0f1b22}
+.sp-b{background:var(--accent);color:#12130f}
+.sp-c{background:var(--warn);color:#241a0d}
+.sp-neg{background:var(--danger);color:#fff}
+.thm{background:var(--accent-soft);border:1px solid #2c4a3c;border-radius:12px;padding:16px 18px;margin:18px 0;text-align:center;font-size:16px}
+.thm .eq{font-size:18.5px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums;margin-bottom:7px;line-height:1.5}
+.thm .note{font-size:13.5px;color:var(--muted);line-height:1.65}
+@media(max-width:520px){ .duo{grid-template-columns:1fr} .thm .eq{font-size:16px} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="nav"><a href="../index.html">← สารบัญ</a></div>
+
+<header>
+  <div class="kicker">
+    <span class="pill">Day 29 / 90</span>
+    <span>Phase 2 · การลงทุนระยะยาว</span>
+    <span>·</span>
+    <span>อ่าน 9 นาที</span>
+  </div>
+  <h1>Growth vs Value investing</h1>
+  <p class="sub">เมื่อวานเราเห็นว่า g อยู่ในตัวหารและเปลี่ยนคำตอบได้เท่าตัว วันนี้จะพิสูจน์ด้วยสมการบรรทัดเดียวว่า "การเติบโต" ไม่ได้เพิ่มมูลค่าเสมอไป — มีเงื่อนไขอยู่ข้อเดียวที่ตัดสินว่าโตแล้วผู้ถือหุ้นรวยขึ้นหรือจนลง</p>
+</header>
+
+<h2>สองสำนักที่ไม่ได้เป็นศัตรูกันอย่างที่เล่าขาน</h2>
+
+<p>ฝั่ง <strong>value investing</strong> เริ่มจาก Benjamin Graham ในทศวรรษ 1930: ซื้อของที่ราคาต่ำกว่ามูลค่าอย่างชัดเจน เผื่อส่วนต่างความปลอดภัย (margin of safety) ไว้เยอะๆ เพราะเราคาดการณ์อนาคตไม่เก่ง ฝั่ง <strong>growth investing</strong> เริ่มจาก Philip Fisher: ถ้าเจอธุรกิจที่โตได้จริงยาวนาน จ่ายแพงกว่าตลาดวันนี้ก็ยังคุ้ม เพราะเวลาอยู่ข้างเรา</p>
+
+<p>แต่ Warren Buffett พูดประโยคที่ปิดการถกเถียงนี้ไปแล้วว่าทั้งสองคำ "ติดกันอยู่ที่สะโพก" — การเติบโตเป็น<strong>ตัวแปรตัวหนึ่งในสมการมูลค่า</strong>เสมอ ไม่ใช่สมการคนละตัว สิ่งที่สองสำนักเถียงกันจริงๆ ไม่ใช่ "ถูก vs แพง" แต่คือ <strong>เราเชื่อตัวเลขชุดไหนมากกว่ากัน</strong>: งบการเงินที่เกิดขึ้นแล้ววันนี้ หรือประมาณการอีกสิบปีข้างหน้า</p>
+
+<h2>นิยามในอุตสาหกรรมจริงคือสูตร ไม่ใช่ความเห็น</h2>
+
+<p>MSCI ซึ่งเป็นผู้ทำดัชนีที่กองทุนทั่วโลกใช้อ้างอิง นิยามสองคำนี้แบบเครื่องจักร: <strong>value</strong> คัดจาก 3 ตัวแปร (มูลค่าทางบัญชีต่อราคา, กำไรล่วงหน้า 12 เดือนต่อราคา, อัตราปันผล) ส่วน <strong>growth</strong> คัดจาก 5 ตัวแปรที่เกี่ยวกับอัตราโตของกำไรและยอดขาย ทั้งย้อนหลังและคาดการณ์</p>
+
+<p>ผลที่ตามมาทำให้คนส่วนใหญ่ตกใจ: ณ 31 ส.ค. 2569 หุ้นน้ำหนักอันดับ 1 ของ <strong>MSCI World Value Index คือ Microsoft (7.72%)</strong> ตามด้วย Meta (2.71%) และ Micron (2.33%) — กลุ่ม Information Technology คิดเป็น 17.2% ของดัชนี "คุณค่า" เพราะสูตรดูแค่ตัวเลข ไม่ได้ดูว่าบริษัททำอะไรหรือเล่าเรื่องอย่างไร บทเรียนใช้ได้ทันที: <strong>เวลาจะซื้อกองทุนที่มีคำว่า value หรือ growth ในชื่อ ต้องเปิดดูว่าสูตรคัดอะไรมาให้จริงๆ</strong></p>
+
+<h2>สมการบรรทัดเดียวที่ตัดสินว่าโตแล้วดีหรือไม่ดี</h2>
+
+<p>Day 28 จบที่ P/E ที่สมเหตุสมผล = payout ÷ (r − g) วันนี้เติมอีกสองบรรทัดที่เชื่อมกลับไปหา ROE ของ Day 27 ถ้าบริษัทเก็บกำไรไว้ลงทุนต่อในสัดส่วน <strong>b</strong> (reinvestment rate) และเงินที่เก็บไว้ได้ผลตอบแทนเท่ากับ ROE เดิม กำไรจะโตในอัตรา <strong>g = b × ROE</strong> ส่วนที่เหลือจ่ายออกมาเป็นปันผล <strong>payout = 1 − b</strong> แทนกลับเข้าไป:</p>
+
+<div class="thm">
+  <div class="eq">P/E = (1 − b) ÷ (r − b·ROE)</div>
+  <div class="note">ถ้า ROE = r พอดี ⇒ P/E = (1−b) ÷ (r(1−b)) = <strong>1/r</strong> — ตัด (1−b) ทิ้งได้ทั้งบน<br>แปลว่า <strong>P/E ไม่ขึ้นกับการเติบโตเลย</strong> ไม่ว่าบริษัทจะเก็บกำไรไว้ 0% หรือ 90%</div>
+</div>
+
+<p>ทฤษฎีบทเล็กๆ นี้เปลี่ยนวิธีมองหุ้นทั้งหมด การเติบโต<strong>เพิ่ม</strong>มูลค่าเมื่อ ROE &gt; r, <strong>ไม่ทำอะไรเลย</strong>เมื่อ ROE = r, และ <strong>ทำลาย</strong>มูลค่าเมื่อ ROE &lt; r ลองที่ r = 9% และเก็บกำไรไว้ 30% เท่ากันทั้งสามบริษัท:</p>
+
+<table>
+  <thead><tr><th>บริษัท</th><th class="num">ROE</th><th class="num">g = b×ROE</th><th class="num">P/E ที่สมควร</th><th class="num">ถ้าไม่โตเลย (b=0)</th></tr></thead>
+  <tbody>
+    <tr><td>ก.</td><td class="num">20%</td><td class="num">6.0%</td><td class="num">23.33</td><td class="num">11.11</td></tr>
+    <tr><td>ข.</td><td class="num">9%</td><td class="num">2.7%</td><td class="num">11.11</td><td class="num">11.11</td></tr>
+    <tr><td>ค.</td><td class="num">6%</td><td class="num">1.8%</td><td class="num">9.72</td><td class="num">11.11</td></tr>
+  </tbody>
+</table>
+
+<p>สังเกตบริษัท ค. ให้ดี กำไรโตปีละ 1.8% จริง แต่ตลาดควรตีราคาให้<strong>ต่ำลง</strong>จาก 11.11 เหลือ 9.72 เท่า และยิ่งเก็บกำไรไว้มากยิ่งแย่ลง — b = 60% ⇒ P/E 7.41, b = 80% ⇒ P/E 4.76 ผู้บริหารกำลัง "สร้างการเติบโต" ด้วยเงินที่ควรจะคืนผู้ถือหุ้นไปลงทุนที่อื่นให้ได้ 9%</p>
+
+<div class="calc">
+  <h3 style="margin-top:0;font-size:16px">ห้องทดลอง: การโตเพิ่มหรือลดมูลค่า</h3>
+  <div class="row"><label>ROE ของธุรกิจ = <span class="val" id="o_roe">20%</span></label>
+    <input type="range" id="r_roe" min="0" max="30" step="1" value="20"></div>
+  <div class="row"><label>เก็บกำไรไว้ลงทุนต่อ b = <span class="val" id="o_b">30%</span> · จ่ายปันผล <span class="val" id="o_p">70%</span> · โตปีละ <span class="val" id="o_g">6.00%</span></label>
+    <input type="range" id="r_b" min="0" max="90" step="5" value="30"></div>
+  <div class="row"><label>ต้นทุนส่วนทุนที่ผู้ถือหุ้นต้องการ r = <span class="val" id="o_r">9.0%</span></label>
+    <input type="range" id="r_r" min="6" max="15" step="0.5" value="9"></div>
+  <div class="tax2">
+    <div class="col c1"><div class="step-val" id="v_base">11.11</div><div class="cb" id="b_base" style="height:120px"></div><div class="step-label">ถ้าไม่โตเลย<br>(1/r)</div></div>
+    <div class="col c2" id="c_now"><div class="step-val" id="v_now">23.33</div><div class="cb" id="b_now" style="height:170px"></div><div class="step-label">P/E ที่สมควร<br>เมื่อโต g</div></div>
+  </div>
+  <div class="verdict" id="vd">ROE 20% &gt; r 9% · ทุกบาทที่เก็บไว้สร้างมูลค่าเพิ่ม การโตจึงควรได้ P/E สูงขึ้น +110.0%</div>
+</div>
+
+<h2>ตัวเลขจริงของสองสำนัก ณ 31 ส.ค. 2569</h2>
+
+<div class="duo">
+  <div class="dcard g">
+    <div class="dh">MSCI WORLD GROWTH · 586 ตัว</div>
+    <div class="dl"><span>P/E ย้อนหลัง</span><b>30.10</b></div>
+    <div class="dl"><span>P/E ล่วงหน้า</span><b>23.95</b></div>
+    <div class="dl"><span>P/BV</span><b>8.06</b></div>
+    <div class="dl"><span>อัตราปันผล</span><b>0.70%</b></div>
+    <div class="dl"><span>10 หุ้นแรกรวม</span><b>45.98%</b></div>
+    <div class="dl"><span>กลุ่มใหญ่สุด</span><b>IT 42.7%</b></div>
+  </div>
+  <div class="dcard v">
+    <div class="dh">MSCI WORLD VALUE · 839 ตัว</div>
+    <div class="dl"><span>P/E ย้อนหลัง</span><b>18.96</b></div>
+    <div class="dl"><span>P/E ล่วงหน้า</span><b>15.20</b></div>
+    <div class="dl"><span>P/BV</span><b>2.79</b></div>
+    <div class="dl"><span>อัตราปันผล</span><b>2.28%</b></div>
+    <div class="dl"><span>10 หุ้นแรกรวม</span><b>21.98%</b></div>
+    <div class="dl"><span>กลุ่มใหญ่สุด</span><b>การเงิน 26.1%</b></div>
+  </div>
+</div>
+<p class="src">ที่มา: MSCI Index Factsheet ข้อมูล ณ 31 ส.ค. 2569 (gross returns, USD) · ดัชนี MSCI World ทั้งตลาด P/E 23.20 · P/BV 4.12 · ปันผล 1.50%</p>
+
+<p>เอาเอกลักษณ์จาก Day 27 มาแกะต่อได้ทันที: <strong>ROE = P/BV ÷ P/E</strong> และ <strong>payout = อัตราปันผล × P/E</strong> จากนั้น g ยั่งยืน = ROE × (1 − payout)</p>
+
+<table>
+  <thead><tr><th>ดัชนี</th><th class="num">ROE ที่แฝงอยู่</th><th class="num">payout</th><th class="num">g ยั่งยืน</th></tr></thead>
+  <tbody>
+    <tr><td>Growth</td><td class="num">26.78%</td><td class="num">21.07%</td><td class="num">21.14%</td></tr>
+    <tr><td>Value</td><td class="num">14.72%</td><td class="num">43.23%</td><td class="num">8.35%</td></tr>
+    <tr><td>World ทั้งตลาด</td><td class="num">17.76%</td><td class="num">34.80%</td><td class="num">11.58%</td></tr>
+  </tbody>
+</table>
+
+<p>ตัวเลข ROE 26.78% ของฝั่ง growth บอกว่า<strong>ธุรกิจเหล่านั้นดีจริง</strong> — ROE สูงกว่า r ที่นักลงทุนเรียกร้องมาก การเติบโตของมันจึงเพิ่มมูลค่าจริงตามทฤษฎีบทข้างบน ปัญหาไม่ได้อยู่ที่คุณภาพธุรกิจ แต่อยู่ที่ <strong>g ยั่งยืน 21% ต่อปีเป็นไปไม่ได้ตลอดกาล</strong> (Day 28 เตือนไว้แล้วว่า g ต้องน้อยกว่า r) P/E 30.10 เท่าจึงไม่ได้แปลว่าตลาดเชื่อว่าโต 21% ไปเรื่อยๆ แต่เชื่อว่า<strong>ช่วงโตแรงจะกินเวลานานพอ</strong>ก่อนจะลดลงมาปกติ ความเสี่ยงของหุ้นเติบโตจึงไม่ใช่ "โตไม่ได้" แต่คือ "โตได้สั้นกว่าที่ราคาเรียกร้อง"</p>
+
+<h2>51 ปีกับ 10 ปี ให้คำตอบคนละข้าง</h2>
+
+<p>ผลตอบแทนทบต้นแบบ gross return สกุลดอลลาร์ ตั้งแต่ 31 ธ.ค. 2517 ถึง 31 ส.ค. 2569 (51 ปี 8 เดือน): <strong>Value 11.68% ต่อปี · Growth 10.75% ต่อปี</strong> ห่างกันแค่ 0.93 จุดต่อปี แต่ทบต้นครึ่งศตวรรษแล้วเงิน 10,000 บาทกลายเป็น <strong>301 เท่า เทียบกับ 195 เท่า</strong> — ต่างกัน 1.54 เท่า นี่คือพลังของ Day 5 ที่ทำงานบนส่วนต่างเล็กๆ</p>
+
+<p>แต่ถ้าถามคนที่เพิ่งเริ่มลงทุนเมื่อ 10 ปีก่อน คำตอบกลับด้าน: 10 ปีล่าสุด <strong>Growth 15.53% ต่อปี vs Value 11.14%</strong> คือ 4.24 เท่า เทียบกับ 2.88 เท่า และปีล่าสุด (ถึง 31 ส.ค. 2569) พลิกอีกรอบเป็น <strong>Value 24.16% vs Growth 17.24%</strong></p>
+
+<div class="card warn">
+  <h3>ข้อเท็จจริงที่ทั้งสองฝ่ายไม่ค่อยพูดถึง</h3>
+  <p style="margin-bottom:0">การขาดทุนสูงสุด (maximum drawdown) ตั้งแต่ปี 2517: <strong>Growth −57.30%</strong> (31 มี.ค. 2543 – 9 ต.ค. 2545 ยุคฟองสบู่ดอตคอม) และ <strong>Value −60.70%</strong> (13 ก.ค. 2550 – 9 มี.ค. 2552 วิกฤตแฮมเบอร์เกอร์) · ทั้งสองสำนักเคยหายไปเกินครึ่งพอร์ต แค่คนละรอบ — คำว่า "ปลอดภัยกว่า" ใช้กับฝั่งไหนไม่ได้เลย สิ่งที่ต่างกันคือ<strong>เจ็บตอนไหน</strong> ไม่ใช่เจ็บแค่ไหน</p>
+</div>
+
+<h2>แยกผลตอบแทนออกเป็นสามชิ้น</h2>
+
+<p>ผลตอบแทนของหุ้นตัวใดก็ตามแยกออกได้สามส่วนเสมอ และสมการนี้เป็นเอกลักษณ์ ไม่ใช่การประมาณ (ยกเว้นชิ้นปันผลที่คิดที่ P/E ตอนซื้อ):</p>
+
+<div class="thm">
+  <div class="eq">ผลตอบแทนต่อปี = (1 + g<sub>EPS</sub>) × (P/E ปลาย ÷ P/E ต้น)<sup>1/N</sup> − 1 + อัตราปันผล</div>
+  <div class="note">ชิ้นที่ 1 มาจากธุรกิจ · ชิ้นที่ 2 มาจากอารมณ์ตลาด · ชิ้นที่ 3 มาจากเงินสดที่ได้รับจริง</div>
+</div>
+
+<p>ลองแข่งกันจริง สมมติหุ้นเติบโตซื้อที่ P/E 30 กำไรโต 20% ต่อปีสิบปี (EPS โต 6.19 เท่า) แต่ตอนขาย P/E หดเหลือ 20 เพราะโตช้าลง และไม่จ่ายปันผลเลย เทียบกับหุ้นคุณค่าซื้อที่ P/E 12 กำไรโตแค่ 3% P/E คงเดิม จ่ายปันผลครึ่งหนึ่งของกำไร (ปันผล 4.17%)</p>
+
+<div class="calc">
+  <h3 style="margin-top:0;font-size:16px">การแข่งขัน N ปี</h3>
+  <div class="row"><label>หุ้นเติบโต: EPS โตปีละ <span class="val" id="o_gg">20%</span> (EPS จะเป็น <span class="val" id="o_mult">6.19</span> เท่า)</label>
+    <input type="range" id="r_gg" min="0" max="35" step="1" value="20"></div>
+  <div class="row"><label>P/E ของหุ้นเติบโตตอนขาย = <span class="val" id="o_px">20</span> เท่า (ซื้อที่ 30)</label>
+    <input type="range" id="r_px" min="8" max="35" step="1" value="20"></div>
+  <div class="row"><label>ถือไว้ <span class="val" id="o_n">10</span> ปี</label>
+    <input type="range" id="r_n" min="5" max="25" step="1" value="10"></div>
+  <div class="tax2">
+    <div class="col c2" id="c_gr"><div class="step-val" id="v_gr">15.23%</div><div class="cb" id="b_gr" style="height:170px"></div><div class="step-label">หุ้นเติบโต<br>P/E 30 → <span id="l_px">20</span></div></div>
+    <div class="col c1"><div class="step-val" id="v_va">7.17%</div><div class="cb" id="b_va" style="height:80px"></div><div class="step-label">หุ้นคุณค่า<br>P/E 12 · ปันผล 4.17%</div></div>
+  </div>
+  <div class="split" style="margin-top:14px">
+    <i class="sp-b" id="s_eps" style="width:60%">กำไรโต</i><i class="sp-c" id="s_pe" style="width:20%">P/E</i><i class="sp-a" id="s_dy" style="width:20%">ปันผล</i>
+  </div>
+  <div class="dnote" style="font-size:13.5px;color:var(--muted)">แถบข้างบนคือการแยกผลตอบแทนของ<strong>หุ้นเติบโต</strong>ออกเป็นสามชิ้น (สีแดงคือชิ้นที่ติดลบ)</div>
+  <div class="verdict" id="vd2">หุ้นเติบโตต้องโต EPS อย่างน้อย 11.60% ต่อปี 10 ปีติด เพียงเพื่อ "เสมอ" กับหุ้นคุณค่า</div>
+</div>
+
+<p>ตัวเลขคุ้มทุนนี่แหละคือหัวใจ ที่ P/E 30 แล้วขายที่ 20 หุ้นเติบโตต้องโตกำไร <strong>11.60% ต่อปีสิบปีติด</strong> แค่เพื่อเสมอกับหุ้นที่โต 3% และถ้า P/E หดลงมาเท่ากันที่ 12 ตัวเลขนั้นพุ่งเป็น <strong>17.45%</strong> — ส่วนต่าง P/E 30 กับ 12 ไม่ใช่ป้ายราคา แต่เป็น<strong>คำมั่นสัญญาที่เราต้องรับผิดชอบแทนบริษัท</strong></p>
+
+<h2>กับดักคนละแบบของสองฝั่ง</h2>
+
+<p><strong>Value trap:</strong> หุ้น P/E 5 เท่าที่กำไรหดปีละ 10% ตลอดไป ถ้า r = 12% และจ่ายปันผลหมด P/E ที่สมควรคือ 1 ÷ (0.12 + 0.10) = <strong>4.55 เท่า</strong> แปลว่า P/E 5 นั้น<strong>แพงกว่ามูลค่า 10%</strong> ไม่ใช่ถูก สูตรคัดหุ้นเห็นแค่เลข 5 แต่ไม่รู้ว่าตัวหารกำลังละลาย</p>
+
+<p><strong>Growth trap:</strong> จ่าย P/E สูงให้บริษัทที่ ROE ต่ำกว่า r แล้วเก็บกำไรไว้ขยายตัว — ตามตารางข้างบน ยิ่งขยายยิ่งควรถูกตีราคาต่ำ นักลงทุนจ่ายแพงเพื่อซื้อ<strong>การเผาเงินที่ดูเหมือนการเติบโต</strong></p>
+
+<h2>บริบทไทย: อ่านเป้าดัชนีให้เป็นสมมติฐานสองตัว</h2>
+
+<p>บล. ดีบีเอส วิคเคอร์ส (ประเทศไทย) แถลงเมื่อ 27 ส.ค. 2569 ปรับเป้า SET Index สิ้นปี 2569 ขึ้นเป็น <strong>1,720 จุด</strong> จากเดิม 1,650 จุด โดย<strong>อิง forward P/E 16.7 เท่า</strong> และคาดกำไรบริษัทจดทะเบียนโต <strong>9% ในปี 2569 และ 4% ในปี 2570</strong></p>
+
+<p>แกะกลับด้วยสิ่งที่เรียนมา: 1,720 ÷ 16.7 = <strong>EPS ของดัชนี 102.99 จุด</strong> เทียบกับ SET ที่ปิด 1,583.34 จุด (18 ก.ย. 2569) บน EPS 100.50 = P/E 15.75 เท่า ⇒ upside 8.63% ทั้งหมดของ "เป้า 1,720" จึงมีแค่สองสมมติฐาน: <strong>กำไรจะโตเท่าไร</strong> กับ <strong>ตลาดจะยอมจ่ายกี่เท่า</strong> — ไม่มีอะไรมากกว่านั้นเลย และตัวเลข 4% ของปี 2570 บอกชัดว่าโมเดลนี้ไม่ได้มองตลาดไทยเป็นตลาดเติบโต พอรู้แบบนี้แล้วเวลาเจอบทวิเคราะห์ เราจะ<strong>เถียงกับสมมติฐานได้</strong> แทนที่จะเชื่อตัวเลขสุดท้ายตามไป</p>
+
+<p class="src">ที่มา: กรุงเทพธุรกิจ 27 ส.ค. 2569 (บล. ดีบีเอส วิคเคอร์ส) · ระดับดัชนีและ EPS จาก set.or.th ณ 17–18 ก.ย. 2569 · ตัวเลขเหล่านี้เป็นความเห็นของสำนักวิจัย ไม่ใช่ข้อเท็จจริง และเปลี่ยนได้ทุกวัน</p>
+
+<div class="card accent">
+  <h3>เลขที่ควรจำไว้ตอนอายุ 19</h3>
+  <p style="margin-bottom:0">เงินฝึกงานเดือนแรก 10,000 บาท ทิ้งไว้ 40 ปีจนถึงวัยเกษียณ ที่ 11.68% ต่อปีจะกลายเป็น <strong>829,882 บาท</strong> ที่ 10.75% จะได้ <strong>593,949 บาท</strong> · ส่วนต่าง 235,933 บาทมาจากความต่างปีละไม่ถึง 1 จุด · แต่ประเด็นไม่ใช่ให้ไปเลือกฝั่ง — ประเด็นคือ<strong>จำนวนปีในเลขชี้กำลังมีค่ามากกว่าการเลือกสำนัก</strong> และตอนนี้เต้นมีตัวแปรนั้นมากกว่าคนเกือบทั้งตลาด</p>
+</div>
+
+<details>
+  <summary>กล่องโค้ด (ข้ามได้ ไม่นับในเวลาอ่าน)</summary>
+  <div class="ans">
+<pre><code>def justified_pe(roe, b, r):
+    """P/E ที่สมควร เมื่อ g = b*ROE และ payout = 1-b"""
+    g = b * roe
+    return float('inf') if g >= r else (1 - b) / (r - g)
+
+r = 0.12
+for roe in (0.20, 0.12, 0.08):
+    row = [justified_pe(roe, b, r) for b in (0.0, 0.2, 0.4)]
+    print(f"ROE {roe:5.0%} | " + "  ".join(f"{x:6.2f}" for x in row))
+
+# ROE   20% |   8.33   10.00   15.00   <- โตแล้วแพงขึ้น  (ROE > r)
+# ROE   12% |   8.33    8.33    8.33   <- โตแล้วเท่าเดิม (ROE = r)
+# ROE    8% |   8.33    7.69    6.82   <- โตแล้วถูกลง    (ROE &lt; r)</code></pre>
+    <p style="margin:10px 0 0;font-size:14.5px">แถวกลางคือทฤษฎีบททั้งหมดในสามตัวเลข: เมื่อ ROE = r การเติบโตหายไปจากสมการสนิท</p>
+  </div>
+</details>
+
+<h2>ทดสอบความเข้าใจ</h2>
+
+<p class="q">1. บริษัท ฎ. มี ROE 8% ต้นทุนส่วนทุน r = 12% ปัจจุบันจ่ายปันผลทั้งหมด (b = 0) · ผู้บริหารเสนอแผนเก็บกำไรไว้ 60% เพื่อขยายสาขา โดยสาขาใหม่จะให้ ROE 8% เท่าเดิม · P/E ที่สมควรก่อนและหลังเป็นเท่าไร และแผนนี้ดีต่อผู้ถือหุ้นหรือไม่</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">ก่อน: b = 0 ⇒ P/E = 1 ÷ 0.12 = <strong>8.33 เท่า</strong><br>
+  หลัง: g = 0.6 × 0.08 = 4.8% · payout = 40% ⇒ P/E = 0.40 ÷ (0.12 − 0.048) = 0.40 ÷ 0.072 = <strong>5.56 เท่า</strong> · ลดลง <strong>33.33%</strong><br>
+  แผนนี้<strong>ทำลายมูลค่า</strong> ทั้งที่กำไรจะโตปีละ 4.8% จริงๆ เพราะทุกบาทที่ผู้บริหารยึดไว้ได้ผลตอบแทน 8% ขณะที่ผู้ถือหุ้นเอาไปลงทุนที่อื่นได้ 12% — ขาดทุนโอกาส 4 จุดต่อปีบนทุกบาทที่ถูกยึด · ทางที่เพิ่มมูลค่าคือจ่ายปันผลหรือซื้อหุ้นคืน ไม่ใช่ขยายสาขา · จำประโยคนี้ไว้: <strong>"กำไรโต" กับ "มูลค่าเพิ่ม" เป็นคนละเรื่องกันโดยสิ้นเชิง</strong> และนี่คือสาเหตุที่หุ้นบางตัวรายได้โตทุกปีแต่ราคานิ่งมาสิบปี</div>
+</details>
+
+<p class="q">2. จากการ์ดดัชนี MSCI ณ 31 ส.ค. 2569 จงใช้เอกลักษณ์ของ Day 27 หา ROE และ payout ที่แฝงอยู่ในดัชนี growth แล้วหา g ยั่งยืน · ตัวเลขนั้นเป็นไปได้ตลอดกาลไหม และมันบอกอะไรเกี่ยวกับ P/E 30.10 เท่า</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">ROE = P/BV ÷ P/E = 8.06 ÷ 30.10 = <strong>26.78%</strong><br>
+  payout = อัตราปันผล × P/E = 0.70% × 30.10 = <strong>21.07%</strong> ⇒ b = 78.93%<br>
+  g ยั่งยืน = 26.78% × 78.93% = <strong>21.14% ต่อปี</strong><br>
+  <strong>เป็นไปไม่ได้ตลอดกาล</strong> — Day 28 บอกว่า g ต้องน้อยกว่า r ไม่งั้นสมการระเบิด และเศรษฐกิจโลกโตราว 2–4% บริษัทที่โต 21% ตลอดกาลจะกลืนทั้งโลกในไม่กี่ทศวรรษ · แต่สิ่งที่ตัวเลขนี้บอกจริงๆ คือ <strong>P/E 30.10 ไม่ได้แปลว่าตลาดเชื่อ 21% ตลอดไป</strong> แต่เชื่อว่าช่วงโตแรงจะยาวพอจะคุ้มราคา · สังเกตว่า ROE 26.78% สูงกว่า r ที่ไหนๆ ก็เรียกกัน แปลว่าธุรกิจกลุ่มนี้<strong>ดีจริง</strong>และการโตของมันเพิ่มมูลค่าจริงตามทฤษฎีบทวันนี้ · ความเสี่ยงอยู่ที่<strong>ราคาที่จ่าย</strong> ไม่ใช่คุณภาพธุรกิจ ซึ่งเป็นความเสี่ยงคนละชนิดกับ growth trap</div>
+</details>
+
+<p class="q">3. หุ้น ฏ. ซื้อขายที่ P/E 5 เท่า จ่ายปันผลทั้งหมด (b = 0) แต่กำไรกำลังหดปีละ 10% ต่อเนื่อง · ที่ r = 12% P/E ที่สมควรคือเท่าไร หุ้นนี้ถูกหรือแพง · แล้วถ้ากำไรแค่ทรงตัวไม่โตไม่หดล่ะ</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">กำไรหด 10% ⇒ g = −10% ⇒ P/E = 1.00 ÷ (0.12 − (−0.10)) = 1.00 ÷ 0.22 = <strong>4.55 เท่า</strong> ⇒ ราคาที่ P/E 5 <strong>แพงกว่ามูลค่า 10%</strong><br>
+  ถ้ากำไรทรงตัว g = 0 ⇒ P/E = 1 ÷ 0.12 = <strong>8.33 เท่า</strong> ⇒ ราคาที่ P/E 5 <strong>ถูกกว่ามูลค่า 40%</strong><br>
+  ตัวเลขบนหน้าจอเหมือนกันเป๊ะทั้งสองกรณี แต่คำตอบต่างกันคนละขั้ว และสิ่งที่ตัดสินคือคำถามเดียว: <strong>กำไรปีหน้าจะเท่าไร</strong> · นี่คือกลไกของ value trap — สูตรคัดหุ้นเห็นแค่ P/E 5 ซึ่งคำนวณจากกำไรย้อนหลังที่จะไม่กลับมาอีก · วิธีกัน: ดู forward P/E แทน trailing (เหตุผลที่ MSCI ใช้ "กำไรล่วงหน้า 12 เดือนต่อราคา" ไม่ใช่กำไรย้อนหลัง) และถามทุกครั้งว่า<strong>ทำไมของถึงถูก</strong> — ถ้าตอบไม่ได้ แปลว่ายังไม่รู้เท่าตลาด</div>
+</details>
+
+<p class="q"><strong>ทวน:</strong> Day 26 สอนตัวชี้วัดคุณภาพกำไร CFO ÷ กำไรสุทธิ · สูตรคัดหุ้น value ยื่นหุ้นสองตัวมาให้ ทั้งคู่ P/E 6 เท่าเท่ากัน แต่ตัว A มี CFO/กำไรสุทธิ = 1.3 เท่า ส่วนตัว B = 0.4 เท่า · ทำไมตัวเลขนี้เปลี่ยนคำตอบว่าตัวไหนถูกจริง และ B น่าจะเกิดอะไรขึ้นในงบดุล</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">CFO/กำไรสุทธิ = 0.4 แปลว่ากำไรบนกระดาษ 1 บาท เข้ามาเป็นเงินสดจริงแค่ 40 สตางค์ · Day 26 บอกว่าส่วนที่หายไปมักไปโผล่ที่ <strong>ΔNOWC</strong> — ลูกหนี้การค้าหรือสินค้าคงเหลือบวมขึ้น แปลว่าขายได้แต่เก็บเงินไม่ได้ หรือของค้างสต็อก ซึ่งมักจบลงด้วยการตั้งสำรองหนี้สูญหรือตัดมูลค่าสต็อก ทำให้กำไรในอนาคตหดลง ⇒ <strong>P/E 6 ที่เห็นคำนวณบนกำไรที่กำลังจะถูกแก้ลง</strong> เชื่อมตรงกับข้อ 3 ข้างบนเป๊ะ<br>
+  ส่วน A ที่ CFO 1.3 เท่า แปลว่ากำไรกลายเป็นเงินสดครบและมากกว่าด้วย (ค่าเสื่อมสูงกว่า capex หรือเก็บเงินเร็ว) · สรุป: <strong>P/E เท่ากันไม่ได้แปลว่าถูกเท่ากัน ตัวหารต้องเป็นของจริงก่อน ตัวเลขถึงจะมีความหมาย</strong> — และ CFO/NP เป็นตัวกรอง value trap ที่ถูกที่สุดที่หาได้ เพราะใช้เวลาอ่านแค่สองบรรทัด<br>ตอบผิดหรือลังเล? → <a href="finance-day-26-cash-flow-statement.html">ทบทวน Day 26: อ่านงบการเงิน 3: งบกระแสเงินสด</a></div>
+</details>
+
+<p class="q"><strong>ทวน:</strong> Day 23 สอนเรื่อง yield trap · ดัชนี MSCI World Value ใช้อัตราปันผลเป็น 1 ใน 3 ตัวแปรคัดหุ้น และมีอัตราปันผล 2.28% เทียบกับ 0.70% ของฝั่ง growth · ถ้าเต้นเขียนสูตรคัดหุ้นเองโดยเรียงอัตราปันผลจากสูงไปต่ำแล้วซื้อ 20 อันดับแรก จะเจอปัญหาอะไร และควรเพิ่มเงื่อนไขอะไรบ้าง</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">อัตราปันผล = DPS ÷ ราคา · ตัวเลขนี้สูงได้จากสองสาเหตุที่คนละเรื่องกันสิ้นเชิง: (ก) บริษัทจ่ายเยอะจริง หรือ (ข) <strong>ราคาร่วง</strong> — และตลาดมักทำให้ราคาร่วงเพราะรู้ล่วงหน้าว่าปันผลรอบหน้าจะถูกตัด · สูตรที่เรียงตามอัตราปันผลล้วนจะ<strong>กวาดกรณี (ข) เข้าพอร์ตโดยอัตโนมัติ</strong> เพราะยิ่งสถานการณ์แย่ตัวเลขยิ่งขึ้นไปอยู่บนสุด · ตัวอย่างจาก Day 23: trailing yield 10% ที่เห็นบนจอกลายเป็น forward yield 5% ทันทีที่ประกาศจ่ายรอบใหม่<br>
+  เงื่อนไขที่ควรเพิ่ม: <strong>payout ratio ไม่เกินราว 70–80%</strong> (Day 23: payout &gt; 100% แปลว่าจ่ายจากเงินเก่าไม่ใช่กำไรปีนี้), <strong>CFO ครอบคลุมเงินปันผลที่จ่าย</strong>, <strong>หนี้สินสุทธิ/EBITDA ไม่ตึง</strong> (Day 27) และประวัติการจ่ายที่ไม่เคยตัด · สังเกตว่า MSCI เองก็ไม่ได้ใช้อัตราปันผลตัวเดียว แต่ใช้คู่กับ B/P และ<strong>กำไรล่วงหน้า</strong>ต่อราคา — คำว่า "ล่วงหน้า" นั่นแหละคือตัวกันกับดักนี้<br>ตอบผิดหรือลังเล? → <a href="finance-day-23-dividend-yield.html">ทบทวน Day 23: เงินปันผล (dividend) และ dividend yield</a></div>
+</details>
+
+<div class="summary-box">
+  <h2 style="margin-top:0">สรุป 3 บรรทัด</h2>
+  <p>1. growth ไม่ใช่ฝั่งตรงข้ามของ value แต่เป็นตัวแปรในสมการเดียวกัน: <strong>P/E = (1 − b) ÷ (r − b·ROE)</strong> · การโตเพิ่มมูลค่าเมื่อ ROE &gt; r, เป็นกลางสนิทเมื่อ ROE = r (P/E = 1/r เสมอ ไม่ว่าจะโตแค่ไหน) และทำลายมูลค่าเมื่อ ROE &lt; r</p>
+  <p>2. 51 ปี 8 เดือน ฝั่ง value ชนะ 11.68% ต่อ 10.75% ต่อปี (301 เท่า ต่อ 195 เท่า) แต่ 10 ปีล่าสุด growth ชนะกลับ 15.53% ต่อ 11.14% · และทั้งคู่เคยขาดทุนเกิน 57% มาแล้ว แค่คนละรอบ — <strong>ช่วงเวลาที่เลือกวัด เปลี่ยนข้อสรุปได้ทั้งหมด</strong></p>
+  <p style="margin-bottom:0">3. ที่ P/E 30 หุ้นเติบโตต้องโต EPS <strong>11.60% ต่อปีสิบปีติด</strong> เพียงเพื่อเสมอกับหุ้น P/E 12 ที่โตแค่ 3% · ราคาที่เราจ่ายไม่ใช่ป้ายราคา แต่เป็นสมมติฐานที่เราต้องรับผิดชอบแทนบริษัท</p>
+</div>
+
+<footer>
+  <p><strong>พรุ่งนี้ Day 30 — วัฏจักรธุรกิจและกลุ่มอุตสาหกรรม (sector)</strong> สังเกตไหมว่าดัชนี growth มี IT 42.7% ส่วนดัชนี value มีกลุ่มการเงิน 26.1% — มันไม่ใช่เรื่องบังเอิญ พรุ่งนี้จะดูว่าทำไมบางกลุ่มอุตสาหกรรมถึงได้ P/E สูงกว่าอีกกลุ่มอย่างถาวร กลุ่มไหนขึ้นลงตามเศรษฐกิจ (cyclical) กลุ่มไหนไม่สน (defensive) และทำไมหุ้นวัฏจักรถึงดูถูกที่สุดตอนที่มันแพงที่สุดจริงๆ</p>
+  <p class="disclaimer">บทเรียนนี้เป็นความรู้เชิงการศึกษา ไม่ใช่คำแนะนำทางการเงินเฉพาะบุคคล และไม่ใช่การชี้ชวนให้ซื้อหรือขายหลักทรัพย์ กองทุน หรือดัชนีใด · ชื่อบริษัทและหุ้นที่ปรากฏถูกอ้างถึงเพื่ออธิบายวิธีการคัดหุ้นของดัชนีเท่านั้น ไม่ใช่การแนะนำ · บริษัทสมมติ ก. ข. ค. ฎ. และ ฏ. รวมถึงสมมติฐาน r 9% และ 12% ถูกสร้างขึ้นให้คำนวณตามง่าย ไม่ใช่ข้อมูลจริงของบริษัทใด · ข้อมูลดัชนี MSCI เป็น gross return สกุลดอลลาร์สหรัฐ ณ 31 ส.ค. 2569 ซึ่งไม่หักภาษีหัก ณ ที่จ่าย ค่าธรรมเนียม หรือผลของอัตราแลกเปลี่ยน และข้อมูลก่อนวันเปิดตัวดัชนี (8 ธ.ค. 2540) เป็นการคำนวณย้อนหลัง (back-tested) ซึ่งมักต่างจากผลจริง · ผลตอบแทนในอดีตไม่ได้บ่งชี้ผลตอบแทนในอนาคต · เป้าดัชนีและประมาณการกำไรเป็นความเห็นของสำนักวิจัยที่อ้างถึง ณ วันที่ระบุ ไม่ใช่ข้อเท็จจริงและเปลี่ยนแปลงได้ตลอดเวลา</p>
+</footer>
+
+</div>
+<script>
+(function(){
+  var fmt=function(n,d){ d=(d===undefined?2:d);
+    return n.toLocaleString('th-TH',{minimumFractionDigits:d,maximumFractionDigits:d}); };
+  var $=function(id){ return document.getElementById(id); };
+  var H=170;
+
+  /* ---------- ห้องทดลองที่ 1: P/E ที่สมควร ---------- */
+  var rRoe=$('r_roe'), rB=$('r_b'), rR=$('r_r');
+
+  function lab1(){
+    var roe=(+rRoe.value)/100, b=(+rB.value)/100, r=(+rR.value)/100;
+    var g=b*roe, payout=1-b, base=1/r;
+    $('o_roe').textContent=fmt(roe*100,0)+'%';
+    $('o_b').textContent=fmt(b*100,0)+'%';
+    $('o_p').textContent=fmt(payout*100,0)+'%';
+    $('o_g').textContent=fmt(g*100,2)+'%';
+    $('o_r').textContent=fmt(r*100,1)+'%';
+
+    var ok=(g<r-1e-12), pe= ok ? payout/(r-g) : Infinity;
+    var shown= ok ? Math.min(pe,60) : 60;
+    var mx=Math.max(shown, base, 10);
+    $('b_now').style.height=Math.max(3,H*shown/mx)+'px';
+    $('b_base').style.height=Math.max(3,H*base/mx)+'px';
+    $('v_base').textContent=fmt(base,2);
+    $('v_now').textContent= ok ? (pe>60?'> 60':fmt(pe,2)) : '∞';
+
+    var col=$('c_now'), vd=$('vd'), d=roe-r;
+    if(!ok){
+      col.className='col c2 lose'; vd.className='verdict bad';
+      vd.innerHTML='g = '+fmt(g*100,2)+'% ชน r = '+fmt(r*100,1)+'% · สมการระเบิด — ไม่มีอะไรโตเร็วกว่าอัตราคิดลดได้ตลอดกาล (Day 28)';
+      return;
+    }
+    var chg=(pe/base-1)*100;
+    if(Math.abs(d)<1e-9){
+      col.className='col c2'; vd.className='verdict';
+      vd.innerHTML='<strong>ROE = r พอดี</strong> · P/E = 1/r = '+fmt(base,2)+' เท่า ไม่ว่าจะเก็บกำไรไว้เท่าไร — การเติบโตเป็นกลางสนิท';
+    } else if(d>0){
+      col.className='col c2'; vd.className='verdict';
+      vd.innerHTML='ROE '+fmt(roe*100,0)+'% &gt; r '+fmt(r*100,1)+'% · ทุกบาทที่เก็บไว้สร้างมูลค่าเพิ่ม การโตจึงควรได้ P/E สูงขึ้น <strong>'+(chg>=0?'+':'')+fmt(chg,1)+'%</strong>';
+    } else {
+      col.className='col c2 lose'; vd.className='verdict bad';
+      vd.innerHTML='ROE '+fmt(roe*100,0)+'% &lt; r '+fmt(r*100,1)+'% · ยิ่งโตยิ่งควรถูกตีราคาต่ำลง <strong>'+fmt(chg,1)+'%</strong> — กำไรโตจริงแต่มูลค่าหาย';
+    }
+  }
+  [rRoe,rB,rR].forEach(function(s){ s.addEventListener('input',lab1); });
+  lab1();
+
+  /* ---------- ห้องทดลองที่ 2: การแข่งขัน N ปี ---------- */
+  var GP0=30, VP0=12, VG=0.03, VPAY=0.50;
+  var rGg=$('r_gg'), rPx=$('r_px'), rN=$('r_n');
+
+  function race(){
+    var g=(+rGg.value)/100, px=+rPx.value, N=+rN.value;
+    var mult=Math.pow(1+g,N);
+    var reRate=Math.pow(px/GP0,1/N);
+    var gTot=(1+g)*reRate-1;
+    var vTot=VG+VPAY/VP0;
+
+    $('o_gg').textContent=fmt(g*100,0)+'%';
+    $('o_mult').textContent=fmt(mult,2);
+    $('o_px').textContent=String(px);
+    $('l_px').textContent=String(px);
+    $('o_n').textContent=String(N);
+    $('v_gr').textContent=fmt(gTot*100,2)+'%';
+    $('v_va').textContent=fmt(vTot*100,2)+'%';
+
+    var mx=Math.max(Math.abs(gTot),vTot,0.02);
+    $('b_gr').style.height=Math.max(3,H*Math.abs(gTot)/mx)+'px';
+    $('b_va').style.height=Math.max(3,H*vTot/mx)+'px';
+    $('c_gr').className= gTot<vTot ? 'col c2 lose' : 'col c2';
+
+    /* แยกสามชิ้นของหุ้นเติบโต: กำไรโต / การเปลี่ยน P/E / ปันผล(=0) */
+    var cEps=g, cPe=reRate-1, cDy=0;
+    var tot=Math.abs(cEps)+Math.abs(cPe)+Math.abs(cDy);
+    if(tot<1e-9) tot=1;
+    var wE=Math.abs(cEps)/tot*100, wP=Math.abs(cPe)/tot*100, wD=Math.abs(cDy)/tot*100;
+    var sE=$('s_eps'), sP=$('s_pe'), sD=$('s_dy');
+    sE.style.width=wE+'%'; sP.style.width=wP+'%'; sD.style.width=wD+'%';
+    sE.className= cEps<0 ? 'sp-neg' : 'sp-b';
+    sP.className= cPe<0 ? 'sp-neg' : 'sp-c';
+    sD.className='sp-a';
+    sE.textContent= wE>16 ? 'กำไร '+(cEps>=0?'+':'')+fmt(cEps*100,1)+'%' : '';
+    sP.textContent= wP>16 ? 'P/E '+(cPe>=0?'+':'')+fmt(cPe*100,1)+'%' : '';
+    sD.textContent= wD>16 ? 'ปันผล' : '';
+
+    var be=(1+vTot)/reRate-1, vd2=$('vd2');
+    if(gTot>=vTot){
+      vd2.className='verdict';
+      vd2.innerHTML='หุ้นเติบโตชนะ · จุดคุ้มทุนคือโต EPS <strong>'+fmt(be*100,2)+'% ต่อปี '+N+' ปีติด</strong> — ตอนนี้สมมติไว้ '+fmt(g*100,0)+'%';
+    } else {
+      vd2.className='verdict bad';
+      vd2.innerHTML='หุ้นคุณค่าชนะ · หุ้นเติบโตต้องโต EPS ถึง <strong>'+fmt(be*100,2)+'% ต่อปี '+N+' ปีติด</strong> จึงจะเสมอ';
+    }
+  }
+  [rGg,rPx,rN].forEach(function(s){ s.addEventListener('input',race); });
+  race();
+})();
+</script>
+</body>
+</html>
