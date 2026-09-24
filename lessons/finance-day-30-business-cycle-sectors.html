@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day 30 — วัฏจักรธุรกิจและกลุ่มอุตสาหกรรม (sector) | Finance101</title>
+<style>
+:root{
+  --bg:#191816; --card:#211f1d; --ink:#e8e4dd; --muted:#a09a91;
+  --line:#332f2b; --accent:#6cc394; --accent-soft:#1c2f26;
+  --warn:#e0a86f; --warn-soft:#2e2419; --code:#201e1b; --danger:#e0785c;
+  color-scheme: dark;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; padding:28px 18px 80px; background:var(--bg); color:var(--ink);
+  font-family:"Sarabun","Noto Sans Thai",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:17px; line-height:1.75; -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:720px;margin:0 auto}
+header{margin-bottom:34px}
+.kicker{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--muted);letter-spacing:.02em}
+.pill{background:var(--accent-soft);color:var(--accent);padding:3px 11px;border-radius:99px;font-weight:600}
+h1{font-size:29px;line-height:1.3;margin:12px 0 6px;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:16px;margin:0}
+h2{font-size:21px;margin:38px 0 12px;letter-spacing:-.005em}
+h3{font-size:17px;margin:26px 0 8px}
+p{margin:0 0 15px}
+ul,ol{margin:0 0 15px;padding-left:22px}
+li{margin-bottom:7px}
+strong{font-weight:600}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin:22px 0}
+.card.accent{background:var(--accent-soft);border-color:#2c4a3c}
+.card.warn{background:var(--warn-soft);border-color:#4a3722}
+.card h3{margin-top:0}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15.5px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-weight:600;font-size:13.5px;letter-spacing:.02em}
+td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.calc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;margin:22px 0}
+.calc label{display:block;font-size:14px;color:var(--muted);margin-bottom:6px}
+.calc .row{margin-bottom:18px}
+input[type=range]{width:100%;accent-color:var(--accent);height:24px}
+.val{font-weight:600;color:var(--accent);font-variant-numeric:tabular-nums}
+.bars{margin-top:6px}
+.bar-row{margin-bottom:12px}
+.bar-label{display:flex;justify-content:space-between;font-size:14px;margin-bottom:5px;gap:10px}
+.bar-track{background:#2a2724;border-radius:8px;height:26px;overflow:hidden;position:relative}
+.bar-fill{height:100%;border-radius:8px;transition:width .55s cubic-bezier(.22,.8,.3,1)}
+.bar-principal{background:#3f5c4e}
+.bar-growth{background:var(--accent)}
+.bar-negative{background:#a34a34}
+.bar-bond{background:#4a7fa0}
+.bar-stock{background:var(--accent)}
+.bar-gold{background:var(--warn)}
+.legend{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-top:10px;flex-wrap:wrap}
+.swatch{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:middle}
+.seg{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+.seg button{
+  background:var(--code);color:var(--muted);border:1px solid var(--line);border-radius:99px;
+  padding:6px 16px;font-size:14px;font-family:inherit;cursor:pointer;transition:all .2s;
+}
+.seg button.active{background:var(--accent-soft);color:var(--accent);border-color:#2c4a3c;font-weight:600}
+details{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:12px 16px;margin:10px 0}
+details[open]{background:#1d1b19}
+summary{cursor:pointer;font-weight:600;font-size:15.5px;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"▸ ";color:var(--accent)}
+details[open] summary::before{content:"▾ "}
+.ans{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font-size:15.5px;color:#d6d1c9}
+.q{font-weight:600;margin:22px 0 8px}
+pre{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:14px;line-height:1.6}
+code{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+.summary-box{border-left:3px solid var(--accent);padding-left:18px;margin:26px 0}
+.summary-box p{margin-bottom:8px}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
+footer a{color:var(--accent)}
+.disclaimer{font-size:13px;color:var(--muted);margin-top:18px;line-height:1.6}
+.nav{margin-bottom:20px;font-size:14px}
+.nav a{color:var(--accent);text-decoration:none}
+.src{font-size:12.5px;color:var(--muted);margin-top:8px}
+.steps{display:flex;align-items:flex-end;gap:14px;margin:18px 0 6px;height:150px}
+.step{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px}
+.step-bar{width:100%;border-radius:8px 8px 0 0;transition:height .55s cubic-bezier(.22,.8,.3,1);min-height:2px}
+.step1 .step-bar{background:#3f5c4e}
+.step2 .step-bar{background:var(--danger)}
+.step-label{font-size:13px;color:var(--muted);text-align:center}
+.step-val{font-weight:600;color:var(--ink);font-size:14.5px}
+.mixbar{display:flex;height:30px;border-radius:8px;overflow:hidden;margin:6px 0 10px;background:#2a2724}
+.mixseg{height:100%;transition:width .4s cubic-bezier(.22,.8,.3,1)}
+.stat{display:flex;justify-content:space-between;font-size:15.5px;padding:7px 0;border-bottom:1px solid var(--line)}
+.stat:last-child{border-bottom:none}
+.stat b{font-variant-numeric:tabular-nums;color:var(--accent)}
+@media(max-width:520px){
+  body{font-size:16px;padding:20px 14px 60px}
+  h1{font-size:25px}
+  .card,.calc{padding:16px}
+}
+
+/* โครงสร้างสิทธิเรียกร้อง / แถบสัดส่วน (ใช้ต่อจาก Day 20) */
+.wf{margin:18px 0 6px}
+.wf-track{display:flex;height:44px;border-radius:10px;overflow:hidden;background:#2a2724;border:1px solid var(--line)}
+.wf-seg{height:100%;display:flex;align-items:center;justify-content:center;font-size:12.5px;color:#12130f;font-weight:600;overflow:hidden;white-space:nowrap;transition:width .5s cubic-bezier(.22,.8,.3,1)}
+.wf-debt{background:#4a7fa0;color:#0f1b22}
+.wf-eq{background:var(--accent)}
+.wf-gap{background:#7a3d2c;color:#f0ded8}
+.wf-axis{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:6px;font-variant-numeric:tabular-nums}
+.ladder{list-style:none;padding:0;margin:16px 0}
+.ladder li{display:flex;gap:12px;align-items:baseline;padding:9px 14px;border:1px solid var(--line);border-radius:9px;margin-bottom:7px;background:var(--card);font-size:15.5px}
+.ladder li:last-child{background:var(--accent-soft);border-color:#2c4a3c}
+.ladder .rank{font-variant-numeric:tabular-nums;font-size:13px;color:var(--muted);min-width:20px;flex-shrink:0}
+
+/* Day 21 — เส้นทางคำสั่งซื้อ */
+.pipe{margin:16px 0 4px}
+.pnode{display:flex;gap:12px;align-items:flex-start;padding:11px 14px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;background:var(--card);transition:background .3s,border-color .3s,transform .3s}
+.pnode.on{background:var(--accent-soft);border-color:#2c4a3c;transform:translateX(7px)}
+.pnum{width:25px;height:25px;border-radius:50%;background:#2a2724;color:var(--muted);font-size:12.5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:3px;font-variant-numeric:tabular-nums;transition:background .3s,color .3s}
+.pnode.on .pnum{background:var(--accent);color:#12130f;font-weight:700}
+.pttl{font-weight:600;font-size:15.5px;margin-bottom:2px}
+.pdesc{font-size:14px;color:var(--muted);line-height:1.6}
+.pbtn{background:var(--accent-soft);color:var(--accent);border:1px solid #2c4a3c;border-radius:99px;padding:8px 22px;font-size:15px;font-family:inherit;font-weight:600;cursor:pointer;transition:opacity .2s}
+.pbtn:disabled{opacity:.45;cursor:default}
+.regbar{margin-top:10px;padding:10px 14px;border:1px dashed var(--line);border-radius:10px;font-size:14px;color:var(--muted)}
+.scalebar{background:#2a2724;border-radius:8px;height:22px;overflow:hidden;margin-bottom:5px}
+.scalefill{height:100%;border-radius:8px}
+
+/* Day 22 — กระดานราคา (order book) และปฏิทิน T+2 */
+.book{font-variant-numeric:tabular-nums;font-size:15px;margin:4px 0 2px}
+.brow{display:grid;grid-template-columns:1fr 84px 1fr;gap:8px;align-items:center;padding:3px 0}
+.bqty{display:flex;height:24px;border-radius:6px;overflow:hidden;background:transparent}
+.bqty i{height:100%;border-radius:6px;display:block;transition:width .4s ease,opacity .4s ease}
+.bqty.l{justify-content:flex-end}
+.bprice{text-align:center;font-weight:600;padding:2px 0;border-radius:6px;transition:background .3s,color .3s}
+.bprice.ask{color:var(--danger)}
+.bprice.bid{color:var(--accent)}
+.bprice.hit{background:var(--warn-soft);color:var(--warn)}
+.bqty span{font-size:12.5px;color:var(--muted);padding:0 6px;line-height:24px;white-space:nowrap}
+.bhead{display:grid;grid-template-columns:1fr 84px 1fr;gap:8px;font-size:12.5px;color:var(--muted);padding-bottom:5px;border-bottom:1px solid var(--line);margin-bottom:6px}
+.bhead span:nth-child(1){text-align:right}
+.bhead span:nth-child(2){text-align:center}
+.spreadrow{text-align:center;font-size:13px;color:var(--warn);padding:5px 0;border-top:1px dashed var(--line);border-bottom:1px dashed var(--line);margin:5px 0}
+.cal{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin:16px 0 6px}
+.cday{border:1px solid var(--line);border-radius:10px;padding:9px 6px;text-align:center;background:var(--card);transition:background .35s,border-color .35s}
+.cday .cn{font-size:12px;color:var(--muted)}
+.cday .cv{font-size:14px;font-weight:600;margin-top:3px;min-height:20px}
+.cday.t{background:var(--accent-soft);border-color:#2c4a3c}
+.cday.s{background:var(--warn-soft);border-color:#4a3722}
+.cday.off{opacity:.4}
+
+/* Day 23 — โครงเงินปันผล */
+.split{display:flex;height:34px;border-radius:9px;overflow:hidden;background:#2a2724;border:1px solid var(--line);margin:10px 0 4px}
+.split i{height:100%;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;transition:width .45s cubic-bezier(.22,.8,.3,1)}
+.sp-pay{background:var(--accent);color:#12130f}
+.sp-ret{background:#3f5c4e;color:#dfe8e2}
+.idcard{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin:14px 0;font-variant-numeric:tabular-nums;font-size:15.5px;text-align:center}
+.idcard b{color:var(--accent)}
+.tax2{display:flex;gap:14px;align-items:flex-end;height:170px;margin:16px 0 4px}
+.tax2 .col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px}
+.tax2 .cb{width:100%;border-radius:9px 9px 0 0;transition:height .5s cubic-bezier(.22,.8,.3,1);min-height:3px}
+.tax2 .c1 .cb{background:#3f5c4e}
+.tax2 .c2 .cb{background:var(--accent)}
+.tax2 .c2.lose .cb{background:var(--danger)}
+.verdict{text-align:center;font-size:15px;padding:9px 12px;border-radius:9px;margin-top:12px;background:var(--accent-soft);color:var(--accent);border:1px solid #2c4a3c}
+.verdict.bad{background:var(--warn-soft);color:var(--warn);border-color:#4a3722}
+</style>
+<style>
+/* Day 24 — น้ำตกงบกำไรขาดทุน */
+.wfall{margin:16px 0 6px;font-variant-numeric:tabular-nums}
+.wrow{display:grid;grid-template-columns:112px 1fr 92px;gap:10px;align-items:center;margin-bottom:6px;font-size:14.5px}
+.wrow .wlab{color:var(--muted);font-size:13.5px;line-height:1.4}
+.wrow.tot .wlab{color:var(--ink);font-weight:600}
+.wtrack{position:relative;height:26px;background:#2a2724;border-radius:7px;overflow:hidden}
+.wseg{position:absolute;top:0;height:100%;border-radius:7px;transition:left .5s cubic-bezier(.22,.8,.3,1),width .5s cubic-bezier(.22,.8,.3,1)}
+.w-rev{background:#3f5c4e}
+.w-gp{background:#4d7a63}
+.w-ebit{background:#5aa47e}
+.w-np{background:var(--accent)}
+.w-cut{background:var(--danger);opacity:.85}
+.wval{text-align:right;font-weight:600;font-size:14.5px}
+.wrow.cut .wval{color:var(--danger)}
+.wrow.tot .wval{color:var(--accent)}
+.mgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0 4px}
+.mbox{background:var(--code);border:1px solid var(--line);border-radius:11px;padding:11px 8px;text-align:center}
+.mbox .mv{font-size:20px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums;line-height:1.3}
+.mbox .mn{font-size:12px;color:var(--muted);line-height:1.45;margin-top:2px}
+.mbox.neg .mv{color:var(--danger)}
+@media(max-width:520px){
+  .wrow{grid-template-columns:92px 1fr 78px;gap:7px;font-size:13.5px}
+  .wrow .wlab{font-size:12.5px}
+  .mbox .mv{font-size:17px}
+}
+</style>
+<style>
+/* Day 25 — งบดุลสองฝั่ง และวงจรเงินสด */
+.bswrap{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0 6px}
+.bscol{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:11px;overflow:hidden;min-height:230px}
+.bshead{font-size:12.5px;color:var(--muted);text-align:center;margin-bottom:6px;letter-spacing:.02em}
+.bsseg{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:0 9px;font-size:12px;font-weight:600;color:#12130f;overflow:hidden;white-space:nowrap;transition:height .5s cubic-bezier(.22,.8,.3,1);min-height:0}
+.bsseg span:last-child{font-variant-numeric:tabular-nums}
+.a-cash{background:#6cc394}.a-ar{background:#4d7a63;color:#e8f2ec}.a-inv{background:#3f5c4e;color:#e8f2ec}
+.a-ppe{background:#4a7fa0;color:#0f1b22}.a-int{background:#5b6b7a;color:#e6edf3}
+.l-cl{background:#e0a86f;color:#241a0d}.l-ltd{background:#a8703f;color:#f6e8da}
+.e-eq{background:#6cc394}.e-re{background:#3f5c4e;color:#e8f2ec}
+.bsseg.neg{background:var(--danger);color:#fff}
+.eqline{display:flex;justify-content:center;gap:10px;font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums;margin-top:4px}
+.eqline b{color:var(--accent)}
+.gantt{margin:16px 0 6px}
+.grow{display:grid;grid-template-columns:116px 1fr;gap:10px;align-items:center;margin-bottom:7px;font-size:13.5px;color:var(--muted)}
+.gtrack{position:relative;height:25px;background:#2a2724;border-radius:7px;overflow:hidden}
+.gbar{position:absolute;top:0;height:100%;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;overflow:hidden;white-space:nowrap;transition:left .5s cubic-bezier(.22,.8,.3,1),width .5s cubic-bezier(.22,.8,.3,1)}
+.g-dio{background:#3f5c4e;color:#e8f2ec}
+.g-dso{background:#4a7fa0;color:#0f1b22}
+.g-dpo{background:var(--warn);color:#241a0d}
+.g-ccc{background:var(--danger);color:#fff}
+@media(max-width:520px){
+  .bswrap{gap:8px}
+  .bsseg{font-size:11px;padding:0 6px}
+  .grow{grid-template-columns:92px 1fr;gap:7px;font-size:12.5px}
+}
+</style>
+<style>
+/* Day 26 — สามกระแสเงินสด (แท่งบวก/ลบรอบเส้นศูนย์) */
+.zwrap{margin:18px 0 4px}
+.zbar{position:relative;height:150px;display:flex;gap:16px}
+.zaxis{position:absolute;left:0;right:0;top:75px;border-top:1px dashed #4a453f;z-index:0}
+.zc{flex:1;position:relative;z-index:1}
+.zfill{position:absolute;left:0;right:0;border-radius:7px;transition:top .5s cubic-bezier(.22,.8,.3,1),height .5s cubic-bezier(.22,.8,.3,1);min-height:3px}
+.zfill.p{background:var(--accent)}
+.zfill.n{background:var(--danger)}
+.zv{position:absolute;left:0;right:0;text-align:center;font-size:13.5px;font-weight:700;font-variant-numeric:tabular-nums;transition:top .5s cubic-bezier(.22,.8,.3,1)}
+.zv.p{color:var(--accent)} .zv.n{color:var(--danger)}
+.zlab{display:flex;gap:16px;margin-top:8px}
+.zlab div{flex:1;text-align:center;font-size:12.5px;color:var(--muted);line-height:1.45}
+.tax2 .c3 .cb{background:#4a7fa0}
+.sign{display:inline-block;min-width:18px;font-weight:700;font-variant-numeric:tabular-nums}
+.sign.p{color:var(--accent)} .sign.n{color:var(--danger)}
+.cfs td:first-child{padding-left:12px}
+.cfs tr.head td{color:var(--muted);font-size:13.5px;font-weight:600;padding-top:16px}
+.cfs tr.sum td{font-weight:700;border-top:1px solid var(--line);border-bottom:2px solid var(--line)}
+.cfs tr.sum td.num{color:var(--accent)}
+.cfs tr.sum.neg td.num{color:var(--danger)}
+.cfs td.ind{padding-left:26px;color:#cdc7be;font-size:14.5px}
+@media(max-width:520px){
+  .zbar{gap:9px;height:135px}
+  .zaxis{top:67px}
+  .zlab{gap:9px}
+  .zlab div{font-size:11.5px}
+  .cfs td.ind{padding-left:14px;font-size:13.5px}
+}
+</style>
+<style>
+/* Day 27 — DuPont และห้องทดลองเลเวอเรจ */
+.dp{margin:16px 0 4px}
+.dprow{display:grid;grid-template-columns:136px 1fr 74px;gap:10px;align-items:center;margin-bottom:8px;font-size:14px}
+.dprow .dlab{color:var(--muted);font-size:13.5px;line-height:1.45}
+.dtrack{height:24px;background:#2a2724;border-radius:7px;overflow:hidden}
+.dfill{height:100%;border-radius:7px;transition:width .5s cubic-bezier(.22,.8,.3,1);min-width:3px}
+.d-nm{background:var(--accent)}
+.d-at{background:#4a7fa0}
+.d-em{background:var(--warn)}
+.dval{text-align:right;font-weight:600;font-variant-numeric:tabular-nums;font-size:14.5px}
+.dprod{text-align:center;font-size:15.5px;padding:10px 12px;border-radius:9px;background:var(--accent-soft);
+  border:1px solid #2c4a3c;color:var(--accent);margin-top:6px;font-variant-numeric:tabular-nums}
+.dnote{font-size:14px;color:var(--muted);margin-top:10px;line-height:1.65}
+.rid{display:grid;grid-template-columns:1fr 1fr;gap:8px 18px;margin:16px 0 4px}
+.rid .r{display:flex;justify-content:space-between;gap:8px;font-size:15px;padding:7px 0;border-bottom:1px solid var(--line)}
+.rid .r b{font-variant-numeric:tabular-nums;color:var(--accent);white-space:nowrap}
+.rid .r.warnv b{color:var(--warn)}
+.rid .r.badv b{color:var(--danger)}
+.tax2 .c3.lose .cb{background:var(--danger)}
+@media(max-width:520px){
+  .dprow{grid-template-columns:104px 1fr 62px;gap:7px;font-size:13px}
+  .dprow .dlab{font-size:12.5px}
+  .rid{grid-template-columns:1fr;gap:0 0}
+}
+</style>
+<style>
+/* Day 28 — DCF: แถบมูลค่าปลายทาง ตารางความไว และมาตรวัดราคา */
+.d-y{background:#4d7a63}
+.d-tv{background:var(--warn)}
+.heat{font-variant-numeric:tabular-nums;font-size:14.5px}
+.heat th,.heat td{padding:8px 6px;text-align:center}
+.heat td.rowh,.heat th{color:var(--muted);font-size:13px}
+.heat td.v{border-radius:7px;font-weight:600}
+.h0{background:#241f1c;color:#c9b7ad}
+.h1{background:#2b2a20;color:#d4c59f}
+.h2{background:#26302a;color:#9fd0b4}
+.h3{background:#1f3b2c;color:#8ee0b0}
+.heat td.mid{outline:2px solid var(--accent);outline-offset:-2px}
+.gauge{position:relative;height:56px;margin:18px 0 6px}
+.gtrk{position:absolute;left:0;right:0;top:22px;height:14px;border-radius:7px;background:linear-gradient(90deg,#1f3b2c,#2b2a20,#4a2b22)}
+.gmk{position:absolute;top:8px;width:2px;height:42px;background:var(--ink);transition:left .5s cubic-bezier(.22,.8,.3,1)}
+.gmk.price{background:var(--danger)}
+.gmk i{position:absolute;top:-16px;left:50%;transform:translateX(-50%);font-size:12px;font-style:normal;white-space:nowrap;color:var(--muted)}
+.gscale{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+@media(max-width:520px){
+  .heat{font-size:12.5px}
+  .heat th,.heat td{padding:6px 3px}
+}
+</style>
+<style>
+/* Day 29 — Growth vs Value: การ์ดสองฝั่ง ทฤษฎีบท และแถบแยกผลตอบแทน */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0 6px}
+.duo .dcard{border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:var(--card)}
+.duo .dcard.g{border-color:#4a3722;background:var(--warn-soft)}
+.duo .dcard.v{border-color:#2c4a3c;background:var(--accent-soft)}
+.duo .dh{font-size:13px;color:var(--muted);letter-spacing:.02em;margin-bottom:8px;font-weight:600}
+.duo .dl{display:flex;justify-content:space-between;gap:8px;font-size:14.5px;padding:5px 0;border-bottom:1px solid var(--line)}
+.duo .dl:last-child{border-bottom:none}
+.duo .dl b{font-variant-numeric:tabular-nums;white-space:nowrap}
+.duo .dcard.g .dl b{color:var(--warn)}
+.duo .dcard.v .dl b{color:var(--accent)}
+.sp-a{background:#4a7fa0;color:#0f1b22}
+.sp-b{background:var(--accent);color:#12130f}
+.sp-c{background:var(--warn);color:#241a0d}
+.sp-neg{background:var(--danger);color:#fff}
+.thm{background:var(--accent-soft);border:1px solid #2c4a3c;border-radius:12px;padding:16px 18px;margin:18px 0;text-align:center;font-size:16px}
+.thm .eq{font-size:18.5px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums;margin-bottom:7px;line-height:1.5}
+.thm .note{font-size:13.5px;color:var(--muted);line-height:1.65}
+@media(max-width:520px){ .duo{grid-template-columns:1fr} .thm .eq{font-size:16px} }
+</style>
+<style>
+/* Day 30 — วงล้อวัฏจักร และการ์ดสี่ช่วงเศรษฐกิจ */
+.cyc{margin:14px 0 4px}
+.cyc svg{width:100%;height:auto;display:block}
+.phgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0 14px}
+.ph{border:1px solid var(--line);border-radius:10px;padding:9px 8px;background:var(--card);text-align:center;transition:background .3s,border-color .3s,transform .3s}
+.ph.on{background:var(--accent-soft);border-color:#2c4a3c;transform:translateY(-3px)}
+.ph b{display:block;font-size:14px;color:var(--ink);margin-bottom:2px}
+.ph span{display:block;color:var(--muted);font-size:12px;line-height:1.5}
+.ph.on b{color:var(--accent)}
+@media(max-width:520px){ .phgrid{grid-template-columns:1fr 1fr} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="nav"><a href="../index.html">← สารบัญ</a></div>
+
+<header>
+  <div class="kicker">
+    <span class="pill">Day 30 / 90</span>
+    <span>Phase 2 · การลงทุนระยะยาว</span>
+    <span>·</span>
+    <span>อ่าน 9 นาที</span>
+  </div>
+  <h1>วัฏจักรธุรกิจและกลุ่มอุตสาหกรรม (sector)</h1>
+  <p class="sub">เมื่อวานเราดูว่าตลาดยอมจ่าย P/E เท่าไรให้การเติบโต วันนี้จะเห็นว่าสำหรับหุ้นบางกลุ่ม P/E กลับบอกทิศผิดทั้งหมด — มันดูถูกที่สุดตอนที่แพงที่สุด และดูแพงที่สุดตอนที่ถูกที่สุด</p>
+</header>
+
+<h2>เศรษฐกิจไม่ได้เดินเป็นเส้นตรง</h2>
+
+<p><strong>วัฏจักรธุรกิจ (business cycle)</strong> คือการที่กิจกรรมทางเศรษฐกิจขยายตัวและหดตัวสลับกันรอบแนวโน้มระยะยาว ตำราแบ่งเป็นสี่ช่วง: <strong>ฟื้นตัว (early cycle)</strong> → <strong>ขยายตัว (mid cycle)</strong> → <strong>ชะลอตัว (late cycle)</strong> → <strong>ถดถอย (recession)</strong> แล้ววนกลับ แต่ละรอบยาวไม่เท่ากัน และไม่มีใครประกาศล่วงหน้าว่ากำลังเปลี่ยนช่วง</p>
+
+<p>ตัวแปรที่ใช้อ่านช่วงของวัฏจักรมีสี่ตัวหลัก: <strong>อัตราการเติบโตของ GDP</strong> (เร่งหรือชะลอ), <strong>อัตราดอกเบี้ยนโยบาย</strong> (ธนาคารกลางกำลังลดหรือขึ้น), <strong>เงินเฟ้อ (inflation)</strong> และ <strong>อัตราการว่างงาน</strong> สิ่งสำคัญคือ<strong>ทิศทาง</strong>ของมัน ไม่ใช่ระดับ — GDP โต 2% ที่กำลังเร่งขึ้นจาก 0% กับ 2% ที่กำลังชะลอจาก 4% คือคนละช่วงของวัฏจักรเลย</p>
+
+<h2>หุ้นวัฏจักร vs หุ้นตั้งรับ</h2>
+
+<p><strong>หุ้นวัฏจักร (cyclical)</strong> คือธุรกิจที่ยอดขายแกว่งตามเศรษฐกิจแรง เพราะลูกค้าเลื่อนการซื้อได้ — ปิโตรเคมี เหล็ก ยานยนต์ วัสดุก่อสร้าง อสังหาฯ สายการบิน ส่วน<strong>หุ้นตั้งรับ (defensive)</strong> ขายของที่คนต้องซื้อไม่ว่าเศรษฐกิจจะเป็นอย่างไร — อาหาร ไฟฟ้า น้ำประปา โรงพยาบาล ค้าปลีกของใช้จำเป็น</p>
+
+<p>แต่ยอดขายที่แกว่งเป็นแค่ครึ่งเดียวของเรื่อง อีกครึ่งคือ <strong>operating leverage</strong> จาก Day 24: ธุรกิจวัฏจักรมักมีต้นทุนคงที่สูง (โรงงาน เครื่องจักร) ความไวของกำไรจึงเป็นผลคูณของสองชั้น:</p>
+
+<div class="thm">
+  <div class="eq">%ΔEBIT ≈ DOL × %Δยอดขาย</div>
+  <div class="note">หุ้นวัฏจักรแย่สองชั้น: <strong>%Δยอดขาย</strong> ใหญ่เพราะลูกค้าเลื่อนการซื้อได้ และ <strong>DOL</strong> สูงเพราะต้นทุนคงที่หนัก</div>
+</div>
+
+<p>ลองสร้างบริษัทสมมติสองตัวที่มีหุ้น 100 ล้านหุ้น ภาษี 20% ไม่มีหนี้:</p>
+
+<ul>
+  <li><strong>บริษัท ป. (ปิโตรเคมี)</strong> ต้นทุนผันแปร 60% ของยอดขาย ต้นทุนคงที่ 600 ล้านบาท ยอดขายแกว่ง 1,600–2,800 ล้านบาท</li>
+  <li><strong>บริษัท ด. (อาหาร)</strong> ต้นทุนผันแปร 70% ต้นทุนคงที่ 400 ล้านบาท ยอดขายแกว่งแค่ 1,900–2,100 ล้านบาท</li>
+</ul>
+
+<table>
+  <thead><tr><th>ช่วงวัฏจักร</th><th class="num">ยอดขาย ป.</th><th class="num">EPS ป.</th><th class="num">P/E ป. ที่ 22.40</th></tr></thead>
+  <tbody>
+    <tr><td>ก้นเหว (trough)</td><td class="num">1,600</td><td class="num">0.32</td><td class="num">70.00</td></tr>
+    <tr><td>ฟื้นตัว</td><td class="num">2,000</td><td class="num">1.60</td><td class="num">14.00</td></tr>
+    <tr><td>ขยายตัว</td><td class="num">2,400</td><td class="num">2.88</td><td class="num">7.78</td></tr>
+    <tr><td>จุดสูงสุด (peak)</td><td class="num">2,800</td><td class="num">4.16</td><td class="num">5.38</td></tr>
+  </tbody>
+</table>
+
+<p>ยอดขายของ ป. จากก้นเหวถึงจุดสูงสุดต่างกันแค่ <strong>1.75 เท่า</strong> แต่ EPS ต่างกัน <strong>13 เท่า</strong> (0.32 → 4.16) ส่วน ด. ยอดขายต่างกัน 1.11 เท่า EPS ต่างกันแค่ 1.35 เท่า (1.36 → 1.84) นี่คือ operating leverage ทำงานเต็มกำลัง</p>
+
+<h2>ความขัดแย้งของ P/E หุ้นวัฏจักร</h2>
+
+<p>สมมติตลาดฉลาดพอจะตีราคา ป. จาก<strong>กำไรเฉลี่ยทั้งรอบ (normalized EPS)</strong> = (0.32 + 1.60 + 2.88 + 4.16) ÷ 4 = <strong>2.24 บาท</strong> ที่ P/E 10 เท่า ⇒ ราคาคงที่ 22.40 บาท ราคาไม่ได้ขยับเลยแม้แต่สตางค์เดียว แต่ P/E บนหน้าจอเปลี่ยนจาก <strong>70 เท่าตอนก้นเหว</strong> เหลือ <strong>5.38 เท่าตอนจุดสูงสุด</strong></p>
+
+<div class="card warn">
+  <h3>กฎกลับหัวของหุ้นวัฏจักร</h3>
+  <p style="margin-bottom:0">P/E ต่ำมาก ⇒ กำไรอยู่ใกล้จุดสูงสุดของรอบ ⇒ <strong>ทางเดียวที่เหลือคือลง</strong> · P/E สูงลิ่วหรือขาดทุน ⇒ กำไรอยู่ใกล้ก้นเหว · นักลงทุนที่ใช้สูตรคัดหุ้น P/E ต่ำจาก Day 29 จะซื้อหุ้นวัฏจักรที่ยอดดอยพอดีโดยอัตโนมัติ นี่คือ value trap ชนิดที่พบบ่อยที่สุดในตลาดไทย เพราะ SET มีหุ้นพลังงาน ปิโตรเคมี และวัสดุอยู่เยอะ</p>
+</div>
+
+<p>ทางแก้ที่มืออาชีพใช้คือ <strong>P/E บนกำไรเฉลี่ยทั้งรอบ</strong> (5–10 ปี) แทนกำไรปีล่าสุด เวอร์ชันระดับตลาดที่มีชื่อคือ <strong>CAPE (Shiller P/E)</strong> = ราคา ÷ กำไรเฉลี่ย 10 ปีที่ปรับเงินเฟ้อแล้ว สำหรับหุ้นรายตัวอาจใช้ <strong>P/BV</strong> (Day 25) ซึ่งนิ่งกว่า เพราะส่วนของผู้ถือหุ้นไม่แกว่งแรงเท่ากำไรรายปี</p>
+
+<div class="calc">
+  <h3 style="margin-top:0;font-size:16px">หมุนวัฏจักรด้วยตัวเอง (ราคาหุ้นทั้งสองตัวคงที่ 22.40 บาท)</h3>
+  <div class="row"><label>ตำแหน่งในวัฏจักร: <span class="val" id="o_ph">จุดสูงสุด</span></label>
+    <input type="range" id="r_t" min="0" max="100" step="1" value="50"></div>
+  <div class="cyc">
+    <svg viewBox="0 0 600 160" role="img" aria-label="กราฟวัฏจักรเศรษฐกิจ">
+      <rect x="20" y="10" width="140" height="140" fill="#1c2f26" opacity=".35"/>
+      <rect x="160" y="10" width="140" height="140" fill="#1c2f26" opacity=".6"/>
+      <rect x="300" y="10" width="140" height="140" fill="#2e2419" opacity=".6"/>
+      <rect x="440" y="10" width="140" height="140" fill="#2e2419" opacity=".35"/>
+      <line x1="20" y1="80" x2="580" y2="80" stroke="#4a453f" stroke-dasharray="4 4"/>
+      <path id="wave" d="" fill="none" stroke="#6cc394" stroke-width="3"/>
+      <line id="mkl" x1="300" y1="10" x2="300" y2="150" stroke="#e8e4dd" stroke-width="1" opacity=".5"/>
+      <circle id="mk" cx="300" cy="20" r="8" fill="#e0a86f" stroke="#191816" stroke-width="3"/>
+    </svg>
+  </div>
+  <div class="phgrid">
+    <div class="ph" id="ph0"><b>ฟื้นตัว</b><span>ดอกเบี้ยต่ำ · ธนาคาร อสังหาฯ ของฟุ่มเฟือย</span></div>
+    <div class="ph" id="ph1"><b>ขยายตัว</b><span>กำไรเร่ง · เทคโนโลยี สินค้าอุตสาหกรรม</span></div>
+    <div class="ph" id="ph2"><b>ชะลอตัว</b><span>เงินเฟ้อ ดอกเบี้ยขึ้น · พลังงาน วัสดุ</span></div>
+    <div class="ph" id="ph3"><b>ถดถอย</b><span>กำไรหด · อาหาร สาธารณูปโภค การแพทย์</span></div>
+  </div>
+  <div class="duo">
+    <div class="dcard g">
+      <div class="dh">บริษัท ป. · วัฏจักร</div>
+      <div class="dl"><span>ยอดขาย (ลบ.)</span><b id="c_r">2,800</b></div>
+      <div class="dl"><span>EPS</span><b id="c_e">4.16</b></div>
+      <div class="dl"><span>P/E ที่ราคา 22.40</span><b id="c_pe">5.38</b></div>
+    </div>
+    <div class="dcard v">
+      <div class="dh">บริษัท ด. · ตั้งรับ</div>
+      <div class="dl"><span>ยอดขาย (ลบ.)</span><b id="d_r">2,100</b></div>
+      <div class="dl"><span>EPS</span><b id="d_e">1.84</b></div>
+      <div class="dl"><span>P/E ที่ราคา 22.40</span><b id="d_pe">12.17</b></div>
+    </div>
+  </div>
+  <div class="verdict bad" id="vd">P/E ของ ป. ต่ำสุดในรอบ 5.38 เท่า — ดูถูกที่สุดตอนที่กำไรกำลังจะหาย</div>
+</div>
+
+<p>ป้ายใต้กราฟคือ<strong>ทฤษฎีการหมุนกลุ่ม (sector rotation)</strong> ตามตำรา: ช่วงฟื้นตัวดอกเบี้ยต่ำ กลุ่มที่ไวต่อดอกเบี้ยและสินเชื่อนำ ช่วงปลายรอบราคาสินค้าโภคภัณฑ์พุ่ง กลุ่มพลังงานและวัสดุได้ประโยชน์ ช่วงถดถอยเงินไหลเข้าหุ้นตั้งรับ ต้องบอกตรงๆ ว่าหลักฐานเชิงประจักษ์ของแผนภาพนี้<strong>หลวมกว่าที่ตำราวาด</strong> — ราคาหุ้นมักเคลื่อนนำเศรษฐกิจ 6–9 เดือน และเราไม่รู้ว่าอยู่ช่วงไหนจนกว่ามันผ่านไปแล้ว ประโยชน์ที่แท้จริงของมันจึงไม่ใช่การจับจังหวะ แต่คือการ<strong>รู้ว่าพอร์ตของเรากำลังเดิมพันกับช่วงไหนอยู่</strong></p>
+
+<h2>ตลาดไทยแบ่งกลุ่มอย่างไร</h2>
+
+<p>ตลาดหลักทรัพย์ฯ จัดหุ้นใน SET เป็น <strong>8 กลุ่มอุตสาหกรรม (industry group) และ 28 หมวดธุรกิจ (sector)</strong> ทุกกลุ่มมีดัชนีของตัวเองที่ถ่วงน้ำหนักด้วยมูลค่าตลาดเหมือน SET Index เราใช้มันเช็กได้ทันทีว่าพอร์ตเอียงไปทางไหน</p>
+
+<table>
+  <thead><tr><th>กลุ่มอุตสาหกรรม</th><th>หมวดธุรกิจ (ตัวอย่าง)</th><th>นิสัยต่อวัฏจักร</th></tr></thead>
+  <tbody>
+    <tr><td>ทรัพยากร (RESOURC)</td><td>พลังงานและสาธารณูปโภค, เหมืองแร่</td><td>ผสม: ต้นน้ำ/โรงกลั่นวัฏจักรสูง ไฟฟ้าตั้งรับ</td></tr>
+    <tr><td>ธุรกิจการเงิน (FINCIAL)</td><td>ธนาคาร, เงินทุนและหลักทรัพย์, ประกัน</td><td>วัฏจักร + ไวต่อดอกเบี้ย</td></tr>
+    <tr><td>สินค้าอุตสาหกรรม (INDUS)</td><td>ปิโตรเคมี, เหล็ก, ยานยนต์, บรรจุภัณฑ์</td><td>วัฏจักรสูง</td></tr>
+    <tr><td>อสังหาฯ และก่อสร้าง (PROPCON)</td><td>พัฒนาอสังหาฯ, วัสดุก่อสร้าง, REITs</td><td>วัฏจักร + ไวต่อดอกเบี้ย</td></tr>
+    <tr><td>บริการ (SERVICE)</td><td>พาณิชย์, การแพทย์, ท่องเที่ยว, ขนส่ง</td><td>ผสม: การแพทย์ตั้งรับ ท่องเที่ยววัฏจักร</td></tr>
+    <tr><td>เกษตรและอาหาร (AGRO)</td><td>ธุรกิจการเกษตร, อาหารและเครื่องดื่ม</td><td>ส่วนใหญ่ตั้งรับ</td></tr>
+    <tr><td>สินค้าอุปโภคบริโภค (CONSUMP)</td><td>แฟชั่น, ของใช้ในครัวเรือน, ของใช้ส่วนตัว</td><td>ผสม</td></tr>
+    <tr><td>เทคโนโลยี (TECH)</td><td>ชิ้นส่วนอิเล็กทรอนิกส์, ICT</td><td>ชิ้นส่วนวัฏจักรสูง สื่อสารค่อนข้างตั้งรับ</td></tr>
+  </tbody>
+</table>
+<p class="src">ที่มาโครงสร้างกลุ่ม: set.or.th หน้า "ข้อมูลดัชนีกลุ่มอุตสาหกรรมและหมวดธุรกิจ" (โครงสร้างปรับปรุงล่าสุด 1 ธ.ค. 2564, เข้าถึง 24 ก.ย. 2569) · คอลัมน์นิสัยต่อวัฏจักรเป็นการจัดประเภททั่วไปเพื่อการศึกษา ไม่ใช่การจัดของ ตลท.</p>
+
+<p>สังเกตว่าคำว่า "วัฏจักร" หรือ "ตั้งรับ" ติดอยู่กับ<strong>ธุรกิจ</strong> ไม่ใช่ชื่อกลุ่ม หมวดพลังงานและสาธารณูปโภคหมวดเดียวมีทั้งบริษัทขุดเจาะที่กำไรขึ้นลงตามราคาน้ำมัน และโรงไฟฟ้าที่มีสัญญาขายไฟระยะยาวซึ่งกำไรนิ่งมาก ต้องเปิดดูว่ายอดขายมาจากไหน</p>
+
+<h2>ตอนนี้เศรษฐกิจไทยอยู่ตรงไหน?</h2>
+
+<p>ลองอ่านตัวเลขจริงล่าสุดที่ สศช. แถลงเมื่อ 17 ส.ค. 2569:</p>
+
+<div class="duo">
+  <div class="dcard v">
+    <div class="dh">สัญญาณว่า "ยังขยาย"</div>
+    <div class="dl"><span>ลงทุนภาคเอกชน</span><b>+13.4%</b></div>
+    <div class="dl"><span>มูลค่าส่งออกสินค้า</span><b>+17.6%</b></div>
+    <div class="dl"><span>อัตราว่างงาน</span><b>0.96%</b></div>
+    <div class="dl"><span>คาดทั้งปี 2569</span><b>2.0–2.5%</b></div>
+  </div>
+  <div class="dcard g">
+    <div class="dh">สัญญาณว่า "ชะลอ"</div>
+    <div class="dl"><span>GDP Q2/2569</span><b>1.9%</b></div>
+    <div class="dl"><span>GDP Q1/2569</span><b>2.8%</b></div>
+    <div class="dl"><span>เงินเฟ้อทั่วไป Q2</span><b>2.7%</b></div>
+    <div class="dl"><span>ดุลบัญชีเดินสะพัด Q2</span><b>−12.0% GDP</b></div>
+  </div>
+</div>
+<p class="src">ที่มา: สศช. แถลงข่าวผลิตภัณฑ์มวลรวมในประเทศ ไตรมาส 2 ปี 2569 วันที่ 17 ส.ค. 2569 (ผ่านกรุงเทพธุรกิจ) · อัตราดอกเบี้ยนโยบาย 1.00% ตามมติ กนง. 26 ส.ค. 2569 (อ้างใน Day 28) · ตัวเลขเหล่านี้จะถูกปรับปรุงเมื่อมีการแถลงรอบถัดไป</p>
+
+<p>คำตอบที่ซื่อสัตย์คือ<strong>สัญญาณปนกัน</strong> GDP ชะลอลง แต่การลงทุนภาคเอกชนโตแรง ส่งออกโตเกือบ 18% นำโดยอิเล็กทรอนิกส์ และการนำเข้าโต 42.3% จากการนำเข้าสินค้าทุนเพื่อสร้างศูนย์ข้อมูล บทเรียนสำคัญ: <strong>วัฏจักรไม่ได้มีวงเดียว</strong> ภายใน GDP 1.9% มีกลุ่มชิ้นส่วนอิเล็กทรอนิกส์ที่อาจอยู่ช่วงขยายตัวเต็มที่ ขณะที่กลุ่มอื่นแทบไม่โต — การถามว่า "เศรษฐกิจอยู่ช่วงไหน" จึงสำคัญน้อยกว่า "<strong>ธุรกิจที่เราถืออยู่ ช่วงไหนของวัฏจักรมันเอง</strong>"</p>
+
+<div class="card accent">
+  <h3>วัฏจักรที่ใกล้ตัวเต้นที่สุด</h3>
+  <p style="margin-bottom:0">รายได้ของเราเองก็มี "เบต้าต่อวัฏจักร" งานสายเทคโนโลยีเป็นอาชีพวัฏจักร — ช่วงขยายตัวบริษัทแย่งจ้างวิศวกร ช่วงชะลอตัวมีการหยุดรับคนและลดตำแหน่ง ถ้าพอร์ตหุ้นของเราเอียงไปทางหุ้นเทค<strong>อีก</strong> ก็เท่ากับเดิมพันกับวัฏจักรเดียวกันสองชั้น ช่วงที่งานหายกับช่วงที่พอร์ตร่วงอาจมาพร้อมกันพอดี นี่คือเหตุผลเดียวกับเงินสำรองฉุกเฉินใน Day 7 — กระจายความเสี่ยงจาก<strong>แหล่งรายได้</strong>ด้วย ไม่ใช่แค่จากหุ้น</p>
+</div>
+
+<details>
+  <summary>กล่องโค้ด (ข้ามได้ ไม่นับในเวลาอ่าน)</summary>
+  <div class="ans">
+<pre><code>import math
+
+def eps(R, var, fixed, tax=0.20, shares=100):
+    return (R * (1 - var) - fixed) * (1 - tax) / shares
+
+price = 22.40
+for t in range(0, 101, 25):                 # 0 = ก้นเหว, 50 = จุดสูงสุด
+    s = math.sin(math.radians(-90 + 3.6 * t))
+    p = eps(2200 + 600 * s, 0.60, 600)      # บริษัท ป. วัฏจักร
+    d = eps(2000 + 100 * s, 0.70, 400)      # บริษัท ด. ตั้งรับ
+    print(f"t={t:3d}  EPS ป.={p:4.2f} P/E={price/p:5.2f} | "
+          f"EPS ด.={d:4.2f} P/E={price/d:5.2f}")
+
+# t=  0  EPS ป.=0.32 P/E=70.00 | EPS ด.=1.36 P/E=16.47
+# t= 50  EPS ป.=4.16 P/E= 5.38 | EPS ด.=1.84 P/E=12.17</code></pre>
+    <p style="margin:10px 0 0;font-size:14.5px">ราคาคงที่ทั้งสองตัว แต่ P/E ของ ป. แกว่ง 13 เท่า ส่วน ด. แกว่งแค่ 1.35 เท่า — ตัวที่แกว่งคือตัวหาร ไม่ใช่มูลค่า</p>
+  </div>
+</details>
+
+<h2>ทดสอบความเข้าใจ</h2>
+
+<p class="q">1. บริษัท ร. ผลิตเหล็ก EPS ห้าปีล่าสุดคือ 0.50, 2.00, 4.00, 3.00, 0.50 บาท (ปีล่าสุดอยู่ท้าย) ราคาวันนี้ 16 บาท · P/E บนกำไรปีล่าสุดเท่าไร ถ้าย้อนไปใช้ราคาเดียวกันตอนกำไรสูงสุดจะได้ P/E เท่าไร และ P/E บนกำไรเฉลี่ยทั้งรอบเท่าไร</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">P/E ปีล่าสุด = 16 ÷ 0.50 = <strong>32 เท่า</strong> (ดูแพงมาก)<br>
+  P/E ตอนกำไรสูงสุด = 16 ÷ 4.00 = <strong>4 เท่า</strong> (ดูถูกมาก)<br>
+  กำไรเฉลี่ย = (0.5 + 2 + 4 + 3 + 0.5) ÷ 5 = 2.00 ⇒ normalized P/E = 16 ÷ 2 = <strong>8 เท่า</strong><br>
+  ราคาเดียวกันเป๊ะให้ P/E ตั้งแต่ 4 ถึง 32 เท่า ขึ้นกับว่าหยิบกำไรปีไหนมาหาร · ตัวเลขที่ใช้ตัดสินใจได้จริงคือ 8 เท่า เพราะมันเทียบราคากับ<strong>ความสามารถทำกำไรเฉลี่ยทั้งรอบ</strong> ไม่ใช่โชคดีหรือโชคร้ายของปีเดียว · และ P/E 32 เท่าตอนนี้อาจเป็นจังหวะที่ดีกว่า P/E 4 เท่าตอนนั้นด้วยซ้ำ</div>
+</details>
+
+<p class="q">2. ประเทศหนึ่ง GDP เพิ่งกลับมาเป็นบวกหลังหดตัวสองไตรมาส ธนาคารกลางลดดอกเบี้ยลงมาต่ำสุดในรอบหลายปี อัตราว่างงานยังสูงแต่เริ่มลดลง เงินเฟ้อต่ำ · เศรษฐกิจน่าจะอยู่ช่วงไหน และตามตำรากลุ่มไหนมักได้ประโยชน์ก่อน เพราะอะไร</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">ช่วง<strong>ฟื้นตัว (early cycle)</strong> — ทุกตัวแปรกำลังเปลี่ยนทิศ: GDP จากลบเป็นบวก ว่างงานจากขึ้นเป็นลง ดอกเบี้ยอยู่ที่ต่ำสุด<br>
+  กลุ่มที่มักนำคือ<strong>ธนาคาร อสังหาฯ และสินค้าฟุ่มเฟือย</strong> เพราะดอกเบี้ยต่ำทำให้คนกู้ซื้อบ้าน ซื้อรถได้ง่าย สินเชื่อเริ่มโต และหนี้เสียเริ่มลด · อีกกลไกคือ operating leverage: หุ้นวัฏจักรกำไรเพิ่งผ่านก้นเหว ยอดขายโตนิดเดียวกำไรก็พุ่งหลายเท่า (ป. จาก 1,600 → 2,000 ยอดขาย +25% แต่ EPS จาก 0.32 → 1.60 = <strong>5 เท่า</strong>)<br>
+  ข้อควรระวัง: ตลาดมักขึ้นล่วงหน้าเศรษฐกิจหลายเดือน พอข่าวบอกว่า "ฟื้นแล้ว" ราคาอาจสะท้อนไปแล้วส่วนใหญ่</div>
+</details>
+
+<p class="q">3. ที่ยอดขาย 2,400 ล้านบาท บริษัท ป. มี DOL = 2.67 ส่วน ด. ที่ยอดขาย 2,000 มี DOL = 3.00 (สูงกว่า!) · ถ้าเศรษฐกิจชะลอทำให้ยอดขาย ป. ลด 10% แต่ยอดขาย ด. ลดแค่ 1% EBIT ของแต่ละบริษัทเปลี่ยนเท่าไร และทำไม ด. ถึงยังเป็นหุ้นตั้งรับทั้งที่ DOL สูงกว่า</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">ป.: DOL = กำไรส่วนเกิน ÷ EBIT = 960 ÷ 360 = 2.67 ⇒ %ΔEBIT = 2.67 × (−10%) = <strong>−26.67%</strong> (ตรวจตรง: ยอดขาย 2,160 ⇒ EBIT 264 = 360 × 0.7333 ✓)<br>
+  ด.: DOL = 600 ÷ 200 = 3.00 ⇒ %ΔEBIT = 3.00 × (−1%) = <strong>−3.00%</strong><br>
+  ความไวของกำไร = <strong>DOL × ความไวของยอดขาย</strong> ด. มี DOL สูงกว่าก็จริง แต่ยอดขายแทบไม่ขยับตามเศรษฐกิจเพราะคนยังต้องกินข้าว ผลคูณจึงเล็ก · สิ่งที่ทำให้หุ้นเป็น "วัฏจักร" คือ<strong>ลูกค้าเลื่อนการซื้อได้หรือไม่</strong> ก่อนเป็นอันดับแรก แล้ว DOL ค่อยขยายผลต่อ</div>
+</details>
+
+<p class="q"><strong>ทวน:</strong> Day 24 สอนจุดคุ้มทุน (break-even) = ต้นทุนคงที่ ÷ อัตรากำไรส่วนเกิน · จงหายอดขายคุ้มทุนระดับ EBIT ของบริษัท ป. (ต้นทุนผันแปร 60% ต้นทุนคงที่ 600 ล้านบาท) และที่ก้นเหว (ยอดขาย 1,600) ป. อยู่ห่างจุดขาดทุนกี่เปอร์เซ็นต์</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">อัตรากำไรส่วนเกิน = 1 − 0.60 = 40% ⇒ ยอดขายคุ้มทุน = 600 ÷ 0.40 = <strong>1,500 ล้านบาท</strong><br>
+  ส่วนเผื่อความปลอดภัย (margin of safety) ที่ก้นเหว = (1,600 − 1,500) ÷ 1,600 = <strong>6.25%</strong> · แปลว่าถ้าวิกฤตรอบหน้าลึกกว่ารอบนี้อีกแค่ 6.25% ป. จะขาดทุนทันที และถ้ามีหนี้ ดอกเบี้ยจะกินต่ออีกชั้น (DFL ใน Day 24) · นี่คือเหตุผลที่หุ้นวัฏจักรที่มีหนี้สูงอันตรายที่สุดตอนก้นเหว — ไม่ใช่เพราะกำไรน้อย แต่เพราะ<strong>อาจไม่รอดถึงรอบฟื้นตัว</strong><br>ตอบผิดหรือลังเล? → <a href="finance-day-24-income-statement.html">ทบทวน Day 24: อ่านงบการเงิน 1: งบกำไรขาดทุน</a></div>
+</details>
+
+<p class="q"><strong>ทวน:</strong> Day 22 คำนวณว่าต้นทุนซื้อแล้วขาย (ไป-กลับ) หุ้นไทยที่ค่าคอม 0.157% อยู่ที่ราว 0.3510% ของเงินลงทุน · ถ้าเต้นลองเล่น sector rotation โดยย้ายทั้งพอร์ตทุกครั้งที่คิดว่าวัฏจักรเปลี่ยนช่วง ปีละ 4 ครั้ง ต้นทุนจะกินผลตอบแทนปีละเท่าไร และ 10 ปีเท่าไร</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">ย้ายทั้งพอร์ตหนึ่งครั้ง = ขายหมด + ซื้อใหม่ = ไป-กลับหนึ่งรอบ ⇒ ปีละ 4 × 0.3510% ≈ <strong>1.40% ต่อปี</strong><br>
+  10 ปี = 40 รอบ ⇒ เหลือ (1 − 0.003510)<sup>40</sup> = 0.8688 ⇒ ต้นทุนกินไป <strong>13.12%</strong> ของพอร์ต ยังไม่นับ slippage จาก spread (Day 22) และการจับจังหวะผิด<br>
+  แปลว่าการหมุนกลุ่มต้อง<strong>ชนะตลาดเกิน 1.4% ต่อปีทุกปี</strong>แค่เพื่อเสมอกับการถือเฉยๆ ขณะที่ช่วงวัฏจักรรู้ได้ชัดก็ต่อเมื่อผ่านไปแล้ว · ทางเลือกที่ถูกกว่าคือกระจายหลายกลุ่มตั้งแต่ต้นแล้วปรับสัดส่วนปีละครั้ง<br>ตอบผิดหรือลังเล? → <a href="finance-day-22-orders-fees-tax-t2.html">ทบทวน Day 22: คำสั่งซื้อขาย ค่าคอมมิชชัน ภาษี และ T+2</a></div>
+</details>
+
+<div class="summary-box">
+  <h2 style="margin-top:0">สรุป 3 บรรทัด</h2>
+  <p>1. ความไวของกำไรต่อเศรษฐกิจ = <strong>ความไวของยอดขาย × DOL</strong> · หุ้นวัฏจักรแย่สองชั้น: ยอดขายแกว่ง 1.75 เท่า กลายเป็น EPS แกว่ง 13 เท่า</p>
+  <p>2. หุ้นวัฏจักร <strong>P/E ต่ำสุดตอนกำไรพีก</strong> และสูงสุดตอนก้นเหว · ใช้ P/E บนกำไรเฉลี่ยทั้งรอบ (normalized / CAPE) หรือ P/BV แทน</p>
+  <p style="margin-bottom:0">3. SET มี 8 กลุ่ม 28 หมวด แต่ความเป็นวัฏจักรติดอยู่กับ<strong>ธุรกิจ</strong> ไม่ใช่ชื่อกลุ่ม · ตัวเลข Q2/2569 ปนกัน และวัฏจักรมีหลายวงซ้อนกัน — รู้ว่าพอร์ตเดิมพันกับอะไรสำคัญกว่าเดาว่าอยู่ช่วงไหน</p>
+</div>
+
+<footer>
+  <p><strong>พรุ่งนี้ Day 31 — กองทุนรวมและค่าธรรมเนียม</strong> วันนี้เห็นแล้วว่าการเลือกกลุ่มเองยากและแพงแค่ไหน ทางลัดของคนส่วนใหญ่คือกองทุนรวม — พรุ่งนี้จะแกะว่าค่าธรรมเนียมการจัดการปีละ 1.5% ที่ฟังดูน้อยนิด ทบต้น 30 ปีแล้วกินเงินเราไปกี่เปอร์เซ็นต์ และอ่าน fund fact sheet ตรงไหนก่อน</p>
+  <p class="disclaimer">บทเรียนนี้เป็นความรู้เชิงการศึกษา ไม่ใช่คำแนะนำทางการเงินเฉพาะบุคคล และไม่ใช่การชี้ชวนให้ซื้อหรือขายหลักทรัพย์ กองทุน หรือหุ้นกลุ่มใด · บริษัทสมมติ ป. ด. และ ร. รวมถึงราคา 22.40 บาท และ P/E 10 เท่า ถูกสร้างขึ้นให้คำนวณตามง่าย ไม่ใช่ข้อมูลจริงของบริษัทใด · แผนภาพการหมุนกลุ่มตามวัฏจักรเป็นกรอบคิดตามตำรา หลักฐานเชิงประจักษ์ไม่สม่ำเสมอและไม่ควรใช้เป็นสัญญาณซื้อขาย · ตัวเลขเศรษฐกิจอ้างอิงจากการแถลงของ สศช. ณ 17 ส.ค. 2569 และจะถูกปรับปรุงในรอบถัดไป · ผลตอบแทนในอดีตไม่ได้บ่งชี้ผลตอบแทนในอนาคต</p>
+</footer>
+
+</div>
+<script>
+(function(){
+  var fmt=function(n,d){ d=(d===undefined?2:d);
+    return n.toLocaleString('th-TH',{minimumFractionDigits:d,maximumFractionDigits:d}); };
+  var $=function(id){ return document.getElementById(id); };
+  var PRICE=22.40, X0=20, W=560, Y0=80, A=60;
+
+  function eps(R,v,F){ return (R*(1-v)-F)*0.8/100; }
+  function th(t){ return (-90+3.6*t)*Math.PI/180; }
+
+  /* วาดเส้นคลื่นครั้งเดียว */
+  var d='';
+  for(var i=0;i<=100;i++){
+    var x=X0+W*i/100, y=Y0-A*Math.sin(th(i));
+    d+=(i===0?'M':'L')+x.toFixed(1)+' '+y.toFixed(1)+' ';
+  }
+  $('wave').setAttribute('d',d);
+
+  var NAMES=['ฟื้นตัว','ขยายตัว','ชะลอตัว','ถดถอย'];
+  var rT=$('r_t');
+
+  function upd(){
+    var t=+rT.value, s=Math.sin(th(t));
+    var x=X0+W*t/100, y=Y0-A*s;
+    $('mk').setAttribute('cx',x); $('mk').setAttribute('cy',y);
+    $('mkl').setAttribute('x1',x); $('mkl').setAttribute('x2',x);
+
+    var k = t<25 ? 0 : (t<=50 ? 1 : (t<75 ? 2 : 3));
+    for(var j=0;j<4;j++){ $('ph'+j).className = (j===k?'ph on':'ph'); }
+    var label=NAMES[k];
+    if(t===0) label='ก้นเหว → เริ่มฟื้นตัว';
+    else if(t===50) label='จุดสูงสุด';
+    else if(t===100) label='ก้นเหว';
+    $('o_ph').textContent=label;
+
+    var rc=2200+600*s, rd=2000+100*s;
+    var ec=eps(rc,0.60,600), ed=eps(rd,0.70,400);
+    var pc=PRICE/ec, pd=PRICE/ed;
+    $('c_r').textContent=fmt(rc,0); $('d_r').textContent=fmt(rd,0);
+    $('c_e').textContent=fmt(ec,2); $('d_e').textContent=fmt(ed,2);
+    $('c_pe').textContent=fmt(pc,2); $('d_pe').textContent=fmt(pd,2);
+
+    var vd=$('vd');
+    if(pc<7){
+      vd.className='verdict bad';
+      vd.innerHTML='P/E ของ ป. แค่ <strong>'+fmt(pc,2)+' เท่า</strong> — ดูถูกกว่า ด. ('+fmt(pd,2)+') แต่กำไรอยู่ใกล้จุดสูงสุดของรอบ นี่คือจุดที่หุ้นวัฏจักรอันตรายที่สุด';
+    } else if(pc>25){
+      vd.className='verdict';
+      vd.innerHTML='P/E ของ ป. พุ่งเป็น <strong>'+fmt(pc,2)+' เท่า</strong> — ดูแพงสุดๆ ทั้งที่ราคาเท่าเดิม เพราะกำไรอยู่ใกล้ก้นเหว สูตรคัด P/E ต่ำจะมองข้ามจุดนี้เสมอ';
+    } else {
+      vd.className='verdict';
+      vd.innerHTML='P/E ของ ป. = '+fmt(pc,2)+' เท่า · ของ ด. = '+fmt(pd,2)+' เท่า · แต่ normalized P/E คงที่ตลอดรอบ: ป. <strong>'+fmt(PRICE/2.24,2)+'</strong> · ด. <strong>'+fmt(PRICE/1.60,2)+'</strong> เท่า';
+    }
+  }
+  rT.addEventListener('input',upd);
+  upd();
+})();
+</script>
+</body>
+</html>
