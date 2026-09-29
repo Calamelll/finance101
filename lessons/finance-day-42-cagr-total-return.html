@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day 42 — CAGR, total return และการวัดผลพอร์ต | Finance101</title>
+<style>
+:root{
+  --bg:#191816; --card:#211f1d; --ink:#e8e4dd; --muted:#a09a91;
+  --line:#332f2b; --accent:#6cc394; --accent-soft:#1c2f26;
+  --warn:#e0a86f; --warn-soft:#2e2419; --code:#201e1b; --danger:#e0785c;
+  color-scheme: dark;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; padding:28px 18px 80px; background:var(--bg); color:var(--ink);
+  font-family:"Sarabun","Noto Sans Thai",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:17px; line-height:1.75; -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:720px;margin:0 auto}
+header{margin-bottom:34px}
+.kicker{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--muted);letter-spacing:.02em}
+.pill{background:var(--accent-soft);color:var(--accent);padding:3px 11px;border-radius:99px;font-weight:600}
+h1{font-size:29px;line-height:1.3;margin:12px 0 6px;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:16px;margin:0}
+h2{font-size:21px;margin:38px 0 12px;letter-spacing:-.005em}
+h3{font-size:17px;margin:26px 0 8px}
+p{margin:0 0 15px}
+ul,ol{margin:0 0 15px;padding-left:22px}
+li{margin-bottom:7px}
+strong{font-weight:600}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin:22px 0}
+.card.accent{background:var(--accent-soft);border-color:#2c4a3c}
+.card.warn{background:var(--warn-soft);border-color:#4a3722}
+.card h3{margin-top:0}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15.5px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-weight:600;font-size:13.5px;letter-spacing:.02em}
+td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.calc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;margin:22px 0}
+.calc label{display:block;font-size:14px;color:var(--muted);margin-bottom:6px}
+.calc .row{margin-bottom:18px}
+input[type=range]{width:100%;accent-color:var(--accent);height:24px}
+.val{font-weight:600;color:var(--accent);font-variant-numeric:tabular-nums}
+.bars{margin-top:6px}
+.bar-row{margin-bottom:12px}
+.bar-label{display:flex;justify-content:space-between;font-size:14px;margin-bottom:5px;gap:10px}
+.bar-track{background:#2a2724;border-radius:8px;height:26px;overflow:hidden;position:relative}
+.bar-fill{height:100%;border-radius:8px;transition:width .55s cubic-bezier(.22,.8,.3,1)}
+.bar-principal{background:#3f5c4e}
+.bar-growth{background:var(--accent)}
+.bar-negative{background:#a34a34}
+.bar-bond{background:#4a7fa0}
+.bar-stock{background:var(--accent)}
+.bar-gold{background:var(--warn)}
+.legend{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-top:10px;flex-wrap:wrap}
+.swatch{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:middle}
+.seg{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+.seg button{
+  background:var(--code);color:var(--muted);border:1px solid var(--line);border-radius:99px;
+  padding:6px 16px;font-size:14px;font-family:inherit;cursor:pointer;transition:all .2s;
+}
+.seg button.active{background:var(--accent-soft);color:var(--accent);border-color:#2c4a3c;font-weight:600}
+details{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:12px 16px;margin:10px 0}
+details[open]{background:#1d1b19}
+summary{cursor:pointer;font-weight:600;font-size:15.5px;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"▸ ";color:var(--accent)}
+details[open] summary::before{content:"▾ "}
+.ans{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font-size:15.5px;color:#d6d1c9}
+.q{font-weight:600;margin:22px 0 8px}
+pre{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:14px;line-height:1.6}
+code{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+.summary-box{border-left:3px solid var(--accent);padding-left:18px;margin:26px 0}
+.summary-box p{margin-bottom:8px}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
+footer a{color:var(--accent)}
+.disclaimer{font-size:13px;color:var(--muted);margin-top:18px;line-height:1.6}
+.nav{margin-bottom:20px;font-size:14px}
+.nav a{color:var(--accent);text-decoration:none}
+.src{font-size:12.5px;color:var(--muted);margin-top:8px}
+.steps{display:flex;align-items:flex-end;gap:14px;margin:18px 0 6px;height:150px}
+.step{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px}
+.step-bar{width:100%;border-radius:8px 8px 0 0;transition:height .55s cubic-bezier(.22,.8,.3,1);min-height:2px}
+.step1 .step-bar{background:#3f5c4e}
+.step2 .step-bar{background:var(--danger)}
+.step-label{font-size:13px;color:var(--muted);text-align:center}
+.step-val{font-weight:600;color:var(--ink);font-size:14.5px}
+.mixbar{display:flex;height:30px;border-radius:8px;overflow:hidden;margin:6px 0 10px;background:#2a2724}
+.mixseg{height:100%;transition:width .4s cubic-bezier(.22,.8,.3,1)}
+.stat{display:flex;justify-content:space-between;font-size:15.5px;padding:7px 0;border-bottom:1px solid var(--line)}
+.stat:last-child{border-bottom:none}
+.stat b{font-variant-numeric:tabular-nums;color:var(--accent)}
+@media(max-width:520px){
+  body{font-size:16px;padding:20px 14px 60px}
+  h1{font-size:25px}
+  .card,.calc{padding:16px}
+}
+
+/* โครงสร้างสิทธิเรียกร้อง / แถบสัดส่วน (ใช้ต่อจาก Day 20) */
+.wf{margin:18px 0 6px}
+.wf-track{display:flex;height:44px;border-radius:10px;overflow:hidden;background:#2a2724;border:1px solid var(--line)}
+.wf-seg{height:100%;display:flex;align-items:center;justify-content:center;font-size:12.5px;color:#12130f;font-weight:600;overflow:hidden;white-space:nowrap;transition:width .5s cubic-bezier(.22,.8,.3,1)}
+.wf-debt{background:#4a7fa0;color:#0f1b22}
+.wf-eq{background:var(--accent)}
+.wf-gap{background:#7a3d2c;color:#f0ded8}
+.wf-axis{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:6px;font-variant-numeric:tabular-nums}
+.ladder{list-style:none;padding:0;margin:16px 0}
+.ladder li{display:flex;gap:12px;align-items:baseline;padding:9px 14px;border:1px solid var(--line);border-radius:9px;margin-bottom:7px;background:var(--card);font-size:15.5px}
+.ladder li:last-child{background:var(--accent-soft);border-color:#2c4a3c}
+.ladder .rank{font-variant-numeric:tabular-nums;font-size:13px;color:var(--muted);min-width:20px;flex-shrink:0}
+
+/* Day 21 — เส้นทางคำสั่งซื้อ */
+.pipe{margin:16px 0 4px}
+.pnode{display:flex;gap:12px;align-items:flex-start;padding:11px 14px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;background:var(--card);transition:background .3s,border-color .3s,transform .3s}
+.pnode.on{background:var(--accent-soft);border-color:#2c4a3c;transform:translateX(7px)}
+.pnum{width:25px;height:25px;border-radius:50%;background:#2a2724;color:var(--muted);font-size:12.5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:3px;font-variant-numeric:tabular-nums;transition:background .3s,color .3s}
+.pnode.on .pnum{background:var(--accent);color:#12130f;font-weight:700}
+.pttl{font-weight:600;font-size:15.5px;margin-bottom:2px}
+.pdesc{font-size:14px;color:var(--muted);line-height:1.6}
+.pbtn{background:var(--accent-soft);color:var(--accent);border:1px solid #2c4a3c;border-radius:99px;padding:8px 22px;font-size:15px;font-family:inherit;font-weight:600;cursor:pointer;transition:opacity .2s}
+.pbtn:disabled{opacity:.45;cursor:default}
+.regbar{margin-top:10px;padding:10px 14px;border:1px dashed var(--line);border-radius:10px;font-size:14px;color:var(--muted)}
+.scalebar{background:#2a2724;border-radius:8px;height:22px;overflow:hidden;margin-bottom:5px}
+.scalefill{height:100%;border-radius:8px}
+
+/* Day 22 — กระดานราคา (order book) และปฏิทิน T+2 */
+.book{font-variant-numeric:tabular-nums;font-size:15px;margin:4px 0 2px}
+.brow{display:grid;grid-template-columns:1fr 84px 1fr;gap:8px;align-items:center;padding:3px 0}
+.bqty{display:flex;height:24px;border-radius:6px;overflow:hidden;background:transparent}
+.bqty i{height:100%;border-radius:6px;display:block;transition:width .4s ease,opacity .4s ease}
+.bqty.l{justify-content:flex-end}
+.bprice{text-align:center;font-weight:600;padding:2px 0;border-radius:6px;transition:background .3s,color .3s}
+.bprice.ask{color:var(--danger)}
+.bprice.bid{color:var(--accent)}
+.bprice.hit{background:var(--warn-soft);color:var(--warn)}
+.bqty span{font-size:12.5px;color:var(--muted);padding:0 6px;line-height:24px;white-space:nowrap}
+.bhead{display:grid;grid-template-columns:1fr 84px 1fr;gap:8px;font-size:12.5px;color:var(--muted);padding-bottom:5px;border-bottom:1px solid var(--line);margin-bottom:6px}
+.bhead span:nth-child(1){text-align:right}
+.bhead span:nth-child(2){text-align:center}
+.spreadrow{text-align:center;font-size:13px;color:var(--warn);padding:5px 0;border-top:1px dashed var(--line);border-bottom:1px dashed var(--line);margin:5px 0}
+.cal{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin:16px 0 6px}
+.cday{border:1px solid var(--line);border-radius:10px;padding:9px 6px;text-align:center;background:var(--card);transition:background .35s,border-color .35s}
+.cday .cn{font-size:12px;color:var(--muted)}
+.cday .cv{font-size:14px;font-weight:600;margin-top:3px;min-height:20px}
+.cday.t{background:var(--accent-soft);border-color:#2c4a3c}
+.cday.s{background:var(--warn-soft);border-color:#4a3722}
+.cday.off{opacity:.4}
+
+/* Day 23 — โครงเงินปันผล */
+.split{display:flex;height:34px;border-radius:9px;overflow:hidden;background:#2a2724;border:1px solid var(--line);margin:10px 0 4px}
+.split i{height:100%;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;transition:width .45s cubic-bezier(.22,.8,.3,1)}
+.sp-pay{background:var(--accent);color:#12130f}
+.sp-ret{background:#3f5c4e;color:#dfe8e2}
+.idcard{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin:14px 0;font-variant-numeric:tabular-nums;font-size:15.5px;text-align:center}
+.idcard b{color:var(--accent)}
+.tax2{display:flex;gap:14px;align-items:flex-end;height:170px;margin:16px 0 4px}
+.tax2 .col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px}
+.tax2 .cb{width:100%;border-radius:9px 9px 0 0;transition:height .5s cubic-bezier(.22,.8,.3,1);min-height:3px}
+.tax2 .c1 .cb{background:#3f5c4e}
+.tax2 .c2 .cb{background:var(--accent)}
+.tax2 .c2.lose .cb{background:var(--danger)}
+.verdict{text-align:center;font-size:15px;padding:9px 12px;border-radius:9px;margin-top:12px;background:var(--accent-soft);color:var(--accent);border:1px solid #2c4a3c}
+.verdict.bad{background:var(--warn-soft);color:var(--warn);border-color:#4a3722}
+</style>
+<style>
+/* Day 24 — น้ำตกงบกำไรขาดทุน */
+.wfall{margin:16px 0 6px;font-variant-numeric:tabular-nums}
+.wrow{display:grid;grid-template-columns:112px 1fr 92px;gap:10px;align-items:center;margin-bottom:6px;font-size:14.5px}
+.wrow .wlab{color:var(--muted);font-size:13.5px;line-height:1.4}
+.wrow.tot .wlab{color:var(--ink);font-weight:600}
+.wtrack{position:relative;height:26px;background:#2a2724;border-radius:7px;overflow:hidden}
+.wseg{position:absolute;top:0;height:100%;border-radius:7px;transition:left .5s cubic-bezier(.22,.8,.3,1),width .5s cubic-bezier(.22,.8,.3,1)}
+.w-rev{background:#3f5c4e}
+.w-gp{background:#4d7a63}
+.w-ebit{background:#5aa47e}
+.w-np{background:var(--accent)}
+.w-cut{background:var(--danger);opacity:.85}
+.wval{text-align:right;font-weight:600;font-size:14.5px}
+.wrow.cut .wval{color:var(--danger)}
+.wrow.tot .wval{color:var(--accent)}
+.mgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0 4px}
+.mbox{background:var(--code);border:1px solid var(--line);border-radius:11px;padding:11px 8px;text-align:center}
+.mbox .mv{font-size:20px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums;line-height:1.3}
+.mbox .mn{font-size:12px;color:var(--muted);line-height:1.45;margin-top:2px}
+.mbox.neg .mv{color:var(--danger)}
+@media(max-width:520px){
+  .wrow{grid-template-columns:92px 1fr 78px;gap:7px;font-size:13.5px}
+  .wrow .wlab{font-size:12.5px}
+  .mbox .mv{font-size:17px}
+}
+</style>
+<style>
+/* Day 25 — งบดุลสองฝั่ง และวงจรเงินสด */
+.bswrap{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0 6px}
+.bscol{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:11px;overflow:hidden;min-height:230px}
+.bshead{font-size:12.5px;color:var(--muted);text-align:center;margin-bottom:6px;letter-spacing:.02em}
+.bsseg{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:0 9px;font-size:12px;font-weight:600;color:#12130f;overflow:hidden;white-space:nowrap;transition:height .5s cubic-bezier(.22,.8,.3,1);min-height:0}
+.bsseg span:last-child{font-variant-numeric:tabular-nums}
+.a-cash{background:#6cc394}.a-ar{background:#4d7a63;color:#e8f2ec}.a-inv{background:#3f5c4e;color:#e8f2ec}
+.a-ppe{background:#4a7fa0;color:#0f1b22}.a-int{background:#5b6b7a;color:#e6edf3}
+.l-cl{background:#e0a86f;color:#241a0d}.l-ltd{background:#a8703f;color:#f6e8da}
+.e-eq{background:#6cc394}.e-re{background:#3f5c4e;color:#e8f2ec}
+.bsseg.neg{background:var(--danger);color:#fff}
+.eqline{display:flex;justify-content:center;gap:10px;font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums;margin-top:4px}
+.eqline b{color:var(--accent)}
+.gantt{margin:16px 0 6px}
+.grow{display:grid;grid-template-columns:116px 1fr;gap:10px;align-items:center;margin-bottom:7px;font-size:13.5px;color:var(--muted)}
+.gtrack{position:relative;height:25px;background:#2a2724;border-radius:7px;overflow:hidden}
+.gbar{position:absolute;top:0;height:100%;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;overflow:hidden;white-space:nowrap;transition:left .5s cubic-bezier(.22,.8,.3,1),width .5s cubic-bezier(.22,.8,.3,1)}
+.g-dio{background:#3f5c4e;color:#e8f2ec}
+.g-dso{background:#4a7fa0;color:#0f1b22}
+.g-dpo{background:var(--warn);color:#241a0d}
+.g-ccc{background:var(--danger);color:#fff}
+@media(max-width:520px){
+  .bswrap{gap:8px}
+  .bsseg{font-size:11px;padding:0 6px}
+  .grow{grid-template-columns:92px 1fr;gap:7px;font-size:12.5px}
+}
+</style>
+<style>
+/* Day 26 — สามกระแสเงินสด (แท่งบวก/ลบรอบเส้นศูนย์) */
+.zwrap{margin:18px 0 4px}
+.zbar{position:relative;height:150px;display:flex;gap:16px}
+.zaxis{position:absolute;left:0;right:0;top:75px;border-top:1px dashed #4a453f;z-index:0}
+.zc{flex:1;position:relative;z-index:1}
+.zfill{position:absolute;left:0;right:0;border-radius:7px;transition:top .5s cubic-bezier(.22,.8,.3,1),height .5s cubic-bezier(.22,.8,.3,1);min-height:3px}
+.zfill.p{background:var(--accent)}
+.zfill.n{background:var(--danger)}
+.zv{position:absolute;left:0;right:0;text-align:center;font-size:13.5px;font-weight:700;font-variant-numeric:tabular-nums;transition:top .5s cubic-bezier(.22,.8,.3,1)}
+.zv.p{color:var(--accent)} .zv.n{color:var(--danger)}
+.zlab{display:flex;gap:16px;margin-top:8px}
+.zlab div{flex:1;text-align:center;font-size:12.5px;color:var(--muted);line-height:1.45}
+.tax2 .c3 .cb{background:#4a7fa0}
+.sign{display:inline-block;min-width:18px;font-weight:700;font-variant-numeric:tabular-nums}
+.sign.p{color:var(--accent)} .sign.n{color:var(--danger)}
+.cfs td:first-child{padding-left:12px}
+.cfs tr.head td{color:var(--muted);font-size:13.5px;font-weight:600;padding-top:16px}
+.cfs tr.sum td{font-weight:700;border-top:1px solid var(--line);border-bottom:2px solid var(--line)}
+.cfs tr.sum td.num{color:var(--accent)}
+.cfs tr.sum.neg td.num{color:var(--danger)}
+.cfs td.ind{padding-left:26px;color:#cdc7be;font-size:14.5px}
+@media(max-width:520px){
+  .zbar{gap:9px;height:135px}
+  .zaxis{top:67px}
+  .zlab{gap:9px}
+  .zlab div{font-size:11.5px}
+  .cfs td.ind{padding-left:14px;font-size:13.5px}
+}
+</style>
+<style>
+/* Day 27 — DuPont และห้องทดลองเลเวอเรจ */
+.dp{margin:16px 0 4px}
+.dprow{display:grid;grid-template-columns:136px 1fr 74px;gap:10px;align-items:center;margin-bottom:8px;font-size:14px}
+.dprow .dlab{color:var(--muted);font-size:13.5px;line-height:1.45}
+.dtrack{height:24px;background:#2a2724;border-radius:7px;overflow:hidden}
+.dfill{height:100%;border-radius:7px;transition:width .5s cubic-bezier(.22,.8,.3,1);min-width:3px}
+.d-nm{background:var(--accent)}
+.d-at{background:#4a7fa0}
+.d-em{background:var(--warn)}
+.dval{text-align:right;font-weight:600;font-variant-numeric:tabular-nums;font-size:14.5px}
+.dprod{text-align:center;font-size:15.5px;padding:10px 12px;border-radius:9px;background:var(--accent-soft);
+  border:1px solid #2c4a3c;color:var(--accent);margin-top:6px;font-variant-numeric:tabular-nums}
+.dnote{font-size:14px;color:var(--muted);margin-top:10px;line-height:1.65}
+.rid{display:grid;grid-template-columns:1fr 1fr;gap:8px 18px;margin:16px 0 4px}
+.rid .r{display:flex;justify-content:space-between;gap:8px;font-size:15px;padding:7px 0;border-bottom:1px solid var(--line)}
+.rid .r b{font-variant-numeric:tabular-nums;color:var(--accent);white-space:nowrap}
+.rid .r.warnv b{color:var(--warn)}
+.rid .r.badv b{color:var(--danger)}
+.tax2 .c3.lose .cb{background:var(--danger)}
+@media(max-width:520px){
+  .dprow{grid-template-columns:104px 1fr 62px;gap:7px;font-size:13px}
+  .dprow .dlab{font-size:12.5px}
+  .rid{grid-template-columns:1fr;gap:0 0}
+}
+</style>
+<style>
+/* Day 28 — DCF: แถบมูลค่าปลายทาง ตารางความไว และมาตรวัดราคา */
+.d-y{background:#4d7a63}
+.d-tv{background:var(--warn)}
+.heat{font-variant-numeric:tabular-nums;font-size:14.5px}
+.heat th,.heat td{padding:8px 6px;text-align:center}
+.heat td.rowh,.heat th{color:var(--muted);font-size:13px}
+.heat td.v{border-radius:7px;font-weight:600}
+.h0{background:#241f1c;color:#c9b7ad}
+.h1{background:#2b2a20;color:#d4c59f}
+.h2{background:#26302a;color:#9fd0b4}
+.h3{background:#1f3b2c;color:#8ee0b0}
+.heat td.mid{outline:2px solid var(--accent);outline-offset:-2px}
+.gauge{position:relative;height:56px;margin:18px 0 6px}
+.gtrk{position:absolute;left:0;right:0;top:22px;height:14px;border-radius:7px;background:linear-gradient(90deg,#1f3b2c,#2b2a20,#4a2b22)}
+.gmk{position:absolute;top:8px;width:2px;height:42px;background:var(--ink);transition:left .5s cubic-bezier(.22,.8,.3,1)}
+.gmk.price{background:var(--danger)}
+.gmk i{position:absolute;top:-16px;left:50%;transform:translateX(-50%);font-size:12px;font-style:normal;white-space:nowrap;color:var(--muted)}
+.gscale{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+@media(max-width:520px){
+  .heat{font-size:12.5px}
+  .heat th,.heat td{padding:6px 3px}
+}
+</style>
+<style>
+/* Day 29 — Growth vs Value: การ์ดสองฝั่ง ทฤษฎีบท และแถบแยกผลตอบแทน */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0 6px}
+.duo .dcard{border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:var(--card)}
+.duo .dcard.g{border-color:#4a3722;background:var(--warn-soft)}
+.duo .dcard.v{border-color:#2c4a3c;background:var(--accent-soft)}
+.duo .dh{font-size:13px;color:var(--muted);letter-spacing:.02em;margin-bottom:8px;font-weight:600}
+.duo .dl{display:flex;justify-content:space-between;gap:8px;font-size:14.5px;padding:5px 0;border-bottom:1px solid var(--line)}
+.duo .dl:last-child{border-bottom:none}
+.duo .dl b{font-variant-numeric:tabular-nums;white-space:nowrap}
+.duo .dcard.g .dl b{color:var(--warn)}
+.duo .dcard.v .dl b{color:var(--accent)}
+.sp-a{background:#4a7fa0;color:#0f1b22}
+.sp-b{background:var(--accent);color:#12130f}
+.sp-c{background:var(--warn);color:#241a0d}
+.sp-neg{background:var(--danger);color:#fff}
+.thm{background:var(--accent-soft);border:1px solid #2c4a3c;border-radius:12px;padding:16px 18px;margin:18px 0;text-align:center;font-size:16px}
+.thm .eq{font-size:18.5px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums;margin-bottom:7px;line-height:1.5}
+.thm .note{font-size:13.5px;color:var(--muted);line-height:1.65}
+@media(max-width:520px){ .duo{grid-template-columns:1fr} .thm .eq{font-size:16px} }
+</style>
+<style>
+/* Day 30 — วงล้อวัฏจักร และการ์ดสี่ช่วงเศรษฐกิจ */
+.cyc{margin:14px 0 4px}
+.cyc svg{width:100%;height:auto;display:block}
+.phgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0 14px}
+.ph{border:1px solid var(--line);border-radius:10px;padding:9px 8px;background:var(--card);text-align:center;transition:background .3s,border-color .3s,transform .3s}
+.ph.on{background:var(--accent-soft);border-color:#2c4a3c;transform:translateY(-3px)}
+.ph b{display:block;font-size:14px;color:var(--ink);margin-bottom:2px}
+.ph span{display:block;color:var(--muted);font-size:12px;line-height:1.5}
+.ph.on b{color:var(--accent)}
+@media(max-width:520px){ .phgrid{grid-template-columns:1fr 1fr} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="nav"><a href="../index.html">← สารบัญ</a></div>
+
+<header>
+  <div class="kicker">
+    <span class="pill">Day 42 / 90</span>
+    <span>Phase 2 · การลงทุนระยะยาว</span>
+    <span>·</span>
+    <span>อ่าน 8 นาที</span>
+  </div>
+  <h1>CAGR, total return และการวัดผลพอร์ต</h1>
+  <p class="sub">ตั้งแต่ Day 5 เราใช้คำว่า "ผลตอบแทน" มาแล้วอย่างน้อยห้าความหมาย วันนี้จะจัดระเบียบทั้งหมด และเจอกรณีที่กองทุนได้ +5% แต่คนที่ถือกองนั้นขาดทุน 25% ต่อปี — ทั้งสองตัวเลขถูกต้อง</p>
+</header>
+
+<h2>สี่ตัวเลขที่ต้องแยกให้ออก</h2>
+
+<table>
+  <thead><tr><th>ชื่อ</th><th>สูตร</th><th>ใช้ตอบคำถาม</th></tr></thead>
+  <tbody>
+    <tr><td><strong>ผลตอบแทนรวม (total return)</strong></td><td>(P<sub>1</sub> − P<sub>0</sub> + ปันผล) ÷ P<sub>0</sub></td><td>ช่วงเดียวได้เท่าไรรวมเงินสดที่ได้รับ</td></tr>
+    <tr><td><strong>CAGR</strong></td><td>(V<sub>จบ</sub> ÷ V<sub>เริ่ม</sub>)<sup>1/n</sup> − 1</td><td>ถ้าโตเท่ากันทุกปี จะโตปีละเท่าไร</td></tr>
+    <tr><td><strong>Time-weighted return (TWR)</strong></td><td>Π(1 + r<sub>ช่วง</sub>) − 1</td><td>ผู้จัดการ/กองทุนเก่งแค่ไหน</td></tr>
+    <tr><td><strong>Money-weighted return (MWR, IRR)</strong></td><td>อัตราที่ทำให้ NPV ของกระแสเงินเข้าออก = 0</td><td>เงินของ<em>เรา</em>งอกเงยจริงเท่าไร</td></tr>
+  </tbody>
+</table>
+
+<h2>ราคาอย่างเดียวไม่พอ: total return</h2>
+
+<p>ดัชนี SET ที่เห็นในข่าวคือ<strong>ดัชนีราคา</strong> ไม่รวมเงินปันผล ส่วน <strong>ดัชนีผลตอบแทนรวม (Total Return Index, TRI)</strong> สมมติว่าเอาปันผลกลับไปลงทุนต่อ ตลาดไทยมีอัตราปันผลราว 4.02% (SET ณ 17 ก.ย. 2569 จาก Day 27) ถ้าเป็นแบบนี้ 10 ปี ดัชนีราคาจะวิ่งช้ากว่า TRI ราว 1.04<sup>10</sup> = <strong>1.48 เท่า</strong> การเอากองทุนไปเทียบกับดัชนีราคาจึงทำให้กองดูเก่งเกินจริง ต้องเทียบกับ TRI เสมอ (TDEX ใน Day 32 เทียบกับ SET50 TRI ถูกต้องแล้ว)</p>
+
+<h2>CAGR กับค่าเฉลี่ยเลขคณิต</h2>
+
+<p>พอร์ต 100,000 บาทกลายเป็น 180,000 บาทใน 6 ปี ⇒ CAGR = 1.8<sup>1/6</sup> − 1 = <strong>10.29%</strong> ต่อปี ตัวเลขนี้คือ<strong>ค่าเฉลี่ยเรขาคณิต</strong> ซึ่งต่ำกว่าหรือเท่ากับค่าเฉลี่ยเลขคณิตของผลตอบแทนรายปีเสมอ ส่วนต่างโตตามความผันผวน (volatility drag, Day 40) · เวลาใครพูดว่า "เฉลี่ยปีละ X%" ให้ถามว่าเป็นเลขคณิตหรือ CAGR และ<strong>อย่าแปลงผลตอบแทนช่วงสั้นกว่า 1 ปีเป็นรายปี</strong> เพราะตัวเลขจะพองจนไม่มีความหมาย (ดูข้อทวน Day 34)</p>
+
+<h2>TWR vs MWR: เมื่อกองทุนเก่ง แต่เราขาดทุน</h2>
+
+<p>เต้นซื้อกองทุน 10,000 บาท ปีแรกกองขึ้น 50% เห็นแล้วตื่นเต้น เติมอีก 90,000 บาท ปีที่สองกองลง 30%</p>
+
+<ul>
+  <li><strong>TWR ของกองทุน</strong> = 1.5 × 0.7 − 1 = +5% ใน 2 ปี ⇒ <strong>+2.47% ต่อปี</strong> — กองทำงานได้ผลบวก</li>
+  <li><strong>เงินของเต้น</strong>: ใส่รวม 100,000 เหลือ (15,000 + 90,000) × 0.7 = <strong>73,500 บาท</strong> ⇒ MWR (IRR) = <strong>−24.64% ต่อปี</strong></li>
+</ul>
+
+<p>ตัวเลขทั้งสองถูก แต่ตอบคนละคำถาม TWR ตัดผลของ<strong>จังหวะการใส่เงิน</strong>ทิ้ง จึงใช้วัดฝีมือผู้จัดการที่ควบคุมเงินเข้าออกไม่ได้ ส่วน MWR รวมจังหวะของเราเข้าไป จึงบอกว่า<strong>พฤติกรรมของเรา</strong>ทำให้ได้หรือเสียเท่าไร ช่องว่างระหว่างสองตัวเลขนี้ในกองทุนจริงมีชื่อเรียกว่า <strong>behavior gap</strong> — นักลงทุนมักเติมเงินหลังกองขึ้นแรงและถอนหลังกองร่วง ได้ผลตอบแทนจริงต่ำกว่าตัวกองเอง (Day 45 จะลงลึก)</p>
+
+<div class="calc">
+  <h3 style="margin-top:0;font-size:16px">ห้องทดลอง: ใส่เงินผิดจังหวะ</h3>
+  <div class="row"><label>ใส่เงินต้น 10,000 · กองปีที่ 1 <span class="val" id="o_1">+50%</span></label>
+    <input type="range" id="r_1" min="-50" max="80" step="5" value="50"></div>
+  <div class="row"><label>สิ้นปีที่ 1 เติมเงิน <span class="val" id="o_d">90,000</span> บาท</label>
+    <input type="range" id="r_d" min="-10000" max="200000" step="5000" value="90000"></div>
+  <div class="row"><label>กองปีที่ 2 <span class="val" id="o_2">−30%</span></label>
+    <input type="range" id="r_2" min="-50" max="80" step="5" value="-30"></div>
+  <div class="mgrid">
+    <div class="mbox"><div class="mv" id="m_t">+2.47%</div><div class="mn">TWR ต่อปี<br>(ฝีมือกองทุน)</div></div>
+    <div class="mbox neg" id="bx_m"><div class="mv" id="m_m">−24.64%</div><div class="mn">MWR ต่อปี<br>(เงินของเต้น)</div></div>
+    <div class="mbox"><div class="mv" id="m_v">73,500</div><div class="mn">มูลค่าสิ้นปีที่ 2<br>จากเงินต้น <span id="m_c">100,000</span></div></div>
+  </div>
+  <div class="verdict bad" id="vd">behavior gap = −27.11 จุดต่อปี · จังหวะการเติมเงินทำให้เสียมากกว่าที่กองทำได้</div>
+</div>
+
+<p>ลองสลับให้ปีแรก −30% ปีสองค่อย +50%: TWR เท่าเดิม 2.47% แต่ MWR กลายเป็น <strong>+39.92%</strong> ต่อปี เพราะเงินก้อนใหญ่เข้าไปก่อนช่วงขาขึ้น — ผลต่างทั้งหมดมาจากจังหวะ ไม่ใช่ฝีมือ ดังนั้นเวลาพอร์ตของเราดูดีหรือแย่ ให้แยกให้ออกว่ามาจากสินทรัพย์หรือมาจากจังหวะเงินเข้าออกของเราเอง</p>
+
+<div class="card accent">
+  <h3>วัดผลพอร์ตตัวเองแบบไม่หลอกตัวเอง</h3>
+  <p style="margin-bottom:0">1. จดทุกกระแสเงินเข้าออกพร้อมวันที่ (spreadsheet ธรรมดาก็พอ ใช้ฟังก์ชัน XIRR คำนวณ MWR) · 2. เลือก<strong>ดัชนีอ้างอิงแบบ TRI</strong>ที่ตรงกับสัดส่วนพอร์ตไว้ล่วงหน้า เช่น 60% หุ้นโลก + 40% พันธบัตรไทย · 3. เทียบปีละครั้งและดู<strong>หลายปีสะสม</strong> ไม่ใช่ปีเดียว · 4. ถ้าหลายปีติดกันแพ้ดัชนีอ้างอิงเกินค่าธรรมเนียม ให้ถามว่าส่วนที่ "ทำเอง" คุ้มเวลาไหม (Day 33)</p>
+</div>
+
+<details>
+  <summary>กล่องโค้ด (ข้ามได้ ไม่นับในเวลาอ่าน)</summary>
+  <div class="ans">
+<pre><code>def irr(cashflows, lo=-0.99, hi=5.0):
+    """cashflows[t] ที่ปลายช่วง t (ลบ = ใส่เงิน, บวก = ได้เงิน/มูลค่าสุดท้าย)"""
+    for _ in range(300):
+        r = (lo + hi) / 2
+        npv = sum(c / (1 + r)**t for t, c in enumerate(cashflows))
+        lo, hi = (r, hi) if npv &gt; 0 else (lo, r)
+    return r
+
+r1, r2, extra = 0.50, -0.30, 90_000
+twr = ((1 + r1) * (1 + r2)) ** 0.5 - 1
+end = (10_000 * (1 + r1) + extra) * (1 + r2)
+mwr = irr([-10_000, -extra, end])
+print(f"TWR {twr:+.2%}/ปี  MWR {mwr:+.2%}/ปี  มูลค่า {end:,.0f}")
+# TWR +2.47%/ปี  MWR -24.64%/ปี  มูลค่า 73,500</code></pre>
+  </div>
+</details>
+
+<h2>ทดสอบความเข้าใจ</h2>
+
+<p class="q">1. ซื้อหุ้นที่ 50 บาท ถือหนึ่งปี ได้ปันผล 2 บาท ราคาสิ้นปี 53 บาท · ผลตอบแทนจากราคา ผลตอบแทนรวม เท่าไร · และถ้าพอร์ตโตจาก 100,000 เป็น 180,000 ใน 6 ปี CAGR เท่าไร</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">ราคา: (53 − 50) ÷ 50 = <strong>6%</strong> · รวม: (53 − 50 + 2) ÷ 50 = <strong>10%</strong> — ปันผลคือ 40% ของผลตอบแทนปีนี้<br>
+  CAGR = (180,000 ÷ 100,000)<sup>1/6</sup> − 1 = <strong>10.29%</strong> ต่อปี · ไม่ใช่ 80% ÷ 6 = 13.33% (นั่นคือค่าเฉลี่ยแบบไม่ทบต้น ซึ่งประเมินเกินจริง)</div>
+</details>
+
+<p class="q">2. กองทุน X ปีแรก −30% ปีที่สอง +50% · นักลงทุน A ใส่ 100,000 บาทตั้งแต่ต้นไม่เติมอีก · นักลงทุน B ใส่ 10,000 ตอนต้น แล้วเติม 90,000 ตอนสิ้นปีแรก · TWR ของกองและ MWR ของแต่ละคนเป็นเท่าไร</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">TWR ของกอง = (0.7 × 1.5)<sup>1/2</sup> − 1 = <strong>+2.47%</strong> ต่อปี<br>
+  A: ไม่มีเงินเข้าออกระหว่างทาง ⇒ MWR = TWR = <strong>+2.47%</strong> (100,000 → 105,000)<br>
+  B: (7,000 + 90,000) × 1.5 = 145,500 จากเงินต้น 100,000 ⇒ MWR = <strong>+39.92%</strong> ต่อปี<br>
+  กองเดียวกัน ตัวเลขทางการเดียวกัน แต่คนถือได้ผลต่างกันมาก เพราะ B เติมเงินก่อนขาขึ้นพอดี · ถ้าเป็นความบังเอิญ ไม่ควรเรียกว่าฝีมือ</div>
+</details>
+
+<p class="q">3. กองทุนหนึ่งโฆษณาว่า "ผลตอบแทน 3 เดือนล่าสุด +9% คิดเป็น 41% ต่อปี" · การแปลงนี้ถูกทางคณิตศาสตร์ไหม และมีปัญหาอะไร</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">ทางคณิตศาสตร์ 1.09<sup>4</sup> − 1 = 41.16% ถูกต้อง แต่<strong>สมมติว่าอีก 3 ไตรมาสจะได้ +9% ซ้ำทุกไตรมาส</strong> ซึ่งไม่มีเหตุผลรองรับ · ช่วงสั้นมีความผันผวนสูงเมื่อเทียบกับผลตอบแทน (ส่วนเบี่ยงเบนของค่าเฉลี่ยโตแบบ σ/√T ใน Day 33) การยกกำลังขยายโชคระยะสั้นให้ดูเป็นแนวโน้ม · มาตรฐานการวัดผลกองทุนจึงแสดงผลตอบแทนช่วงต่ำกว่า 1 ปีแบบ<strong>ไม่แปลงเป็นรายปี</strong></div>
+</details>
+
+<p class="q"><strong>ทวน:</strong> Day 38 คำนวณ IRR ของ REIT สิทธิการเช่า · ถ้าซื้อ REIT ที่ 10 บาท รับปันผลปีละ 0.80 บาท 3 ปี แล้วขายที่ 9.00 บาท ผลตอบแทนรวมทั้งช่วงเท่าไร CAGR แบบไม่นำปันผลไปลงทุนต่อเท่าไร และ IRR เท่าไร</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">ผลตอบแทนรวม = (9.00 − 10 + 2.40) ÷ 10 = <strong>14%</strong> ใน 3 ปี ⇒ แปลงแบบ CAGR = 1.14<sup>1/3</sup> − 1 = <strong>4.46%</strong><br>
+  IRR ของกระแสเงิน −10, +0.8, +0.8, +9.8 = <strong>4.82%</strong> ต่อปี · IRR สูงกว่านิดหน่อยเพราะนับว่าปันผลที่ได้ก่อนมีค่ามากกว่าที่ได้ทีหลัง · สังเกตว่าอัตราปันผลบนหน้าจอคือ 8% แต่ผลตอบแทนจริงไม่ถึง 5% เพราะราคาลดลง 10% — บทเรียนเดียวกับ Day 38: <strong>ปันผลไม่ใช่ผลตอบแทน</strong><br>ตอบผิดหรือลังเล? → <a href="finance-day-38-reits-real-estate.html">ทบทวน Day 38: REITs และการลงทุนอสังหาริมทรัพย์</a></div>
+</details>
+
+<p class="q"><strong>ทวน:</strong> Day 34 ข้อ 1 ใช้ DCA เดือนละ 1,000 บาทที่ราคา 10, 8, 5, 8, 10 ได้มูลค่า 6,500 บาทจากเงิน 5,000 · กองทุนมี TWR ในช่วงนี้เท่าไร MWR ของนักลงทุน DCA เป็นเท่าไรต่อเดือน และทำไมไม่ควรเอาไปแปลงเป็นรายปี</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">TWR ของกอง: ราคา 10 → 10 ⇒ <strong>0%</strong> · กองไม่ได้สร้างผลตอบแทนเลย<br>
+  MWR: กระแสเงิน −1,000 ต้นเดือนที่ 0 ถึง 3 และเดือนที่ 4 = −1,000 + 6,500 ⇒ IRR ≈ <strong>13.15% ต่อเดือน</strong> · กำไรทั้งหมดมาจากจังหวะการซื้อ (ได้หน่วยเยอะตอนราคา 5) ซึ่งเป็นเหตุผลที่ MWR กับ TWR ต่างกัน<br>
+  ถ้าแปลงเป็นรายปี (1.1315<sup>12</sup> − 1) จะได้เกิน 300% ซึ่งไร้ความหมาย เพราะเป็นเหตุการณ์ 4 เดือนที่ราคาลงแล้วฟื้นพอดี · นี่คือกับดักเดียวกับข้อ 3<br>ตอบผิดหรือลังเล? → <a href="finance-day-34-dca-vs-lump-sum.html">ทบทวน Day 34: DCA vs lump sum</a></div>
+</details>
+
+<div class="summary-box">
+  <h2 style="margin-top:0">สรุป 3 บรรทัด</h2>
+  <p>1. ใช้ total return ไม่ใช่ราคาอย่างเดียว และเทียบกับดัชนี TRI · อัตราปันผล 4% ต่อปีทำให้ดัชนีราคาช้ากว่า TRI ราว 1.48 เท่าใน 10 ปี</p>
+  <p>2. CAGR คือค่าเฉลี่ยเรขาคณิต ต่ำกว่าค่าเฉลี่ยเลขคณิตเสมอ · อย่าแปลงผลตอบแทนช่วงสั้นกว่า 1 ปีเป็นรายปี</p>
+  <p style="margin-bottom:0">3. TWR วัดฝีมือกองทุน MWR (IRR) วัดเงินของเรา · กองเดียวกัน +2.47% ต่อปี คนหนึ่งได้ −24.64% อีกคนได้ +39.92% ต่อปี ต่างกันเพราะจังหวะเงินเข้าออกล้วนๆ</p>
+</div>
+
+<footer>
+  <p><strong>พรุ่งนี้ Day 43 — Sharpe ratio, drawdown และการวัดความเสี่ยง</strong> วันนี้วัดผลตอบแทนแล้ว แต่ผลตอบแทน 10% จากพอร์ตที่แกว่ง 5% กับ 10% จากพอร์ตที่แกว่ง 30% ไม่ใช่ของเดียวกัน พรุ่งนี้จะวัดผลตอบแทน "ต่อหน่วยความเสี่ยง" และดูว่าทำไม drawdown ถึงเป็นตัวเลขที่คนรู้สึกได้จริงกว่า σ</p>
+  <p class="disclaimer">บทเรียนนี้เป็นความรู้เชิงการศึกษา ไม่ใช่คำแนะนำทางการเงินเฉพาะบุคคล และไม่ใช่การชี้ชวนให้ซื้อหรือขายกองทุนหรือหลักทรัพย์ใด · ตัวอย่างทั้งหมดใช้ตัวเลขสมมติ · อัตราปันผลตลาดอ้างอิงข้อมูล set.or.th ณ 17 ก.ย. 2569 (Day 27) ซึ่งเปลี่ยนแปลงทุกวัน และการคำนวณ 1.48 เท่าสมมติอัตราปันผลคงที่และไม่มีภาษี · ผลตอบแทนในอดีตไม่ได้บ่งชี้ผลตอบแทนในอนาคต</p>
+</footer>
+
+</div>
+<script>
+(function(){
+  var fmt=function(n,d){ d=(d===undefined?2:d);
+    return n.toLocaleString('th-TH',{minimumFractionDigits:d,maximumFractionDigits:d}); };
+  var $=function(id){ return document.getElementById(id); };
+  function sg(x){ return (x>=0?'+':'−')+fmt(Math.abs(x)*100,2)+'%'; }
+  function irr(c){
+    var lo=-0.99, hi=5;
+    for(var k=0;k<300;k++){
+      var r=(lo+hi)/2, v=0;
+      for(var t=0;t<c.length;t++){ v+=c[t]/Math.pow(1+r,t); }
+      if(v>0) lo=r; else hi=r;
+    }
+    return (lo+hi)/2;
+  }
+  var r1=$('r_1'), rd=$('r_d'), r2=$('r_2');
+  function upd(){
+    var a=(+r1.value)/100, d=+rd.value, b=(+r2.value)/100;
+    var mid=10000*(1+a);
+    if(d< -mid){ d=-Math.floor(mid/5000)*5000; }
+    $('o_1').textContent=sg(a).replace('.00',''); $('o_2').textContent=sg(b).replace('.00','');
+    $('o_d').textContent= d>=0 ? fmt(d,0) : 'ถอน '+fmt(-d,0);
+    var twr=Math.sqrt((1+a)*(1+b))-1, end=(mid+d)*(1+b), mwr=irr([-10000,-d,end]), paid=10000+d;
+    $('m_t').textContent=sg(twr); $('m_m').textContent=sg(mwr); $('m_v').textContent=fmt(end,0); $('m_c').textContent=fmt(paid,0);
+    $('bx_m').className= mwr<0 ? 'mbox neg':'mbox';
+    var gap=(mwr-twr)*100, vd=$('vd');
+    vd.className= gap<0 ? 'verdict bad':'verdict';
+    vd.innerHTML='behavior gap = <strong>'+(gap>=0?'+':'−')+fmt(Math.abs(gap),2)+' จุดต่อปี</strong> · '+(gap<0?'จังหวะการใส่เงินทำให้เสียมากกว่าที่กองทำได้':'จังหวะการใส่เงินช่วยให้ได้มากกว่ากอง — ถามตัวเองว่าเป็นฝีมือหรือโชค');
+  }
+  [r1,rd,r2].forEach(function(e){ e.addEventListener('input',upd); });
+  upd();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day 37 — Rebalancing: ทำเมื่อไร อย่างไร | Finance101</title>
+<style>
+:root{
+  --bg:#191816; --card:#211f1d; --ink:#e8e4dd; --muted:#a09a91;
+  --line:#332f2b; --accent:#6cc394; --accent-soft:#1c2f26;
+  --warn:#e0a86f; --warn-soft:#2e2419; --code:#201e1b; --danger:#e0785c;
+  color-scheme: dark;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; padding:28px 18px 80px; background:var(--bg); color:var(--ink);
+  font-family:"Sarabun","Noto Sans Thai",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:17px; line-height:1.75; -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:720px;margin:0 auto}
+header{margin-bottom:34px}
+.kicker{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--muted);letter-spacing:.02em}
+.pill{background:var(--accent-soft);color:var(--accent);padding:3px 11px;border-radius:99px;font-weight:600}
+h1{font-size:29px;line-height:1.3;margin:12px 0 6px;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:16px;margin:0}
+h2{font-size:21px;margin:38px 0 12px;letter-spacing:-.005em}
+h3{font-size:17px;margin:26px 0 8px}
+p{margin:0 0 15px}
+ul,ol{margin:0 0 15px;padding-left:22px}
+li{margin-bottom:7px}
+strong{font-weight:600}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin:22px 0}
+.card.accent{background:var(--accent-soft);border-color:#2c4a3c}
+.card.warn{background:var(--warn-soft);border-color:#4a3722}
+.card h3{margin-top:0}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15.5px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-weight:600;font-size:13.5px;letter-spacing:.02em}
+td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.calc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;margin:22px 0}
+.calc label{display:block;font-size:14px;color:var(--muted);margin-bottom:6px}
+.calc .row{margin-bottom:18px}
+input[type=range]{width:100%;accent-color:var(--accent);height:24px}
+.val{font-weight:600;color:var(--accent);font-variant-numeric:tabular-nums}
+.bars{margin-top:6px}
+.bar-row{margin-bottom:12px}
+.bar-label{display:flex;justify-content:space-between;font-size:14px;margin-bottom:5px;gap:10px}
+.bar-track{background:#2a2724;border-radius:8px;height:26px;overflow:hidden;position:relative}
+.bar-fill{height:100%;border-radius:8px;transition:width .55s cubic-bezier(.22,.8,.3,1)}
+.bar-principal{background:#3f5c4e}
+.bar-growth{background:var(--accent)}
+.bar-negative{background:#a34a34}
+.bar-bond{background:#4a7fa0}
+.bar-stock{background:var(--accent)}
+.bar-gold{background:var(--warn)}
+.legend{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-top:10px;flex-wrap:wrap}
+.swatch{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:middle}
+.seg{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+.seg button{
+  background:var(--code);color:var(--muted);border:1px solid var(--line);border-radius:99px;
+  padding:6px 16px;font-size:14px;font-family:inherit;cursor:pointer;transition:all .2s;
+}
+.seg button.active{background:var(--accent-soft);color:var(--accent);border-color:#2c4a3c;font-weight:600}
+details{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:12px 16px;margin:10px 0}
+details[open]{background:#1d1b19}
+summary{cursor:pointer;font-weight:600;font-size:15.5px;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"▸ ";color:var(--accent)}
+details[open] summary::before{content:"▾ "}
+.ans{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font-size:15.5px;color:#d6d1c9}
+.q{font-weight:600;margin:22px 0 8px}
+pre{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:14px;line-height:1.6}
+code{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+.summary-box{border-left:3px solid var(--accent);padding-left:18px;margin:26px 0}
+.summary-box p{margin-bottom:8px}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
+footer a{color:var(--accent)}
+.disclaimer{font-size:13px;color:var(--muted);margin-top:18px;line-height:1.6}
+.nav{margin-bottom:20px;font-size:14px}
+.nav a{color:var(--accent);text-decoration:none}
+.src{font-size:12.5px;color:var(--muted);margin-top:8px}
+.steps{display:flex;align-items:flex-end;gap:14px;margin:18px 0 6px;height:150px}
+.step{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px}
+.step-bar{width:100%;border-radius:8px 8px 0 0;transition:height .55s cubic-bezier(.22,.8,.3,1);min-height:2px}
+.step1 .step-bar{background:#3f5c4e}
+.step2 .step-bar{background:var(--danger)}
+.step-label{font-size:13px;color:var(--muted);text-align:center}
+.step-val{font-weight:600;color:var(--ink);font-size:14.5px}
+.mixbar{display:flex;height:30px;border-radius:8px;overflow:hidden;margin:6px 0 10px;background:#2a2724}
+.mixseg{height:100%;transition:width .4s cubic-bezier(.22,.8,.3,1)}
+.stat{display:flex;justify-content:space-between;font-size:15.5px;padding:7px 0;border-bottom:1px solid var(--line)}
+.stat:last-child{border-bottom:none}
+.stat b{font-variant-numeric:tabular-nums;color:var(--accent)}
+@media(max-width:520px){
+  body{font-size:16px;padding:20px 14px 60px}
+  h1{font-size:25px}
+  .card,.calc{padding:16px}
+}
+
+/* โครงสร้างสิทธิเรียกร้อง / แถบสัดส่วน (ใช้ต่อจาก Day 20) */
+.wf{margin:18px 0 6px}
+.wf-track{display:flex;height:44px;border-radius:10px;overflow:hidden;background:#2a2724;border:1px solid var(--line)}
+.wf-seg{height:100%;display:flex;align-items:center;justify-content:center;font-size:12.5px;color:#12130f;font-weight:600;overflow:hidden;white-space:nowrap;transition:width .5s cubic-bezier(.22,.8,.3,1)}
+.wf-debt{background:#4a7fa0;color:#0f1b22}
+.wf-eq{background:var(--accent)}
+.wf-gap{background:#7a3d2c;color:#f0ded8}
+.wf-axis{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:6px;font-variant-numeric:tabular-nums}
+.ladder{list-style:none;padding:0;margin:16px 0}
+.ladder li{display:flex;gap:12px;align-items:baseline;padding:9px 14px;border:1px solid var(--line);border-radius:9px;margin-bottom:7px;background:var(--card);font-size:15.5px}
+.ladder li:last-child{background:var(--accent-soft);border-color:#2c4a3c}
+.ladder .rank{font-variant-numeric:tabular-nums;font-size:13px;color:var(--muted);min-width:20px;flex-shrink:0}
+
+/* Day 21 — เส้นทางคำสั่งซื้อ */
+.pipe{margin:16px 0 4px}
+.pnode{display:flex;gap:12px;align-items:flex-start;padding:11px 14px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;background:var(--card);transition:background .3s,border-color .3s,transform .3s}
+.pnode.on{background:var(--accent-soft);border-color:#2c4a3c;transform:translateX(7px)}
+.pnum{width:25px;height:25px;border-radius:50%;background:#2a2724;color:var(--muted);font-size:12.5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:3px;font-variant-numeric:tabular-nums;transition:background .3s,color .3s}
+.pnode.on .pnum{background:var(--accent);color:#12130f;font-weight:700}
+.pttl{font-weight:600;font-size:15.5px;margin-bottom:2px}
+.pdesc{font-size:14px;color:var(--muted);line-height:1.6}
+.pbtn{background:var(--accent-soft);color:var(--accent);border:1px solid #2c4a3c;border-radius:99px;padding:8px 22px;font-size:15px;font-family:inherit;font-weight:600;cursor:pointer;transition:opacity .2s}
+.pbtn:disabled{opacity:.45;cursor:default}
+.regbar{margin-top:10px;padding:10px 14px;border:1px dashed var(--line);border-radius:10px;font-size:14px;color:var(--muted)}
+.scalebar{background:#2a2724;border-radius:8px;height:22px;overflow:hidden;margin-bottom:5px}
+.scalefill{height:100%;border-radius:8px}
+
+/* Day 22 — กระดานราคา (order book) และปฏิทิน T+2 */
+.book{font-variant-numeric:tabular-nums;font-size:15px;margin:4px 0 2px}
+.brow{display:grid;grid-template-columns:1fr 84px 1fr;gap:8px;align-items:center;padding:3px 0}
+.bqty{display:flex;height:24px;border-radius:6px;overflow:hidden;background:transparent}
+.bqty i{height:100%;border-radius:6px;display:block;transition:width .4s ease,opacity .4s ease}
+.bqty.l{justify-content:flex-end}
+.bprice{text-align:center;font-weight:600;padding:2px 0;border-radius:6px;transition:background .3s,color .3s}
+.bprice.ask{color:var(--danger)}
+.bprice.bid{color:var(--accent)}
+.bprice.hit{background:var(--warn-soft);color:var(--warn)}
+.bqty span{font-size:12.5px;color:var(--muted);padding:0 6px;line-height:24px;white-space:nowrap}
+.bhead{display:grid;grid-template-columns:1fr 84px 1fr;gap:8px;font-size:12.5px;color:var(--muted);padding-bottom:5px;border-bottom:1px solid var(--line);margin-bottom:6px}
+.bhead span:nth-child(1){text-align:right}
+.bhead span:nth-child(2){text-align:center}
+.spreadrow{text-align:center;font-size:13px;color:var(--warn);padding:5px 0;border-top:1px dashed var(--line);border-bottom:1px dashed var(--line);margin:5px 0}
+.cal{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin:16px 0 6px}
+.cday{border:1px solid var(--line);border-radius:10px;padding:9px 6px;text-align:center;background:var(--card);transition:background .35s,border-color .35s}
+.cday .cn{font-size:12px;color:var(--muted)}
+.cday .cv{font-size:14px;font-weight:600;margin-top:3px;min-height:20px}
+.cday.t{background:var(--accent-soft);border-color:#2c4a3c}
+.cday.s{background:var(--warn-soft);border-color:#4a3722}
+.cday.off{opacity:.4}
+
+/* Day 23 — โครงเงินปันผล */
+.split{display:flex;height:34px;border-radius:9px;overflow:hidden;background:#2a2724;border:1px solid var(--line);margin:10px 0 4px}
+.split i{height:100%;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;transition:width .45s cubic-bezier(.22,.8,.3,1)}
+.sp-pay{background:var(--accent);color:#12130f}
+.sp-ret{background:#3f5c4e;color:#dfe8e2}
+.idcard{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin:14px 0;font-variant-numeric:tabular-nums;font-size:15.5px;text-align:center}
+.idcard b{color:var(--accent)}
+.tax2{display:flex;gap:14px;align-items:flex-end;height:170px;margin:16px 0 4px}
+.tax2 .col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px}
+.tax2 .cb{width:100%;border-radius:9px 9px 0 0;transition:height .5s cubic-bezier(.22,.8,.3,1);min-height:3px}
+.tax2 .c1 .cb{background:#3f5c4e}
+.tax2 .c2 .cb{background:var(--accent)}
+.tax2 .c2.lose .cb{background:var(--danger)}
+.verdict{text-align:center;font-size:15px;padding:9px 12px;border-radius:9px;margin-top:12px;background:var(--accent-soft);color:var(--accent);border:1px solid #2c4a3c}
+.verdict.bad{background:var(--warn-soft);color:var(--warn);border-color:#4a3722}
+</style>
+<style>
+/* Day 24 — น้ำตกงบกำไรขาดทุน */
+.wfall{margin:16px 0 6px;font-variant-numeric:tabular-nums}
+.wrow{display:grid;grid-template-columns:112px 1fr 92px;gap:10px;align-items:center;margin-bottom:6px;font-size:14.5px}
+.wrow .wlab{color:var(--muted);font-size:13.5px;line-height:1.4}
+.wrow.tot .wlab{color:var(--ink);font-weight:600}
+.wtrack{position:relative;height:26px;background:#2a2724;border-radius:7px;overflow:hidden}
+.wseg{position:absolute;top:0;height:100%;border-radius:7px;transition:left .5s cubic-bezier(.22,.8,.3,1),width .5s cubic-bezier(.22,.8,.3,1)}
+.w-rev{background:#3f5c4e}
+.w-gp{background:#4d7a63}
+.w-ebit{background:#5aa47e}
+.w-np{background:var(--accent)}
+.w-cut{background:var(--danger);opacity:.85}
+.wval{text-align:right;font-weight:600;font-size:14.5px}
+.wrow.cut .wval{color:var(--danger)}
+.wrow.tot .wval{color:var(--accent)}
+.mgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0 4px}
+.mbox{background:var(--code);border:1px solid var(--line);border-radius:11px;padding:11px 8px;text-align:center}
+.mbox .mv{font-size:20px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums;line-height:1.3}
+.mbox .mn{font-size:12px;color:var(--muted);line-height:1.45;margin-top:2px}
+.mbox.neg .mv{color:var(--danger)}
+@media(max-width:520px){
+  .wrow{grid-template-columns:92px 1fr 78px;gap:7px;font-size:13.5px}
+  .wrow .wlab{font-size:12.5px}
+  .mbox .mv{font-size:17px}
+}
+</style>
+<style>
+/* Day 25 — งบดุลสองฝั่ง และวงจรเงินสด */
+.bswrap{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0 6px}
+.bscol{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:11px;overflow:hidden;min-height:230px}
+.bshead{font-size:12.5px;color:var(--muted);text-align:center;margin-bottom:6px;letter-spacing:.02em}
+.bsseg{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:0 9px;font-size:12px;font-weight:600;color:#12130f;overflow:hidden;white-space:nowrap;transition:height .5s cubic-bezier(.22,.8,.3,1);min-height:0}
+.bsseg span:last-child{font-variant-numeric:tabular-nums}
+.a-cash{background:#6cc394}.a-ar{background:#4d7a63;color:#e8f2ec}.a-inv{background:#3f5c4e;color:#e8f2ec}
+.a-ppe{background:#4a7fa0;color:#0f1b22}.a-int{background:#5b6b7a;color:#e6edf3}
+.l-cl{background:#e0a86f;color:#241a0d}.l-ltd{background:#a8703f;color:#f6e8da}
+.e-eq{background:#6cc394}.e-re{background:#3f5c4e;color:#e8f2ec}
+.bsseg.neg{background:var(--danger);color:#fff}
+.eqline{display:flex;justify-content:center;gap:10px;font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums;margin-top:4px}
+.eqline b{color:var(--accent)}
+.gantt{margin:16px 0 6px}
+.grow{display:grid;grid-template-columns:116px 1fr;gap:10px;align-items:center;margin-bottom:7px;font-size:13.5px;color:var(--muted)}
+.gtrack{position:relative;height:25px;background:#2a2724;border-radius:7px;overflow:hidden}
+.gbar{position:absolute;top:0;height:100%;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;overflow:hidden;white-space:nowrap;transition:left .5s cubic-bezier(.22,.8,.3,1),width .5s cubic-bezier(.22,.8,.3,1)}
+.g-dio{background:#3f5c4e;color:#e8f2ec}
+.g-dso{background:#4a7fa0;color:#0f1b22}
+.g-dpo{background:var(--warn);color:#241a0d}
+.g-ccc{background:var(--danger);color:#fff}
+@media(max-width:520px){
+  .bswrap{gap:8px}
+  .bsseg{font-size:11px;padding:0 6px}
+  .grow{grid-template-columns:92px 1fr;gap:7px;font-size:12.5px}
+}
+</style>
+<style>
+/* Day 26 — สามกระแสเงินสด (แท่งบวก/ลบรอบเส้นศูนย์) */
+.zwrap{margin:18px 0 4px}
+.zbar{position:relative;height:150px;display:flex;gap:16px}
+.zaxis{position:absolute;left:0;right:0;top:75px;border-top:1px dashed #4a453f;z-index:0}
+.zc{flex:1;position:relative;z-index:1}
+.zfill{position:absolute;left:0;right:0;border-radius:7px;transition:top .5s cubic-bezier(.22,.8,.3,1),height .5s cubic-bezier(.22,.8,.3,1);min-height:3px}
+.zfill.p{background:var(--accent)}
+.zfill.n{background:var(--danger)}
+.zv{position:absolute;left:0;right:0;text-align:center;font-size:13.5px;font-weight:700;font-variant-numeric:tabular-nums;transition:top .5s cubic-bezier(.22,.8,.3,1)}
+.zv.p{color:var(--accent)} .zv.n{color:var(--danger)}
+.zlab{display:flex;gap:16px;margin-top:8px}
+.zlab div{flex:1;text-align:center;font-size:12.5px;color:var(--muted);line-height:1.45}
+.tax2 .c3 .cb{background:#4a7fa0}
+.sign{display:inline-block;min-width:18px;font-weight:700;font-variant-numeric:tabular-nums}
+.sign.p{color:var(--accent)} .sign.n{color:var(--danger)}
+.cfs td:first-child{padding-left:12px}
+.cfs tr.head td{color:var(--muted);font-size:13.5px;font-weight:600;padding-top:16px}
+.cfs tr.sum td{font-weight:700;border-top:1px solid var(--line);border-bottom:2px solid var(--line)}
+.cfs tr.sum td.num{color:var(--accent)}
+.cfs tr.sum.neg td.num{color:var(--danger)}
+.cfs td.ind{padding-left:26px;color:#cdc7be;font-size:14.5px}
+@media(max-width:520px){
+  .zbar{gap:9px;height:135px}
+  .zaxis{top:67px}
+  .zlab{gap:9px}
+  .zlab div{font-size:11.5px}
+  .cfs td.ind{padding-left:14px;font-size:13.5px}
+}
+</style>
+<style>
+/* Day 27 — DuPont และห้องทดลองเลเวอเรจ */
+.dp{margin:16px 0 4px}
+.dprow{display:grid;grid-template-columns:136px 1fr 74px;gap:10px;align-items:center;margin-bottom:8px;font-size:14px}
+.dprow .dlab{color:var(--muted);font-size:13.5px;line-height:1.45}
+.dtrack{height:24px;background:#2a2724;border-radius:7px;overflow:hidden}
+.dfill{height:100%;border-radius:7px;transition:width .5s cubic-bezier(.22,.8,.3,1);min-width:3px}
+.d-nm{background:var(--accent)}
+.d-at{background:#4a7fa0}
+.d-em{background:var(--warn)}
+.dval{text-align:right;font-weight:600;font-variant-numeric:tabular-nums;font-size:14.5px}
+.dprod{text-align:center;font-size:15.5px;padding:10px 12px;border-radius:9px;background:var(--accent-soft);
+  border:1px solid #2c4a3c;color:var(--accent);margin-top:6px;font-variant-numeric:tabular-nums}
+.dnote{font-size:14px;color:var(--muted);margin-top:10px;line-height:1.65}
+.rid{display:grid;grid-template-columns:1fr 1fr;gap:8px 18px;margin:16px 0 4px}
+.rid .r{display:flex;justify-content:space-between;gap:8px;font-size:15px;padding:7px 0;border-bottom:1px solid var(--line)}
+.rid .r b{font-variant-numeric:tabular-nums;color:var(--accent);white-space:nowrap}
+.rid .r.warnv b{color:var(--warn)}
+.rid .r.badv b{color:var(--danger)}
+.tax2 .c3.lose .cb{background:var(--danger)}
+@media(max-width:520px){
+  .dprow{grid-template-columns:104px 1fr 62px;gap:7px;font-size:13px}
+  .dprow .dlab{font-size:12.5px}
+  .rid{grid-template-columns:1fr;gap:0 0}
+}
+</style>
+<style>
+/* Day 28 — DCF: แถบมูลค่าปลายทาง ตารางความไว และมาตรวัดราคา */
+.d-y{background:#4d7a63}
+.d-tv{background:var(--warn)}
+.heat{font-variant-numeric:tabular-nums;font-size:14.5px}
+.heat th,.heat td{padding:8px 6px;text-align:center}
+.heat td.rowh,.heat th{color:var(--muted);font-size:13px}
+.heat td.v{border-radius:7px;font-weight:600}
+.h0{background:#241f1c;color:#c9b7ad}
+.h1{background:#2b2a20;color:#d4c59f}
+.h2{background:#26302a;color:#9fd0b4}
+.h3{background:#1f3b2c;color:#8ee0b0}
+.heat td.mid{outline:2px solid var(--accent);outline-offset:-2px}
+.gauge{position:relative;height:56px;margin:18px 0 6px}
+.gtrk{position:absolute;left:0;right:0;top:22px;height:14px;border-radius:7px;background:linear-gradient(90deg,#1f3b2c,#2b2a20,#4a2b22)}
+.gmk{position:absolute;top:8px;width:2px;height:42px;background:var(--ink);transition:left .5s cubic-bezier(.22,.8,.3,1)}
+.gmk.price{background:var(--danger)}
+.gmk i{position:absolute;top:-16px;left:50%;transform:translateX(-50%);font-size:12px;font-style:normal;white-space:nowrap;color:var(--muted)}
+.gscale{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+@media(max-width:520px){
+  .heat{font-size:12.5px}
+  .heat th,.heat td{padding:6px 3px}
+}
+</style>
+<style>
+/* Day 29 — Growth vs Value: การ์ดสองฝั่ง ทฤษฎีบท และแถบแยกผลตอบแทน */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0 6px}
+.duo .dcard{border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:var(--card)}
+.duo .dcard.g{border-color:#4a3722;background:var(--warn-soft)}
+.duo .dcard.v{border-color:#2c4a3c;background:var(--accent-soft)}
+.duo .dh{font-size:13px;color:var(--muted);letter-spacing:.02em;margin-bottom:8px;font-weight:600}
+.duo .dl{display:flex;justify-content:space-between;gap:8px;font-size:14.5px;padding:5px 0;border-bottom:1px solid var(--line)}
+.duo .dl:last-child{border-bottom:none}
+.duo .dl b{font-variant-numeric:tabular-nums;white-space:nowrap}
+.duo .dcard.g .dl b{color:var(--warn)}
+.duo .dcard.v .dl b{color:var(--accent)}
+.sp-a{background:#4a7fa0;color:#0f1b22}
+.sp-b{background:var(--accent);color:#12130f}
+.sp-c{background:var(--warn);color:#241a0d}
+.sp-neg{background:var(--danger);color:#fff}
+.thm{background:var(--accent-soft);border:1px solid #2c4a3c;border-radius:12px;padding:16px 18px;margin:18px 0;text-align:center;font-size:16px}
+.thm .eq{font-size:18.5px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums;margin-bottom:7px;line-height:1.5}
+.thm .note{font-size:13.5px;color:var(--muted);line-height:1.65}
+@media(max-width:520px){ .duo{grid-template-columns:1fr} .thm .eq{font-size:16px} }
+</style>
+<style>
+/* Day 30 — วงล้อวัฏจักร และการ์ดสี่ช่วงเศรษฐกิจ */
+.cyc{margin:14px 0 4px}
+.cyc svg{width:100%;height:auto;display:block}
+.phgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0 14px}
+.ph{border:1px solid var(--line);border-radius:10px;padding:9px 8px;background:var(--card);text-align:center;transition:background .3s,border-color .3s,transform .3s}
+.ph.on{background:var(--accent-soft);border-color:#2c4a3c;transform:translateY(-3px)}
+.ph b{display:block;font-size:14px;color:var(--ink);margin-bottom:2px}
+.ph span{display:block;color:var(--muted);font-size:12px;line-height:1.5}
+.ph.on b{color:var(--accent)}
+@media(max-width:520px){ .phgrid{grid-template-columns:1fr 1fr} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="nav"><a href="../index.html">← สารบัญ</a></div>
+
+<header>
+  <div class="kicker">
+    <span class="pill">Day 37 / 90</span>
+    <span>Phase 2 · การลงทุนระยะยาว</span>
+    <span>·</span>
+    <span>อ่าน 8 นาที</span>
+  </div>
+  <h1>Rebalancing: ทำเมื่อไร อย่างไร</h1>
+  <p class="sub">Day 35 เลือกสัดส่วน Day 36 เข้าใจว่าทำไมต้องกระจาย แต่ตลาดไม่ยอมให้พอร์ตอยู่นิ่ง ทุกวันที่หุ้นขึ้นมากกว่าพันธบัตร พอร์ตเราเสี่ยงขึ้นเองโดยที่เราไม่ได้ตัดสินใจอะไรเลย</p>
+</header>
+
+<h2>พอร์ตไหลออกจากเป้าเสมอ</h2>
+
+<p>ตั้งพอร์ต 100,000 บาทที่ 60/40 ปีแรกหุ้นขึ้น 30% พันธบัตร +3% ⇒ หุ้นเป็น 78,000 พันธบัตร 41,200 รวม 119,200 ⇒ สัดส่วนหุ้นกลายเป็น <strong>65.44%</strong> ไม่มีใครสั่ง แต่พอร์ตเสี่ยงขึ้นแล้ว</p>
+
+<p><strong>การปรับสมดุลพอร์ต (rebalancing)</strong> คือการซื้อขายให้สัดส่วนกลับไปที่เป้า ในตัวอย่างนี้เป้าหุ้นคือ 60% × 119,200 = 71,520 ⇒ <strong>ขายหุ้น 6,480 บาท ซื้อพันธบัตร 6,480 บาท</strong> สังเกตว่ากฎนี้บังคับให้ขายสิ่งที่เพิ่งขึ้นและซื้อสิ่งที่ขึ้นน้อยกว่า — ขายของแพง ซื้อของถูก โดยไม่ต้องทำนายอะไร</p>
+
+<div class="calc">
+  <h3 style="margin-top:0;font-size:16px">เครื่องคิดเลขปรับพอร์ต: เริ่ม 100,000 บาท เป้า 60/40</h3>
+  <div class="row"><label>หุ้นปีนี้ <span class="val" id="o_s">+30%</span></label>
+    <input type="range" id="r_s" min="-50" max="60" step="1" value="30"></div>
+  <div class="row"><label>พันธบัตรปีนี้ <span class="val" id="o_b">+3%</span></label>
+    <input type="range" id="r_b" min="-10" max="15" step="1" value="3"></div>
+  <div class="row"><label>กรอบยอมให้ไหล (band) ± <span class="val" id="o_k">5</span> จุด</label>
+    <input type="range" id="r_k" min="1" max="10" step="1" value="5"></div>
+  <div class="bar-label"><span>ก่อนปรับ</span><span id="o_mix">65.4 / 34.6</span></div>
+  <div class="split"><i class="sp-b" id="s_s" style="width:65.4%">หุ้น</i><i class="sp-a" id="s_b" style="width:34.6%">พันธบัตร</i></div>
+  <div class="bar-label" style="margin-top:10px"><span>เป้าหมาย</span><span>60 / 40</span></div>
+  <div class="split"><i class="sp-b" style="width:60%">หุ้น</i><i class="sp-a" style="width:40%">พันธบัตร</i></div>
+  <div class="verdict bad" id="vd">หลุดกรอบ ±5 · ขายหุ้น 6,480 บาท ซื้อพันธบัตร 6,480 บาท</div>
+</div>
+
+<h2>ทำไมต้องปรับ: เรื่องความเสี่ยง ไม่ใช่ผลตอบแทน</h2>
+
+<p>ผมจำลองพอร์ต 60/40 30 ปี 100,000 เส้นทาง (หุ้น 8%/18%, พันธบัตร 3%/5%, ρ 0.1 เหมือน Day 35) เทียบสามวิธี (มูลค่าเริ่ม 100):</p>
+
+<table>
+  <thead><tr><th>วิธี</th><th class="num">ค่ากลาง</th><th class="num">กรณีแย่ 5%</th><th class="num">กรณีดี 5%</th></tr></thead>
+  <tbody>
+    <tr><td>ไม่ปรับเลย (buy and hold)</td><td class="num">495.5</td><td class="num">170.2</td><td class="num">1,894.5</td></tr>
+    <tr><td>ปรับทุกปี</td><td class="num">487.3</td><td class="num">183.7</td><td class="num">1,249.5</td></tr>
+    <tr><td>ปรับเมื่อหลุดกรอบ ±5 จุด</td><td class="num">488.9</td><td class="num">183.1</td><td class="num">1,268.5</td></tr>
+  </tbody>
+</table>
+
+<p>ไม่ปรับเลยได้ค่ากลางสูงกว่านิดหน่อย เพราะพอร์ตค่อยๆ ไหลไปเป็นหุ้นมากขึ้น — ค่ากลางของสัดส่วนหุ้นปีที่ 30 คือ <strong>80.9%</strong> (ช่วง 5–95% คือ 45.7% ถึง 95.2%) คนที่ตั้งใจถือ 60/40 จะจบด้วยพอร์ตที่เสี่ยงกว่าที่เลือกไว้มาก และมักเป็นช่วงอายุที่ควรเสี่ยง<strong>น้อยลง</strong>ตาม Day 35 พอดี · การปรับพอร์ตแลกผลตอบแทนเล็กน้อยกับการคุมความเสี่ยงให้อยู่ที่เราเลือก และปรับแบบมีกรอบ ±5 จุดได้ผลเกือบเท่าปรับทุกปี แต่ซื้อขายเฉลี่ยแค่ <strong>9.2 ครั้งใน 30 ปี</strong></p>
+
+<h2>โบนัสจากความผันผวน</h2>
+
+<p>ในตลาดที่แกว่งกลับไปมา การปรับพอร์ตได้ผลตอบแทนเพิ่มด้วย ตัวอย่างสุดขั้ว: ถือหุ้น 50 เงินสด 50 หุ้นร่วงครึ่งหนึ่งแล้วฟื้นกลับเท่าเดิม</p>
+
+<ul>
+  <li><strong>ไม่ปรับ:</strong> หุ้น 50 → 25 → 50 · รวม <strong>100</strong> (เท่าทุน)</li>
+  <li><strong>ปรับหลังร่วง:</strong> 25 + 50 = 75 ⇒ ปรับเป็น 37.5/37.5 ⇒ หุ้นฟื้นเท่าตัว 75 + 37.5 = <strong>112.5</strong> (+12.5%)</li>
+</ul>
+
+<p>แต่ถ้าหุ้นร่วงแล้วร่วงต่อ การปรับจะทำให้ขาดทุนมากกว่าไม่ปรับ โบนัสนี้จึงเกิดในตลาดที่แกว่ง ไม่ใช่ในตลาดที่วิ่งทางเดียว — อย่าขายการปรับพอร์ตให้ตัวเองว่าเป็นเครื่องเพิ่มผลตอบแทน มันคือเครื่องคุมความเสี่ยงที่บางครั้งแถมผลตอบแทนมาด้วย</p>
+
+<h2>วิธีปรับในทางปฏิบัติ</h2>
+
+<table>
+  <thead><tr><th>วิธี</th><th>ข้อดี</th><th>ข้อเสีย</th></tr></thead>
+  <tbody>
+    <tr><td>ตามปฏิทิน (ปีละครั้ง)</td><td>ง่าย จำได้</td><td>อาจซื้อขายตอนไหลน้อยโดยไม่จำเป็น</td></tr>
+    <tr><td>ตามกรอบ (±5 จุด)</td><td>ซื้อขายเท่าที่จำเป็น</td><td>ต้องคอยเช็ก</td></tr>
+    <tr><td>ใช้เงินใหม่ปรับ</td><td>ไม่ต้องขาย ไม่เสียค่าขาย</td><td>ช้าเมื่อพอร์ตใหญ่กว่าเงินออมมาก</td></tr>
+  </tbody>
+</table>
+
+<div class="card accent">
+  <h3>ฉบับเด็กฝึกงาน</h3>
+  <p style="margin-bottom:0">ตอนพอร์ตยังเล็กเมื่อเทียบกับเงินออมรายเดือน วิธีที่ถูกที่สุดคือ<strong>เอาเงินใหม่ใส่ฝั่งที่ต่ำกว่าเป้า</strong> ไม่ต้องขายอะไร ไม่เสียค่าธรรมเนียมขายคืน · เช็กสัดส่วนปีละครั้ง (เช่น วันเกิด) ถ้าหลุดเกิน ±5 จุดจึงค่อยสับเปลี่ยน (switching) ระหว่างกองใน บลจ. เดียวกันซึ่งมักไม่มีค่าธรรมเนียม · สำหรับบุคคลธรรมดา กำไรจากการขายคืนหน่วยกองทุนรวมไทยได้รับยกเว้นภาษี (Day 31) การปรับพอร์ตจึงแทบไม่มีต้นทุนภาษีในไทย ต่างจากหลายประเทศ</p>
+</div>
+
+<details>
+  <summary>กล่องโค้ด (ข้ามได้ ไม่นับในเวลาอ่าน)</summary>
+  <div class="ans">
+<pre><code>def rebalance(stock, bond, target=0.60, band=0.05):
+    total = stock + bond
+    w = stock / total
+    if abs(w - target) &lt;= band:
+        return 0.0                         # อยู่ในกรอบ ไม่ต้องทำอะไร
+    return stock - target * total          # บวก = ขายหุ้น, ลบ = ซื้อหุ้น
+
+s, b = 60_000 * 1.30, 40_000 * 1.03
+print(f"สัดส่วนหุ้น {s/(s+b):.2%}")          # 65.44%
+print(f"ขายหุ้น {rebalance(s, b):,.0f} บาท")   # 6,480 บาท</code></pre>
+  </div>
+</details>
+
+<h2>ทดสอบความเข้าใจ</h2>
+
+<p class="q">1. พอร์ต 200,000 บาท เป้า 70/30 · ปีนี้หุ้นร่วง 25% พันธบัตร +4% · สัดส่วนหุ้นเหลือเท่าไร หลุดกรอบ ±5 จุดไหม ต้องซื้อขายอะไรเท่าไร และทำไมหลายคนทำข้อนี้ไม่ได้ในชีวิตจริง</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">หุ้น 140,000 × 0.75 = 105,000 · พันธบัตร 60,000 × 1.04 = 62,400 · รวม 167,400 ⇒ หุ้น <strong>62.72%</strong> ⇒ ห่างเป้า 7.28 จุด <strong>หลุดกรอบ</strong><br>
+  เป้าหุ้น = 0.7 × 167,400 = 117,180 ⇒ <strong>ขายพันธบัตร 12,180 บาท ซื้อหุ้น 12,180 บาท</strong><br>
+  ในชีวิตจริงนี่คือการซื้อหุ้นเพิ่มหลังข่าวร้ายหนึ่งปีเต็ม ทุกสัญชาตญาณบอกให้รอ · ข้อดีของกฎที่เขียนไว้ล่วงหน้าคือมันตัดสินใจแทนเราในวันที่อารมณ์แย่ที่สุด</div>
+</details>
+
+<p class="q">2. ถือหุ้น 50 เงินสด 50 (เงินสดไม่มีดอกเบี้ย) หุ้นขึ้น 100% แล้วร่วง 50% กลับที่เดิม · ปรับพอร์ตกลับ 50/50 หลังหุ้นขึ้น เทียบกับไม่ปรับ ได้ผลอย่างไร</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">ไม่ปรับ: 50 → 100 → 50 ⇒ รวม <strong>100</strong><br>
+  ปรับ: หลังหุ้นขึ้น 100 + 50 = 150 ⇒ ปรับเป็น 75/75 ⇒ หุ้นร่วงครึ่ง 37.5 + 75 = <strong>112.5</strong><br>
+  ได้ +12.5% เท่ากับกรณีร่วงก่อนแล้วขึ้นในบท · ลำดับไม่สำคัญ ขอแค่ราคา<strong>แกว่งกลับ</strong> · ในทางกลับกัน ถ้าหุ้นขึ้น 100% แล้วขึ้นต่ออีก 100% การขายออกครึ่งหนึ่งหลังรอบแรกจะทำให้ได้น้อยกว่าไม่ปรับ</div>
+</details>
+
+<p class="q">3. จากตัวอย่างในบท พอร์ต 119,200 บาทอยู่ที่หุ้น 65.44% · ถ้าไม่อยากขายอะไร แต่เอาเงินออมเดือนละ 3,000 บาทใส่พันธบัตรอย่างเดียว ต้องกี่เดือนสัดส่วนหุ้นจึงกลับมาไม่เกิน 60% (สมมติราคาไม่เปลี่ยน)</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">หลัง k เดือน: พันธบัตร 41,200 + 3,000k ต้อง ≥ 0.4 × (119,200 + 3,000k) = 47,680 + 1,200k ⇒ 1,800k ≥ 6,480 ⇒ k ≥ <strong>3.6 ⇒ 4 เดือน</strong><br>
+  ตรวจ: 4 เดือน ⇒ รวม 131,200 หุ้น 78,000 ⇒ <strong>59.45%</strong> ✓ · วิธีนี้ไม่มีค่าธรรมเนียมขายเลย แต่ใช้ได้เพราะเงินออมรายเดือนยังใหญ่เมื่อเทียบกับพอร์ต · เมื่อพอร์ตโตเป็นหลักล้าน เงินออม 3,000 บาทจะแทบไม่ขยับสัดส่วน ต้องกลับไปใช้การสับเปลี่ยนกอง</div>
+</details>
+
+<p class="q"><strong>ทวน:</strong> Day 34 สรุปว่า DCA แบบ "รอให้ตลาดลงก่อนค่อยซื้อ" คือการจับจังหวะที่แต่งตัวใหม่ · การปรับพอร์ตก็ซื้อหุ้นหลังตลาดร่วงเหมือนกัน ทำไมอันหนึ่งเป็นการจับจังหวะแต่อีกอันไม่ใช่</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">ความต่างอยู่ที่<strong>ใครเป็นคนตัดสินใจ และตัดสินใจเมื่อไร</strong> · การปรับพอร์ตใช้กฎที่เขียนไว้ก่อน (เป้า 60/40 กรอบ ±5 จุด) ซื้อขายตามตัวเลขในพอร์ตของเราเอง ไม่ใช่ตามการคาดการณ์ว่าตลาดจะไปทางไหน และทำทั้งสองทิศ — ซื้อหลังร่วง <strong>และขายหลังขึ้น</strong> · ส่วน "รอให้ลงก่อน" คือการเดาอนาคตทีละครั้ง ถ้าตลาดไม่ลง เงินก็ค้างนอกตลาดไปเรื่อยๆ ซึ่ง Day 34 เห็นแล้วว่ามีต้นทุนสูง<br>ตอบผิดหรือลังเล? → <a href="finance-day-34-dca-vs-lump-sum.html">ทบทวน Day 34: DCA vs lump sum</a></div>
+</details>
+
+<p class="q"><strong>ทวน:</strong> Day 33 ใช้เลขคณิตของ Sharpe พิสูจน์ว่า active เฉลี่ยแพ้ passive หลังค่าใช้จ่าย · ถ้าทุกคนในตลาดปรับพอร์ต 60/40 พร้อมกัน นักลงทุนที่ปรับพอร์ตยังนับว่าเป็น "passive" ตามนิยามของ Sharpe ไหม และเรื่องนี้สำคัญอย่างไร</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">ในนิยามเคร่งของ Sharpe ตลาด = สินทรัพย์ทั้งหมดตามน้ำหนักมูลค่า พอร์ต 60/40 ที่ปรับกลับตลอดจึง<strong>เบี่ยงจากน้ำหนักตลาด</strong> (ตลาดไม่ได้ปรับตัวเองกลับ 60/40) จึงเป็น active ระดับการจัดสรรในทางทฤษฎี · แต่ในทางปฏิบัติ เป็น active ที่<strong>ต้นทุนต่ำมาก ซื้อขายน้อย และไม่ต้องใช้ข้อมูลที่เหนือกว่าคนอื่น</strong> — ไม่ได้พยายามชนะตลาด แค่รักษาความเสี่ยงที่เลือกไว้ · ข้อสรุปของ Sharpe เรื่องค่าใช้จ่ายยังใช้ได้เต็มที่: การปรับพอร์ตยิ่งถี่ ต้นทุนยิ่งสูง นี่คือเหตุผลที่กรอบ ±5 จุดดีกว่าการปรับทุกเดือน<br>ตอบผิดหรือลังเล? → <a href="finance-day-33-passive-vs-active.html">ทบทวน Day 33: Passive vs active investing</a></div>
+</details>
+
+<div class="summary-box">
+  <h2 style="margin-top:0">สรุป 3 บรรทัด</h2>
+  <p>1. พอร์ตไหลออกจากเป้าเอง (60/40 ไม่ปรับ 30 ปี ⇒ ค่ากลางหุ้น 80.9%) · การปรับพอร์ตคือการคุมความเสี่ยงให้อยู่ที่เลือกไว้ ไม่ใช่เครื่องเพิ่มผลตอบแทน</p>
+  <p>2. ปรับตามกรอบ ±5 จุดได้ผลใกล้การปรับทุกปี แต่ซื้อขายแค่ราว 9 ครั้งใน 30 ปี · ในตลาดที่แกว่งกลับ มีโบนัสแถม (50/50 ร่วงครึ่งแล้วฟื้น ⇒ +12.5%)</p>
+  <p style="margin-bottom:0">3. พอร์ตเล็ก: ใช้เงินใหม่ใส่ฝั่งที่ต่ำกว่าเป้า · พอร์ตใหญ่: สับเปลี่ยนกองปีละครั้งเมื่อหลุดกรอบ · เขียนกฎไว้ก่อน เพื่อให้กฎตัดสินใจแทนในวันที่อารมณ์แย่ที่สุด</p>
+</div>
+
+<footer>
+  <p><strong>พรุ่งนี้ Day 38 — REITs และการลงทุนอสังหาริมทรัพย์</strong> อสังหาฯ เป็นสินทรัพย์ประเภทที่สามที่ช่วยกระจายความเสี่ยงได้ไหม? พรุ่งนี้จะดูว่า REITs ในไทยให้ผลตอบแทนจากอะไร ทำไมราคามันอ่อนไหวต่ออัตราดอกเบี้ยเหมือนพันธบัตร และทำไมมันซื้อขายต่ำกว่า NAV ได้ ทั้งที่กองทุนรวมทั่วไปทำไม่ได้</p>
+  <p class="disclaimer">บทเรียนนี้เป็นความรู้เชิงการศึกษา ไม่ใช่คำแนะนำทางการเงินเฉพาะบุคคล · ผลการจำลองใช้ผลตอบแทนรายปีแบบสุ่มตามการแจกแจงปกติด้วยสมมติฐานของ Day 35 ซึ่งไม่ได้สะท้อนวิกฤตสุดขั้วหรือการแกว่งกลับของตลาดจริง · ตัวอย่างการปรับพอร์ตไม่รวมค่าธรรมเนียมและภาษี · หลักเกณฑ์ค่าธรรมเนียมสับเปลี่ยนและภาษีแตกต่างกันตามกองทุนและอาจเปลี่ยนแปลง ควรตรวจสอบจากหนังสือชี้ชวนและกรมสรรพากร · ผลตอบแทนในอดีตไม่ได้บ่งชี้ผลตอบแทนในอนาคต</p>
+</footer>
+
+</div>
+<script>
+(function(){
+  var fmt=function(n,d){ d=(d===undefined?2:d);
+    return n.toLocaleString('th-TH',{minimumFractionDigits:d,maximumFractionDigits:d}); };
+  var $=function(id){ return document.getElementById(id); };
+  var rs=$('r_s'), rb=$('r_b'), rk=$('r_k');
+  function upd(){
+    var gs=(+rs.value)/100, gb=(+rb.value)/100, k=+rk.value;
+    $('o_s').textContent=(gs>=0?'+':'')+Math.round(gs*100)+'%';
+    $('o_b').textContent=(gb>=0?'+':'')+Math.round(gb*100)+'%';
+    $('o_k').textContent=String(k);
+    var s=60000*(1+gs), b=40000*(1+gb), t=s+b, w=s/t*100;
+    $('o_mix').textContent=fmt(w,1)+' / '+fmt(100-w,1);
+    var es=$('s_s'), eb=$('s_b');
+    es.style.width=w+'%'; eb.style.width=(100-w)+'%';
+    es.textContent= w>12?'หุ้น '+fmt(w,1)+'%':''; eb.textContent=(100-w)>18?'พันธบัตร '+fmt(100-w,1)+'%':'';
+    var trade=s-0.6*t, vd=$('vd'), dev=w-60;
+    if(Math.abs(dev)<=k){
+      vd.className='verdict';
+      vd.innerHTML='ห่างเป้า '+fmt(Math.abs(dev),2)+' จุด อยู่ในกรอบ ±'+k+' · <strong>ไม่ต้องทำอะไร</strong> พอร์ตรวม '+fmt(t,0)+' บาท';
+    } else if(trade>0){
+      vd.className='verdict bad';
+      vd.innerHTML='หลุดกรอบ ±'+k+' ('+fmt(dev,2)+' จุด) · <strong>ขายหุ้น '+fmt(trade,0)+' บาท ซื้อพันธบัตร '+fmt(trade,0)+' บาท</strong> — ขายของที่เพิ่งขึ้น';
+    } else {
+      vd.className='verdict bad';
+      vd.innerHTML='หลุดกรอบ ±'+k+' ('+fmt(dev,2)+' จุด) · <strong>ขายพันธบัตร '+fmt(-trade,0)+' บาท ซื้อหุ้น '+fmt(-trade,0)+' บาท</strong> — ซื้อของที่เพิ่งร่วง';
+    }
+  }
+  [rs,rb,rk].forEach(function(x){ x.addEventListener('input',upd); });
+  upd();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day 38 — REITs และการลงทุนอสังหาริมทรัพย์ | Finance101</title>
+<style>
+:root{
+  --bg:#191816; --card:#211f1d; --ink:#e8e4dd; --muted:#a09a91;
+  --line:#332f2b; --accent:#6cc394; --accent-soft:#1c2f26;
+  --warn:#e0a86f; --warn-soft:#2e2419; --code:#201e1b; --danger:#e0785c;
+  color-scheme: dark;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; padding:28px 18px 80px; background:var(--bg); color:var(--ink);
+  font-family:"Sarabun","Noto Sans Thai",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:17px; line-height:1.75; -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:720px;margin:0 auto}
+header{margin-bottom:34px}
+.kicker{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--muted);letter-spacing:.02em}
+.pill{background:var(--accent-soft);color:var(--accent);padding:3px 11px;border-radius:99px;font-weight:600}
+h1{font-size:29px;line-height:1.3;margin:12px 0 6px;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:16px;margin:0}
+h2{font-size:21px;margin:38px 0 12px;letter-spacing:-.005em}
+h3{font-size:17px;margin:26px 0 8px}
+p{margin:0 0 15px}
+ul,ol{margin:0 0 15px;padding-left:22px}
+li{margin-bottom:7px}
+strong{font-weight:600}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin:22px 0}
+.card.accent{background:var(--accent-soft);border-color:#2c4a3c}
+.card.warn{background:var(--warn-soft);border-color:#4a3722}
+.card h3{margin-top:0}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15.5px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-weight:600;font-size:13.5px;letter-spacing:.02em}
+td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.calc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;margin:22px 0}
+.calc label{display:block;font-size:14px;color:var(--muted);margin-bottom:6px}
+.calc .row{margin-bottom:18px}
+input[type=range]{width:100%;accent-color:var(--accent);height:24px}
+.val{font-weight:600;color:var(--accent);font-variant-numeric:tabular-nums}
+.bars{margin-top:6px}
+.bar-row{margin-bottom:12px}
+.bar-label{display:flex;justify-content:space-between;font-size:14px;margin-bottom:5px;gap:10px}
+.bar-track{background:#2a2724;border-radius:8px;height:26px;overflow:hidden;position:relative}
+.bar-fill{height:100%;border-radius:8px;transition:width .55s cubic-bezier(.22,.8,.3,1)}
+.bar-principal{background:#3f5c4e}
+.bar-growth{background:var(--accent)}
+.bar-negative{background:#a34a34}
+.bar-bond{background:#4a7fa0}
+.bar-stock{background:var(--accent)}
+.bar-gold{background:var(--warn)}
+.legend{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-top:10px;flex-wrap:wrap}
+.swatch{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:middle}
+.seg{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+.seg button{
+  background:var(--code);color:var(--muted);border:1px solid var(--line);border-radius:99px;
+  padding:6px 16px;font-size:14px;font-family:inherit;cursor:pointer;transition:all .2s;
+}
+.seg button.active{background:var(--accent-soft);color:var(--accent);border-color:#2c4a3c;font-weight:600}
+details{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:12px 16px;margin:10px 0}
+details[open]{background:#1d1b19}
+summary{cursor:pointer;font-weight:600;font-size:15.5px;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"▸ ";color:var(--accent)}
+details[open] summary::before{content:"▾ "}
+.ans{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font-size:15.5px;color:#d6d1c9}
+.q{font-weight:600;margin:22px 0 8px}
+pre{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:14px;line-height:1.6}
+code{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+.summary-box{border-left:3px solid var(--accent);padding-left:18px;margin:26px 0}
+.summary-box p{margin-bottom:8px}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
+footer a{color:var(--accent)}
+.disclaimer{font-size:13px;color:var(--muted);margin-top:18px;line-height:1.6}
+.nav{margin-bottom:20px;font-size:14px}
+.nav a{color:var(--accent);text-decoration:none}
+.src{font-size:12.5px;color:var(--muted);margin-top:8px}
+.steps{display:flex;align-items:flex-end;gap:14px;margin:18px 0 6px;height:150px}
+.step{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px}
+.step-bar{width:100%;border-radius:8px 8px 0 0;transition:height .55s cubic-bezier(.22,.8,.3,1);min-height:2px}
+.step1 .step-bar{background:#3f5c4e}
+.step2 .step-bar{background:var(--danger)}
+.step-label{font-size:13px;color:var(--muted);text-align:center}
+.step-val{font-weight:600;color:var(--ink);font-size:14.5px}
+.mixbar{display:flex;height:30px;border-radius:8px;overflow:hidden;margin:6px 0 10px;background:#2a2724}
+.mixseg{height:100%;transition:width .4s cubic-bezier(.22,.8,.3,1)}
+.stat{display:flex;justify-content:space-between;font-size:15.5px;padding:7px 0;border-bottom:1px solid var(--line)}
+.stat:last-child{border-bottom:none}
+.stat b{font-variant-numeric:tabular-nums;color:var(--accent)}
+@media(max-width:520px){
+  body{font-size:16px;padding:20px 14px 60px}
+  h1{font-size:25px}
+  .card,.calc{padding:16px}
+}
+
+/* โครงสร้างสิทธิเรียกร้อง / แถบสัดส่วน (ใช้ต่อจาก Day 20) */
+.wf{margin:18px 0 6px}
+.wf-track{display:flex;height:44px;border-radius:10px;overflow:hidden;background:#2a2724;border:1px solid var(--line)}
+.wf-seg{height:100%;display:flex;align-items:center;justify-content:center;font-size:12.5px;color:#12130f;font-weight:600;overflow:hidden;white-space:nowrap;transition:width .5s cubic-bezier(.22,.8,.3,1)}
+.wf-debt{background:#4a7fa0;color:#0f1b22}
+.wf-eq{background:var(--accent)}
+.wf-gap{background:#7a3d2c;color:#f0ded8}
+.wf-axis{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:6px;font-variant-numeric:tabular-nums}
+.ladder{list-style:none;padding:0;margin:16px 0}
+.ladder li{display:flex;gap:12px;align-items:baseline;padding:9px 14px;border:1px solid var(--line);border-radius:9px;margin-bottom:7px;background:var(--card);font-size:15.5px}
+.ladder li:last-child{background:var(--accent-soft);border-color:#2c4a3c}
+.ladder .rank{font-variant-numeric:tabular-nums;font-size:13px;color:var(--muted);min-width:20px;flex-shrink:0}
+
+/* Day 21 — เส้นทางคำสั่งซื้อ */
+.pipe{margin:16px 0 4px}
+.pnode{display:flex;gap:12px;align-items:flex-start;padding:11px 14px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;background:var(--card);transition:background .3s,border-color .3s,transform .3s}
+.pnode.on{background:var(--accent-soft);border-color:#2c4a3c;transform:translateX(7px)}
+.pnum{width:25px;height:25px;border-radius:50%;background:#2a2724;color:var(--muted);font-size:12.5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:3px;font-variant-numeric:tabular-nums;transition:background .3s,color .3s}
+.pnode.on .pnum{background:var(--accent);color:#12130f;font-weight:700}
+.pttl{font-weight:600;font-size:15.5px;margin-bottom:2px}
+.pdesc{font-size:14px;color:var(--muted);line-height:1.6}
+.pbtn{background:var(--accent-soft);color:var(--accent);border:1px solid #2c4a3c;border-radius:99px;padding:8px 22px;font-size:15px;font-family:inherit;font-weight:600;cursor:pointer;transition:opacity .2s}
+.pbtn:disabled{opacity:.45;cursor:default}
+.regbar{margin-top:10px;padding:10px 14px;border:1px dashed var(--line);border-radius:10px;font-size:14px;color:var(--muted)}
+.scalebar{background:#2a2724;border-radius:8px;height:22px;overflow:hidden;margin-bottom:5px}
+.scalefill{height:100%;border-radius:8px}
+
+/* Day 22 — กระดานราคา (order book) และปฏิทิน T+2 */
+.book{font-variant-numeric:tabular-nums;font-size:15px;margin:4px 0 2px}
+.brow{display:grid;grid-template-columns:1fr 84px 1fr;gap:8px;align-items:center;padding:3px 0}
+.bqty{display:flex;height:24px;border-radius:6px;overflow:hidden;background:transparent}
+.bqty i{height:100%;border-radius:6px;display:block;transition:width .4s ease,opacity .4s ease}
+.bqty.l{justify-content:flex-end}
+.bprice{text-align:center;font-weight:600;padding:2px 0;border-radius:6px;transition:background .3s,color .3s}
+.bprice.ask{color:var(--danger)}
+.bprice.bid{color:var(--accent)}
+.bprice.hit{background:var(--warn-soft);color:var(--warn)}
+.bqty span{font-size:12.5px;color:var(--muted);padding:0 6px;line-height:24px;white-space:nowrap}
+.bhead{display:grid;grid-template-columns:1fr 84px 1fr;gap:8px;font-size:12.5px;color:var(--muted);padding-bottom:5px;border-bottom:1px solid var(--line);margin-bottom:6px}
+.bhead span:nth-child(1){text-align:right}
+.bhead span:nth-child(2){text-align:center}
+.spreadrow{text-align:center;font-size:13px;color:var(--warn);padding:5px 0;border-top:1px dashed var(--line);border-bottom:1px dashed var(--line);margin:5px 0}
+.cal{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin:16px 0 6px}
+.cday{border:1px solid var(--line);border-radius:10px;padding:9px 6px;text-align:center;background:var(--card);transition:background .35s,border-color .35s}
+.cday .cn{font-size:12px;color:var(--muted)}
+.cday .cv{font-size:14px;font-weight:600;margin-top:3px;min-height:20px}
+.cday.t{background:var(--accent-soft);border-color:#2c4a3c}
+.cday.s{background:var(--warn-soft);border-color:#4a3722}
+.cday.off{opacity:.4}
+
+/* Day 23 — โครงเงินปันผล */
+.split{display:flex;height:34px;border-radius:9px;overflow:hidden;background:#2a2724;border:1px solid var(--line);margin:10px 0 4px}
+.split i{height:100%;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;transition:width .45s cubic-bezier(.22,.8,.3,1)}
+.sp-pay{background:var(--accent);color:#12130f}
+.sp-ret{background:#3f5c4e;color:#dfe8e2}
+.idcard{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin:14px 0;font-variant-numeric:tabular-nums;font-size:15.5px;text-align:center}
+.idcard b{color:var(--accent)}
+.tax2{display:flex;gap:14px;align-items:flex-end;height:170px;margin:16px 0 4px}
+.tax2 .col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px}
+.tax2 .cb{width:100%;border-radius:9px 9px 0 0;transition:height .5s cubic-bezier(.22,.8,.3,1);min-height:3px}
+.tax2 .c1 .cb{background:#3f5c4e}
+.tax2 .c2 .cb{background:var(--accent)}
+.tax2 .c2.lose .cb{background:var(--danger)}
+.verdict{text-align:center;font-size:15px;padding:9px 12px;border-radius:9px;margin-top:12px;background:var(--accent-soft);color:var(--accent);border:1px solid #2c4a3c}
+.verdict.bad{background:var(--warn-soft);color:var(--warn);border-color:#4a3722}
+</style>
+<style>
+/* Day 24 — น้ำตกงบกำไรขาดทุน */
+.wfall{margin:16px 0 6px;font-variant-numeric:tabular-nums}
+.wrow{display:grid;grid-template-columns:112px 1fr 92px;gap:10px;align-items:center;margin-bottom:6px;font-size:14.5px}
+.wrow .wlab{color:var(--muted);font-size:13.5px;line-height:1.4}
+.wrow.tot .wlab{color:var(--ink);font-weight:600}
+.wtrack{position:relative;height:26px;background:#2a2724;border-radius:7px;overflow:hidden}
+.wseg{position:absolute;top:0;height:100%;border-radius:7px;transition:left .5s cubic-bezier(.22,.8,.3,1),width .5s cubic-bezier(.22,.8,.3,1)}
+.w-rev{background:#3f5c4e}
+.w-gp{background:#4d7a63}
+.w-ebit{background:#5aa47e}
+.w-np{background:var(--accent)}
+.w-cut{background:var(--danger);opacity:.85}
+.wval{text-align:right;font-weight:600;font-size:14.5px}
+.wrow.cut .wval{color:var(--danger)}
+.wrow.tot .wval{color:var(--accent)}
+.mgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0 4px}
+.mbox{background:var(--code);border:1px solid var(--line);border-radius:11px;padding:11px 8px;text-align:center}
+.mbox .mv{font-size:20px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums;line-height:1.3}
+.mbox .mn{font-size:12px;color:var(--muted);line-height:1.45;margin-top:2px}
+.mbox.neg .mv{color:var(--danger)}
+@media(max-width:520px){
+  .wrow{grid-template-columns:92px 1fr 78px;gap:7px;font-size:13.5px}
+  .wrow .wlab{font-size:12.5px}
+  .mbox .mv{font-size:17px}
+}
+</style>
+<style>
+/* Day 25 — งบดุลสองฝั่ง และวงจรเงินสด */
+.bswrap{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0 6px}
+.bscol{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:11px;overflow:hidden;min-height:230px}
+.bshead{font-size:12.5px;color:var(--muted);text-align:center;margin-bottom:6px;letter-spacing:.02em}
+.bsseg{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:0 9px;font-size:12px;font-weight:600;color:#12130f;overflow:hidden;white-space:nowrap;transition:height .5s cubic-bezier(.22,.8,.3,1);min-height:0}
+.bsseg span:last-child{font-variant-numeric:tabular-nums}
+.a-cash{background:#6cc394}.a-ar{background:#4d7a63;color:#e8f2ec}.a-inv{background:#3f5c4e;color:#e8f2ec}
+.a-ppe{background:#4a7fa0;color:#0f1b22}.a-int{background:#5b6b7a;color:#e6edf3}
+.l-cl{background:#e0a86f;color:#241a0d}.l-ltd{background:#a8703f;color:#f6e8da}
+.e-eq{background:#6cc394}.e-re{background:#3f5c4e;color:#e8f2ec}
+.bsseg.neg{background:var(--danger);color:#fff}
+.eqline{display:flex;justify-content:center;gap:10px;font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums;margin-top:4px}
+.eqline b{color:var(--accent)}
+.gantt{margin:16px 0 6px}
+.grow{display:grid;grid-template-columns:116px 1fr;gap:10px;align-items:center;margin-bottom:7px;font-size:13.5px;color:var(--muted)}
+.gtrack{position:relative;height:25px;background:#2a2724;border-radius:7px;overflow:hidden}
+.gbar{position:absolute;top:0;height:100%;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;overflow:hidden;white-space:nowrap;transition:left .5s cubic-bezier(.22,.8,.3,1),width .5s cubic-bezier(.22,.8,.3,1)}
+.g-dio{background:#3f5c4e;color:#e8f2ec}
+.g-dso{background:#4a7fa0;color:#0f1b22}
+.g-dpo{background:var(--warn);color:#241a0d}
+.g-ccc{background:var(--danger);color:#fff}
+@media(max-width:520px){
+  .bswrap{gap:8px}
+  .bsseg{font-size:11px;padding:0 6px}
+  .grow{grid-template-columns:92px 1fr;gap:7px;font-size:12.5px}
+}
+</style>
+<style>
+/* Day 26 — สามกระแสเงินสด (แท่งบวก/ลบรอบเส้นศูนย์) */
+.zwrap{margin:18px 0 4px}
+.zbar{position:relative;height:150px;display:flex;gap:16px}
+.zaxis{position:absolute;left:0;right:0;top:75px;border-top:1px dashed #4a453f;z-index:0}
+.zc{flex:1;position:relative;z-index:1}
+.zfill{position:absolute;left:0;right:0;border-radius:7px;transition:top .5s cubic-bezier(.22,.8,.3,1),height .5s cubic-bezier(.22,.8,.3,1);min-height:3px}
+.zfill.p{background:var(--accent)}
+.zfill.n{background:var(--danger)}
+.zv{position:absolute;left:0;right:0;text-align:center;font-size:13.5px;font-weight:700;font-variant-numeric:tabular-nums;transition:top .5s cubic-bezier(.22,.8,.3,1)}
+.zv.p{color:var(--accent)} .zv.n{color:var(--danger)}
+.zlab{display:flex;gap:16px;margin-top:8px}
+.zlab div{flex:1;text-align:center;font-size:12.5px;color:var(--muted);line-height:1.45}
+.tax2 .c3 .cb{background:#4a7fa0}
+.sign{display:inline-block;min-width:18px;font-weight:700;font-variant-numeric:tabular-nums}
+.sign.p{color:var(--accent)} .sign.n{color:var(--danger)}
+.cfs td:first-child{padding-left:12px}
+.cfs tr.head td{color:var(--muted);font-size:13.5px;font-weight:600;padding-top:16px}
+.cfs tr.sum td{font-weight:700;border-top:1px solid var(--line);border-bottom:2px solid var(--line)}
+.cfs tr.sum td.num{color:var(--accent)}
+.cfs tr.sum.neg td.num{color:var(--danger)}
+.cfs td.ind{padding-left:26px;color:#cdc7be;font-size:14.5px}
+@media(max-width:520px){
+  .zbar{gap:9px;height:135px}
+  .zaxis{top:67px}
+  .zlab{gap:9px}
+  .zlab div{font-size:11.5px}
+  .cfs td.ind{padding-left:14px;font-size:13.5px}
+}
+</style>
+<style>
+/* Day 27 — DuPont และห้องทดลองเลเวอเรจ */
+.dp{margin:16px 0 4px}
+.dprow{display:grid;grid-template-columns:136px 1fr 74px;gap:10px;align-items:center;margin-bottom:8px;font-size:14px}
+.dprow .dlab{color:var(--muted);font-size:13.5px;line-height:1.45}
+.dtrack{height:24px;background:#2a2724;border-radius:7px;overflow:hidden}
+.dfill{height:100%;border-radius:7px;transition:width .5s cubic-bezier(.22,.8,.3,1);min-width:3px}
+.d-nm{background:var(--accent)}
+.d-at{background:#4a7fa0}
+.d-em{background:var(--warn)}
+.dval{text-align:right;font-weight:600;font-variant-numeric:tabular-nums;font-size:14.5px}
+.dprod{text-align:center;font-size:15.5px;padding:10px 12px;border-radius:9px;background:var(--accent-soft);
+  border:1px solid #2c4a3c;color:var(--accent);margin-top:6px;font-variant-numeric:tabular-nums}
+.dnote{font-size:14px;color:var(--muted);margin-top:10px;line-height:1.65}
+.rid{display:grid;grid-template-columns:1fr 1fr;gap:8px 18px;margin:16px 0 4px}
+.rid .r{display:flex;justify-content:space-between;gap:8px;font-size:15px;padding:7px 0;border-bottom:1px solid var(--line)}
+.rid .r b{font-variant-numeric:tabular-nums;color:var(--accent);white-space:nowrap}
+.rid .r.warnv b{color:var(--warn)}
+.rid .r.badv b{color:var(--danger)}
+.tax2 .c3.lose .cb{background:var(--danger)}
+@media(max-width:520px){
+  .dprow{grid-template-columns:104px 1fr 62px;gap:7px;font-size:13px}
+  .dprow .dlab{font-size:12.5px}
+  .rid{grid-template-columns:1fr;gap:0 0}
+}
+</style>
+<style>
+/* Day 28 — DCF: แถบมูลค่าปลายทาง ตารางความไว และมาตรวัดราคา */
+.d-y{background:#4d7a63}
+.d-tv{background:var(--warn)}
+.heat{font-variant-numeric:tabular-nums;font-size:14.5px}
+.heat th,.heat td{padding:8px 6px;text-align:center}
+.heat td.rowh,.heat th{color:var(--muted);font-size:13px}
+.heat td.v{border-radius:7px;font-weight:600}
+.h0{background:#241f1c;color:#c9b7ad}
+.h1{background:#2b2a20;color:#d4c59f}
+.h2{background:#26302a;color:#9fd0b4}
+.h3{background:#1f3b2c;color:#8ee0b0}
+.heat td.mid{outline:2px solid var(--accent);outline-offset:-2px}
+.gauge{position:relative;height:56px;margin:18px 0 6px}
+.gtrk{position:absolute;left:0;right:0;top:22px;height:14px;border-radius:7px;background:linear-gradient(90deg,#1f3b2c,#2b2a20,#4a2b22)}
+.gmk{position:absolute;top:8px;width:2px;height:42px;background:var(--ink);transition:left .5s cubic-bezier(.22,.8,.3,1)}
+.gmk.price{background:var(--danger)}
+.gmk i{position:absolute;top:-16px;left:50%;transform:translateX(-50%);font-size:12px;font-style:normal;white-space:nowrap;color:var(--muted)}
+.gscale{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+@media(max-width:520px){
+  .heat{font-size:12.5px}
+  .heat th,.heat td{padding:6px 3px}
+}
+</style>
+<style>
+/* Day 29 — Growth vs Value: การ์ดสองฝั่ง ทฤษฎีบท และแถบแยกผลตอบแทน */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0 6px}
+.duo .dcard{border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:var(--card)}
+.duo .dcard.g{border-color:#4a3722;background:var(--warn-soft)}
+.duo .dcard.v{border-color:#2c4a3c;background:var(--accent-soft)}
+.duo .dh{font-size:13px;color:var(--muted);letter-spacing:.02em;margin-bottom:8px;font-weight:600}
+.duo .dl{display:flex;justify-content:space-between;gap:8px;font-size:14.5px;padding:5px 0;border-bottom:1px solid var(--line)}
+.duo .dl:last-child{border-bottom:none}
+.duo .dl b{font-variant-numeric:tabular-nums;white-space:nowrap}
+.duo .dcard.g .dl b{color:var(--warn)}
+.duo .dcard.v .dl b{color:var(--accent)}
+.sp-a{background:#4a7fa0;color:#0f1b22}
+.sp-b{background:var(--accent);color:#12130f}
+.sp-c{background:var(--warn);color:#241a0d}
+.sp-neg{background:var(--danger);color:#fff}
+.thm{background:var(--accent-soft);border:1px solid #2c4a3c;border-radius:12px;padding:16px 18px;margin:18px 0;text-align:center;font-size:16px}
+.thm .eq{font-size:18.5px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums;margin-bottom:7px;line-height:1.5}
+.thm .note{font-size:13.5px;color:var(--muted);line-height:1.65}
+@media(max-width:520px){ .duo{grid-template-columns:1fr} .thm .eq{font-size:16px} }
+</style>
+<style>
+/* Day 30 — วงล้อวัฏจักร และการ์ดสี่ช่วงเศรษฐกิจ */
+.cyc{margin:14px 0 4px}
+.cyc svg{width:100%;height:auto;display:block}
+.phgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0 14px}
+.ph{border:1px solid var(--line);border-radius:10px;padding:9px 8px;background:var(--card);text-align:center;transition:background .3s,border-color .3s,transform .3s}
+.ph.on{background:var(--accent-soft);border-color:#2c4a3c;transform:translateY(-3px)}
+.ph b{display:block;font-size:14px;color:var(--ink);margin-bottom:2px}
+.ph span{display:block;color:var(--muted);font-size:12px;line-height:1.5}
+.ph.on b{color:var(--accent)}
+@media(max-width:520px){ .phgrid{grid-template-columns:1fr 1fr} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="nav"><a href="../index.html">← สารบัญ</a></div>
+
+<header>
+  <div class="kicker">
+    <span class="pill">Day 38 / 90</span>
+    <span>Phase 2 · การลงทุนระยะยาว</span>
+    <span>·</span>
+    <span>อ่าน 8 นาที</span>
+  </div>
+  <h1>REITs และการลงทุนอสังหาริมทรัพย์</h1>
+  <p class="sub">คนไทยชอบอสังหาฯ เพราะ "จับต้องได้" และ "ให้ค่าเช่าทุกเดือน" วันนี้จะแปลงความรู้สึกนั้นเป็นตัวเลข แล้วดูว่าทำไม REIT ที่จ่ายปันผล 8% บางกองอาจให้ผลตอบแทนจริงติดลบ</p>
+</header>
+
+<h2>อสังหาฯ ตรง: ผลตอบแทนที่ป้ายโฆษณาไม่บอก</h2>
+
+<p>คอนโดราคา 3,000,000 บาท ปล่อยเช่าเดือนละ 12,000 บาท ⇒ <strong>ผลตอบแทนค่าเช่าขั้นต้น (gross rental yield)</strong> = 144,000 ÷ 3,000,000 = 4.80% ต่อปี · แต่ในชีวิตจริงต้องหัก: ห้องว่างระหว่างเปลี่ยนผู้เช่าสัก 1 เดือน (12,000) ค่าส่วนกลาง (สมมติ 12,600 ต่อปี) ค่าซ่อมและเปลี่ยนเฟอร์นิเจอร์ (สมมติ 10,000 ต่อปี) ⇒ เหลือ 109,400 บาท ⇒ <strong>ผลตอบแทนสุทธิ 3.65%</strong> ก่อนภาษีและก่อนค่าเสื่อมของตึก</p>
+
+<p>ยังไม่นับข้อจำกัดใหญ่: ต้องใช้เงินก้อนเดียวหลักล้าน (ขัดกับการกระจายความเสี่ยงใน Day 36 โดยตรง) ขายยากและช้า และส่วนใหญ่ต้องกู้ ซึ่งคือเลเวอเรจแบบ Day 27 ที่ขยายทั้งกำไรและขาดทุน</p>
+
+<h2>REIT: อสังหาฯ ที่หั่นเป็นหน่วยแล้วเอาเข้าตลาด</h2>
+
+<p><strong>ทรัสต์เพื่อการลงทุนในอสังหาริมทรัพย์ (Real Estate Investment Trust, REIT)</strong> ระดมเงินไปซื้อหรือเช่าอสังหาฯ ที่สร้างรายได้ เช่น ห้าง สำนักงาน โกดัง โรงแรม แล้วซื้อขายหน่วยในตลาดหลักทรัพย์เหมือนหุ้น ต้อง<strong>จ่ายปันผลไม่น้อยกว่า 90% ของกำไรสุทธิ</strong> จึงเป็นเครื่องมือเน้นกระแสเงินสด ณ 30 มิ.ย. 2569 REIT ไทยมีมูลค่าทรัพย์สินสุทธิรวม <strong>323,298 ล้านบาท</strong> และกองทุนรวมโครงสร้างพื้นฐานอีก 340,745 ล้านบาท (AIMC)</p>
+
+<p>ต่างจากกองทุนเปิดใน Day 31 สองข้อสำคัญ: (1) ซื้อขายที่<strong>ราคาตลาด</strong> ซึ่งต่ำหรือสูงกว่า NAV ได้ เพราะไม่มีการออกหน่วยและรับซื้อคืนรายวัน (2) NAV มาจาก<strong>การประเมินราคาโดยผู้ประเมิน</strong> ปีละครั้งสองครั้ง ไม่ใช่ราคาตลาดรายวัน</p>
+
+<h2>กับดักใหญ่ที่สุด: สิทธิการเช่า (leasehold)</h2>
+
+<p>REIT ไทยจำนวนมากไม่ได้เป็นเจ้าของที่ดินและอาคาร (<strong>freehold</strong>) แต่ถือ<strong>สิทธิการเช่า (leasehold)</strong> ที่มีวันหมดอายุ เมื่อสัญญาครบ ทรัพย์สินกลับไปเป็นของเจ้าของเดิม มูลค่าส่วนนั้นของกองเหลือศูนย์ ปันผลที่ได้ระหว่างทางจึงเป็น<strong>ส่วนหนึ่งคือกำไร ส่วนหนึ่งคือการคืนเงินต้นของเราเอง</strong></p>
+
+<div class="thm">
+  <div class="eq">ราคา = Σ<sub>t=1..N</sub> D·(1+g)<sup>t−1</sup> ÷ (1+IRR)<sup>t</sup></div>
+  <div class="note">freehold (N → ∞): IRR ≈ อัตราปันผล + g (สูตร Gordon จาก Day 28)<br>leasehold: ต้องแก้หา IRR จากเงินปันผลที่มีวันจบ · อัตราปันผลบนหน้าจอจึง<strong>ไม่ใช่</strong>ผลตอบแทน</div>
+</div>
+
+<div class="calc">
+  <h3 style="margin-top:0;font-size:16px">ผลตอบแทนจริงของ REIT (IRR)</h3>
+  <div class="seg" id="seg"><button class="active" data-k="lh">สิทธิการเช่า (leasehold)</button><button data-k="fh">กรรมสิทธิ์ (freehold)</button></div>
+  <div class="row"><label>อัตราปันผลบนราคาที่ซื้อ = <span class="val" id="o_y">8.0%</span></label>
+    <input type="range" id="r_y" min="3" max="14" step="0.5" value="8"></div>
+  <div class="row"><label>ปันผลโตปีละ g = <span class="val" id="o_g">0.0%</span></label>
+    <input type="range" id="r_g" min="-3" max="4" step="0.5" value="0"></div>
+  <div class="row" id="row_n"><label>อายุสิทธิการเช่าคงเหลือ <span class="val" id="o_n">20</span> ปี</label>
+    <input type="range" id="r_n" min="3" max="50" step="1" value="20"></div>
+  <div class="tax2">
+    <div class="col c1"><div class="step-val" id="v_y">8.00%</div><div class="cb" id="b_y" style="height:170px"></div><div class="step-label">อัตราปันผล<br>ที่เห็นบนจอ</div></div>
+    <div class="col c2" id="c_i"><div class="step-val" id="v_i">4.96%</div><div class="cb" id="b_i" style="height:105px"></div><div class="step-label">ผลตอบแทนจริง<br>(IRR)</div></div>
+  </div>
+  <div class="verdict bad" id="vd">ปันผล 8% แต่ผลตอบแทนจริงแค่ 4.96% — ส่วนต่างคือเงินต้นของเราที่ถูกคืนทีละน้อย</div>
+</div>
+
+<p>ที่อัตราปันผล 8% ปันผลไม่โต: สิทธิการเช่าเหลือ 30 ปี ⇒ IRR 6.93% · 20 ปี ⇒ <strong>4.96%</strong> · 15 ปี ⇒ 2.37% · 10 ปี ⇒ <strong>−3.86%</strong> (ปันผลรวมไม่พอคืนเงินต้นด้วยซ้ำ) เทียบกับ freehold ปันผล 6% โตปีละ 2% ⇒ IRR ราว 8% ข้อมูลอายุสัญญาเช่าอยู่ในหนังสือชี้ชวนและรายงานประจำปีของกอง ต้องหาก่อนดูอัตราปันผลเสมอ</p>
+
+<h2>REIT กับอัตราดอกเบี้ย</h2>
+
+<p>นักลงทุนเทียบอัตราปันผลของ REIT กับพันธบัตรรัฐบาลโดยตรง ถ้าให้ r = อัตราผลตอบแทนพันธบัตร + ส่วนชดเชยความเสี่ยง ราคาแบบ Gordon คือ D ÷ (r − g) · สมมติพันธบัตร 10 ปี 2.30% (ข้อมูล 11 ก.ย. 2569 จาก Day 28) ส่วนชดเชย 4.5% g 1% ⇒ ถ้าอัตราพันธบัตรขึ้นเป็น 3.30% ราคาทฤษฎีลดลง <strong>14.71%</strong> ทั้งที่ค่าเช่าไม่ได้เปลี่ยนเลย REIT จึงมีนิสัยคล้ายพันธบัตรระยะยาว (Day 19) ผสมกับหุ้น ผลคือมันกระจายความเสี่ยงจากหุ้นได้บ้าง แต่<strong>ไม่ได้</strong>กระจายความเสี่ยงจากดอกเบี้ยขาขึ้น</p>
+
+<div class="card accent">
+  <h3>ฉบับเด็กฝึกงาน: คอนโดหนึ่งห้อง vs REIT หลายกอง</h3>
+  <p style="margin-bottom:0">คอนโด 3 ล้านบาทคือเงินทั้งชีวิตในสินทรัพย์เดียว ทำเลเดียว ผลตอบแทนสุทธิราว 3.65% และขายยาก · REIT ซื้อได้ทีละหลักร้อยบาท กระจายได้หลายประเภทอาคาร แต่ต้องเช็กสามอย่างเสมอ: <strong>(1) freehold หรือ leasehold และเหลือกี่ปี (2) ราคาเทียบ NAV (3) อัตราการเช่าและผู้เช่ารายใหญ่</strong> · ในพอร์ตส่วนใหญ่ REIT มักเป็นส่วนเสริมไม่เกิน 5–15% ไม่ใช่แกนหลัก · ปันผล REIT สำหรับบุคคลธรรมดามักถูกหักภาษี ณ ที่จ่าย 10% ตรวจสอบเงื่อนไขกับหนังสือชี้ชวนของแต่ละกอง</p>
+</div>
+
+<details>
+  <summary>กล่องโค้ด (ข้ามได้ ไม่นับในเวลาอ่าน)</summary>
+  <div class="ans">
+<pre><code>def reit_irr(yield_, g, years):
+    """IRR ของ REIT สิทธิการเช่า ราคา 1 บาท ปันผลปีแรก = yield_"""
+    lo, hi = -0.99, 1.0
+    for _ in range(200):                       # bisection
+        r = (lo + hi) / 2
+        pv = sum(yield_ * (1 + g)**(t - 1) / (1 + r)**t
+                 for t in range(1, years + 1))
+        lo, hi = (r, hi) if pv &gt; 1 else (lo, r)
+    return r
+
+for n in (10, 15, 20, 30):
+    print(n, f"{reit_irr(0.08, 0.0, n):.2%}")
+# 10 -3.86%   15 2.37%   20 4.96%   30 6.93%</code></pre>
+  </div>
+</details>
+
+<h2>ทดสอบความเข้าใจ</h2>
+
+<p class="q">1. คอนโด 3,000,000 บาท ค่าเช่าเดือนละ 12,000 บาท ว่าง 1 เดือนต่อปี ค่าส่วนกลาง 12,600 บาทต่อปี ค่าซ่อม 10,000 บาทต่อปี · ผลตอบแทนขั้นต้นและสุทธิเท่าไร ถ้าห้องว่าง 3 เดือนต่อปีล่ะ</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">ขั้นต้น 144,000 ÷ 3,000,000 = <strong>4.80%</strong> · สุทธิ (ว่าง 1 เดือน) = (132,000 − 12,600 − 10,000) ÷ 3,000,000 = 109,400 ÷ 3,000,000 = <strong>3.65%</strong><br>
+  ว่าง 3 เดือน: (108,000 − 22,600) ÷ 3,000,000 = 85,400 ÷ 3,000,000 = <strong>2.85%</strong><br>
+  ต่ำกว่าพันธบัตรรัฐบาล 10 ปีบวกนิดเดียว ทั้งที่เสี่ยงกว่ามาก · ราคาคอนโดต้องขึ้นเพื่อชดเชย ซึ่งไม่มีอะไรรับประกัน · ตัวเลขที่ต้องถามคนขายเสมอคือ<strong>ผลตอบแทนสุทธิ</strong> ไม่ใช่ขั้นต้น</div>
+</details>
+
+<p class="q">2. REIT สิทธิการเช่าเหลือ 20 ปี อัตราปันผล 8% คงที่ เทียบกับ REIT กรรมสิทธิ์ อัตราปันผล 6% ปันผลโตปีละ 2% · ตัวไหนให้ผลตอบแทนจริงสูงกว่า</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">leasehold: แก้ 1 = Σ 0.08/(1+r)<sup>t</sup> t = 1..20 ⇒ IRR = <strong>4.96%</strong> (ตัวคูณ annuity = 12.5)<br>
+  freehold: IRR ≈ 6% + 2% = <strong>8%</strong> ตามสูตร Gordon<br>
+  ตัวที่ปันผลต่ำกว่าบนหน้าจอให้ผลตอบแทนจริงสูงกว่า 3 จุดต่อปี · สำหรับ leasehold อัตราปันผลต้องถูกมองว่าเป็น "กำไร + คืนทุน" เหมือนเงินงวดของเงินกู้ ไม่ใช่กำไรล้วนแบบ freehold</div>
+</details>
+
+<p class="q">3. REIT กองหนึ่งราคาตามสูตร D ÷ (r − g) โดย r = อัตราพันธบัตร 10 ปี + 4.5% และ g = 1% · ถ้าอัตราพันธบัตรขึ้นจาก 2.30% เป็น 3.30% ราคาเปลี่ยนเท่าไร และทำไมค่าเช่าที่ไม่เปลี่ยนเลยไม่ได้ช่วยอะไร</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">ก่อน: r − g = 2.30% + 4.5% − 1% = 5.80% ⇒ ราคา = D ÷ 0.058 = 17.24D · หลัง: r − g = 6.80% ⇒ 14.71D ⇒ ราคาเปลี่ยน <strong>−14.71%</strong><br>
+  ราคาคือมูลค่าปัจจุบันของค่าเช่า เมื่ออัตราคิดลดขึ้น มูลค่าปัจจุบันลดลงแม้กระแสเงินสดเท่าเดิม (Day 19 และ Day 28 กลไกเดียวกัน) · REIT ที่ g ต่ำมี "duration" สูงเหมือนพันธบัตรระยะยาว จึงอ่อนไหวต่อดอกเบี้ยมาก</div>
+</details>
+
+<p class="q"><strong>ทวน:</strong> Day 31 สอนว่ากองทุนเปิดซื้อขายที่ NAV พอดีเสมอ · REIT ตัวหนึ่ง NAV 10.50 บาท ราคาตลาด 9.00 บาท ปันผลปีละ 0.72 บาท · ส่วนลดจาก NAV กี่เปอร์เซ็นต์ อัตราปันผลบนราคาและบน NAV เท่าไร และทำไมกลไกของกองทุนเปิดจึงไม่ปิดช่องว่างนี้</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">ส่วนลด = 9.00 ÷ 10.50 − 1 = <strong>−14.29%</strong> · ปันผลบนราคา 0.72 ÷ 9.00 = <strong>8.00%</strong> · บน NAV 0.72 ÷ 10.50 = <strong>6.86%</strong><br>
+  กองทุนเปิดปิดช่องว่างเพราะผู้ถือหน่วยขายคืนให้ บลจ. ที่ NAV ได้ทุกวัน · REIT ไม่รับซื้อคืน ใครอยากออกต้องขายให้นักลงทุนคนอื่นในตลาด ราคาจึงลอยตามความเชื่อได้ · ส่วนลดอาจแปลว่าตลาดคิดว่า<strong>ผู้ประเมินตีราคาสูงเกินไป</strong> (เช่น อัตราการเช่ากำลังลด หรือสิทธิการเช่าเหลือสั้น) ไม่ใช่ของถูกเสมอไป<br>ตอบผิดหรือลังเล? → <a href="finance-day-31-mutual-funds-fees.html">ทบทวน Day 31: กองทุนรวมและค่าธรรมเนียม</a></div>
+</details>
+
+<p class="q"><strong>ทวน:</strong> Day 28 ใช้สูตร Gordon P = D ÷ (r − g) · REIT กรรมสิทธิ์ตัวหนึ่งมีอัตราปันผล 5.5% และคาดว่าปันผลโตปีละ 1.5% · ตลาดกำลังเรียกผลตอบแทนเท่าไรจาก REIT นี้ และถ้าเต้นต้องการอย่างน้อย 8% ควรซื้อที่อัตราปันผลเท่าไร</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">จัดสูตรใหม่ r = D/P + g = 5.5% + 1.5% = <strong>7.0%</strong><br>
+  ต้องการ 8% ⇒ D/P = 8% − 1.5% = <strong>6.5%</strong> ⇒ ราคาต้องลดลงจากปัจจุบันราว 5.5/6.5 − 1 = <strong>−15.38%</strong> · สูตรนี้ใช้ได้เฉพาะ freehold ที่ปันผลโตได้ตลอด สำหรับ leasehold ต้องใช้ IRR แบบมีวันจบตามข้อ 2<br>ตอบผิดหรือลังเล? → <a href="finance-day-28-dcf-and-multiples.html">ทบทวน Day 28: Valuation เบื้องต้น: DCF อย่างง่ายและ multiple</a></div>
+</details>
+
+<div class="summary-box">
+  <h2 style="margin-top:0">สรุป 3 บรรทัด</h2>
+  <p>1. คอนโดที่ขายว่า "ค่าเช่า 4.8%" มักเหลือสุทธิราว 3.65% หรือต่ำกว่า และเป็นการเดิมพันสินทรัพย์เดียวด้วยเงินก้อนใหญ่</p>
+  <p>2. REIT ต้องจ่ายปันผลอย่างน้อย 90% ของกำไร แต่ <strong>leasehold คืนเงินต้นผ่านปันผล</strong> · ปันผล 8% สัญญาเหลือ 20 ปี ⇒ IRR 4.96% · เหลือ 10 ปี ⇒ −3.86%</p>
+  <p style="margin-bottom:0">3. ราคา REIT อ่อนไหวต่ออัตราดอกเบี้ยเหมือนพันธบัตรระยะยาว (พันธบัตร +1 จุด ⇒ −14.71% ในตัวอย่าง) และซื้อขายต่ำหรือสูงกว่า NAV ได้</p>
+</div>
+
+<footer>
+  <p><strong>พรุ่งนี้ Day 39 — ทองคำและสินค้าโภคภัณฑ์</strong> REIT มีค่าเช่า หุ้นมีกำไร พันธบัตรมีดอกเบี้ย แต่ทองคำไม่มีกระแสเงินสดเลย แล้วมูลค่ามันมาจากไหน? พรุ่งนี้จะดูราคาทองไทยปัจจุบัน วิธีคำนวณราคาทองบาทจากราคาโลก และบทบาทของทองในพอร์ต</p>
+  <p class="disclaimer">บทเรียนนี้เป็นความรู้เชิงการศึกษา ไม่ใช่คำแนะนำทางการเงินเฉพาะบุคคล และไม่ใช่การชี้ชวนให้ซื้อหรือขาย REIT กองทุน หรืออสังหาริมทรัพย์ใด · ตัวเลขคอนโด ค่าเช่า ค่าใช้จ่าย อัตราปันผล และส่วนชดเชยความเสี่ยงเป็นข้อมูลสมมติเพื่อการคำนวณ · มูลค่า REIT และกองทุนโครงสร้างพื้นฐานอ้างอิงข้อมูล AIMC ณ 30 มิ.ย. 2569 · อัตราผลตอบแทนพันธบัตรอ้างอิง ณ 11 ก.ย. 2569 · หลักเกณฑ์ภาษีและการจ่ายปันผลอาจเปลี่ยนแปลงหรือแตกต่างตามโครงสร้างกอง ควรตรวจสอบจากหนังสือชี้ชวน · ผลตอบแทนในอดีตไม่ได้บ่งชี้ผลตอบแทนในอนาคต</p>
+</footer>
+
+</div>
+<script>
+(function(){
+  var fmt=function(n,d){ d=(d===undefined?2:d);
+    return n.toLocaleString('th-TH',{minimumFractionDigits:d,maximumFractionDigits:d}); };
+  var $=function(id){ return document.getElementById(id); };
+  var mode='lh', H=170;
+  function irr(y,g,N){
+    var lo=-0.99, hi=1.0;
+    for(var k=0;k<200;k++){
+      var r=(lo+hi)/2, pv=0;
+      for(var t=1;t<=N;t++){ pv+=y*Math.pow(1+g,t-1)/Math.pow(1+r,t); }
+      if(pv>1) lo=r; else hi=r;
+    }
+    return (lo+hi)/2;
+  }
+  var ry=$('r_y'), rg=$('r_g'), rn=$('r_n');
+  function upd(){
+    var y=(+ry.value)/100, g=(+rg.value)/100, N=+rn.value;
+    $('o_y').textContent=fmt(y*100,1)+'%'; $('o_g').textContent=fmt(g*100,1)+'%'; $('o_n').textContent=String(N);
+    $('row_n').style.display= mode==='lh' ? '' : 'none';
+    var R= mode==='lh' ? irr(y,g,N) : y+g;
+    $('v_y').textContent=fmt(y*100,2)+'%'; $('v_i').textContent=fmt(R*100,2)+'%';
+    var mx=Math.max(y,Math.abs(R),0.01);
+    $('b_y').style.height=Math.max(3,H*y/mx)+'px';
+    $('b_i').style.height=Math.max(3,H*Math.abs(R)/mx)+'px';
+    $('c_i').className= R<y-1e-9 ? 'col c2 lose':'col c2';
+    var vd=$('vd');
+    if(mode==='fh'){
+      vd.className='verdict';
+      vd.innerHTML='กรรมสิทธิ์: IRR ≈ ปันผล + g = <strong>'+fmt(R*100,2)+'%</strong> (สูตร Gordon) · ใช้ได้ถ้าปันผลโตได้ตลอดจริง';
+    } else if(R<0){
+      vd.className='verdict bad';
+      vd.innerHTML='ปันผล '+fmt(y*100,1)+'% แต่ผลตอบแทนจริง <strong>'+fmt(R*100,2)+'%</strong> — ปันผลทั้งหมด '+N+' ปีไม่พอคืนเงินต้นด้วยซ้ำ';
+    } else {
+      vd.className= R<y ? 'verdict bad':'verdict';
+      vd.innerHTML='ปันผล '+fmt(y*100,1)+'% แต่ผลตอบแทนจริง <strong>'+fmt(R*100,2)+'%</strong> — ส่วนต่างคือเงินต้นของเราที่ถูกคืนทีละน้อย';
+    }
+  }
+  var btns=$('seg').getElementsByTagName('button');
+  for(var i=0;i<btns.length;i++){ btns[i].addEventListener('click',function(){
+    for(var j=0;j<btns.length;j++){ btns[j].className=''; }
+    this.className='active'; mode=this.getAttribute('data-k'); upd(); }); }
+  [ry,rg,rn].forEach(function(x){ x.addEventListener('input',upd); });
+  upd();
+})();
+</script>
+</body>
+</html>

@@ -1,12 +1,27 @@
 {
   "startDate": "2026-07-21",
   "totalDays": 90,
-  "lastCompletedDay": 31,
-  "nextDay": 32,
+  "lastCompletedDay": 47,
+  "nextDay": 48,
   "lastRunDate": "2026-09-29",
   "githubPushed": false,
   "pendingPush": [
-    31
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47
   ],
   "history": [
     {
@@ -305,6 +320,166 @@
         25,
         21
       ]
+    },
+    {
+      "day": 32,
+      "date": "2026-09-29",
+      "title": "Index fund และ ETF",
+      "file": "lessons/finance-day-32-index-fund-etf.html",
+      "recallFrom": [
+        27,
+        22
+      ]
+    },
+    {
+      "day": 33,
+      "date": "2026-09-29",
+      "title": "Passive vs active investing",
+      "file": "lessons/finance-day-33-passive-vs-active.html",
+      "recallFrom": [
+        28,
+        24
+      ]
+    },
+    {
+      "day": 34,
+      "date": "2026-09-29",
+      "title": "DCA vs lump sum",
+      "file": "lessons/finance-day-34-dca-vs-lump-sum.html",
+      "recallFrom": [
+        29,
+        31
+      ]
+    },
+    {
+      "day": 35,
+      "date": "2026-09-29",
+      "title": "Asset allocation และการปรับพอร์ตตามอายุ",
+      "file": "lessons/finance-day-35-asset-allocation-age.html",
+      "recallFrom": [
+        30,
+        27
+      ]
+    },
+    {
+      "day": 36,
+      "date": "2026-09-29",
+      "title": "Diversification และ correlation",
+      "file": "lessons/finance-day-36-diversification-correlation.html",
+      "recallFrom": [
+        32,
+        29
+      ]
+    },
+    {
+      "day": 37,
+      "date": "2026-09-29",
+      "title": "Rebalancing: ทำเมื่อไร อย่างไร",
+      "file": "lessons/finance-day-37-rebalancing.html",
+      "recallFrom": [
+        34,
+        33
+      ]
+    },
+    {
+      "day": 38,
+      "date": "2026-09-29",
+      "title": "REITs และการลงทุนอสังหาริมทรัพย์",
+      "file": "lessons/finance-day-38-reits-real-estate.html",
+      "recallFrom": [
+        31,
+        28
+      ]
+    },
+    {
+      "day": 39,
+      "date": "2026-09-29",
+      "title": "ทองคำและสินค้าโภคภัณฑ์",
+      "file": "lessons/finance-day-39-gold-commodities.html",
+      "recallFrom": [
+        36,
+        35
+      ]
+    },
+    {
+      "day": 40,
+      "date": "2026-09-29",
+      "title": "คริปโต: เทคโนโลยี ความเสี่ยง และมุมมองพอร์ต",
+      "file": "lessons/finance-day-40-crypto.html",
+      "recallFrom": [
+        37,
+        34
+      ]
+    },
+    {
+      "day": 41,
+      "date": "2026-09-29",
+      "title": "ลงทุนต่างประเทศ: กองทุน FIF และ DR",
+      "file": "lessons/finance-day-41-foreign-fif-dr.html",
+      "recallFrom": [
+        32,
+        33
+      ]
+    },
+    {
+      "day": 42,
+      "date": "2026-09-29",
+      "title": "CAGR, total return และการวัดผลพอร์ต",
+      "file": "lessons/finance-day-42-cagr-total-return.html",
+      "recallFrom": [
+        38,
+        34
+      ]
+    },
+    {
+      "day": 43,
+      "date": "2026-09-29",
+      "title": "Sharpe ratio, drawdown และการวัดความเสี่ยง",
+      "file": "lessons/finance-day-43-sharpe-drawdown.html",
+      "recallFrom": [
+        40,
+        37
+      ]
+    },
+    {
+      "day": 44,
+      "date": "2026-09-29",
+      "title": "ค่าธรรมเนียมและภาษีกัดกินผลตอบแทนอย่างไร",
+      "file": "lessons/finance-day-44-fees-taxes-drag.html",
+      "recallFrom": [
+        41,
+        39
+      ]
+    },
+    {
+      "day": 45,
+      "date": "2026-09-29",
+      "title": "อคติทางพฤติกรรม (behavioral biases)",
+      "file": "lessons/finance-day-45-behavioral-biases.html",
+      "recallFrom": [
+        42,
+        38
+      ]
+    },
+    {
+      "day": 46,
+      "date": "2026-09-29",
+      "title": "กับดักและมิจฉาชีพทางการเงิน",
+      "file": "lessons/finance-day-46-scams-traps.html",
+      "recallFrom": [
+        43,
+        40
+      ]
+    },
+    {
+      "day": 47,
+      "date": "2026-09-29",
+      "title": "สรุป Phase 2 + สร้างพอร์ตจำลอง",
+      "file": "lessons/finance-day-47-phase2-summary-portfolio.html",
+      "recallFrom": [
+        44,
+        42
+      ]
     }
   ],
   "notesApplied": [
@@ -372,7 +547,12 @@
       "date": "2026-09-29",
       "note": "(ไม่มีโน้ตใหม่ใต้หัวข้อ 'บันทึกของผม' — ยังมีแต่ข้อ dark theme เดิมที่ทำไปแล้วตั้งแต่ 2026-07-23)",
       "action": "อ่าน notes.md แล้ว ไม่มีคำสั่งใหม่ จึงคัดลอกบล็อก CSS ของ Day 30 มาใช้ต่อทั้งก้อน (เพิ่มเฉพาะ .layer/.lc/.lh สำหรับการ์ดค่าธรรมเนียมสองชั้น) · ตรวจสูตรด้วย Python ผ่านครบ: ทฤษฎีบทสัดส่วนที่หาย 1-(1-f)^n ที่ 30 ปี = 8.62%/17.52%/36.45%/45.45% (TER 0.3/0.64/1.5/2.0%), 10,000 บาท 8% 30 ปี = 100,627/91,953/82,997/63,944, DCA 3,000 บาท/เดือน 35 ปี 8% = 6,469,059 (TER 0) / 5,586,855 (0.6%) / 4,394,777 (1.6%) ต่าง 1,192,078 บาท และ A หาย 32.06% vs สูตรเงินก้อน 43.14%, ค่าขาย 1.5% ⇒ ต้องกำไร 1.52% เพื่อเท่าทุน · ควิซข้อ 1 (31,926 vs 42,164 ต่าง 24.28%) ข้อ 2 (39.65%, alpha 1.653%) ข้อ 3 (NAV 12.50, 7,920 หน่วย) ทวน Day 27 (DY 3.75%, TER กิน 17.07%) ทวน Day 21 (น้ำหนัก free float 40/60) · ค่าใน JS ตรงกับ Python ไล่สไลเดอร์ใน Node ครบไม่มี NaN · node --check ผ่าน tag balance และ id ครบ · ตัวเลขจริงค้นใหม่: factsheet K-SET50 ณ 31 ส.ค. 2569 (TER max 1.6371 / จริง 0.6403, ผลตอบแทนต่ำกว่า SET50 TRI 0.45-0.73%/ปี) ใช้เป็นตัวอย่างการอ่านเอกสารเท่านั้น, กฎ ก.ล.ต. ค่าธรรมเนียมกองทุนรวมมีผล 1 ก.พ. 2569 (ข่าว 5 ม.ค. 2569), NAV อุตสาหกรรม ~6.4 ล้านล้านบาท ณ สิ้น ส.ค. 2569 (อ้าง ก.ล.ต. ผ่านพาดหัวข่าวหุ้น เปิดเนื้อข่าวเต็มไม่ได้) · หมายเหตุ: สคริปต์อัปเดตรอบแรกรายงาน AssertionError แต่ไฟล์ถูกอัปเดตแล้ว จึงตรวจซ้ำว่าไม่มี entry ซ้ำใน history"
+    },
+    {
+      "date": "2026-09-29",
+      "note": "(ไม่มีโน้ตใหม่ใต้หัวข้อ 'บันทึกของผม' — ยังมีแต่ข้อ dark theme เดิม) · รอบนี้ผู้ใช้สั่งในแชตให้สร้างบทที่เหลือทีละเฟส และเลือกทำ Day 31–47 ให้จบ Phase 2 ในรอบเดียว",
+      "action": "สร้าง Day 31–47 (17 บท) ในรอบเดียวตามคำสั่งผู้ใช้ในแชต วันที่ใน history จึงเป็น 2026-09-29 ทั้งชุด · ใช้บล็อก CSS ของ Day 30 ทั้งก้อนเป็นฐานทุกบท เพิ่มเฉพาะ .dots (Day 33) และ .ips/.fx (Day 47) · ตรวจสูตรทุกตัวด้วย Python ก่อนใส่ในบท และทดสอบ JS ทุกบทด้วย jsdom: ยิงค่า slider ต่ำสุด/สูงสุด/ค่าเริ่มต้น และสุ่ม 3,000 ชุดต่อบท ไม่มี error ไม่มี NaN/Infinity และแท่งไม่ล้นกรอบ · recall แต่ละบทสุ่มจาก 3–10 บทก่อนหน้าตามกติกา · ตัวเลขจริงที่ค้นใหม่และระบุวันที่ในกล่อง .src: AIMC ณ 30 มิ.ย. 2569 (AUM 6,839,997 ลบ., 3,531 กอง, FIF 1,513,905, RMF 531,524, ThaiESG 109,083, SSF 99,723, REIT 323,298, IFF 340,745), TDEX Fund Update ณ 31 ส.ค. 2569 (NAV 10.59, 4,130 ลบ., TE 0.29%, ผลตอบแทน 1/3/5/10 ปีเทียบ SET50 TRI, SET50 P/E 14.6 P/BV 1.62 DY 4.47%), SPIVA U.S. Year-End 2025 (หุ้นใหญ่แพ้ 79%), ราคาทองสมาคมค้าทองคำ 29 ก.ย. 2569 ครั้งที่ 1 (แท่ง 65,700/65,900 รูปพรรณ 64,384.52/66,700) และ spot ราว 4,286 USD, BTC ราว 83,000 USD (28 ก.ย. 2569) เทียบระดับ ~126,198 (6 ต.ค. 2568), กฎกระทรวงฉบับที่ 399 (พ.ศ. 2568) ยกเว้นภาษีกำไรคริปโต 2568–2572 ผ่านผู้ได้รับอนุญาต ก.ล.ต., คำสั่งกรมสรรพากร ป.161/2566, มูลค่าซื้อขาย DR ปี 2568 ราว 1.86 แสนล้านบาท (ก.ล.ต.), Morningstar Mind the Gap 2026 (~1.2 จุดต่อปี พร้อมข้อโต้แย้งจาก FAJ), สถิติคดีหลอกลงทุนจาก สตช. · หมายเหตุ: ไม่พบน้ำหนักประเทศไทยใน MSCI ACWI ที่มีวันที่ชัดเจน และไม่พบ P/E รายหมวดของ SET จากแหล่งทางการ จึงไม่อ้างตัวเลขนั้น"
     }
   ],
-  "pushNote": "รอบ 2026-09-24 push สำเร็จ (commit 7237021 Day 30) · clone ลง $HOME/f101-<timestamp> แล้วลบทิ้งหลังเสร็จ"
+  "pushNote": "รอบ 2026-09-29 push สำเร็จ (commit 7eb4a14 Day 31) · clone ลง $HOME/f101-<timestamp> แล้วลบทิ้งหลังเสร็จ"
 }

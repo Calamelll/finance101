@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day 46 — กับดักและมิจฉาชีพทางการเงิน | Finance101</title>
+<style>
+:root{
+  --bg:#191816; --card:#211f1d; --ink:#e8e4dd; --muted:#a09a91;
+  --line:#332f2b; --accent:#6cc394; --accent-soft:#1c2f26;
+  --warn:#e0a86f; --warn-soft:#2e2419; --code:#201e1b; --danger:#e0785c;
+  color-scheme: dark;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; padding:28px 18px 80px; background:var(--bg); color:var(--ink);
+  font-family:"Sarabun","Noto Sans Thai",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:17px; line-height:1.75; -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:720px;margin:0 auto}
+header{margin-bottom:34px}
+.kicker{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--muted);letter-spacing:.02em}
+.pill{background:var(--accent-soft);color:var(--accent);padding:3px 11px;border-radius:99px;font-weight:600}
+h1{font-size:29px;line-height:1.3;margin:12px 0 6px;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:16px;margin:0}
+h2{font-size:21px;margin:38px 0 12px;letter-spacing:-.005em}
+h3{font-size:17px;margin:26px 0 8px}
+p{margin:0 0 15px}
+ul,ol{margin:0 0 15px;padding-left:22px}
+li{margin-bottom:7px}
+strong{font-weight:600}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin:22px 0}
+.card.accent{background:var(--accent-soft);border-color:#2c4a3c}
+.card.warn{background:var(--warn-soft);border-color:#4a3722}
+.card h3{margin-top:0}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15.5px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-weight:600;font-size:13.5px;letter-spacing:.02em}
+td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.calc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;margin:22px 0}
+.calc label{display:block;font-size:14px;color:var(--muted);margin-bottom:6px}
+.calc .row{margin-bottom:18px}
+input[type=range]{width:100%;accent-color:var(--accent);height:24px}
+.val{font-weight:600;color:var(--accent);font-variant-numeric:tabular-nums}
+.bars{margin-top:6px}
+.bar-row{margin-bottom:12px}
+.bar-label{display:flex;justify-content:space-between;font-size:14px;margin-bottom:5px;gap:10px}
+.bar-track{background:#2a2724;border-radius:8px;height:26px;overflow:hidden;position:relative}
+.bar-fill{height:100%;border-radius:8px;transition:width .55s cubic-bezier(.22,.8,.3,1)}
+.bar-principal{background:#3f5c4e}
+.bar-growth{background:var(--accent)}
+.bar-negative{background:#a34a34}
+.bar-bond{background:#4a7fa0}
+.bar-stock{background:var(--accent)}
+.bar-gold{background:var(--warn)}
+.legend{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-top:10px;flex-wrap:wrap}
+.swatch{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:middle}
+.seg{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+.seg button{
+  background:var(--code);color:var(--muted);border:1px solid var(--line);border-radius:99px;
+  padding:6px 16px;font-size:14px;font-family:inherit;cursor:pointer;transition:all .2s;
+}
+.seg button.active{background:var(--accent-soft);color:var(--accent);border-color:#2c4a3c;font-weight:600}
+details{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:12px 16px;margin:10px 0}
+details[open]{background:#1d1b19}
+summary{cursor:pointer;font-weight:600;font-size:15.5px;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"▸ ";color:var(--accent)}
+details[open] summary::before{content:"▾ "}
+.ans{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font-size:15.5px;color:#d6d1c9}
+.q{font-weight:600;margin:22px 0 8px}
+pre{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:14px;line-height:1.6}
+code{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+.summary-box{border-left:3px solid var(--accent);padding-left:18px;margin:26px 0}
+.summary-box p{margin-bottom:8px}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
+footer a{color:var(--accent)}
+.disclaimer{font-size:13px;color:var(--muted);margin-top:18px;line-height:1.6}
+.nav{margin-bottom:20px;font-size:14px}
+.nav a{color:var(--accent);text-decoration:none}
+.src{font-size:12.5px;color:var(--muted);margin-top:8px}
+.steps{display:flex;align-items:flex-end;gap:14px;margin:18px 0 6px;height:150px}
+.step{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px}
+.step-bar{width:100%;border-radius:8px 8px 0 0;transition:height .55s cubic-bezier(.22,.8,.3,1);min-height:2px}
+.step1 .step-bar{background:#3f5c4e}
+.step2 .step-bar{background:var(--danger)}
+.step-label{font-size:13px;color:var(--muted);text-align:center}
+.step-val{font-weight:600;color:var(--ink);font-size:14.5px}
+.mixbar{display:flex;height:30px;border-radius:8px;overflow:hidden;margin:6px 0 10px;background:#2a2724}
+.mixseg{height:100%;transition:width .4s cubic-bezier(.22,.8,.3,1)}
+.stat{display:flex;justify-content:space-between;font-size:15.5px;padding:7px 0;border-bottom:1px solid var(--line)}
+.stat:last-child{border-bottom:none}
+.stat b{font-variant-numeric:tabular-nums;color:var(--accent)}
+@media(max-width:520px){
+  body{font-size:16px;padding:20px 14px 60px}
+  h1{font-size:25px}
+  .card,.calc{padding:16px}
+}
+
+/* โครงสร้างสิทธิเรียกร้อง / แถบสัดส่วน (ใช้ต่อจาก Day 20) */
+.wf{margin:18px 0 6px}
+.wf-track{display:flex;height:44px;border-radius:10px;overflow:hidden;background:#2a2724;border:1px solid var(--line)}
+.wf-seg{height:100%;display:flex;align-items:center;justify-content:center;font-size:12.5px;color:#12130f;font-weight:600;overflow:hidden;white-space:nowrap;transition:width .5s cubic-bezier(.22,.8,.3,1)}
+.wf-debt{background:#4a7fa0;color:#0f1b22}
+.wf-eq{background:var(--accent)}
+.wf-gap{background:#7a3d2c;color:#f0ded8}
+.wf-axis{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:6px;font-variant-numeric:tabular-nums}
+.ladder{list-style:none;padding:0;margin:16px 0}
+.ladder li{display:flex;gap:12px;align-items:baseline;padding:9px 14px;border:1px solid var(--line);border-radius:9px;margin-bottom:7px;background:var(--card);font-size:15.5px}
+.ladder li:last-child{background:var(--accent-soft);border-color:#2c4a3c}
+.ladder .rank{font-variant-numeric:tabular-nums;font-size:13px;color:var(--muted);min-width:20px;flex-shrink:0}
+
+/* Day 21 — เส้นทางคำสั่งซื้อ */
+.pipe{margin:16px 0 4px}
+.pnode{display:flex;gap:12px;align-items:flex-start;padding:11px 14px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;background:var(--card);transition:background .3s,border-color .3s,transform .3s}
+.pnode.on{background:var(--accent-soft);border-color:#2c4a3c;transform:translateX(7px)}
+.pnum{width:25px;height:25px;border-radius:50%;background:#2a2724;color:var(--muted);font-size:12.5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:3px;font-variant-numeric:tabular-nums;transition:background .3s,color .3s}
+.pnode.on .pnum{background:var(--accent);color:#12130f;font-weight:700}
+.pttl{font-weight:600;font-size:15.5px;margin-bottom:2px}
+.pdesc{font-size:14px;color:var(--muted);line-height:1.6}
+.pbtn{background:var(--accent-soft);color:var(--accent);border:1px solid #2c4a3c;border-radius:99px;padding:8px 22px;font-size:15px;font-family:inherit;font-weight:600;cursor:pointer;transition:opacity .2s}
+.pbtn:disabled{opacity:.45;cursor:default}
+.regbar{margin-top:10px;padding:10px 14px;border:1px dashed var(--line);border-radius:10px;font-size:14px;color:var(--muted)}
+.scalebar{background:#2a2724;border-radius:8px;height:22px;overflow:hidden;margin-bottom:5px}
+.scalefill{height:100%;border-radius:8px}
+
+/* Day 22 — กระดานราคา (order book) และปฏิทิน T+2 */
+.book{font-variant-numeric:tabular-nums;font-size:15px;margin:4px 0 2px}
+.brow{display:grid;grid-template-columns:1fr 84px 1fr;gap:8px;align-items:center;padding:3px 0}
+.bqty{display:flex;height:24px;border-radius:6px;overflow:hidden;background:transparent}
+.bqty i{height:100%;border-radius:6px;display:block;transition:width .4s ease,opacity .4s ease}
+.bqty.l{justify-content:flex-end}
+.bprice{text-align:center;font-weight:600;padding:2px 0;border-radius:6px;transition:background .3s,color .3s}
+.bprice.ask{color:var(--danger)}
+.bprice.bid{color:var(--accent)}
+.bprice.hit{background:var(--warn-soft);color:var(--warn)}
+.bqty span{font-size:12.5px;color:var(--muted);padding:0 6px;line-height:24px;white-space:nowrap}
+.bhead{display:grid;grid-template-columns:1fr 84px 1fr;gap:8px;font-size:12.5px;color:var(--muted);padding-bottom:5px;border-bottom:1px solid var(--line);margin-bottom:6px}
+.bhead span:nth-child(1){text-align:right}
+.bhead span:nth-child(2){text-align:center}
+.spreadrow{text-align:center;font-size:13px;color:var(--warn);padding:5px 0;border-top:1px dashed var(--line);border-bottom:1px dashed var(--line);margin:5px 0}
+.cal{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin:16px 0 6px}
+.cday{border:1px solid var(--line);border-radius:10px;padding:9px 6px;text-align:center;background:var(--card);transition:background .35s,border-color .35s}
+.cday .cn{font-size:12px;color:var(--muted)}
+.cday .cv{font-size:14px;font-weight:600;margin-top:3px;min-height:20px}
+.cday.t{background:var(--accent-soft);border-color:#2c4a3c}
+.cday.s{background:var(--warn-soft);border-color:#4a3722}
+.cday.off{opacity:.4}
+
+/* Day 23 — โครงเงินปันผล */
+.split{display:flex;height:34px;border-radius:9px;overflow:hidden;background:#2a2724;border:1px solid var(--line);margin:10px 0 4px}
+.split i{height:100%;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;transition:width .45s cubic-bezier(.22,.8,.3,1)}
+.sp-pay{background:var(--accent);color:#12130f}
+.sp-ret{background:#3f5c4e;color:#dfe8e2}
+.idcard{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin:14px 0;font-variant-numeric:tabular-nums;font-size:15.5px;text-align:center}
+.idcard b{color:var(--accent)}
+.tax2{display:flex;gap:14px;align-items:flex-end;height:170px;margin:16px 0 4px}
+.tax2 .col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px}
+.tax2 .cb{width:100%;border-radius:9px 9px 0 0;transition:height .5s cubic-bezier(.22,.8,.3,1);min-height:3px}
+.tax2 .c1 .cb{background:#3f5c4e}
+.tax2 .c2 .cb{background:var(--accent)}
+.tax2 .c2.lose .cb{background:var(--danger)}
+.verdict{text-align:center;font-size:15px;padding:9px 12px;border-radius:9px;margin-top:12px;background:var(--accent-soft);color:var(--accent);border:1px solid #2c4a3c}
+.verdict.bad{background:var(--warn-soft);color:var(--warn);border-color:#4a3722}
+</style>
+<style>
+/* Day 24 — น้ำตกงบกำไรขาดทุน */
+.wfall{margin:16px 0 6px;font-variant-numeric:tabular-nums}
+.wrow{display:grid;grid-template-columns:112px 1fr 92px;gap:10px;align-items:center;margin-bottom:6px;font-size:14.5px}
+.wrow .wlab{color:var(--muted);font-size:13.5px;line-height:1.4}
+.wrow.tot .wlab{color:var(--ink);font-weight:600}
+.wtrack{position:relative;height:26px;background:#2a2724;border-radius:7px;overflow:hidden}
+.wseg{position:absolute;top:0;height:100%;border-radius:7px;transition:left .5s cubic-bezier(.22,.8,.3,1),width .5s cubic-bezier(.22,.8,.3,1)}
+.w-rev{background:#3f5c4e}
+.w-gp{background:#4d7a63}
+.w-ebit{background:#5aa47e}
+.w-np{background:var(--accent)}
+.w-cut{background:var(--danger);opacity:.85}
+.wval{text-align:right;font-weight:600;font-size:14.5px}
+.wrow.cut .wval{color:var(--danger)}
+.wrow.tot .wval{color:var(--accent)}
+.mgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0 4px}
+.mbox{background:var(--code);border:1px solid var(--line);border-radius:11px;padding:11px 8px;text-align:center}
+.mbox .mv{font-size:20px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums;line-height:1.3}
+.mbox .mn{font-size:12px;color:var(--muted);line-height:1.45;margin-top:2px}
+.mbox.neg .mv{color:var(--danger)}
+@media(max-width:520px){
+  .wrow{grid-template-columns:92px 1fr 78px;gap:7px;font-size:13.5px}
+  .wrow .wlab{font-size:12.5px}
+  .mbox .mv{font-size:17px}
+}
+</style>
+<style>
+/* Day 25 — งบดุลสองฝั่ง และวงจรเงินสด */
+.bswrap{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0 6px}
+.bscol{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:11px;overflow:hidden;min-height:230px}
+.bshead{font-size:12.5px;color:var(--muted);text-align:center;margin-bottom:6px;letter-spacing:.02em}
+.bsseg{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:0 9px;font-size:12px;font-weight:600;color:#12130f;overflow:hidden;white-space:nowrap;transition:height .5s cubic-bezier(.22,.8,.3,1);min-height:0}
+.bsseg span:last-child{font-variant-numeric:tabular-nums}
+.a-cash{background:#6cc394}.a-ar{background:#4d7a63;color:#e8f2ec}.a-inv{background:#3f5c4e;color:#e8f2ec}
+.a-ppe{background:#4a7fa0;color:#0f1b22}.a-int{background:#5b6b7a;color:#e6edf3}
+.l-cl{background:#e0a86f;color:#241a0d}.l-ltd{background:#a8703f;color:#f6e8da}
+.e-eq{background:#6cc394}.e-re{background:#3f5c4e;color:#e8f2ec}
+.bsseg.neg{background:var(--danger);color:#fff}
+.eqline{display:flex;justify-content:center;gap:10px;font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums;margin-top:4px}
+.eqline b{color:var(--accent)}
+.gantt{margin:16px 0 6px}
+.grow{display:grid;grid-template-columns:116px 1fr;gap:10px;align-items:center;margin-bottom:7px;font-size:13.5px;color:var(--muted)}
+.gtrack{position:relative;height:25px;background:#2a2724;border-radius:7px;overflow:hidden}
+.gbar{position:absolute;top:0;height:100%;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;overflow:hidden;white-space:nowrap;transition:left .5s cubic-bezier(.22,.8,.3,1),width .5s cubic-bezier(.22,.8,.3,1)}
+.g-dio{background:#3f5c4e;color:#e8f2ec}
+.g-dso{background:#4a7fa0;color:#0f1b22}
+.g-dpo{background:var(--warn);color:#241a0d}
+.g-ccc{background:var(--danger);color:#fff}
+@media(max-width:520px){
+  .bswrap{gap:8px}
+  .bsseg{font-size:11px;padding:0 6px}
+  .grow{grid-template-columns:92px 1fr;gap:7px;font-size:12.5px}
+}
+</style>
+<style>
+/* Day 26 — สามกระแสเงินสด (แท่งบวก/ลบรอบเส้นศูนย์) */
+.zwrap{margin:18px 0 4px}
+.zbar{position:relative;height:150px;display:flex;gap:16px}
+.zaxis{position:absolute;left:0;right:0;top:75px;border-top:1px dashed #4a453f;z-index:0}
+.zc{flex:1;position:relative;z-index:1}
+.zfill{position:absolute;left:0;right:0;border-radius:7px;transition:top .5s cubic-bezier(.22,.8,.3,1),height .5s cubic-bezier(.22,.8,.3,1);min-height:3px}
+.zfill.p{background:var(--accent)}
+.zfill.n{background:var(--danger)}
+.zv{position:absolute;left:0;right:0;text-align:center;font-size:13.5px;font-weight:700;font-variant-numeric:tabular-nums;transition:top .5s cubic-bezier(.22,.8,.3,1)}
+.zv.p{color:var(--accent)} .zv.n{color:var(--danger)}
+.zlab{display:flex;gap:16px;margin-top:8px}
+.zlab div{flex:1;text-align:center;font-size:12.5px;color:var(--muted);line-height:1.45}
+.tax2 .c3 .cb{background:#4a7fa0}
+.sign{display:inline-block;min-width:18px;font-weight:700;font-variant-numeric:tabular-nums}
+.sign.p{color:var(--accent)} .sign.n{color:var(--danger)}
+.cfs td:first-child{padding-left:12px}
+.cfs tr.head td{color:var(--muted);font-size:13.5px;font-weight:600;padding-top:16px}
+.cfs tr.sum td{font-weight:700;border-top:1px solid var(--line);border-bottom:2px solid var(--line)}
+.cfs tr.sum td.num{color:var(--accent)}
+.cfs tr.sum.neg td.num{color:var(--danger)}
+.cfs td.ind{padding-left:26px;color:#cdc7be;font-size:14.5px}
+@media(max-width:520px){
+  .zbar{gap:9px;height:135px}
+  .zaxis{top:67px}
+  .zlab{gap:9px}
+  .zlab div{font-size:11.5px}
+  .cfs td.ind{padding-left:14px;font-size:13.5px}
+}
+</style>
+<style>
+/* Day 27 — DuPont และห้องทดลองเลเวอเรจ */
+.dp{margin:16px 0 4px}
+.dprow{display:grid;grid-template-columns:136px 1fr 74px;gap:10px;align-items:center;margin-bottom:8px;font-size:14px}
+.dprow .dlab{color:var(--muted);font-size:13.5px;line-height:1.45}
+.dtrack{height:24px;background:#2a2724;border-radius:7px;overflow:hidden}
+.dfill{height:100%;border-radius:7px;transition:width .5s cubic-bezier(.22,.8,.3,1);min-width:3px}
+.d-nm{background:var(--accent)}
+.d-at{background:#4a7fa0}
+.d-em{background:var(--warn)}
+.dval{text-align:right;font-weight:600;font-variant-numeric:tabular-nums;font-size:14.5px}
+.dprod{text-align:center;font-size:15.5px;padding:10px 12px;border-radius:9px;background:var(--accent-soft);
+  border:1px solid #2c4a3c;color:var(--accent);margin-top:6px;font-variant-numeric:tabular-nums}
+.dnote{font-size:14px;color:var(--muted);margin-top:10px;line-height:1.65}
+.rid{display:grid;grid-template-columns:1fr 1fr;gap:8px 18px;margin:16px 0 4px}
+.rid .r{display:flex;justify-content:space-between;gap:8px;font-size:15px;padding:7px 0;border-bottom:1px solid var(--line)}
+.rid .r b{font-variant-numeric:tabular-nums;color:var(--accent);white-space:nowrap}
+.rid .r.warnv b{color:var(--warn)}
+.rid .r.badv b{color:var(--danger)}
+.tax2 .c3.lose .cb{background:var(--danger)}
+@media(max-width:520px){
+  .dprow{grid-template-columns:104px 1fr 62px;gap:7px;font-size:13px}
+  .dprow .dlab{font-size:12.5px}
+  .rid{grid-template-columns:1fr;gap:0 0}
+}
+</style>
+<style>
+/* Day 28 — DCF: แถบมูลค่าปลายทาง ตารางความไว และมาตรวัดราคา */
+.d-y{background:#4d7a63}
+.d-tv{background:var(--warn)}
+.heat{font-variant-numeric:tabular-nums;font-size:14.5px}
+.heat th,.heat td{padding:8px 6px;text-align:center}
+.heat td.rowh,.heat th{color:var(--muted);font-size:13px}
+.heat td.v{border-radius:7px;font-weight:600}
+.h0{background:#241f1c;color:#c9b7ad}
+.h1{background:#2b2a20;color:#d4c59f}
+.h2{background:#26302a;color:#9fd0b4}
+.h3{background:#1f3b2c;color:#8ee0b0}
+.heat td.mid{outline:2px solid var(--accent);outline-offset:-2px}
+.gauge{position:relative;height:56px;margin:18px 0 6px}
+.gtrk{position:absolute;left:0;right:0;top:22px;height:14px;border-radius:7px;background:linear-gradient(90deg,#1f3b2c,#2b2a20,#4a2b22)}
+.gmk{position:absolute;top:8px;width:2px;height:42px;background:var(--ink);transition:left .5s cubic-bezier(.22,.8,.3,1)}
+.gmk.price{background:var(--danger)}
+.gmk i{position:absolute;top:-16px;left:50%;transform:translateX(-50%);font-size:12px;font-style:normal;white-space:nowrap;color:var(--muted)}
+.gscale{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+@media(max-width:520px){
+  .heat{font-size:12.5px}
+  .heat th,.heat td{padding:6px 3px}
+}
+</style>
+<style>
+/* Day 29 — Growth vs Value: การ์ดสองฝั่ง ทฤษฎีบท และแถบแยกผลตอบแทน */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0 6px}
+.duo .dcard{border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:var(--card)}
+.duo .dcard.g{border-color:#4a3722;background:var(--warn-soft)}
+.duo .dcard.v{border-color:#2c4a3c;background:var(--accent-soft)}
+.duo .dh{font-size:13px;color:var(--muted);letter-spacing:.02em;margin-bottom:8px;font-weight:600}
+.duo .dl{display:flex;justify-content:space-between;gap:8px;font-size:14.5px;padding:5px 0;border-bottom:1px solid var(--line)}
+.duo .dl:last-child{border-bottom:none}
+.duo .dl b{font-variant-numeric:tabular-nums;white-space:nowrap}
+.duo .dcard.g .dl b{color:var(--warn)}
+.duo .dcard.v .dl b{color:var(--accent)}
+.sp-a{background:#4a7fa0;color:#0f1b22}
+.sp-b{background:var(--accent);color:#12130f}
+.sp-c{background:var(--warn);color:#241a0d}
+.sp-neg{background:var(--danger);color:#fff}
+.thm{background:var(--accent-soft);border:1px solid #2c4a3c;border-radius:12px;padding:16px 18px;margin:18px 0;text-align:center;font-size:16px}
+.thm .eq{font-size:18.5px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums;margin-bottom:7px;line-height:1.5}
+.thm .note{font-size:13.5px;color:var(--muted);line-height:1.65}
+@media(max-width:520px){ .duo{grid-template-columns:1fr} .thm .eq{font-size:16px} }
+</style>
+<style>
+/* Day 30 — วงล้อวัฏจักร และการ์ดสี่ช่วงเศรษฐกิจ */
+.cyc{margin:14px 0 4px}
+.cyc svg{width:100%;height:auto;display:block}
+.phgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0 14px}
+.ph{border:1px solid var(--line);border-radius:10px;padding:9px 8px;background:var(--card);text-align:center;transition:background .3s,border-color .3s,transform .3s}
+.ph.on{background:var(--accent-soft);border-color:#2c4a3c;transform:translateY(-3px)}
+.ph b{display:block;font-size:14px;color:var(--ink);margin-bottom:2px}
+.ph span{display:block;color:var(--muted);font-size:12px;line-height:1.5}
+.ph.on b{color:var(--accent)}
+@media(max-width:520px){ .phgrid{grid-template-columns:1fr 1fr} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="nav"><a href="../index.html">← สารบัญ</a></div>
+
+<header>
+  <div class="kicker">
+    <span class="pill">Day 46 / 90</span>
+    <span>Phase 2 · การลงทุนระยะยาว</span>
+    <span>·</span>
+    <span>อ่าน 8 นาที</span>
+  </div>
+  <h1>กับดักและมิจฉาชีพทางการเงิน</h1>
+  <p class="sub">ความรู้ทั้ง Phase 2 ช่วยให้เงินโตช้าๆ อย่างมั่นคง แต่ความผิดพลาดครั้งเดียวกับมิจฉาชีพลบทุกอย่างได้ในวันเดียว วันนี้ใช้คณิตศาสตร์พิสูจน์ว่าแชร์ลูกโซ่ต้องล้มเสมอ และสร้างเช็กลิสต์ที่ใช้ได้ในหนึ่งนาที</p>
+</header>
+
+<h2>ขนาดของปัญหาในไทย</h2>
+
+<p>สำนักงานตำรวจแห่งชาติเปิดเผยว่า ช่วง 1 มี.ค. 2565 ถึง 30 มิ.ย. 2566 คดีหลอกให้ลงทุนผ่านระบบคอมพิวเตอร์มีการแจ้งความ <strong>23,616 คดี ความเสียหายรวมกว่า 11,550 ล้านบาท</strong> และสถิติรายสัปดาห์ของปี 2569 ยังคงรายงานว่า "หลอกลงทุน" สร้างความเสียหายสูงสุดในบรรดาคดีออนไลน์ทุกประเภท แม้จำนวนคดีไม่ได้มากที่สุด เช่น สัปดาห์ 19–25 เม.ย. 2569 มีการแจ้งความออนไลน์รวม 6,502 คดี ความเสียหายรวมราว 374 ล้านบาท</p>
+<p class="src">ที่มา: รองโฆษกสำนักงานตำรวจแห่งชาติ ผ่าน PPTV 9 ก.ค. 2566 · สถิติรายสัปดาห์จากระบบ thaipoliceonline ผ่าน Thai PBS และกองสารนิเทศ สตช. (2569) · สายด่วนตำรวจไซเบอร์ 1441</p>
+
+<p>ความเสียหายต่อคดีของการหลอกลงทุนสูงเพราะเหยื่อ<strong>โอนเงินซ้ำหลายครั้งด้วยความเต็มใจ</strong> — ต่างจากการถูกขโมยข้อมูลบัตรที่เกิดครั้งเดียว และนั่นคือเหตุผลที่มันใช้อคติทั้งหมดใน Day 45 เป็นเครื่องมือ</p>
+
+<h2>คณิตศาสตร์ของแชร์ลูกโซ่ (Ponzi scheme)</h2>
+
+<p>แชร์ลูกโซ่สัญญาผลตอบแทน m ต่อเดือน แต่ไม่มีธุรกิจจริงที่สร้างผลตอบแทน เงินที่จ่ายสมาชิกเก่าจึงต้องมาจากเงินของสมาชิกใหม่ ถ้าทุกคนลงคนละเท่ากันและไม่มีใครถอนเงินต้น เงินต้นรวมที่ต้องแบกภาระจ่ายต้องโตอย่างน้อยเท่า m ต่อเดือน:</p>
+
+<div class="thm">
+  <div class="eq">จำนวนสมาชิกที่ต้องมีในเดือนที่ t = N<sub>0</sub> × (1 + m)<sup>t</sup></div>
+  <div class="note">ล้มเมื่อจำนวนนี้เกินคนที่หาได้จริง N<sub>max</sub> ⇒ อายุของแชร์ ≈ ln(N<sub>max</sub> ÷ N<sub>0</sub>) ÷ ln(1 + m) เดือน<br>ผลตอบแทนที่สัญญายิ่งสูง ยิ่งล้มเร็ว — และ<strong>คนที่เข้าทีหลังเสียเสมอ</strong> เพราะเงินของพวกเขาคือเงินที่ใช้จ่ายคนก่อนหน้า</div>
+</div>
+
+<div class="calc">
+  <h3 style="margin-top:0;font-size:16px">แชร์ลูกโซ่อยู่ได้กี่เดือน</h3>
+  <div class="row"><label>ผลตอบแทนที่สัญญา <span class="val" id="o_m">10%</span> ต่อเดือน (= <span id="o_y">213.8</span>% ต่อปี)</label>
+    <input type="range" id="r_m" min="1" max="30" step="1" value="10"></div>
+  <div class="row"><label>สมาชิกเริ่มต้น <span class="val" id="o_0">100</span> คน</label>
+    <input type="range" id="r_0" min="10" max="1000" step="10" value="100"></div>
+  <div class="row"><label>จำนวนคนสูงสุดที่หลอกได้ <span class="val" id="o_x">100,000</span> คน</label>
+    <input type="range" id="r_x" min="3" max="7" step="0.1" value="5"></div>
+  <div class="mgrid">
+    <div class="mbox neg"><div class="mv" id="m_t">72.5</div><div class="mn">เดือนก่อนล้ม</div></div>
+    <div class="mbox"><div class="mv" id="m_d">7.3</div><div class="mn">เดือนที่สมาชิก<br>ต้องเพิ่มเท่าตัว</div></div>
+    <div class="mbox neg"><div class="mv" id="m_l">50.0%</div><div class="mn">สมาชิกที่เข้ามา<br>ในช่วงเท่าตัวสุดท้าย</div></div>
+  </div>
+  <div class="verdict bad" id="vd">ครึ่งหนึ่งของเหยื่อทั้งหมดเข้ามาใน 7.3 เดือนสุดท้าย — ช่วงที่แชร์ดูสำเร็จที่สุด</div>
+</div>
+
+<p>ข้อสังเกตที่เจ็บที่สุด: เพราะจำนวนสมาชิกโตแบบเลขชี้กำลัง <strong>ครึ่งหนึ่งของเหยื่อทั้งหมดเข้ามาในช่วงเท่าตัวรอบสุดท้าย</strong> ซึ่งเป็นช่วงที่แชร์มีคนพูดถึงมากที่สุด มีคนได้เงินจริงมาอวดมากที่สุด และดูน่าเชื่อถือที่สุด — FOMO กับการตามฝูงจาก Day 45 ทำงานเต็มกำลังพอดีตอนที่ใกล้ล้มที่สุด</p>
+
+<h2>รูปแบบที่พบบ่อยในไทย</h2>
+
+<ul>
+  <li><strong>แอป/เว็บเทรดปลอม</strong> — กราฟกำไรบนหน้าจอเป็นตัวเลขที่ผู้หลอกตั้งเอง ถอนครั้งแรกได้จริงเพื่อสร้างความเชื่อ แล้วเรียก "ค่าธรรมเนียมปลดล็อก" หรือ "ภาษี" ก่อนถอนก้อนใหญ่</li>
+  <li><strong>แอบอ้างคนดังหรือโบรกเกอร์</strong> — ปลอมโปรไฟล์ผู้มีชื่อเสียงหรือบริษัทหลักทรัพย์ ชวนเข้ากลุ่ม LINE/Telegram "ติวหุ้นฟรี"</li>
+  <li><strong>ความสัมพันธ์ออนไลน์</strong> — สร้างความไว้ใจหลายสัปดาห์ก่อนชวนลงทุนคริปโต</li>
+  <li><strong>ธุรกิจแม่ข่ายที่รายได้มาจากการหาสมาชิก</strong> ไม่ใช่จากการขายสินค้าให้ผู้ใช้จริง</li>
+</ul>
+
+<div class="card warn">
+  <h3>เช็กลิสต์ 60 วินาทีก่อนโอนเงิน</h3>
+  <p style="margin-bottom:0">1. <strong>ผลตอบแทนการันตีสูงกว่าเงินฝากหลายเท่า?</strong> ของจริงไม่มีใครการันตีได้ (Day 16) · 2. <strong>ผู้รับเงินได้รับอนุญาตจาก ก.ล.ต. หรือ ธปท. ไหม?</strong> ตรวจรายชื่อจากเว็บไซต์ทางการเอง ไม่ใช่จากลิงก์ที่เขาส่งมา · 3. <strong>โอนเข้าบัญชีบุคคลธรรมดา?</strong> สถาบันการเงินจริงไม่รับเงินลงทุนผ่านบัญชีส่วนตัว · 4. <strong>เร่งให้ตัดสินใจ?</strong> "วันนี้วันสุดท้าย" คือสัญญาณอันตราย · 5. <strong>ต้องจ่ายเพิ่มก่อนถอน?</strong> ถ้าใช่ แทบแน่นอนว่าเป็นการหลอก · 6. <strong>อธิบายได้ไหมว่าผลตอบแทนมาจากไหน</strong> ในภาษาของ Day 18–28 (ดอกเบี้ย กำไร ค่าเช่า)? ถ้าตอบไม่ได้ อย่าโอน · หลักของตำรวจ: <strong>ไม่เชื่อ ไม่รีบ ไม่โอน</strong></p>
+</div>
+
+<div class="card accent">
+  <h3>ถ้าพลาดไปแล้ว</h3>
+  <p style="margin-bottom:0">ความเร็วสำคัญที่สุด: ติดต่อธนาคารของเราทันทีเพื่อขออายัดบัญชีปลายทาง แจ้งความออนไลน์ที่ thaipoliceonline หรือโทรสายด่วน 1441 โดยเร็ว (หลายหน่วยงานแนะนำให้แจ้งภายใน 72 ชั่วโมง) · อย่าเชื่อคนที่ติดต่อมาเสนอ "ช่วยตามเงินคืน" โดยเก็บค่าบริการล่วงหน้า เพราะนั่นมักเป็นการหลอกซ้ำรอบสอง · และไม่ต้องอาย — การถูกหลอกไม่ได้วัดความฉลาด มิจฉาชีพมืออาชีพออกแบบมาหลอกคนเก่งโดยเฉพาะ</p>
+</div>
+
+<details>
+  <summary>กล่องโค้ด (ข้ามได้ ไม่นับในเวลาอ่าน)</summary>
+  <div class="ans">
+<pre><code>import math
+
+def ponzi_months(monthly, n0, n_max):
+    return math.log(n_max / n0) / math.log(1 + monthly)
+
+for m in (0.05, 0.10, 0.20):
+    t = ponzi_months(m, 100, 100_000)
+    print(f"สัญญา {m:.0%}/เดือน ({(1+m)**12-1:.0%}/ปี) ⇒ ล้มในราว {t:.1f} เดือน")
+# 5% ⇒ 141.6 เดือน · 10% ⇒ 72.5 เดือน · 20% ⇒ 37.9 เดือน</code></pre>
+  </div>
+</details>
+
+<h2>ทดสอบความเข้าใจ</h2>
+
+<p class="q">1. โฆษณาบอก "ผลตอบแทน 10% ต่อเดือน ปลอดภัย การันตีเงินต้น" · แปลงเป็นผลตอบแทนต่อปีเท่าไร เทียบกับอะไรที่เรียนมา และทำไมคำว่า "การันตี" คู่กับตัวเลขนี้จึงเป็นไปไม่ได้</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">1.10<sup>12</sup> − 1 = <strong>213.8% ต่อปี</strong> · เงิน 10,000 บาทจะกลายเป็น 31,384 บาทในปีเดียว<br>
+  เทียบกับดัชนีหุ้นโลก MSCI World Growth/Value ในรอบ 51 ปีที่ได้ราว 10.75–11.68% ต่อปี (Day 29) และพันธบัตรรัฐบาลไทย 10 ปีราว 2.3% (Day 28) · Day 16 สอนว่าผลตอบแทนสูงต้องมาพร้อมความเสี่ยงสูง ของที่ "สูงกว่าหุ้น 20 เท่าและไม่เสี่ยงเลย" ขัดกับหลักพื้นฐานที่สุดของตลาด ถ้ามีจริง สถาบันการเงินทั่วโลกจะแย่งกันซื้อจนผลตอบแทนหายไปในไม่กี่วัน · ถ้าไม่มีใครอธิบายได้ว่ากำไรมาจากไหน คำตอบคือมาจาก<strong>เงินของเหยื่อรายต่อไป</strong></div>
+</details>
+
+<p class="q">2. แชร์ลูกโซ่เริ่มจาก 100 คน หาคนได้มากสุด 100,000 คน · ถ้าสัญญา 10% ต่อเดือนจะอยู่ได้กี่เดือน ถ้าสัญญา 20% ล่ะ · และถ้าเต้นได้ยินเรื่องนี้จากเพื่อนในช่วงที่ "ทุกคนพูดถึง" มีโอกาสแค่ไหนที่อยู่ในช่วงท้าย</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">10%: ln(1,000) ÷ ln(1.1) = <strong>72.5 เดือน</strong> · 20%: ln(1,000) ÷ ln(1.2) = <strong>37.9 เดือน</strong><br>
+  ช่วงที่ "ทุกคนพูดถึง" คือช่วงที่จำนวนสมาชิกมากที่สุด ซึ่งเป็นช่วงท้ายโดยนิยาม · ที่ 10% สมาชิกเพิ่มเท่าตัวทุก 7.3 เดือน และครึ่งหนึ่งของเหยื่อทั้งหมดเข้ามาในช่วงเท่าตัวสุดท้าย · แปลว่าถ้าเราสุ่มเป็นหนึ่งในคนที่เข้าร่วม มีโอกาสราว<strong>ครึ่งหนึ่ง</strong>ที่จะอยู่ใน 7.3 เดือนก่อนล้ม และแทบไม่มีโอกาสได้เงินต้นคืน</div>
+</details>
+
+<p class="q">3. เพื่อนในกลุ่ม LINE แนะนำแอปเทรดทองที่ "ถอนได้จริง" เต้นลองฝาก 2,000 บาท ถอนกำไร 300 บาทได้จริง พอฝากเพิ่มเป็น 50,000 บาท แอปขอ "ภาษีกำไร 15%" ก่อนถอน · สัญญาณอันตรายมีอะไรบ้างตามเช็กลิสต์ และควรทำอะไรต่อ</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">สัญญาณ: (1) ถูกชวนผ่านกลุ่มแชต ไม่ใช่สถาบันที่ตรวจสอบได้ (2) การถอนครั้งแรกได้จริงคือกลยุทธ์สร้างความเชื่อใจที่ใช้กันเป็นมาตรฐาน — 300 บาทเป็นต้นทุนหลอกที่คุ้มสำหรับผู้หลอก (3) <strong>ต้องจ่ายเพิ่มก่อนถอน</strong> — ภาษีจริงไม่เคยถูกเก็บแบบนี้ (4) ต้องตรวจว่าแอปและบริษัทได้รับอนุญาตหรือไม่จากช่องทางทางการ<br>
+  ทำต่อ: <strong>หยุดโอนทันที</strong> แม้จะเสียดาย 50,000 บาท (sunk cost ใน Day 45 — เงินที่จ่ายไปแล้วไม่ควรเป็นเหตุผลให้จ่ายเพิ่ม) ติดต่อธนาคารเพื่ออายัดบัญชีปลายทาง แจ้งความผ่าน thaipoliceonline หรือ 1441 และเตือนคนในกลุ่มแชต</div>
+</details>
+
+<p class="q"><strong>ทวน:</strong> Day 43 สอน Sharpe ratio · กองทุนหนึ่งรายงานผลตอบแทน +1% ทุกเดือนแทบไม่เคยขาดทุน ความผันผวนรายปีราว 2.5% · ถ้า R<sub>f</sub> = 1% Sharpe ของกองนี้เท่าไร และทำไมตัวเลขนี้ควรทำให้สงสัยมากกว่าดีใจ</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">ผลตอบแทนต่อปี 1.01<sup>12</sup> − 1 = 12.68% ⇒ Sharpe = (12.68 − 1) ÷ 2.5 = <strong>4.67</strong><br>
+  หุ้นทั้งตลาดในระยะยาวมักมี Sharpe ต่ำกว่า 1 อย่างชัดเจน (ตัวอย่างใน Day 43 ที่ 0.65 ก็ถือว่าดีแล้ว) · Sharpe เกือบ 5 ติดต่อกันหลายปีแทบไม่มีในสินทรัพย์ที่ลงทุนได้จริง · ผลตอบแทนที่<strong>เรียบเกินจริง</strong>คือลักษณะเด่นของแชร์ลูกโซ่ระดับโลก เพราะตัวเลขถูกแต่งขึ้น ไม่ได้มาจากตลาด · ความเสี่ยงที่ต่ำผิดปกติเป็นสัญญาณอันตรายพอๆ กับผลตอบแทนที่สูงผิดปกติ<br>ตอบผิดหรือลังเล? → <a href="finance-day-43-sharpe-drawdown.html">ทบทวน Day 43: Sharpe ratio, drawdown และการวัดความเสี่ยง</a></div>
+</details>
+
+<p class="q"><strong>ทวน:</strong> Day 40 สอนว่าสิทธิยกเว้นภาษีกำไรคริปโตตามกฎกระทรวงฉบับที่ 399 ใช้ได้เฉพาะการขายผ่านผู้ประกอบธุรกิจที่ได้รับอนุญาตจาก ก.ล.ต. · นอกจากเรื่องภาษี การใช้ผู้ได้รับอนุญาตช่วยป้องกันการหลอกลวงอย่างไร และมีข้อจำกัดอะไร</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">ผู้ได้รับอนุญาตอยู่ภายใต้การกำกับของ ก.ล.ต. ต้องแยกทรัพย์สินลูกค้า ยืนยันตัวตนลูกค้า และมีช่องทางร้องเรียนที่ตรวจสอบได้ · แอปปลอมมักแอบอ้างว่าเป็นศูนย์ซื้อขายต่างประเทศ "ที่ใหญ่กว่า" เพื่อเลี่ยงการตรวจสอบนี้ · การยืนยันจากรายชื่อทางการจึงตัดการหลอกลวงแบบแอปปลอมได้ส่วนใหญ่<br>
+  ข้อจำกัด: การได้รับอนุญาตไม่ได้แปลว่า<strong>เหรียญที่ซื้อ</strong>ดีหรือปลอดภัย ความเสี่ยงราคาและ volatility drag ใน Day 40 ยังอยู่ครบ และมิจฉาชีพยังปลอมชื่อผู้ได้รับอนุญาตได้ จึงต้องเข้าผ่านช่องทางทางการเอง ไม่ใช่ลิงก์ที่มีคนส่งมา<br>ตอบผิดหรือลังเล? → <a href="finance-day-40-crypto.html">ทบทวน Day 40: คริปโต: เทคโนโลยี ความเสี่ยง และมุมมองพอร์ต</a></div>
+</details>
+
+<div class="summary-box">
+  <h2 style="margin-top:0">สรุป 3 บรรทัด</h2>
+  <p>1. แชร์ลูกโซ่ต้องการสมาชิก N<sub>0</sub>(1+m)<sup>t</sup> ⇒ ล้มแน่นอนใน ln(N<sub>max</sub>/N<sub>0</sub>)/ln(1+m) เดือน และครึ่งหนึ่งของเหยื่อเข้ามาในช่วงเท่าตัวสุดท้าย ตอนที่มันดูสำเร็จที่สุด</p>
+  <p>2. สัญญาณอันตราย: การันตีผลตอบแทนสูง ไม่ได้รับอนุญาต โอนเข้าบัญชีบุคคล เร่งรัด จ่ายก่อนถอน อธิบายไม่ได้ว่ากำไรมาจากไหน และผลตอบแทนที่เรียบเกินจริง</p>
+  <p style="margin-bottom:0">3. ไม่เชื่อ ไม่รีบ ไม่โอน · ถ้าพลาด: ติดต่อธนาคารทันที แจ้งความ thaipoliceonline หรือ 1441 และอย่าจ่ายให้คนที่อ้างว่าช่วยตามเงินคืน</p>
+</div>
+
+<footer>
+  <p><strong>พรุ่งนี้ Day 47 — สรุป Phase 2 + สร้างพอร์ตจำลอง</strong> 33 บทของการลงทุนระยะยาวจะรวมเป็นเครื่องมือเดียว: เต้นจะเลือกสัดส่วน เลือกกอง คำนวณต้นทุนรวม จำลองผลลัพธ์ 30 ปี และเขียน Investment Policy Statement ฉบับแรกของตัวเอง ก่อนเข้าสู่ Phase 3 เรื่องการเทรด</p>
+  <p class="disclaimer">บทเรียนนี้เป็นความรู้เชิงการศึกษา ไม่ใช่คำแนะนำทางการเงินหรือทางกฎหมาย · สถิติคดีอ้างอิงข้อมูลที่สำนักงานตำรวจแห่งชาติเผยแพร่ผ่านสื่อ ณ วันที่ระบุ ตัวเลขล่าสุดควรตรวจสอบจากหน่วยงานโดยตรง · แบบจำลองแชร์ลูกโซ่ในบทเป็นแบบง่ายเพื่ออธิบายหลักการ แชร์จริงอาจล้มเร็วหรือช้ากว่านี้ · หากตกเป็นผู้เสียหาย ควรติดต่อธนาคารและเจ้าหน้าที่ตำรวจโดยเร็วที่สุด</p>
+</footer>
+
+</div>
+<script>
+(function(){
+  var fmt=function(n,d){ d=(d===undefined?2:d);
+    return n.toLocaleString('th-TH',{minimumFractionDigits:d,maximumFractionDigits:d}); };
+  var $=function(id){ return document.getElementById(id); };
+  var rm=$('r_m'), r0=$('r_0'), rx=$('r_x');
+  function upd(){
+    var m=(+rm.value)/100, n0=+r0.value, nx=Math.round(Math.pow(10,+rx.value));
+    $('o_m').textContent=Math.round(m*100)+'%'; $('o_y').textContent=fmt((Math.pow(1+m,12)-1)*100,1);
+    $('o_0').textContent=fmt(n0,0); $('o_x').textContent=fmt(nx,0);
+    var vd=$('vd');
+    if(nx<=n0){ $('m_t').textContent='0'; $('m_d').textContent='-'; $('m_l').textContent='-'; vd.innerHTML='ไม่มีคนใหม่ให้หลอก แชร์ล้มตั้งแต่เดือนแรก'; return; }
+    var t=Math.log(nx/n0)/Math.log(1+m), d=Math.log(2)/Math.log(1+m);
+    $('m_t').textContent=fmt(t,1); $('m_d').textContent=fmt(d,1);
+    var lastShare= t>d ? 50 : (1-n0/nx)*100;
+    $('m_l').textContent=fmt(lastShare,1)+'%';
+    vd.className='verdict bad';
+    vd.innerHTML='อยู่ได้ราว <strong>'+fmt(t,1)+' เดือน</strong> · '+(t>d?'ครึ่งหนึ่งของเหยื่อทั้งหมดเข้ามาใน '+fmt(d,1)+' เดือนสุดท้าย — ช่วงที่แชร์ดูสำเร็จที่สุด':'ล้มก่อนจะเพิ่มเท่าตัวได้ด้วยซ้ำ');
+  }
+  [rm,r0,rx].forEach(function(e){ e.addEventListener('input',upd); });
+  upd();
+})();
+</script>
+</body>
+</html>
