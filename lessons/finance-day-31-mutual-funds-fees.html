@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day 31 — กองทุนรวมและค่าธรรมเนียม | Finance101</title>
+<style>
+:root{
+  --bg:#191816; --card:#211f1d; --ink:#e8e4dd; --muted:#a09a91;
+  --line:#332f2b; --accent:#6cc394; --accent-soft:#1c2f26;
+  --warn:#e0a86f; --warn-soft:#2e2419; --code:#201e1b; --danger:#e0785c;
+  color-scheme: dark;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; padding:28px 18px 80px; background:var(--bg); color:var(--ink);
+  font-family:"Sarabun","Noto Sans Thai",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:17px; line-height:1.75; -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:720px;margin:0 auto}
+header{margin-bottom:34px}
+.kicker{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--muted);letter-spacing:.02em}
+.pill{background:var(--accent-soft);color:var(--accent);padding:3px 11px;border-radius:99px;font-weight:600}
+h1{font-size:29px;line-height:1.3;margin:12px 0 6px;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:16px;margin:0}
+h2{font-size:21px;margin:38px 0 12px;letter-spacing:-.005em}
+h3{font-size:17px;margin:26px 0 8px}
+p{margin:0 0 15px}
+ul,ol{margin:0 0 15px;padding-left:22px}
+li{margin-bottom:7px}
+strong{font-weight:600}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin:22px 0}
+.card.accent{background:var(--accent-soft);border-color:#2c4a3c}
+.card.warn{background:var(--warn-soft);border-color:#4a3722}
+.card h3{margin-top:0}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15.5px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-weight:600;font-size:13.5px;letter-spacing:.02em}
+td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.calc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;margin:22px 0}
+.calc label{display:block;font-size:14px;color:var(--muted);margin-bottom:6px}
+.calc .row{margin-bottom:18px}
+input[type=range]{width:100%;accent-color:var(--accent);height:24px}
+.val{font-weight:600;color:var(--accent);font-variant-numeric:tabular-nums}
+.bars{margin-top:6px}
+.bar-row{margin-bottom:12px}
+.bar-label{display:flex;justify-content:space-between;font-size:14px;margin-bottom:5px;gap:10px}
+.bar-track{background:#2a2724;border-radius:8px;height:26px;overflow:hidden;position:relative}
+.bar-fill{height:100%;border-radius:8px;transition:width .55s cubic-bezier(.22,.8,.3,1)}
+.bar-principal{background:#3f5c4e}
+.bar-growth{background:var(--accent)}
+.bar-negative{background:#a34a34}
+.bar-bond{background:#4a7fa0}
+.bar-stock{background:var(--accent)}
+.bar-gold{background:var(--warn)}
+.legend{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-top:10px;flex-wrap:wrap}
+.swatch{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:middle}
+.seg{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+.seg button{
+  background:var(--code);color:var(--muted);border:1px solid var(--line);border-radius:99px;
+  padding:6px 16px;font-size:14px;font-family:inherit;cursor:pointer;transition:all .2s;
+}
+.seg button.active{background:var(--accent-soft);color:var(--accent);border-color:#2c4a3c;font-weight:600}
+details{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:12px 16px;margin:10px 0}
+details[open]{background:#1d1b19}
+summary{cursor:pointer;font-weight:600;font-size:15.5px;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"▸ ";color:var(--accent)}
+details[open] summary::before{content:"▾ "}
+.ans{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font-size:15.5px;color:#d6d1c9}
+.q{font-weight:600;margin:22px 0 8px}
+pre{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:14px;line-height:1.6}
+code{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+.summary-box{border-left:3px solid var(--accent);padding-left:18px;margin:26px 0}
+.summary-box p{margin-bottom:8px}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
+footer a{color:var(--accent)}
+.disclaimer{font-size:13px;color:var(--muted);margin-top:18px;line-height:1.6}
+.nav{margin-bottom:20px;font-size:14px}
+.nav a{color:var(--accent);text-decoration:none}
+.src{font-size:12.5px;color:var(--muted);margin-top:8px}
+.steps{display:flex;align-items:flex-end;gap:14px;margin:18px 0 6px;height:150px}
+.step{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px}
+.step-bar{width:100%;border-radius:8px 8px 0 0;transition:height .55s cubic-bezier(.22,.8,.3,1);min-height:2px}
+.step1 .step-bar{background:#3f5c4e}
+.step2 .step-bar{background:var(--danger)}
+.step-label{font-size:13px;color:var(--muted);text-align:center}
+.step-val{font-weight:600;color:var(--ink);font-size:14.5px}
+.mixbar{display:flex;height:30px;border-radius:8px;overflow:hidden;margin:6px 0 10px;background:#2a2724}
+.mixseg{height:100%;transition:width .4s cubic-bezier(.22,.8,.3,1)}
+.stat{display:flex;justify-content:space-between;font-size:15.5px;padding:7px 0;border-bottom:1px solid var(--line)}
+.stat:last-child{border-bottom:none}
+.stat b{font-variant-numeric:tabular-nums;color:var(--accent)}
+@media(max-width:520px){
+  body{font-size:16px;padding:20px 14px 60px}
+  h1{font-size:25px}
+  .card,.calc{padding:16px}
+}
+
+/* โครงสร้างสิทธิเรียกร้อง / แถบสัดส่วน (ใช้ต่อจาก Day 20) */
+.wf{margin:18px 0 6px}
+.wf-track{display:flex;height:44px;border-radius:10px;overflow:hidden;background:#2a2724;border:1px solid var(--line)}
+.wf-seg{height:100%;display:flex;align-items:center;justify-content:center;font-size:12.5px;color:#12130f;font-weight:600;overflow:hidden;white-space:nowrap;transition:width .5s cubic-bezier(.22,.8,.3,1)}
+.wf-debt{background:#4a7fa0;color:#0f1b22}
+.wf-eq{background:var(--accent)}
+.wf-gap{background:#7a3d2c;color:#f0ded8}
+.wf-axis{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:6px;font-variant-numeric:tabular-nums}
+.ladder{list-style:none;padding:0;margin:16px 0}
+.ladder li{display:flex;gap:12px;align-items:baseline;padding:9px 14px;border:1px solid var(--line);border-radius:9px;margin-bottom:7px;background:var(--card);font-size:15.5px}
+.ladder li:last-child{background:var(--accent-soft);border-color:#2c4a3c}
+.ladder .rank{font-variant-numeric:tabular-nums;font-size:13px;color:var(--muted);min-width:20px;flex-shrink:0}
+
+/* Day 21 — เส้นทางคำสั่งซื้อ */
+.pipe{margin:16px 0 4px}
+.pnode{display:flex;gap:12px;align-items:flex-start;padding:11px 14px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;background:var(--card);transition:background .3s,border-color .3s,transform .3s}
+.pnode.on{background:var(--accent-soft);border-color:#2c4a3c;transform:translateX(7px)}
+.pnum{width:25px;height:25px;border-radius:50%;background:#2a2724;color:var(--muted);font-size:12.5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:3px;font-variant-numeric:tabular-nums;transition:background .3s,color .3s}
+.pnode.on .pnum{background:var(--accent);color:#12130f;font-weight:700}
+.pttl{font-weight:600;font-size:15.5px;margin-bottom:2px}
+.pdesc{font-size:14px;color:var(--muted);line-height:1.6}
+.pbtn{background:var(--accent-soft);color:var(--accent);border:1px solid #2c4a3c;border-radius:99px;padding:8px 22px;font-size:15px;font-family:inherit;font-weight:600;cursor:pointer;transition:opacity .2s}
+.pbtn:disabled{opacity:.45;cursor:default}
+.regbar{margin-top:10px;padding:10px 14px;border:1px dashed var(--line);border-radius:10px;font-size:14px;color:var(--muted)}
+.scalebar{background:#2a2724;border-radius:8px;height:22px;overflow:hidden;margin-bottom:5px}
+.scalefill{height:100%;border-radius:8px}
+
+/* Day 22 — กระดานราคา (order book) และปฏิทิน T+2 */
+.book{font-variant-numeric:tabular-nums;font-size:15px;margin:4px 0 2px}
+.brow{display:grid;grid-template-columns:1fr 84px 1fr;gap:8px;align-items:center;padding:3px 0}
+.bqty{display:flex;height:24px;border-radius:6px;overflow:hidden;background:transparent}
+.bqty i{height:100%;border-radius:6px;display:block;transition:width .4s ease,opacity .4s ease}
+.bqty.l{justify-content:flex-end}
+.bprice{text-align:center;font-weight:600;padding:2px 0;border-radius:6px;transition:background .3s,color .3s}
+.bprice.ask{color:var(--danger)}
+.bprice.bid{color:var(--accent)}
+.bprice.hit{background:var(--warn-soft);color:var(--warn)}
+.bqty span{font-size:12.5px;color:var(--muted);padding:0 6px;line-height:24px;white-space:nowrap}
+.bhead{display:grid;grid-template-columns:1fr 84px 1fr;gap:8px;font-size:12.5px;color:var(--muted);padding-bottom:5px;border-bottom:1px solid var(--line);margin-bottom:6px}
+.bhead span:nth-child(1){text-align:right}
+.bhead span:nth-child(2){text-align:center}
+.spreadrow{text-align:center;font-size:13px;color:var(--warn);padding:5px 0;border-top:1px dashed var(--line);border-bottom:1px dashed var(--line);margin:5px 0}
+.cal{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin:16px 0 6px}
+.cday{border:1px solid var(--line);border-radius:10px;padding:9px 6px;text-align:center;background:var(--card);transition:background .35s,border-color .35s}
+.cday .cn{font-size:12px;color:var(--muted)}
+.cday .cv{font-size:14px;font-weight:600;margin-top:3px;min-height:20px}
+.cday.t{background:var(--accent-soft);border-color:#2c4a3c}
+.cday.s{background:var(--warn-soft);border-color:#4a3722}
+.cday.off{opacity:.4}
+
+/* Day 23 — โครงเงินปันผล */
+.split{display:flex;height:34px;border-radius:9px;overflow:hidden;background:#2a2724;border:1px solid var(--line);margin:10px 0 4px}
+.split i{height:100%;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;transition:width .45s cubic-bezier(.22,.8,.3,1)}
+.sp-pay{background:var(--accent);color:#12130f}
+.sp-ret{background:#3f5c4e;color:#dfe8e2}
+.idcard{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin:14px 0;font-variant-numeric:tabular-nums;font-size:15.5px;text-align:center}
+.idcard b{color:var(--accent)}
+.tax2{display:flex;gap:14px;align-items:flex-end;height:170px;margin:16px 0 4px}
+.tax2 .col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px}
+.tax2 .cb{width:100%;border-radius:9px 9px 0 0;transition:height .5s cubic-bezier(.22,.8,.3,1);min-height:3px}
+.tax2 .c1 .cb{background:#3f5c4e}
+.tax2 .c2 .cb{background:var(--accent)}
+.tax2 .c2.lose .cb{background:var(--danger)}
+.verdict{text-align:center;font-size:15px;padding:9px 12px;border-radius:9px;margin-top:12px;background:var(--accent-soft);color:var(--accent);border:1px solid #2c4a3c}
+.verdict.bad{background:var(--warn-soft);color:var(--warn);border-color:#4a3722}
+</style>
+<style>
+/* Day 24 — น้ำตกงบกำไรขาดทุน */
+.wfall{margin:16px 0 6px;font-variant-numeric:tabular-nums}
+.wrow{display:grid;grid-template-columns:112px 1fr 92px;gap:10px;align-items:center;margin-bottom:6px;font-size:14.5px}
+.wrow .wlab{color:var(--muted);font-size:13.5px;line-height:1.4}
+.wrow.tot .wlab{color:var(--ink);font-weight:600}
+.wtrack{position:relative;height:26px;background:#2a2724;border-radius:7px;overflow:hidden}
+.wseg{position:absolute;top:0;height:100%;border-radius:7px;transition:left .5s cubic-bezier(.22,.8,.3,1),width .5s cubic-bezier(.22,.8,.3,1)}
+.w-rev{background:#3f5c4e}
+.w-gp{background:#4d7a63}
+.w-ebit{background:#5aa47e}
+.w-np{background:var(--accent)}
+.w-cut{background:var(--danger);opacity:.85}
+.wval{text-align:right;font-weight:600;font-size:14.5px}
+.wrow.cut .wval{color:var(--danger)}
+.wrow.tot .wval{color:var(--accent)}
+.mgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0 4px}
+.mbox{background:var(--code);border:1px solid var(--line);border-radius:11px;padding:11px 8px;text-align:center}
+.mbox .mv{font-size:20px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums;line-height:1.3}
+.mbox .mn{font-size:12px;color:var(--muted);line-height:1.45;margin-top:2px}
+.mbox.neg .mv{color:var(--danger)}
+@media(max-width:520px){
+  .wrow{grid-template-columns:92px 1fr 78px;gap:7px;font-size:13.5px}
+  .wrow .wlab{font-size:12.5px}
+  .mbox .mv{font-size:17px}
+}
+</style>
+<style>
+/* Day 25 — งบดุลสองฝั่ง และวงจรเงินสด */
+.bswrap{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0 6px}
+.bscol{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:11px;overflow:hidden;min-height:230px}
+.bshead{font-size:12.5px;color:var(--muted);text-align:center;margin-bottom:6px;letter-spacing:.02em}
+.bsseg{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:0 9px;font-size:12px;font-weight:600;color:#12130f;overflow:hidden;white-space:nowrap;transition:height .5s cubic-bezier(.22,.8,.3,1);min-height:0}
+.bsseg span:last-child{font-variant-numeric:tabular-nums}
+.a-cash{background:#6cc394}.a-ar{background:#4d7a63;color:#e8f2ec}.a-inv{background:#3f5c4e;color:#e8f2ec}
+.a-ppe{background:#4a7fa0;color:#0f1b22}.a-int{background:#5b6b7a;color:#e6edf3}
+.l-cl{background:#e0a86f;color:#241a0d}.l-ltd{background:#a8703f;color:#f6e8da}
+.e-eq{background:#6cc394}.e-re{background:#3f5c4e;color:#e8f2ec}
+.bsseg.neg{background:var(--danger);color:#fff}
+.eqline{display:flex;justify-content:center;gap:10px;font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums;margin-top:4px}
+.eqline b{color:var(--accent)}
+.gantt{margin:16px 0 6px}
+.grow{display:grid;grid-template-columns:116px 1fr;gap:10px;align-items:center;margin-bottom:7px;font-size:13.5px;color:var(--muted)}
+.gtrack{position:relative;height:25px;background:#2a2724;border-radius:7px;overflow:hidden}
+.gbar{position:absolute;top:0;height:100%;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;overflow:hidden;white-space:nowrap;transition:left .5s cubic-bezier(.22,.8,.3,1),width .5s cubic-bezier(.22,.8,.3,1)}
+.g-dio{background:#3f5c4e;color:#e8f2ec}
+.g-dso{background:#4a7fa0;color:#0f1b22}
+.g-dpo{background:var(--warn);color:#241a0d}
+.g-ccc{background:var(--danger);color:#fff}
+@media(max-width:520px){
+  .bswrap{gap:8px}
+  .bsseg{font-size:11px;padding:0 6px}
+  .grow{grid-template-columns:92px 1fr;gap:7px;font-size:12.5px}
+}
+</style>
+<style>
+/* Day 26 — สามกระแสเงินสด (แท่งบวก/ลบรอบเส้นศูนย์) */
+.zwrap{margin:18px 0 4px}
+.zbar{position:relative;height:150px;display:flex;gap:16px}
+.zaxis{position:absolute;left:0;right:0;top:75px;border-top:1px dashed #4a453f;z-index:0}
+.zc{flex:1;position:relative;z-index:1}
+.zfill{position:absolute;left:0;right:0;border-radius:7px;transition:top .5s cubic-bezier(.22,.8,.3,1),height .5s cubic-bezier(.22,.8,.3,1);min-height:3px}
+.zfill.p{background:var(--accent)}
+.zfill.n{background:var(--danger)}
+.zv{position:absolute;left:0;right:0;text-align:center;font-size:13.5px;font-weight:700;font-variant-numeric:tabular-nums;transition:top .5s cubic-bezier(.22,.8,.3,1)}
+.zv.p{color:var(--accent)} .zv.n{color:var(--danger)}
+.zlab{display:flex;gap:16px;margin-top:8px}
+.zlab div{flex:1;text-align:center;font-size:12.5px;color:var(--muted);line-height:1.45}
+.tax2 .c3 .cb{background:#4a7fa0}
+.sign{display:inline-block;min-width:18px;font-weight:700;font-variant-numeric:tabular-nums}
+.sign.p{color:var(--accent)} .sign.n{color:var(--danger)}
+.cfs td:first-child{padding-left:12px}
+.cfs tr.head td{color:var(--muted);font-size:13.5px;font-weight:600;padding-top:16px}
+.cfs tr.sum td{font-weight:700;border-top:1px solid var(--line);border-bottom:2px solid var(--line)}
+.cfs tr.sum td.num{color:var(--accent)}
+.cfs tr.sum.neg td.num{color:var(--danger)}
+.cfs td.ind{padding-left:26px;color:#cdc7be;font-size:14.5px}
+@media(max-width:520px){
+  .zbar{gap:9px;height:135px}
+  .zaxis{top:67px}
+  .zlab{gap:9px}
+  .zlab div{font-size:11.5px}
+  .cfs td.ind{padding-left:14px;font-size:13.5px}
+}
+</style>
+<style>
+/* Day 27 — DuPont และห้องทดลองเลเวอเรจ */
+.dp{margin:16px 0 4px}
+.dprow{display:grid;grid-template-columns:136px 1fr 74px;gap:10px;align-items:center;margin-bottom:8px;font-size:14px}
+.dprow .dlab{color:var(--muted);font-size:13.5px;line-height:1.45}
+.dtrack{height:24px;background:#2a2724;border-radius:7px;overflow:hidden}
+.dfill{height:100%;border-radius:7px;transition:width .5s cubic-bezier(.22,.8,.3,1);min-width:3px}
+.d-nm{background:var(--accent)}
+.d-at{background:#4a7fa0}
+.d-em{background:var(--warn)}
+.dval{text-align:right;font-weight:600;font-variant-numeric:tabular-nums;font-size:14.5px}
+.dprod{text-align:center;font-size:15.5px;padding:10px 12px;border-radius:9px;background:var(--accent-soft);
+  border:1px solid #2c4a3c;color:var(--accent);margin-top:6px;font-variant-numeric:tabular-nums}
+.dnote{font-size:14px;color:var(--muted);margin-top:10px;line-height:1.65}
+.rid{display:grid;grid-template-columns:1fr 1fr;gap:8px 18px;margin:16px 0 4px}
+.rid .r{display:flex;justify-content:space-between;gap:8px;font-size:15px;padding:7px 0;border-bottom:1px solid var(--line)}
+.rid .r b{font-variant-numeric:tabular-nums;color:var(--accent);white-space:nowrap}
+.rid .r.warnv b{color:var(--warn)}
+.rid .r.badv b{color:var(--danger)}
+.tax2 .c3.lose .cb{background:var(--danger)}
+@media(max-width:520px){
+  .dprow{grid-template-columns:104px 1fr 62px;gap:7px;font-size:13px}
+  .dprow .dlab{font-size:12.5px}
+  .rid{grid-template-columns:1fr;gap:0 0}
+}
+</style>
+<style>
+/* Day 28 — DCF: แถบมูลค่าปลายทาง ตารางความไว และมาตรวัดราคา */
+.d-y{background:#4d7a63}
+.d-tv{background:var(--warn)}
+.heat{font-variant-numeric:tabular-nums;font-size:14.5px}
+.heat th,.heat td{padding:8px 6px;text-align:center}
+.heat td.rowh,.heat th{color:var(--muted);font-size:13px}
+.heat td.v{border-radius:7px;font-weight:600}
+.h0{background:#241f1c;color:#c9b7ad}
+.h1{background:#2b2a20;color:#d4c59f}
+.h2{background:#26302a;color:#9fd0b4}
+.h3{background:#1f3b2c;color:#8ee0b0}
+.heat td.mid{outline:2px solid var(--accent);outline-offset:-2px}
+.gauge{position:relative;height:56px;margin:18px 0 6px}
+.gtrk{position:absolute;left:0;right:0;top:22px;height:14px;border-radius:7px;background:linear-gradient(90deg,#1f3b2c,#2b2a20,#4a2b22)}
+.gmk{position:absolute;top:8px;width:2px;height:42px;background:var(--ink);transition:left .5s cubic-bezier(.22,.8,.3,1)}
+.gmk.price{background:var(--danger)}
+.gmk i{position:absolute;top:-16px;left:50%;transform:translateX(-50%);font-size:12px;font-style:normal;white-space:nowrap;color:var(--muted)}
+.gscale{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+@media(max-width:520px){
+  .heat{font-size:12.5px}
+  .heat th,.heat td{padding:6px 3px}
+}
+</style>
+<style>
+/* Day 29 — Growth vs Value: การ์ดสองฝั่ง ทฤษฎีบท และแถบแยกผลตอบแทน */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0 6px}
+.duo .dcard{border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:var(--card)}
+.duo .dcard.g{border-color:#4a3722;background:var(--warn-soft)}
+.duo .dcard.v{border-color:#2c4a3c;background:var(--accent-soft)}
+.duo .dh{font-size:13px;color:var(--muted);letter-spacing:.02em;margin-bottom:8px;font-weight:600}
+.duo .dl{display:flex;justify-content:space-between;gap:8px;font-size:14.5px;padding:5px 0;border-bottom:1px solid var(--line)}
+.duo .dl:last-child{border-bottom:none}
+.duo .dl b{font-variant-numeric:tabular-nums;white-space:nowrap}
+.duo .dcard.g .dl b{color:var(--warn)}
+.duo .dcard.v .dl b{color:var(--accent)}
+.sp-a{background:#4a7fa0;color:#0f1b22}
+.sp-b{background:var(--accent);color:#12130f}
+.sp-c{background:var(--warn);color:#241a0d}
+.sp-neg{background:var(--danger);color:#fff}
+.thm{background:var(--accent-soft);border:1px solid #2c4a3c;border-radius:12px;padding:16px 18px;margin:18px 0;text-align:center;font-size:16px}
+.thm .eq{font-size:18.5px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums;margin-bottom:7px;line-height:1.5}
+.thm .note{font-size:13.5px;color:var(--muted);line-height:1.65}
+@media(max-width:520px){ .duo{grid-template-columns:1fr} .thm .eq{font-size:16px} }
+</style>
+<style>
+/* Day 30 — วงล้อวัฏจักร และการ์ดสี่ช่วงเศรษฐกิจ */
+.cyc{margin:14px 0 4px}
+.cyc svg{width:100%;height:auto;display:block}
+.phgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0 14px}
+.ph{border:1px solid var(--line);border-radius:10px;padding:9px 8px;background:var(--card);text-align:center;transition:background .3s,border-color .3s,transform .3s}
+.ph.on{background:var(--accent-soft);border-color:#2c4a3c;transform:translateY(-3px)}
+.ph b{display:block;font-size:14px;color:var(--ink);margin-bottom:2px}
+.ph span{display:block;color:var(--muted);font-size:12px;line-height:1.5}
+.ph.on b{color:var(--accent)}
+@media(max-width:520px){ .phgrid{grid-template-columns:1fr 1fr} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="nav"><a href="../index.html">← สารบัญ</a></div>
+
+<header>
+  <div class="kicker">
+    <span class="pill">Day 31 / 90</span>
+    <span>Phase 2 · การลงทุนระยะยาว</span>
+    <span>·</span>
+    <span>อ่าน 8 นาที</span>
+  </div>
+  <h1>กองทุนรวมและค่าธรรมเนียม</h1>
+  <p class="sub">เมื่อวานเห็นแล้วว่าเลือกหุ้นเองและหมุนกลุ่มเองทั้งยากทั้งแพง กองทุนรวมคือทางลัดที่คนไทยฝากเงินไว้เกือบ 7 ล้านล้านบาท แต่ทางลัดนี้มีค่าผ่านทาง และค่าผ่านทางตัวที่แพงที่สุดคือตัวที่มองไม่เห็นบนใบเสร็จ</p>
+</header>
+
+<h2>กองทุนรวมคือบริษัทเล็กๆ ที่มีหน่วยลงทุนแทนหุ้น</h2>
+
+<p><strong>กองทุนรวม (mutual fund)</strong> คือการเอาเงินของคนจำนวนมากมารวมกัน ให้ <strong>บริษัทหลักทรัพย์จัดการกองทุน (บลจ., asset management company)</strong> เอาไปลงทุนตามนโยบายที่เขียนไว้ในหนังสือชี้ชวน ทรัพย์สินถูกเก็บไว้กับ <strong>ผู้ดูแลผลประโยชน์ (trustee)</strong> ซึ่งเป็นธนาคารแยกต่างหาก ถ้า บลจ. เจ๊ง เงินของเราไม่ได้หายไปด้วย</p>
+
+<p>ราคาของกองทุนเรียกว่า <strong>มูลค่าทรัพย์สินสุทธิต่อหน่วย (NAV per unit)</strong> คำนวณวันละครั้งหลังตลาดปิด:</p>
+
+<div class="thm">
+  <div class="eq">NAV ต่อหน่วย = (ทรัพย์สินทั้งหมด − หนี้สิน) ÷ จำนวนหน่วยลงทุน</div>
+  <div class="note">หน้าตาเหมือน BVPS ใน Day 25 ทุกประการ ต่างกันตรงที่ทรัพย์สินของกองทุนถูกตีราคาตลาด (mark-to-market) ทุกวัน</div>
+</div>
+
+<p>ข้อสำคัญที่คนมักเข้าใจผิด: <strong>NAV สูงหรือต่ำไม่ได้บอกว่ากองทุนแพงหรือถูก</strong> กองทุน NAV 10 บาทกับกองทุน NAV 45 บาทที่ถือหุ้นชุดเดียวกัน จะขึ้นลงเป็นเปอร์เซ็นต์เท่ากันเป๊ะ NAV ต่างกันเพียงเพราะเปิดตัวคนละวัน</p>
+
+<h2>ตลาดกองทุนไทยใหญ่แค่ไหน</h2>
+
+<div class="mgrid">
+  <div class="mbox"><div class="mv">6.84</div><div class="mn">ล้านล้านบาท<br>AUM ทั้งอุตสาหกรรม</div></div>
+  <div class="mbox"><div class="mv">3,531</div><div class="mn">กองทุน<br>จาก 23 บลจ.</div></div>
+  <div class="mbox"><div class="mv">46.7%</div><div class="mn">เป็นกองทุน<br>ตราสารหนี้</div></div>
+</div>
+
+<table>
+  <thead><tr><th>ประเภท</th><th class="num">AUM (ล้านบาท)</th><th class="num">เทียบสิ้นปี 68</th></tr></thead>
+  <tbody>
+    <tr><td>ตราสารหนี้ (รวมตลาดเงิน)</td><td class="num">3,194,915</td><td class="num">−0.23%</td></tr>
+    <tr><td>ตราสารทุน</td><td class="num">2,090,237</td><td class="num">+17.30%</td></tr>
+    <tr><td>ลงทุนต่างประเทศ (FIF)</td><td class="num">1,513,905</td><td class="num">+3.17%</td></tr>
+    <tr><td>RMF</td><td class="num">531,524</td><td class="num">+7.53%</td></tr>
+    <tr><td>ThaiESG</td><td class="num">109,083</td><td class="num">+16.11%</td></tr>
+    <tr><td>SSF</td><td class="num">99,723</td><td class="num">+38.38%</td></tr>
+  </tbody>
+</table>
+<p class="src">ที่มา: ข้อมูลสมาคมบริษัทจัดการลงทุน (AIMC) ณ 30 มิ.ย. 2569 ผ่าน HoonSmart 9 ก.ค. 2569 · หมวด FIF, RMF, ThaiESG, SSF เป็นการแบ่งอีกมิติหนึ่งซ้อนกับประเภทสินทรัพย์ จึงรวมกันไม่เท่ายอดทั้งหมด</p>
+
+<p>ตัวเลขนี้บอกอะไรเรา: กองทุนหุ้นโต 17.30% ในครึ่งปี ส่วนใหญ่ไม่ใช่เงินใหม่ แต่เป็น<strong>ราคาหุ้นที่ขึ้น</strong> (SET +26.32% ช่วงเดียวกัน) และทุกบาทที่ AUM โต บลจ. ได้ค่าธรรมเนียมเพิ่มตามโดยไม่ต้องทำอะไรเพิ่ม เพราะค่าธรรมเนียมหลักคิดเป็น <strong>% ของทรัพย์สิน</strong> ไม่ใช่ % ของกำไร</p>
+
+<h2>ค่าธรรมเนียมสองชั้น</h2>
+
+<div class="duo">
+  <div class="dcard v">
+    <div class="dh">ชั้นที่ 1 · เก็บจากเรา (เห็นชัด)</div>
+    <div class="dl"><span>ค่าธรรมเนียมขาย (front-end)</span><b>จ่ายครั้งเดียว</b></div>
+    <div class="dl"><span>ค่าธรรมเนียมรับซื้อคืน (back-end)</span><b>จ่ายครั้งเดียว</b></div>
+    <div class="dl"><span>ค่าธรรมเนียมสับเปลี่ยน (switching)</span><b>จ่ายครั้งเดียว</b></div>
+  </div>
+  <div class="dcard g">
+    <div class="dh">ชั้นที่ 2 · เก็บจากกองทุน (มองไม่เห็น)</div>
+    <div class="dl"><span>ค่าจัดการ (management fee)</span><b>ทุกวัน</b></div>
+    <div class="dl"><span>ค่าผู้ดูแลผลประโยชน์ (trustee)</span><b>ทุกวัน</b></div>
+    <div class="dl"><span>ค่านายทะเบียน + อื่นๆ</span><b>ทุกวัน</b></div>
+  </div>
+</div>
+
+<p>ชั้นที่ 2 รวมกันเรียกว่า <strong>ค่าใช้จ่ายรวม (Total Expense Ratio, TER)</strong> มันถูกหักออกจาก NAV ทุกวันเงียบๆ เราไม่เคยเห็นบิล สมมติกองทุนมีทรัพย์สินสุทธิ 1,045 ล้านบาท ค่าจัดการปีละ 1.5% ⇒ ถูกหักวันละ 1,045 ล้าน × 1.5% ÷ 365 = <strong>42,945 บาทต่อวัน</strong> ไม่ว่าวันนั้นตลาดจะขึ้นหรือลง</p>
+
+<p>front-end 1.5% ฟังดูน่ากลัวกว่า แต่มันจ่ายครั้งเดียว ส่วน TER 1.5% จ่าย<strong>ทุกปีตลอดไป</strong> และทบต้นย้อนกลับมาหาเรา นี่คือสมการที่สำคัญที่สุดของวันนี้:</p>
+
+<div class="thm">
+  <div class="eq">ส่วนของความมั่งคั่งที่เสียให้ค่าธรรมเนียม = 1 − (1 − f)<sup>n</sup></div>
+  <div class="note">ผลตอบแทนสุทธิ = (1 + r)(1 − f) − 1 · หารสองกรณีแล้ว (1 + r)<sup>n</sup> ตัดกันหมด ⇒ <strong>ไม่ขึ้นกับผลตอบแทนเลย</strong><br>f = 1.5% · n = 30 ปี ⇒ เสียไป <strong>36.45%</strong> ของเงินปลายทาง ไม่ว่าตลาดจะให้ 4% หรือ 12%</div>
+</div>
+
+<p>หนึ่งในสามของเงินเกษียณหายไปกับตัวเลขที่ฟังดูเล็กมาก ส่วน TER 0.3% ใน 30 ปีเสียไปแค่ 8.62% และ TER 2% เสียไป 45.45% — เกือบครึ่ง</p>
+
+<div class="calc">
+  <h3 style="margin-top:0;font-size:16px">เครื่องคิดเลขค่าธรรมเนียม: ออมรายเดือน</h3>
+  <div class="row"><label>ออมเดือนละ <span class="val" id="o_pmt">3,000</span> บาท</label>
+    <input type="range" id="r_pmt" min="500" max="20000" step="500" value="3000"></div>
+  <div class="row"><label>ระยะเวลา <span class="val" id="o_n">30</span> ปี</label>
+    <input type="range" id="r_n" min="5" max="40" step="1" value="30"></div>
+  <div class="row"><label>ผลตอบแทนก่อนหักค่าธรรมเนียม <span class="val" id="o_r">8.0%</span> ต่อปี</label>
+    <input type="range" id="r_r" min="2" max="12" step="0.5" value="8"></div>
+  <div class="row"><label>TER กองทุน A = <span class="val" id="o_fa">1.50%</span> · กองทุน B = <span class="val" id="o_fb">0.30%</span></label>
+    <input type="range" id="r_fa" min="0" max="3" step="0.05" value="1.5">
+    <input type="range" id="r_fb" min="0" max="3" step="0.05" value="0.3"></div>
+  <div class="tax2">
+    <div class="col c1"><div class="step-val" id="v_0">4,252,840</div><div class="cb" id="b_0" style="height:170px"></div><div class="step-label">ไม่มีค่าธรรมเนียม<br>(เพดานทฤษฎี)</div></div>
+    <div class="col c2 lose" id="c_a"><div class="step-val" id="v_a">3,148,057</div><div class="cb" id="b_a" style="height:126px"></div><div class="step-label">กองทุน A</div></div>
+    <div class="col c2" id="c_b"><div class="step-val" id="v_b">4,001,567</div><div class="cb" id="b_b" style="height:160px"></div><div class="step-label">กองทุน B</div></div>
+  </div>
+  <div class="verdict bad" id="vd">เงินต้นที่ใส่จริง 1,080,000 บาท · A กับ B ต่างกัน 853,510 บาท — ค่าธรรมเนียมกินเงินมากกว่าเงินต้น 79% ของที่เราเก็บเองทั้งชีวิต</div>
+</div>
+
+<p>สังเกตว่าสำหรับการออมรายเดือน สัดส่วนที่เสียจะน้อยกว่าสูตรข้างบนเล็กน้อย เพราะเงินงวดหลังๆ อยู่ในกองทุนสั้นกว่า 30 ปี แต่ลำดับขนาดไม่เปลี่ยน</p>
+
+<h2>กองทุนจ่ายปันผล vs กองทุนสะสมมูลค่า</h2>
+
+<p>สำหรับบุคคลธรรมดา กำไรจากการขายคืนหน่วยลงทุนของกองทุนรวมไทย<strong>ได้รับยกเว้นภาษี</strong> แต่เงินปันผลจากกองทุนถูกหักภาษี ณ ที่จ่าย 10% และไม่มีเครดิตภาษีแบบหุ้นใน Day 23 ถ้ากองทุนสองกองลงทุนเหมือนกันผลตอบแทนรวม 8% ต่อปี แต่กองหนึ่งจ่ายปันผลออกมาปีละ 4% ภาษี 10% บนปันผลก็คือแรงเสียดทาน 0.4% ต่อปีที่ไม่จำเป็น ถ้าเราไม่ได้ต้องการกระแสเงินสดตอนนี้ <strong>กองทุนชนิดสะสมมูลค่า (accumulation)</strong> จึงมักเหมาะกับเป้าหมายระยะยาวกว่า</p>
+
+<div class="card accent">
+  <h3>ฉบับเด็กฝึกงาน</h3>
+  <p style="margin-bottom:0">ออมเดือนละ 3,000 บาทตั้งแต่อายุ 20 ถึง 50 ที่ผลตอบแทน 8% ส่วนต่างระหว่าง TER 1.5% กับ 0.3% คือ <strong>853,510 บาท</strong> — มากกว่าเงินเดือนฝึกงานหลายสิบเดือน และได้มาด้วยการตัดสินใจครั้งเดียวตอนเลือกกองทุน ไม่ต้องออมเพิ่มสักบาท ก่อนดูผลตอบแทนย้อนหลัง ให้เปิด <strong>หนังสือชี้ชวนส่วนสรุปข้อมูลสำคัญ (fund fact sheet)</strong> หาบรรทัด "ค่าใช้จ่ายรวม" ก่อนเสมอ</p>
+</div>
+
+<details>
+  <summary>กล่องโค้ด (ข้ามได้ ไม่นับในเวลาอ่าน)</summary>
+  <div class="ans">
+<pre><code>def fv_monthly(pmt, years, r, fee):
+    m = ((1 + r) * (1 - fee)) ** (1 / 12)   # อัตราเติบโตสุทธิต่อเดือน
+    v = 0.0
+    for _ in range(years * 12):
+        v = (v + pmt) * m                     # ฝากต้นเดือน โตทั้งเดือน
+    return v
+
+for fee in (0, 0.003, 0.015, 0.02):
+    print(f"TER {fee:5.1%} -> {fv_monthly(3000, 30, 0.08, fee):>12,.0f} บาท")
+
+# TER  0.0% ->    4,252,840 บาท
+# TER  0.3% ->    4,001,567 บาท
+# TER  1.5% ->    3,148,057 บาท
+# TER  2.0% ->    2,853,982 บาท</code></pre>
+  </div>
+</details>
+
+<h2>ทดสอบความเข้าใจ</h2>
+
+<p class="q">1. กองทุนหนึ่งมีทรัพย์สิน 1,050 ล้านบาท หนี้สิน (ค่าธรรมเนียมค้างจ่ายและอื่นๆ) 5 ล้านบาท มีหน่วยลงทุน 80 ล้านหน่วย · NAV ต่อหน่วยเท่าไร ถ้าเต้นซื้อ 50,000 บาทโดยไม่มีค่าธรรมเนียมขาย จะได้กี่หน่วย · และถ้าเพื่อนบอกว่า "กองนี้ NAV 13 บาท แพงกว่ากองที่ NAV 10 บาท" ควรตอบว่าอะไร</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">NAV = (1,050 − 5) ÷ 80 = <strong>13.0625 บาท/หน่วย</strong> ⇒ 50,000 ÷ 13.0625 = <strong>3,827.75 หน่วย</strong><br>
+  NAV ไม่ใช่ราคาแบบ P/E ที่บอกความแพง มันคือมูลค่าทรัพย์สินจริงหารจำนวนหน่วย ถ้ากองทุนทั้งสองถือหุ้นชุดเดียวกัน ตลาดขึ้น 10% ทั้งคู่ก็ขึ้น 10% เท่ากัน จะได้ 3,828 หน่วยที่ 13 บาทหรือ 5,000 หน่วยที่ 10 บาท มูลค่าก็คือ 50,000 บาทเท่ากัน · สิ่งที่ควรเทียบคือ<strong>นโยบายการลงทุน ค่าใช้จ่ายรวม และสินทรัพย์ข้างใน</strong></div>
+</details>
+
+<p class="q">2. กองทุน A และ B อ้างอิงดัชนีเดียวกัน ผลตอบแทนก่อนหักค่าใช้จ่าย 7% ต่อปีเท่ากัน A มี TER 2.0% ส่วน B มี TER 0.4% · ลงทุนก้อนเดียว 200,000 บาท 25 ปี แต่ละกองเหลือเท่าไร และเสียให้ค่าธรรมเนียมกี่เปอร์เซ็นต์ของเงินปลายทาง</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">A: 200,000 × (1.07 × 0.98)<sup>25</sup> = <strong>655,053 บาท</strong> · B: 200,000 × (1.07 × 0.996)<sup>25</sup> = <strong>981,992 บาท</strong><br>
+  ส่วนที่เสีย = 1 − (1 − f)<sup>25</sup> ⇒ A = 1 − 0.98<sup>25</sup> = <strong>39.65%</strong> · B = 1 − 0.996<sup>25</sup> = <strong>9.53%</strong><br>
+  ต่างกัน 326,939 บาท จากสินค้าที่<strong>เหมือนกันทุกอย่าง</strong> ยกเว้นป้ายราคา · สังเกตว่าเราไม่ต้องรู้ 7% เลยก็ตอบเปอร์เซ็นต์ที่เสียได้ นี่คือพลังของสูตร 1 − (1 − f)<sup>n</sup></div>
+</details>
+
+<p class="q">3. กองทุน X จ่ายปันผลปีละ 4% ของ NAV (ถูกหักภาษี 10%) แล้วเต้นเอาเงินที่เหลือไปซื้อกองเดิมทันที ส่วนกองทุน Y ลงทุนเหมือนกันทุกอย่างแต่ไม่จ่ายปันผล · ผลตอบแทนรวมก่อนภาษี 8% เท่ากัน ลงทุน 100,000 บาท 20 ปี (ไม่คิดค่าธรรมเนียมขาย) ต่างกันเท่าไร</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">X เสียภาษี 10% × 4% = 0.4% ต่อปี ⇒ โตสุทธิ 7.6% ⇒ 100,000 × 1.076<sup>20</sup> = <strong>432,758 บาท</strong><br>
+  Y ⇒ 100,000 × 1.08<sup>20</sup> = <strong>466,096 บาท</strong> · มากกว่า X <strong>7.70%</strong> (33,338 บาท)<br>
+  ปันผลไม่ได้ทำให้เรารวยขึ้น — Day 23 สอนแล้วว่าวันขึ้นเครื่องหมาย XD ราคาลดลงเท่าปันผล สำหรับกองทุนก็เช่นกัน NAV ลดเท่าปันผลที่จ่าย สิ่งเดียวที่เกิดขึ้นจริงคือ<strong>ภาษีถูกหักไป</strong> · ถ้ายังไม่ต้องใช้เงิน กองสะสมมูลค่าคือตัวเลือกที่ประหยัดภาษีกว่าอย่างเห็นได้ชัด</div>
+</details>
+
+<p class="q"><strong>ทวน:</strong> Day 25 สอนว่าหุ้นซื้อขายที่ P/BV ได้ทั้งต่ำกว่าและสูงกว่า 1 มาก (SET อยู่ราว 1.48 เท่า) แต่กองทุนรวมเปิดทั่วไปซื้อขายที่ NAV พอดีเสมอ คือ "P/NAV = 1" · ทำไมสองอย่างนี้ต่างกัน ทั้งที่สูตร NAV กับ BVPS หน้าตาเหมือนกัน</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">สองเหตุผล: (1) <strong>วิธีตีมูลค่า</strong> — งบดุลบริษัทบันทึกสินทรัพย์ส่วนใหญ่ที่ราคาทุนหักค่าเสื่อม (Day 25) และไม่นับแบรนด์ ทีมงาน หรือความสามารถทำกำไรในอนาคต มูลค่าทางบัญชีจึงห่างจากมูลค่าเศรษฐกิจได้มาก ส่วนกองทุนถือหุ้นและพันธบัตรที่มีราคาตลาดทุกวัน NAV จึงเป็นมูลค่าตลาดอยู่แล้ว · (2) <strong>กลไกซื้อขาย</strong> — กองทุนเปิดออกหน่วยใหม่และรับซื้อคืนที่ NAV กับ บลจ. โดยตรง ไม่มีใครต้องขายให้เราแพงกว่านั้น ส่วนหุ้นซื้อขายกันเองระหว่างนักลงทุน ราคาจึงลอยไปตามความคาดหวังได้ · ข้อยกเว้นที่ P/NAV ≠ 1 ได้ คือกองทุนที่จดทะเบียนซื้อขายในตลาด เช่น REITs และกองทุนปิด ซึ่งจะเจอใน Day 38<br>ตอบผิดหรือลังเล? → <a href="finance-day-25-balance-sheet.html">ทบทวน Day 25: อ่านงบการเงิน 2: งบดุล</a></div>
+</details>
+
+<p class="q"><strong>ทวน:</strong> Day 21 สอนว่าคำสั่งซื้อหุ้นจับคู่กันระหว่างวันที่ราคาที่เห็นบนกระดาน · ถ้าเต้นส่งคำสั่งซื้อกองทุนหุ้นไทยตอน 10:00 น. ขณะที่ SET กำลังร่วง 3% จะได้ราคาอะไร และทำไมจึง "ช้อนซื้อระหว่างวัน" ด้วยกองทุนรวมไม่ได้</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">กองทุนรวมใช้ <strong>forward pricing</strong> — คำสั่งที่ส่งก่อนเวลาตัดรอบ (cut-off time) ของวันนั้นได้ NAV ที่คำนวณ<strong>หลังตลาดปิด</strong>ของวันเดียวกัน ซึ่งเรายังไม่รู้ตอนกดซื้อ ถ้าบ่ายตลาดฟื้นจนปิดบวก เราก็ได้ราคาปิดบวกนั้น · ต่างจากหุ้นใน Day 21 ที่ได้ราคาตามที่จับคู่ทันที · ข้อดีคือกันคนที่รู้ข่าวก่อนมาเอาเปรียบผู้ถือหน่วยเดิม ข้อเสียคือจับจังหวะระหว่างวันไม่ได้ — ซึ่งสำหรับการลงทุนระยะยาวอาจเป็นข้อดีด้วยซ้ำ · ถ้าอยากได้กองทุนที่ซื้อขายระหว่างวันได้ คำตอบคือ ETF ในบทพรุ่งนี้<br>ตอบผิดหรือลังเล? → <a href="finance-day-21-set-mai-open-account.html">ทบทวน Day 21: ตลาดหลักทรัพย์ไทย (SET/mai) และการเปิดพอร์ต</a></div>
+</details>
+
+<div class="summary-box">
+  <h2 style="margin-top:0">สรุป 3 บรรทัด</h2>
+  <p>1. NAV ต่อหน่วย = (ทรัพย์สิน − หนี้สิน) ÷ จำนวนหน่วย ตีราคาตลาดทุกวัน · NAV สูงหรือต่ำไม่ได้บอกว่าแพงหรือถูก</p>
+  <p>2. ค่าธรรมเนียมที่อันตรายคือ <strong>TER</strong> ที่ถูกหักจาก NAV ทุกวันแบบมองไม่เห็น · ส่วนที่เสีย = <strong>1 − (1 − f)<sup>n</sup></strong> ไม่ขึ้นกับผลตอบแทน ⇒ TER 1.5% 30 ปี กินไป 36.45%</p>
+  <p style="margin-bottom:0">3. กองทุนไทยมี AUM 6.84 ล้านล้านบาท 3,531 กอง (30 มิ.ย. 2569) · กำไรจากขายคืนหน่วยยกเว้นภาษีสำหรับบุคคลธรรมดา แต่ปันผลโดนหัก 10% ⇒ เป้าหมายยาวมักเหมาะกับกองสะสมมูลค่า</p>
+</div>
+
+<footer>
+  <p><strong>พรุ่งนี้ Day 32 — Index fund และ ETF</strong> ถ้าค่าธรรมเนียมคือศัตรูหมายเลขหนึ่ง กองทุนที่ไม่ต้องจ้างผู้จัดการมาเลือกหุ้นเลยก็น่าจะชนะ พรุ่งนี้จะดูว่า index fund ทำงานอย่างไร ETF ต่างจากกองทุนรวมธรรมดาตรงไหน และ tracking error คืออะไร</p>
+  <p class="disclaimer">บทเรียนนี้เป็นความรู้เชิงการศึกษา ไม่ใช่คำแนะนำทางการเงินเฉพาะบุคคล และไม่ใช่การชี้ชวนให้ซื้อหรือขายกองทุนหรือหลักทรัพย์ใด · ตัวเลข AUM เป็นข้อมูลของ AIMC ณ 30 มิ.ย. 2569 และเปลี่ยนแปลงทุกวัน · อัตราค่าธรรมเนียม 0.3%, 1.5%, 2.0% และผลตอบแทน 7–8% ในบทเป็นสมมติฐานเพื่อการคำนวณ ไม่ใช่ค่าธรรมเนียมจริงของกองทุนใด ให้ตรวจสอบจากหนังสือชี้ชวนของแต่ละกองทุน · หลักเกณฑ์ภาษีอาจเปลี่ยนแปลงได้ ควรตรวจสอบกับกรมสรรพากรก่อนตัดสินใจ · ผลตอบแทนในอดีตไม่ได้บ่งชี้ผลตอบแทนในอนาคต</p>
+</footer>
+
+</div>
+<script>
+(function(){
+  var fmt=function(n,d){ d=(d===undefined?2:d);
+    return n.toLocaleString('th-TH',{minimumFractionDigits:d,maximumFractionDigits:d}); };
+  var $=function(id){ return document.getElementById(id); };
+  var H=170;
+  function fv(pmt,years,r,f){
+    var m=Math.pow((1+r)*(1-f),1/12), v=0;
+    for(var i=0;i<years*12;i++){ v=(v+pmt)*m; }
+    return v;
+  }
+  var S=['r_pmt','r_n','r_r','r_fa','r_fb'].map($);
+  function upd(){
+    var pmt=+S[0].value, n=+S[1].value, r=(+S[2].value)/100, fa=(+S[3].value)/100, fb=(+S[4].value)/100;
+    $('o_pmt').textContent=fmt(pmt,0); $('o_n').textContent=String(n);
+    $('o_r').textContent=fmt(r*100,1)+'%'; $('o_fa').textContent=fmt(fa*100,2)+'%'; $('o_fb').textContent=fmt(fb*100,2)+'%';
+    var v0=fv(pmt,n,r,0), va=fv(pmt,n,r,fa), vb=fv(pmt,n,r,fb), paid=pmt*n*12;
+    $('v_0').textContent=fmt(v0,0); $('v_a').textContent=fmt(va,0); $('v_b').textContent=fmt(vb,0);
+    $('b_0').style.height=H+'px';
+    $('b_a').style.height=Math.max(3,H*va/v0)+'px';
+    $('b_b').style.height=Math.max(3,H*vb/v0)+'px';
+    $('c_a').className= va<vb ? 'col c2 lose':'col c2';
+    $('c_b').className= vb<va ? 'col c2 lose':'col c2';
+    var diff=Math.abs(va-vb), vd=$('vd');
+    if(diff<1){ vd.className='verdict'; vd.innerHTML='TER เท่ากัน ผลลัพธ์เท่ากัน · เงินต้นที่ใส่จริง '+fmt(paid,0)+' บาท'; return; }
+    var cheap= vb>va ? 'B':'A';
+    vd.className='verdict bad';
+    vd.innerHTML='เงินต้นที่ใส่จริง '+fmt(paid,0)+' บาท · กองทุน '+cheap+' ได้มากกว่า <strong>'+fmt(diff,0)+' บาท</strong> = '+fmt(diff/paid*100,0)+'% ของเงินต้นที่เราเก็บเองทั้งหมด';
+  }
+  S.forEach(function(s){ s.addEventListener('input',upd); });
+  upd();
+})();
+</script>
+</body>
+</html>
