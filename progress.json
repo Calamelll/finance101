@@ -1,10 +1,10 @@
 {
   "startDate": "2026-07-21",
   "totalDays": 90,
-  "lastCompletedDay": 48,
-  "nextDay": 49,
-  "lastRunDate": "2026-09-30",
-  "githubPushed": false,
+  "lastCompletedDay": 49,
+  "nextDay": 50,
+  "lastRunDate": "2026-10-04",
+  "githubPushed": true,
   "pendingPush": [],
   "history": [
     {
@@ -473,6 +473,16 @@
         43,
         41
       ]
+    },
+    {
+      "day": 49,
+      "date": "2026-10-04",
+      "title": "โครงสร้างตลาด: order book, spread, liquidity",
+      "file": "lessons/finance-day-49-market-structure-order-book.html",
+      "recallFrom": [
+        44,
+        46
+      ]
     }
   ],
   "notesApplied": [
@@ -550,7 +560,12 @@
       "date": "2026-09-30",
       "note": "(ไม่มีโน้ตใหม่ใต้หัวข้อ 'บันทึกของผม' — ยังมีแต่ข้อ dark theme เดิม)",
       "action": "อ่าน notes.md แล้ว ไม่มีคำสั่งใหม่ จึงใช้ CSS ของ Day 47 ทั้งก้อน (เพิ่มเฉพาะ .dots48/.cmp/.fn) · ตรวจสูตรด้วย Python และ node: ต้นทุนสะสม 1−(1−c)^N, P(กำไร)=Φ(−c√N/σ), อัตราชนะที่ต้องมี 50%+c/(2σ); N=100 c=0.35% σ=2% ⇒ 29.57%/4.01%/58.75%; เต้น 50,000 บาท 240 รอบ ⇒ ต้นทุน 56.89% เหลือ 21,554 บาท ต้องกำไร 132%; ค่าใน JS ตรงกับ Python, ไล่ 48 ชุดค่าไม่มี NaN, node --check ผ่าน · ตัวเลขจริงตรวจจาก SSRN abstract 3423101 (บราซิล 97%/1.1%/0.5%) และ Barber-Lee-Liu-Odean ไต้หวัน (>20% ของมูลค่าซื้อขาย, >8 ใน 10 ขาดทุน) ระบุวันที่ตรวจ 30 ก.ย. 2569 ในกล่อง .src · ต้นทุน 0.35% เป็นสมมติฐานอ้างอิง Day 22"
+    },
+    {
+      "date": "2026-10-04",
+      "note": "(ไม่มีโน้ตใหม่ใต้หัวข้อ 'บันทึกของผม' — ยังมีแต่ข้อ dark theme เดิม)",
+      "action": "อ่าน notes.md แล้ว ไม่มีคำสั่งใหม่ จึงใช้ CSS ของ Day 48 ทั้งก้อน (เพิ่มเฉพาะ .obctl/.obnote/.tickout/.fillnote) และใช้ .book/.brow/.bprice จาก Day 22 สำหรับกระดานราคาเชิงโต้ตอบ · ตรวจด้วย Python/node: walk book 8,000 หุ้น = 50.15625 (0.5639% vs mid), 5,000 = 50.10, spread 0.5013%, round trip 1,000 หุ้น = 250 บาท, c = 0.3516%+0.5013% ⇒ drag 100 รอบ 57.54% (หุ้นกระดานบาง c 1.6761% ⇒ 81.55%), TER ควิซ 1.08x0.99/1.03-1 = 3.81%; ไล่สไลเดอร์ทุกค่าไม่มี NaN/null, node --check ผ่าน · ตัวเลขจริง: ตาราง tick size และ board lot 100 หุ้นจาก set.or.th (ตารางมีผล 30 มี.ค. 2552 ตรวจ 4 ต.ค. 2569) · กระดานและหุ้น ก./ข. เป็นข้อมูลสมมติ"
     }
   ],
-  "pushNote": "รอบ 2026-09-29 push สำเร็จ (commit f832ec4 Day 31-47 รวม 18 ไฟล์)"
+  "pushNote": "รอบ 2026-09-30 push สำเร็จ (Day 48)"
 }
