@@ -1,9 +1,9 @@
 {
   "startDate": "2026-07-21",
   "totalDays": 90,
-  "lastCompletedDay": 49,
-  "nextDay": 50,
-  "lastRunDate": "2026-10-04",
+  "lastCompletedDay": 50,
+  "nextDay": 51,
+  "lastRunDate": "2026-10-05",
   "githubPushed": true,
   "pendingPush": [],
   "history": [
@@ -483,6 +483,16 @@
         44,
         46
       ]
+    },
+    {
+      "day": 50,
+      "date": "2026-10-05",
+      "title": "ประเภทคำสั่ง: market, limit, stop, stop-limit",
+      "file": "lessons/finance-day-50-order-types.html",
+      "recallFrom": [
+        43,
+        45
+      ]
     }
   ],
   "notesApplied": [
@@ -565,7 +575,12 @@
       "date": "2026-10-04",
       "note": "(ไม่มีโน้ตใหม่ใต้หัวข้อ 'บันทึกของผม' — ยังมีแต่ข้อ dark theme เดิม)",
       "action": "อ่าน notes.md แล้ว ไม่มีคำสั่งใหม่ จึงใช้ CSS ของ Day 48 ทั้งก้อน (เพิ่มเฉพาะ .obctl/.obnote/.tickout/.fillnote) และใช้ .book/.brow/.bprice จาก Day 22 สำหรับกระดานราคาเชิงโต้ตอบ · ตรวจด้วย Python/node: walk book 8,000 หุ้น = 50.15625 (0.5639% vs mid), 5,000 = 50.10, spread 0.5013%, round trip 1,000 หุ้น = 250 บาท, c = 0.3516%+0.5013% ⇒ drag 100 รอบ 57.54% (หุ้นกระดานบาง c 1.6761% ⇒ 81.55%), TER ควิซ 1.08x0.99/1.03-1 = 3.81%; ไล่สไลเดอร์ทุกค่าไม่มี NaN/null, node --check ผ่าน · ตัวเลขจริง: ตาราง tick size และ board lot 100 หุ้นจาก set.or.th (ตารางมีผล 30 มี.ค. 2552 ตรวจ 4 ต.ค. 2569) · กระดานและหุ้น ก./ข. เป็นข้อมูลสมมติ"
+    },
+    {
+      "date": "2026-10-05",
+      "note": "(ไม่มีโน้ตใหม่ใต้หัวข้อ 'บันทึกของผม' — ยังมีแต่ข้อ dark theme เดิม)",
+      "action": "อ่าน notes.md แล้ว ไม่มีคำสั่งใหม่ จึงใช้ CSS ของ Day 49 ทั้งก้อน (เพิ่มเฉพาะ .cmp ปรับเล็กน้อย) · ตรวจด้วย Python/node: limit ซื้อ 5,000 หุ้นบนกระดาน Day 49 ที่ 50.00 ⇒ ได้ 3,000 ค้าง 2,000, ที่ 50.25 ⇒ 5,000 เฉลี่ย 50.10, stop-loss 1,000 หุ้น ซื้อ 50 trigger 48: ไหลลง ขาย 47.75 = −2,250 (−4.5%), gap 45.00 = −5,000 (−10%), stop-limit 47.50 ไม่ match, ทวน 1/0.9−1 = 11.11%; ทดสอบ JS ด้วย jsdom ทุกค่าสไลเดอร์/ปุ่ม ไม่มี NaN, node --check ผ่าน · ข้อมูลจริง: รายการประเภทคำสั่งของ SET จาก classic.set.or.th ตรวจ 5 ต.ค. 2569 (ไม่ระบุคำสั่ง stop) · กระดาน/หุ้น ก. เป็นข้อมูลสมมติ"
     }
   ],
-  "pushNote": "รอบ 2026-09-30 push สำเร็จ (Day 48)"
+  "pushNote": "รอบ 2026-10-04 push สำเร็จ (Day 49)"
 }

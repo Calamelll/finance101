@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day 50 — ประเภทคำสั่ง: market, limit, stop, stop-limit | Finance101</title>
+<style>
+:root{
+  --bg:#191816; --card:#211f1d; --ink:#e8e4dd; --muted:#a09a91;
+  --line:#332f2b; --accent:#6cc394; --accent-soft:#1c2f26;
+  --warn:#e0a86f; --warn-soft:#2e2419; --code:#201e1b; --danger:#e0785c;
+  color-scheme: dark;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; padding:28px 18px 80px; background:var(--bg); color:var(--ink);
+  font-family:"Sarabun","Noto Sans Thai",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:17px; line-height:1.75; -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:720px;margin:0 auto}
+header{margin-bottom:34px}
+.kicker{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--muted);letter-spacing:.02em}
+.pill{background:var(--accent-soft);color:var(--accent);padding:3px 11px;border-radius:99px;font-weight:600}
+h1{font-size:29px;line-height:1.3;margin:12px 0 6px;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:16px;margin:0}
+h2{font-size:21px;margin:38px 0 12px;letter-spacing:-.005em}
+h3{font-size:17px;margin:26px 0 8px}
+p{margin:0 0 15px}
+ul,ol{margin:0 0 15px;padding-left:22px}
+li{margin-bottom:7px}
+strong{font-weight:600}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin:22px 0}
+.card.accent{background:var(--accent-soft);border-color:#2c4a3c}
+.card.warn{background:var(--warn-soft);border-color:#4a3722}
+.card h3{margin-top:0}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15.5px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-weight:600;font-size:13.5px;letter-spacing:.02em}
+td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.calc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;margin:22px 0}
+.calc label{display:block;font-size:14px;color:var(--muted);margin-bottom:6px}
+.calc .row{margin-bottom:18px}
+input[type=range]{width:100%;accent-color:var(--accent);height:24px}
+.val{font-weight:600;color:var(--accent);font-variant-numeric:tabular-nums}
+.bars{margin-top:6px}
+.bar-row{margin-bottom:12px}
+.bar-label{display:flex;justify-content:space-between;font-size:14px;margin-bottom:5px;gap:10px}
+.bar-track{background:#2a2724;border-radius:8px;height:26px;overflow:hidden;position:relative}
+.bar-fill{height:100%;border-radius:8px;transition:width .55s cubic-bezier(.22,.8,.3,1)}
+.bar-principal{background:#3f5c4e}
+.bar-growth{background:var(--accent)}
+.bar-negative{background:#a34a34}
+.bar-bond{background:#4a7fa0}
+.bar-stock{background:var(--accent)}
+.bar-gold{background:var(--warn)}
+.legend{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-top:10px;flex-wrap:wrap}
+.swatch{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:middle}
+.seg{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+.seg button{
+  background:var(--code);color:var(--muted);border:1px solid var(--line);border-radius:99px;
+  padding:6px 16px;font-size:14px;font-family:inherit;cursor:pointer;transition:all .2s;
+}
+.seg button.active{background:var(--accent-soft);color:var(--accent);border-color:#2c4a3c;font-weight:600}
+details{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:12px 16px;margin:10px 0}
+details[open]{background:#1d1b19}
+summary{cursor:pointer;font-weight:600;font-size:15.5px;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"▸ ";color:var(--accent)}
+details[open] summary::before{content:"▾ "}
+.ans{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font-size:15.5px;color:#d6d1c9}
+.q{font-weight:600;margin:22px 0 8px}
+pre{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:14px;line-height:1.6}
+code{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+.summary-box{border-left:3px solid var(--accent);padding-left:18px;margin:26px 0}
+.summary-box p{margin-bottom:8px}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
+footer a{color:var(--accent)}
+.disclaimer{font-size:13px;color:var(--muted);margin-top:18px;line-height:1.6}
+.nav{margin-bottom:20px;font-size:14px}
+.nav a{color:var(--accent);text-decoration:none}
+.src{font-size:12.5px;color:var(--muted);margin-top:8px}
+.steps{display:flex;align-items:flex-end;gap:14px;margin:18px 0 6px;height:150px}
+.step{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px}
+.step-bar{width:100%;border-radius:8px 8px 0 0;transition:height .55s cubic-bezier(.22,.8,.3,1);min-height:2px}
+.step1 .step-bar{background:#3f5c4e}
+.step2 .step-bar{background:var(--danger)}
+.step-label{font-size:13px;color:var(--muted);text-align:center}
+.step-val{font-weight:600;color:var(--ink);font-size:14.5px}
+.mixbar{display:flex;height:30px;border-radius:8px;overflow:hidden;margin:6px 0 10px;background:#2a2724}
+.mixseg{height:100%;transition:width .4s cubic-bezier(.22,.8,.3,1)}
+.stat{display:flex;justify-content:space-between;font-size:15.5px;padding:7px 0;border-bottom:1px solid var(--line)}
+.stat:last-child{border-bottom:none}
+.stat b{font-variant-numeric:tabular-nums;color:var(--accent)}
+@media(max-width:520px){
+  body{font-size:16px;padding:20px 14px 60px}
+  h1{font-size:25px}
+  .card,.calc{padding:16px}
+}
+
+/* โครงสร้างสิทธิเรียกร้อง / แถบสัดส่วน (ใช้ต่อจาก Day 20) */
+.wf{margin:18px 0 6px}
+.wf-track{display:flex;height:44px;border-radius:10px;overflow:hidden;background:#2a2724;border:1px solid var(--line)}
+.wf-seg{height:100%;display:flex;align-items:center;justify-content:center;font-size:12.5px;color:#12130f;font-weight:600;overflow:hidden;white-space:nowrap;transition:width .5s cubic-bezier(.22,.8,.3,1)}
+.wf-debt{background:#4a7fa0;color:#0f1b22}
+.wf-eq{background:var(--accent)}
+.wf-gap{background:#7a3d2c;color:#f0ded8}
+.wf-axis{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:6px;font-variant-numeric:tabular-nums}
+.ladder{list-style:none;padding:0;margin:16px 0}
+.ladder li{display:flex;gap:12px;align-items:baseline;padding:9px 14px;border:1px solid var(--line);border-radius:9px;margin-bottom:7px;background:var(--card);font-size:15.5px}
+.ladder li:last-child{background:var(--accent-soft);border-color:#2c4a3c}
+.ladder .rank{font-variant-numeric:tabular-nums;font-size:13px;color:var(--muted);min-width:20px;flex-shrink:0}
+
+/* Day 21 — เส้นทางคำสั่งซื้อ */
+.pipe{margin:16px 0 4px}
+.pnode{display:flex;gap:12px;align-items:flex-start;padding:11px 14px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;background:var(--card);transition:background .3s,border-color .3s,transform .3s}
+.pnode.on{background:var(--accent-soft);border-color:#2c4a3c;transform:translateX(7px)}
+.pnum{width:25px;height:25px;border-radius:50%;background:#2a2724;color:var(--muted);font-size:12.5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:3px;font-variant-numeric:tabular-nums;transition:background .3s,color .3s}
+.pnode.on .pnum{background:var(--accent);color:#12130f;font-weight:700}
+.pttl{font-weight:600;font-size:15.5px;margin-bottom:2px}
+.pdesc{font-size:14px;color:var(--muted);line-height:1.6}
+.pbtn{background:var(--accent-soft);color:var(--accent);border:1px solid #2c4a3c;border-radius:99px;padding:8px 22px;font-size:15px;font-family:inherit;font-weight:600;cursor:pointer;transition:opacity .2s}
+.pbtn:disabled{opacity:.45;cursor:default}
+.regbar{margin-top:10px;padding:10px 14px;border:1px dashed var(--line);border-radius:10px;font-size:14px;color:var(--muted)}
+.scalebar{background:#2a2724;border-radius:8px;height:22px;overflow:hidden;margin-bottom:5px}
+.scalefill{height:100%;border-radius:8px}
+
+/* Day 22 — กระดานราคา (order book) และปฏิทิน T+2 */
+.book{font-variant-numeric:tabular-nums;font-size:15px;margin:4px 0 2px}
+.brow{display:grid;grid-template-columns:1fr 84px 1fr;gap:8px;align-items:center;padding:3px 0}
+.bqty{display:flex;height:24px;border-radius:6px;overflow:hidden;background:transparent}
+.bqty i{height:100%;border-radius:6px;display:block;transition:width .4s ease,opacity .4s ease}
+.bqty.l{justify-content:flex-end}
+.bprice{text-align:center;font-weight:600;padding:2px 0;border-radius:6px;transition:background .3s,color .3s}
+.bprice.ask{color:var(--danger)}
+.bprice.bid{color:var(--accent)}
+.bprice.hit{background:var(--warn-soft);color:var(--warn)}
+.bqty span{font-size:12.5px;color:var(--muted);padding:0 6px;line-height:24px;white-space:nowrap}
+.bhead{display:grid;grid-template-columns:1fr 84px 1fr;gap:8px;font-size:12.5px;color:var(--muted);padding-bottom:5px;border-bottom:1px solid var(--line);margin-bottom:6px}
+.bhead span:nth-child(1){text-align:right}
+.bhead span:nth-child(2){text-align:center}
+.spreadrow{text-align:center;font-size:13px;color:var(--warn);padding:5px 0;border-top:1px dashed var(--line);border-bottom:1px dashed var(--line);margin:5px 0}
+.cal{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin:16px 0 6px}
+.cday{border:1px solid var(--line);border-radius:10px;padding:9px 6px;text-align:center;background:var(--card);transition:background .35s,border-color .35s}
+.cday .cn{font-size:12px;color:var(--muted)}
+.cday .cv{font-size:14px;font-weight:600;margin-top:3px;min-height:20px}
+.cday.t{background:var(--accent-soft);border-color:#2c4a3c}
+.cday.s{background:var(--warn-soft);border-color:#4a3722}
+.cday.off{opacity:.4}
+
+/* Day 23 — โครงเงินปันผล */
+.split{display:flex;height:34px;border-radius:9px;overflow:hidden;background:#2a2724;border:1px solid var(--line);margin:10px 0 4px}
+.split i{height:100%;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;transition:width .45s cubic-bezier(.22,.8,.3,1)}
+.sp-pay{background:var(--accent);color:#12130f}
+.sp-ret{background:#3f5c4e;color:#dfe8e2}
+.idcard{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin:14px 0;font-variant-numeric:tabular-nums;font-size:15.5px;text-align:center}
+.idcard b{color:var(--accent)}
+.tax2{display:flex;gap:14px;align-items:flex-end;height:170px;margin:16px 0 4px}
+.tax2 .col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px}
+.tax2 .cb{width:100%;border-radius:9px 9px 0 0;transition:height .5s cubic-bezier(.22,.8,.3,1);min-height:3px}
+.tax2 .c1 .cb{background:#3f5c4e}
+.tax2 .c2 .cb{background:var(--accent)}
+.tax2 .c2.lose .cb{background:var(--danger)}
+.verdict{text-align:center;font-size:15px;padding:9px 12px;border-radius:9px;margin-top:12px;background:var(--accent-soft);color:var(--accent);border:1px solid #2c4a3c}
+.verdict.bad{background:var(--warn-soft);color:var(--warn);border-color:#4a3722}
+</style>
+<style>
+/* Day 24 — น้ำตกงบกำไรขาดทุน */
+.wfall{margin:16px 0 6px;font-variant-numeric:tabular-nums}
+.wrow{display:grid;grid-template-columns:112px 1fr 92px;gap:10px;align-items:center;margin-bottom:6px;font-size:14.5px}
+.wrow .wlab{color:var(--muted);font-size:13.5px;line-height:1.4}
+.wrow.tot .wlab{color:var(--ink);font-weight:600}
+.wtrack{position:relative;height:26px;background:#2a2724;border-radius:7px;overflow:hidden}
+.wseg{position:absolute;top:0;height:100%;border-radius:7px;transition:left .5s cubic-bezier(.22,.8,.3,1),width .5s cubic-bezier(.22,.8,.3,1)}
+.w-rev{background:#3f5c4e}
+.w-gp{background:#4d7a63}
+.w-ebit{background:#5aa47e}
+.w-np{background:var(--accent)}
+.w-cut{background:var(--danger);opacity:.85}
+.wval{text-align:right;font-weight:600;font-size:14.5px}
+.wrow.cut .wval{color:var(--danger)}
+.wrow.tot .wval{color:var(--accent)}
+.mgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0 4px}
+.mbox{background:var(--code);border:1px solid var(--line);border-radius:11px;padding:11px 8px;text-align:center}
+.mbox .mv{font-size:20px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums;line-height:1.3}
+.mbox .mn{font-size:12px;color:var(--muted);line-height:1.45;margin-top:2px}
+.mbox.neg .mv{color:var(--danger)}
+@media(max-width:520px){
+  .wrow{grid-template-columns:92px 1fr 78px;gap:7px;font-size:13.5px}
+  .wrow .wlab{font-size:12.5px}
+  .mbox .mv{font-size:17px}
+}
+</style>
+<style>
+/* Day 25 — งบดุลสองฝั่ง และวงจรเงินสด */
+.bswrap{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0 6px}
+.bscol{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:11px;overflow:hidden;min-height:230px}
+.bshead{font-size:12.5px;color:var(--muted);text-align:center;margin-bottom:6px;letter-spacing:.02em}
+.bsseg{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:0 9px;font-size:12px;font-weight:600;color:#12130f;overflow:hidden;white-space:nowrap;transition:height .5s cubic-bezier(.22,.8,.3,1);min-height:0}
+.bsseg span:last-child{font-variant-numeric:tabular-nums}
+.a-cash{background:#6cc394}.a-ar{background:#4d7a63;color:#e8f2ec}.a-inv{background:#3f5c4e;color:#e8f2ec}
+.a-ppe{background:#4a7fa0;color:#0f1b22}.a-int{background:#5b6b7a;color:#e6edf3}
+.l-cl{background:#e0a86f;color:#241a0d}.l-ltd{background:#a8703f;color:#f6e8da}
+.e-eq{background:#6cc394}.e-re{background:#3f5c4e;color:#e8f2ec}
+.bsseg.neg{background:var(--danger);color:#fff}
+.eqline{display:flex;justify-content:center;gap:10px;font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums;margin-top:4px}
+.eqline b{color:var(--accent)}
+.gantt{margin:16px 0 6px}
+.grow{display:grid;grid-template-columns:116px 1fr;gap:10px;align-items:center;margin-bottom:7px;font-size:13.5px;color:var(--muted)}
+.gtrack{position:relative;height:25px;background:#2a2724;border-radius:7px;overflow:hidden}
+.gbar{position:absolute;top:0;height:100%;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;overflow:hidden;white-space:nowrap;transition:left .5s cubic-bezier(.22,.8,.3,1),width .5s cubic-bezier(.22,.8,.3,1)}
+.g-dio{background:#3f5c4e;color:#e8f2ec}
+.g-dso{background:#4a7fa0;color:#0f1b22}
+.g-dpo{background:var(--warn);color:#241a0d}
+.g-ccc{background:var(--danger);color:#fff}
+@media(max-width:520px){
+  .bswrap{gap:8px}
+  .bsseg{font-size:11px;padding:0 6px}
+  .grow{grid-template-columns:92px 1fr;gap:7px;font-size:12.5px}
+}
+</style>
+<style>
+/* Day 26 — สามกระแสเงินสด (แท่งบวก/ลบรอบเส้นศูนย์) */
+.zwrap{margin:18px 0 4px}
+.zbar{position:relative;height:150px;display:flex;gap:16px}
+.zaxis{position:absolute;left:0;right:0;top:75px;border-top:1px dashed #4a453f;z-index:0}
+.zc{flex:1;position:relative;z-index:1}
+.zfill{position:absolute;left:0;right:0;border-radius:7px;transition:top .5s cubic-bezier(.22,.8,.3,1),height .5s cubic-bezier(.22,.8,.3,1);min-height:3px}
+.zfill.p{background:var(--accent)}
+.zfill.n{background:var(--danger)}
+.zv{position:absolute;left:0;right:0;text-align:center;font-size:13.5px;font-weight:700;font-variant-numeric:tabular-nums;transition:top .5s cubic-bezier(.22,.8,.3,1)}
+.zv.p{color:var(--accent)} .zv.n{color:var(--danger)}
+.zlab{display:flex;gap:16px;margin-top:8px}
+.zlab div{flex:1;text-align:center;font-size:12.5px;color:var(--muted);line-height:1.45}
+.tax2 .c3 .cb{background:#4a7fa0}
+.sign{display:inline-block;min-width:18px;font-weight:700;font-variant-numeric:tabular-nums}
+.sign.p{color:var(--accent)} .sign.n{color:var(--danger)}
+.cfs td:first-child{padding-left:12px}
+.cfs tr.head td{color:var(--muted);font-size:13.5px;font-weight:600;padding-top:16px}
+.cfs tr.sum td{font-weight:700;border-top:1px solid var(--line);border-bottom:2px solid var(--line)}
+.cfs tr.sum td.num{color:var(--accent)}
+.cfs tr.sum.neg td.num{color:var(--danger)}
+.cfs td.ind{padding-left:26px;color:#cdc7be;font-size:14.5px}
+@media(max-width:520px){
+  .zbar{gap:9px;height:135px}
+  .zaxis{top:67px}
+  .zlab{gap:9px}
+  .zlab div{font-size:11.5px}
+  .cfs td.ind{padding-left:14px;font-size:13.5px}
+}
+</style>
+<style>
+/* Day 27 — DuPont และห้องทดลองเลเวอเรจ */
+.dp{margin:16px 0 4px}
+.dprow{display:grid;grid-template-columns:136px 1fr 74px;gap:10px;align-items:center;margin-bottom:8px;font-size:14px}
+.dprow .dlab{color:var(--muted);font-size:13.5px;line-height:1.45}
+.dtrack{height:24px;background:#2a2724;border-radius:7px;overflow:hidden}
+.dfill{height:100%;border-radius:7px;transition:width .5s cubic-bezier(.22,.8,.3,1);min-width:3px}
+.d-nm{background:var(--accent)}
+.d-at{background:#4a7fa0}
+.d-em{background:var(--warn)}
+.dval{text-align:right;font-weight:600;font-variant-numeric:tabular-nums;font-size:14.5px}
+.dprod{text-align:center;font-size:15.5px;padding:10px 12px;border-radius:9px;background:var(--accent-soft);
+  border:1px solid #2c4a3c;color:var(--accent);margin-top:6px;font-variant-numeric:tabular-nums}
+.dnote{font-size:14px;color:var(--muted);margin-top:10px;line-height:1.65}
+.rid{display:grid;grid-template-columns:1fr 1fr;gap:8px 18px;margin:16px 0 4px}
+.rid .r{display:flex;justify-content:space-between;gap:8px;font-size:15px;padding:7px 0;border-bottom:1px solid var(--line)}
+.rid .r b{font-variant-numeric:tabular-nums;color:var(--accent);white-space:nowrap}
+.rid .r.warnv b{color:var(--warn)}
+.rid .r.badv b{color:var(--danger)}
+.tax2 .c3.lose .cb{background:var(--danger)}
+@media(max-width:520px){
+  .dprow{grid-template-columns:104px 1fr 62px;gap:7px;font-size:13px}
+  .dprow .dlab{font-size:12.5px}
+  .rid{grid-template-columns:1fr;gap:0 0}
+}
+</style>
+<style>
+/* Day 28 — DCF: แถบมูลค่าปลายทาง ตารางความไว และมาตรวัดราคา */
+.d-y{background:#4d7a63}
+.d-tv{background:var(--warn)}
+.heat{font-variant-numeric:tabular-nums;font-size:14.5px}
+.heat th,.heat td{padding:8px 6px;text-align:center}
+.heat td.rowh,.heat th{color:var(--muted);font-size:13px}
+.heat td.v{border-radius:7px;font-weight:600}
+.h0{background:#241f1c;color:#c9b7ad}
+.h1{background:#2b2a20;color:#d4c59f}
+.h2{background:#26302a;color:#9fd0b4}
+.h3{background:#1f3b2c;color:#8ee0b0}
+.heat td.mid{outline:2px solid var(--accent);outline-offset:-2px}
+.gauge{position:relative;height:56px;margin:18px 0 6px}
+.gtrk{position:absolute;left:0;right:0;top:22px;height:14px;border-radius:7px;background:linear-gradient(90deg,#1f3b2c,#2b2a20,#4a2b22)}
+.gmk{position:absolute;top:8px;width:2px;height:42px;background:var(--ink);transition:left .5s cubic-bezier(.22,.8,.3,1)}
+.gmk.price{background:var(--danger)}
+.gmk i{position:absolute;top:-16px;left:50%;transform:translateX(-50%);font-size:12px;font-style:normal;white-space:nowrap;color:var(--muted)}
+.gscale{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+@media(max-width:520px){
+  .heat{font-size:12.5px}
+  .heat th,.heat td{padding:6px 3px}
+}
+</style>
+<style>
+/* Day 29 — Growth vs Value: การ์ดสองฝั่ง ทฤษฎีบท และแถบแยกผลตอบแทน */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0 6px}
+.duo .dcard{border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:var(--card)}
+.duo .dcard.g{border-color:#4a3722;background:var(--warn-soft)}
+.duo .dcard.v{border-color:#2c4a3c;background:var(--accent-soft)}
+.duo .dh{font-size:13px;color:var(--muted);letter-spacing:.02em;margin-bottom:8px;font-weight:600}
+.duo .dl{display:flex;justify-content:space-between;gap:8px;font-size:14.5px;padding:5px 0;border-bottom:1px solid var(--line)}
+.duo .dl:last-child{border-bottom:none}
+.duo .dl b{font-variant-numeric:tabular-nums;white-space:nowrap}
+.duo .dcard.g .dl b{color:var(--warn)}
+.duo .dcard.v .dl b{color:var(--accent)}
+.sp-a{background:#4a7fa0;color:#0f1b22}
+.sp-b{background:var(--accent);color:#12130f}
+.sp-c{background:var(--warn);color:#241a0d}
+.sp-neg{background:var(--danger);color:#fff}
+.thm{background:var(--accent-soft);border:1px solid #2c4a3c;border-radius:12px;padding:16px 18px;margin:18px 0;text-align:center;font-size:16px}
+.thm .eq{font-size:18.5px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums;margin-bottom:7px;line-height:1.5}
+.thm .note{font-size:13.5px;color:var(--muted);line-height:1.65}
+@media(max-width:520px){ .duo{grid-template-columns:1fr} .thm .eq{font-size:16px} }
+</style>
+<style>
+/* Day 30 — วงล้อวัฏจักร และการ์ดสี่ช่วงเศรษฐกิจ */
+.cyc{margin:14px 0 4px}
+.cyc svg{width:100%;height:auto;display:block}
+.phgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0 14px}
+.ph{border:1px solid var(--line);border-radius:10px;padding:9px 8px;background:var(--card);text-align:center;transition:background .3s,border-color .3s,transform .3s}
+.ph.on{background:var(--accent-soft);border-color:#2c4a3c;transform:translateY(-3px)}
+.ph b{display:block;font-size:14px;color:var(--ink);margin-bottom:2px}
+.ph span{display:block;color:var(--muted);font-size:12px;line-height:1.5}
+.ph.on b{color:var(--accent)}
+@media(max-width:520px){ .phgrid{grid-template-columns:1fr 1fr} }
+</style>
+<style>
+/* Day 47 — ตารางสูตรสรุปเฟส และกล่อง IPS */
+.ips{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:14px 0 4px;font-size:14.5px;line-height:1.8}
+.ips b{color:var(--accent)}
+.fx td:first-child{white-space:nowrap;color:var(--muted);font-size:13.5px}
+</style>
+<style>
+/* Day 48 — จุดแทนเทรดเดอร์ 100 คน และตารางเทียบ */
+.dots48{display:grid;grid-template-columns:repeat(20,1fr);gap:5px;margin:14px 0 6px}
+.dots48 i{aspect-ratio:1;border-radius:50%;background:var(--danger);opacity:.75;transition:background .3s,opacity .3s}
+.dots48 i.w{background:var(--accent);opacity:1}
+.cmp td:first-child{white-space:nowrap;color:var(--muted);font-size:13.5px}
+.fn{font-size:14px;color:var(--muted);text-align:center;margin-top:6px}
+</style>
+<style>
+/* Day 49 — กระดานราคาเชิงโต้ตอบ และตารางขั้นราคา */
+.obctl{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.obnote{font-size:14px;color:var(--muted);margin-top:10px;line-height:1.65}
+.tickout{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0 4px}
+.fillnote{font-size:12.5px;color:var(--warn);padding:0 6px;line-height:24px;white-space:nowrap}
+</style>
+<style>
+/* Day 50 — เครื่องมือเทียบประเภทคำสั่ง */
+.cmp td{font-size:14.5px;vertical-align:top}
+.cmp td:first-child{font-weight:600;color:var(--ink)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="nav"><a href="../index.html">← สารบัญ</a></div>
+
+<header>
+  <div class="kicker">
+    <span class="pill">Day 50 / 90</span>
+    <span>Phase 3 · การเทรด</span>
+    <span>·</span>
+    <span>อ่าน 8 นาที</span>
+  </div>
+  <h1>ประเภทคำสั่ง: market, limit, stop, stop-limit</h1>
+  <p class="sub">Day 49 เห็นแล้วว่ากระดานมีสองฝั่ง คำสั่งแต่ละแบบคือวิธีเลือกว่าจะ "จ่าย spread เพื่อความแน่นอน" หรือ "รอเพื่อราคาที่ดีกว่า" และแต่ละแบบมีจุดอ่อนของมันเอง</p>
+</header>
+
+<h2>สองสิ่งที่คำสั่งทุกแบบต้องแลกกัน</h2>
+
+<p>ทุกคำสั่งซื้อขายตอบสองคำถามพร้อมกัน: <strong>ได้ราคาเท่าไร</strong> และ <strong>จะได้ซื้อขายจริงหรือไม่</strong> ไม่มีคำสั่งไหนรับประกันทั้งสองอย่าง คำสั่งที่การันตีว่าจะได้ซื้อขาย (market) ไม่การันตีราคา ส่วนคำสั่งที่การันตีราคา (limit) ไม่การันตีว่าจะได้ซื้อขาย</p>
+
+<table class="cmp">
+  <thead><tr><th>คำสั่ง</th><th>ทำงานอย่างไร</th><th>การันตี</th><th>ไม่การันตี</th></tr></thead>
+  <tbody>
+    <tr><td>Market</td><td>กินกระดานฝั่งตรงข้ามทันทีที่ราคาดีที่สุดเท่าที่มี</td><td>ได้ซื้อขาย</td><td>ราคา</td></tr>
+    <tr><td>Limit</td><td>ซื้อไม่เกิน (หรือขายไม่ต่ำกว่า) ราคาที่ตั้ง ส่วนที่ยังไม่ match ไปรอบนกระดาน</td><td>ราคาไม่แย่กว่าที่ตั้ง</td><td>ได้ซื้อขายหรือไม่</td></tr>
+    <tr><td>Stop</td><td>นอนรอ พอราคาถึงจุดกระตุ้น (trigger) จึงกลายเป็น market</td><td>ถูกส่งเมื่อถึงจุด</td><td>ราคาที่ได้จริง</td></tr>
+    <tr><td>Stop-limit</td><td>พอถึง trigger จึงกลายเป็น limit ที่ราคาที่ตั้งไว้</td><td>ราคาไม่แย่กว่า limit</td><td>ว่าจะขายออกได้</td></tr>
+  </tbody>
+</table>
+
+<h2>Limit: ควบคุมราคา แลกกับความไม่แน่นอน</h2>
+
+<p>คำสั่ง limit ซื้อที่ราคาสูงกว่าหรือเท่ากับ best ask จะ match ทันทีเหมือน market (แต่ไม่ยอมจ่ายเกินราคาที่ตั้ง) ส่วนที่เหลือจะไปรอเป็น bid ในกระดาน ถ้าตั้งต่ำกว่า best ask จะไม่ได้อะไรเลยจนกว่ามีคนมาขายให้ที่ราคานั้น และต้อง<strong>เข้าคิว</strong>: ตลาดจัดลำดับตามราคาก่อน แล้วตามเวลา (คนมาก่อนได้ก่อน) ลองกับกระดานเดียวกับ Day 49 ซื้อ 5,000 หุ้น แล้วเลื่อนราคา limit:</p>
+
+<div class="calc">
+  <div class="row"><label>ราคา limit ซื้อ <span class="val" id="l_p">50.00</span> บาท · best ask 50.00 · best bid 49.75</label><input type="range" id="r_lp" min="0" max="4" step="1" value="2"></div>
+  <div class="mgrid">
+    <div class="mbox"><div class="mv" id="l_f">3,000</div><div class="mn">หุ้นที่ได้ทันที<br>(จาก 5,000)</div></div>
+    <div class="mbox"><div class="mv" id="l_a">50.00</div><div class="mn">ราคาเฉลี่ยของ<br>ส่วนที่ได้ (บาท)</div></div>
+    <div class="mbox neg"><div class="mv" id="l_r">2,000</div><div class="mn">หุ้นที่ค้างรอ<br>ในกระดาน</div></div>
+  </div>
+  <div class="verdict" id="l_v"></div>
+  <p class="obnote" id="l_n"></p>
+</div>
+
+<p>สังเกตจุดที่ราคา limit = 50.25 ได้ราคาเฉลี่ย 50.10 ไม่ใช่ 50.25 เพราะ limit คือ<strong>เพดาน</strong> ไม่ใช่ราคาที่จะจ่ายแน่ๆ ตลาดจะ match ที่ราคาของฝั่งที่รออยู่เสมอ ส่วนตั้งต่ำกว่า best ask คุณกลายเป็นคนตั้งราคารอ รับ spread แทนที่จะจ่าย แต่ต้องยอมเสี่ยงว่าราคาวิ่งหนีไปโดยที่ยังไม่ได้ซื้อ</p>
+
+<h2>Stop และ stop-limit: คำสั่งที่นอนรอเงื่อนไข</h2>
+
+<p>คำสั่ง stop ไม่ได้อยู่ในกระดาน จนกว่าราคาซื้อขายถึง <strong>จุดกระตุ้น (trigger)</strong> ที่ใช้บ่อยคือ <strong>stop-loss</strong> ตั้งขายเมื่อราคาหลุดลงไปถึงระดับที่ยอมรับการขาดทุนได้ เมื่อถึงจุดนั้นมันกลายเป็นคำสั่งปกติ ถ้าเป็น stop (market) ก็ขายที่ราคาดีที่สุดที่มีตอนนั้น ถ้าเป็น stop-limit ก็ขายที่ราคา limit ขึ้นไปเท่านั้น</p>
+
+<p>จุดอ่อนอยู่ที่ราคาไม่ได้ขยับต่อเนื่อง ลองดูสามสถานการณ์กับหุ้นที่ซื้อมา 1,000 หุ้น ที่ 50 บาท ตั้ง stop ที่ 48.00 (stop-limit ตั้ง limit ขาย 47.50):</p>
+
+<div class="calc">
+  <div class="seg" id="st_seg">
+    <button class="active" data-c="A">A · ราคาไหลลงช้าๆ</button>
+    <button data-c="B">B · gap ลงเปิดที่ 45.00</button>
+    <button data-c="C">C · ทะลุแล้วเด้งกลับ</button>
+  </div>
+  <p class="obnote" id="st_d" style="margin:0 0 12px"></p>
+  <div class="mgrid">
+    <div class="mbox"><div class="mn" style="margin-bottom:4px">ไม่ตั้ง stop</div><div class="mv" id="s_n">—</div><div class="mn" id="s_nn"></div></div>
+    <div class="mbox"><div class="mn" style="margin-bottom:4px">Stop (market)</div><div class="mv" id="s_m">—</div><div class="mn" id="s_mn"></div></div>
+    <div class="mbox"><div class="mn" style="margin-bottom:4px">Stop-limit 47.50</div><div class="mv" id="s_l">—</div><div class="mn" id="s_ln"></div></div>
+  </div>
+  <p class="obnote" id="st_n"></p>
+</div>
+
+<p>บทเรียนคือ stop-loss <strong>ไม่ใช่เส้นตายราคา</strong> เป็นแค่เงื่อนไขให้ส่งคำสั่ง ถ้าราคาข้ามจุดนั้นไปเลย (gap) market stop จะขายที่ราคาแย่กว่าที่ตั้งมาก ส่วน stop-limit กันราคาแย่ได้ แต่แลกกับความเสี่ยงที่จะไม่ได้ขายเลยในวันที่ต้องการออกที่สุด</p>
+
+<h2>คำสั่งพิเศษของ SET และเรื่อง stop ในไทย</h2>
+
+<p>ตลาดหลักทรัพย์ไทยมีคำสั่งหลักๆ คือ limit, market และคำสั่งช่วงเปิด-ปิด: <strong>ATO</strong> (At-The-Open) ซื้อขายที่ราคาเปิด และ <strong>ATC</strong> (At-The-Close) ที่ราคาปิด สองแบบนี้ได้<em>ลำดับก่อน</em> limit ในการ match จึงเกือบแน่ว่าได้ แต่ไม่รู้ราคาล่วงหน้า เพราะราคาเปิด/ปิดมาจากการจับคู่ทั้งตลาด นอกจากนี้มี market-to-limit, IOC (ไม่ได้ทันทีก็ยกเลิก) และ FOK (ได้ครบทั้งก้อนหรือยกเลิกทั้งหมด) ส่วน<strong>คำสั่ง stop ไม่อยู่ในรายการคำสั่งของ SET</strong> โบรกเกอร์บางแห่งจึงทำเป็นคำสั่งเงื่อนไขในระบบของตัวเอง แล้วส่ง limit/market เข้าตลาดให้เมื่อราคาถึง ต้องเช็กกับโบรกที่ใช้ว่ามีหรือไม่ ทำงานตอนไหน และเสียค่าอะไร</p>
+<p class="src">ที่มา: Equities Trading — Order Types, ตลาดหลักทรัพย์แห่งประเทศไทย (classic.set.or.th/en/products/trading/equity/tradingsystem_p6.html) ตรวจอ่านเมื่อ 5 ต.ค. 2569 · หน้าเอกสารไม่ระบุวันปรับปรุงล่าสุด และไม่ได้กล่าวถึงคำสั่ง stop · คำสั่งเงื่อนไขของแต่ละโบรกแตกต่างกัน ต้องตรวจจากโบรกที่ใช้จริง</p>
+
+<h2>ตัวอย่าง: เต้นกับหุ้น ก. 50,000 บาท</h2>
+
+<p>ซื้อหุ้น ก. 1,000 หุ้น ที่ 50.00 ตั้ง stop-loss 48.00 ถ้าราคาไหลลงปกติ ขายได้ราว 47.75 ขาดทุน 2,250 บาท (4.5%) ไม่ใช่ 2,000 บาทที่คิดไว้ เพราะ spread ถ้าเช้าวันหนึ่ง gap ลงเปิด 45.00 ขาดทุน 5,000 บาท (10%) และขาดทุน 10% ต้องกำไร 1/0.9 − 1 = <strong>11.11%</strong> ถึงจะคืนทุน (Day 43) ในทางกลับกัน ถ้าไม่ตั้งอะไรเลย แล้วไม่มีวินัยตัดขาดทุน ก็เสี่ยงโดนอคติ disposition effect (Day 45) เรื่องคำสั่งจึงไม่มีแบบถูกที่สุด มีแต่แบบที่เหมาะกับสิ่งที่ยอมแลก</p>
+
+<div class="card accent">
+  <h3>เลือกคำสั่งตามสิ่งที่ยอมแลก</h3>
+  <p style="margin-bottom:6px"><strong>ต้องการได้แน่ ไม่สนราคาเป๊ะ</strong> (เช่น หุ้นสภาพคล่องสูง จำนวนน้อย): market หรือ ATC</p>
+  <p style="margin-bottom:6px"><strong>ต้องการราคาดี ยอมรอหรือพลาดได้:</strong> limit (โดยเฉพาะหุ้นบาง ซึ่ง market จะเดินกระดานไกล ตาม Day 49)</p>
+  <p style="margin-bottom:0"><strong>อยากตัดขาดทุนอัตโนมัติ:</strong> เข้าใจก่อนว่า gap และกระดานบางทำให้ราคาออกจริงต่างจากที่ตั้ง และ stop ที่แคบเกินไปจะถูกสะบัดออกด้วยความผันผวนปกติ</p>
+</div>
+
+<details>
+  <summary>กล่องโค้ด (ข้ามได้ ไม่นับในเวลาอ่าน)</summary>
+  <div class="ans">
+<pre><code>asks = [(50.00, 3000), (50.25, 5000), (50.50, 8000), (50.75, 10000)]
+
+def limit_buy(qty, limit):
+    left, cost = qty, 0.0
+    for price, size in asks:
+        if price &lt;= limit and left &gt; 0:
+            t = min(left, size); cost += t * price; left -= t
+    filled = qty - left
+    return filled, (cost / filled if filled else None), left
+
+print(limit_buy(5000, 50.00))   # (3000, 50.0, 2000)
+print(limit_buy(5000, 50.25))   # (5000, 50.1, 0)
+print(limit_buy(5000, 49.75))   # (0, None, 5000)
+
+# stop-loss: ขาย 1,000 หุ้น ซื้อมา 50 trigger 48
+def stop_fill(next_bid, kind, limit=47.50):
+    if kind == "market": return next_bid
+    return next_bid if next_bid &gt;= limit else None   # stop-limit
+
+for bid in (47.75, 45.00):
+    print(bid, stop_fill(bid, "market"), stop_fill(bid, "limit"))
+# 47.75 47.75 47.75 | 45.0 45.0 None</code></pre>
+  </div>
+</details>
+
+<h2>ทดสอบความเข้าใจ</h2>
+
+<p class="q">1. กระดานขาย 50.00 × 3,000 และ 50.25 × 5,000 ตั้ง limit ซื้อ 5,000 หุ้นที่ 50.00 เกิดอะไรขึ้น ถ้าเปลี่ยนเป็น 50.25 ได้ราคาเฉลี่ยเท่าไร</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">ที่ 50.00: match ได้ <strong>3,000 หุ้น ที่ 50.00</strong> ส่วนอีก 2,000 หุ้นไปรอเป็น best bid ใหม่ที่ 50.00 · ที่ 50.25: ได้ครบ 5,000 หุ้น ราคาเฉลี่ย (3,000×50.00 + 2,000×50.25) ÷ 5,000 = <strong>50.10</strong> ไม่ใช่ 50.25 เพราะ limit คือเพดานราคา</div>
+</details>
+
+<p class="q">2. ซื้อมา 50 บาท 1,000 หุ้น ตั้ง stop (market) ที่ 48.00 วันรุ่งขึ้นหุ้น gap ลงเปิดที่ bid 45.00 ขายได้ราคาไหน ขาดทุนกี่บาทกี่ % และถ้าเป็น stop-limit ที่ limit 47.50 เกิดอะไรขึ้น</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">stop (market) ขายที่ <strong>45.00</strong> ขาดทุน 5 × 1,000 = <strong>5,000 บาท (10%)</strong> ไม่ใช่ 4% ที่ตั้งใจ · stop-limit ที่ 47.50 <strong>ไม่ถูก match</strong> เพราะ bid 45.00 ต่ำกว่า limit ยังถือหุ้นอยู่และคำสั่งค้างรอ ถ้าราคาลงต่อก็ขาดทุนเพิ่ม</div>
+</details>
+
+<p class="q">3. ตั้ง limit ซื้อ 5,000 หุ้นที่ 49.75 (best bid เดิม มีคิวรออยู่ข้างหน้า 4,000 หุ้น) ต่อมามีคนส่ง market ขาย 6,000 หุ้นเข้ามา ได้กี่หุ้น ที่ราคาเท่าไร</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">คำสั่งขาย 6,000 หุ้นกิน 4,000 หุ้นของคิวข้างหน้าก่อน (ราคาเท่ากัน ใครมาก่อนได้ก่อน) เหลือ 2,000 หุ้นเป็นของเรา ได้ <strong>2,000 หุ้น ที่ 49.75</strong> ส่วนอีก 3,000 หุ้นยังรออยู่ · ได้ราคาต่ำกว่า mid 49.875 แต่ไม่รู้เลยว่าจะได้เมื่อไรหรือได้ครบไหม</div>
+</details>
+
+<p class="q"><strong>ทวน:</strong> Day 43 สอนเรื่อง drawdown · ถ้า stop ถูกชนที่ −10% (ขายออก) แล้วอยากกลับมาที่เงินต้นเดิมด้วยทุนก้อนที่เหลือ ต้องมีผลตอบแทนกี่ % และ −5% ต้องกี่ %</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">1 ÷ 0.90 − 1 = <strong>11.11%</strong> · −5%: 1 ÷ 0.95 − 1 = <strong>5.26%</strong> · ขาดทุนยิ่งลึก ผลตอบแทนที่ต้องใช้คืนยิ่งสูงแบบไม่เป็นเส้นตรง จึงมีคนอยากตัดขาดทุนเร็ว แต่ stop ที่ใกล้เกินไปก็ถูกสะบัดออกง่าย<br>ตอบผิดหรือลังเล? → <a href="finance-day-43-sharpe-drawdown.html">ทบทวน Day 43: Sharpe ratio, drawdown และการวัดความเสี่ยง</a></div>
+</details>
+
+<p class="q"><strong>ทวน:</strong> อคติ disposition effect ใน Day 45 คืออะไร และการตั้งกฎตัดขาดทุนล่วงหน้าช่วยเรื่องนี้ได้อย่างไร มีข้อจำกัดอะไรจากบทวันนี้</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">disposition effect คือแนวโน้มขายหุ้นที่กำไรเร็วเกินไป แต่ถือหุ้นที่ขาดทุนไว้นานเกินไปเพราะไม่อยากรับรู้ผลขาดทุน · กฎล่วงหน้าที่เขียนไว้ตอนใจเย็น (เช่น stop-loss) ลดการตัดสินใจด้วยอารมณ์ในวันที่ราคาร่วง · ข้อจำกัดจากวันนี้: ราคาที่ขายได้จริงอาจต่ำกว่าที่ตั้ง (gap) หรือถูกสะบัดออกแล้วราคาเด้งกลับ (สถานการณ์ C)<br>ตอบผิดหรือลังเล? → <a href="finance-day-45-behavioral-biases.html">ทบทวน Day 45: อคติทางพฤติกรรม (behavioral biases)</a></div>
+</details>
+
+<div class="summary-box">
+  <h2 style="margin-top:0">สรุป 3 บรรทัด</h2>
+  <p>1. ทุกคำสั่งแลกกันระหว่างความแน่นอนของราคากับความแน่นอนที่จะได้ซื้อขาย: market ได้แน่แต่จ่าย spread และเดินกระดาน, limit คุมราคาแต่อาจไม่ได้ (และต้องเข้าคิว)</p>
+  <p>2. stop คือเงื่อนไขส่งคำสั่ง ไม่ใช่เส้นราคาที่รับประกัน: gap ทำให้ stop ขายที่ 45.00 แทน 48.00 และ stop-limit อาจไม่ได้ขายเลย</p>
+  <p style="margin-bottom:0">3. ใน SET มี limit, market, ATO, ATC และอื่นๆ แต่ไม่มี stop ในรายการคำสั่งของตลาด ต้องดูว่าโบรกของคุณจัดการคำสั่งเงื่อนไขอย่างไร</p>
+</div>
+
+<footer>
+  <p><strong>พรุ่งนี้ Day 51 — กราฟแท่งเทียน (candlestick)</strong> · เมื่อรู้แล้วว่าคำสั่งเข้าตลาดอย่างไร พรุ่งนี้จะเริ่มอ่านภาพราคาในอดีต: แท่งเทียนหนึ่งแท่งบอกอะไร (เปิด สูง ต่ำ ปิด) และอะไรที่มันบอกไม่ได้</p>
+  <p class="disclaimer">บทเรียนนี้เป็นความรู้เชิงการศึกษา ไม่ใช่คำแนะนำทางการเงินเฉพาะบุคคล และไม่ใช่การชี้ชวนให้ซื้อหรือขายหลักทรัพย์ใด · กระดานราคาและหุ้น ก. เป็นข้อมูลสมมติเพื่อการสอน ไม่ใช่หุ้นจริง ตัวเลขไม่รวมค่าคอมมิชชันและภาษี · รายการประเภทคำสั่งอาจถูกตลาดหลักทรัพย์และโบรกเกอร์ปรับเปลี่ยน ตรวจกับโบรกที่ใช้จริงก่อนใช้งาน · ผลตอบแทนในอดีตไม่ได้บ่งชี้ผลตอบแทนในอนาคต</p>
+</footer>
+
+</div>
+<script>
+(function(){
+  var $=function(id){ return document.getElementById(id); };
+  var fmt=function(n,d){ return n.toLocaleString('th-TH',{minimumFractionDigits:d,maximumFractionDigits:d}); };
+  var ASKS=[[50.00,3000],[50.25,5000],[50.50,8000],[50.75,10000]], BIDS={49.75:4000,49.50:6000,49.25:9000,49.00:12000};
+  var QTY=5000;
+  function limitBuy(limit){
+    var left=QTY,cost=0,i;
+    for(i=0;i<ASKS.length;i++){ if(ASKS[i][0]<=limit+1e-9 && left>0){ var t=Math.min(left,ASKS[i][1]); cost+=t*ASKS[i][0]; left-=t; } }
+    var f=QTY-left; return {f:f,avg:f?cost/f:null,left:left};
+  }
+  function lrender(){
+    var i=+$('r_lp').value, p=Math.round((49.50+0.25*i)*100)/100, r=limitBuy(p);
+    $('l_p').textContent=fmt(p,2);
+    $('l_f').textContent=fmt(r.f,0);
+    $('l_a').textContent=r.avg===null?'—':fmt(r.avg,2);
+    $('l_r').textContent=fmt(r.left,0);
+    var v=$('l_v'), n='';
+    if(r.f===0){
+      var ahead=BIDS[p.toFixed(2)]||0;
+      v.className='verdict bad'; v.textContent='ไม่ได้ซื้อเลยตอนนี้ — ราคาต่ำกว่า best ask';
+      n='คำสั่งไปรอใน bid ที่ '+fmt(p,2)+' โดยมีคิวอยู่ข้างหน้าราว '+fmt(ahead,0)+' หุ้น ต้องมีคนขายลงมาที่ราคานี้และกินคิวข้างหน้าก่อนถึงจะถึงตา ถ้าราคาวิ่งขึ้นหนี คำสั่งอาจไม่ได้ซื้อเลย';
+    } else if(r.left>0){
+      v.className='verdict bad'; v.textContent='ได้บางส่วน — ที่เหลือไปรอเป็น best bid ใหม่';
+      n='ได้ '+fmt(r.f,0)+' หุ้น ที่ราคา '+fmt(r.avg,2)+' ส่วน '+fmt(r.left,0)+' หุ้นไปรอที่ '+fmt(p,2)+' และกลายเป็น best bid ใหม่ (spread แคบลง) ถ้าอยากได้ครบต้องยอมขยับราคาขึ้น';
+    } else {
+      v.className='verdict'; v.textContent='ได้ครบ — limit ทำตัวเหมือน market แต่มีเพดานราคา';
+      n='ราคาเฉลี่ย '+fmt(r.avg,2)+' บาท เทียบกับ best ask 50.00 แย่กว่า '+fmt((r.avg-50)/50*100,2)+'% ราคา limit ที่เหนือกว่านี้ไม่ได้ทำให้จ่ายแพงขึ้น เพราะตลาด match ที่ราคาของฝั่งที่รออยู่';
+    }
+    $('l_n').textContent=n;
+  }
+  $('r_lp').addEventListener('input',lrender);
+  lrender();
+
+  var Q=1000, ENTRY=50, STOPLIM=47.50;
+  var SC={
+    A:{d:'ราคาไหลลงผ่าน 48.00 ทีละขั้น หลังถึง trigger best bid อยู่ที่ 47.75 ปลายวันปิดที่ 46.00',bid:47.75,end:46.00,note:'ทั้ง stop และ stop-limit ขายได้ที่ 47.75 (ไม่ใช่ 48.00 เพราะ spread) การตัดขาดทุนทำงานตามที่ตั้งใจ และช่วยให้ไม่ต้องเจอ 46.00 ปลายวัน'},
+    B:{d:'ข่าวร้ายหลังตลาดปิด เช้าวันถัดไปหุ้น gap ลงเปิดที่ bid 45.00 ข้ามทั้ง 48.00 และ 47.50 ปลายวันปิดที่ 45.50',bid:45.00,end:45.50,note:'stop (market) ขายที่ 45.00 ขาดทุน 10% ไม่ใช่ 4% ส่วน stop-limit ไม่ถูก match (bid ต่ำกว่า 47.50) ยังถือหุ้นอยู่และคำสั่งค้าง ไม่มีแบบไหนชนะเสมอ — ที่ได้จากการรอไม่ใช่เพราะฉลาดกว่า แต่เพราะราคาปิดเด้งขึ้นมาเล็กน้อยในตัวอย่างนี้'},
+    C:{d:'ราคาทะลุ 48.00 ชั่วคราวช่วงที่กระดานบาง (best bid 47.75) แล้วเด้งกลับ ปลายวันปิดที่ 52.00',bid:47.75,end:52.00,note:'stop ถูกสะบัดออกที่ 47.75 ขาดทุน 4.5% ทั้งที่ราคาปิดสูงกว่าราคาซื้อ ถ้าไม่ตั้ง stop จะกำไร 2,000 บาท นี่คือราคาของ stop ที่แคบเกินความผันผวนปกติ'}
+  };
+  function money(x){ return (x>0?'+':'')+fmt(x,0)+' ฿'; }
+  function show(k){
+    var s=SC[k], none=Q*(s.end-ENTRY), mk=Q*(s.bid-ENTRY), filled=s.bid>=STOPLIM, lm=filled?mk:none;
+    $('st_d').textContent=s.d;
+    $('s_n').textContent=money(none); $('s_nn').textContent='ถือไว้ถึงราคาปิด '+fmt(s.end,2);
+    $('s_m').textContent=money(mk); $('s_mn').textContent='ขายที่ '+fmt(s.bid,2)+' ('+fmt((s.bid-ENTRY)/ENTRY*100,2)+'%)';
+    $('s_l').textContent=money(lm); $('s_ln').innerHTML=filled?('ขายที่ '+fmt(s.bid,2)+' ('+fmt((s.bid-ENTRY)/ENTRY*100,2)+'%)'):'ไม่ match ยังถือหุ้นอยู่<br>(ตีมูลค่าที่ราคาปิด)';
+    $('s_n').parentNode.className='mbox'+(none<0?' neg':'');
+    $('s_m').parentNode.className='mbox'+(mk<0?' neg':'');
+    $('s_l').parentNode.className='mbox'+(lm<0?' neg':'');
+    $('st_n').textContent=s.note;
+  }
+  var bs=$('st_seg').querySelectorAll('button'),i;
+  for(i=0;i<bs.length;i++){ bs[i].addEventListener('click',function(){ var j; for(j=0;j<bs.length;j++) bs[j].className=''; this.className='active'; show(this.getAttribute('data-c')); }); }
+  show('A');
+})();
+</script>
+</body>
+</html>
