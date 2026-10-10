@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day 51 — กราฟแท่งเทียน (candlestick) | Finance101</title>
+<style>
+:root{
+  --bg:#191816; --card:#211f1d; --ink:#e8e4dd; --muted:#a09a91;
+  --line:#332f2b; --accent:#6cc394; --accent-soft:#1c2f26;
+  --warn:#e0a86f; --warn-soft:#2e2419; --code:#201e1b; --danger:#e0785c;
+  color-scheme: dark;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; padding:28px 18px 80px; background:var(--bg); color:var(--ink);
+  font-family:"Sarabun","Noto Sans Thai",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:17px; line-height:1.75; -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:720px;margin:0 auto}
+header{margin-bottom:34px}
+.kicker{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--muted);letter-spacing:.02em}
+.pill{background:var(--accent-soft);color:var(--accent);padding:3px 11px;border-radius:99px;font-weight:600}
+h1{font-size:29px;line-height:1.3;margin:12px 0 6px;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:16px;margin:0}
+h2{font-size:21px;margin:38px 0 12px;letter-spacing:-.005em}
+h3{font-size:17px;margin:26px 0 8px}
+p{margin:0 0 15px}
+ul,ol{margin:0 0 15px;padding-left:22px}
+li{margin-bottom:7px}
+strong{font-weight:600}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin:22px 0}
+.card.accent{background:var(--accent-soft);border-color:#2c4a3c}
+.card.warn{background:var(--warn-soft);border-color:#4a3722}
+.card h3{margin-top:0}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15.5px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-weight:600;font-size:13.5px;letter-spacing:.02em}
+td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.calc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;margin:22px 0}
+.calc label{display:block;font-size:14px;color:var(--muted);margin-bottom:6px}
+.calc .row{margin-bottom:18px}
+input[type=range]{width:100%;accent-color:var(--accent);height:24px}
+.val{font-weight:600;color:var(--accent);font-variant-numeric:tabular-nums}
+.bars{margin-top:6px}
+.bar-row{margin-bottom:12px}
+.bar-label{display:flex;justify-content:space-between;font-size:14px;margin-bottom:5px;gap:10px}
+.bar-track{background:#2a2724;border-radius:8px;height:26px;overflow:hidden;position:relative}
+.bar-fill{height:100%;border-radius:8px;transition:width .55s cubic-bezier(.22,.8,.3,1)}
+.bar-principal{background:#3f5c4e}
+.bar-growth{background:var(--accent)}
+.bar-negative{background:#a34a34}
+.bar-bond{background:#4a7fa0}
+.bar-stock{background:var(--accent)}
+.bar-gold{background:var(--warn)}
+.legend{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-top:10px;flex-wrap:wrap}
+.swatch{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:middle}
+.seg{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+.seg button{
+  background:var(--code);color:var(--muted);border:1px solid var(--line);border-radius:99px;
+  padding:6px 16px;font-size:14px;font-family:inherit;cursor:pointer;transition:all .2s;
+}
+.seg button.active{background:var(--accent-soft);color:var(--accent);border-color:#2c4a3c;font-weight:600}
+details{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:12px 16px;margin:10px 0}
+details[open]{background:#1d1b19}
+summary{cursor:pointer;font-weight:600;font-size:15.5px;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"▸ ";color:var(--accent)}
+details[open] summary::before{content:"▾ "}
+.ans{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font-size:15.5px;color:#d6d1c9}
+.q{font-weight:600;margin:22px 0 8px}
+pre{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:14px;line-height:1.6}
+code{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+.summary-box{border-left:3px solid var(--accent);padding-left:18px;margin:26px 0}
+.summary-box p{margin-bottom:8px}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
+footer a{color:var(--accent)}
+.disclaimer{font-size:13px;color:var(--muted);margin-top:18px;line-height:1.6}
+.nav{margin-bottom:20px;font-size:14px}
+.nav a{color:var(--accent);text-decoration:none}
+.src{font-size:12.5px;color:var(--muted);margin-top:8px}
+.steps{display:flex;align-items:flex-end;gap:14px;margin:18px 0 6px;height:150px}
+.step{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px}
+.step-bar{width:100%;border-radius:8px 8px 0 0;transition:height .55s cubic-bezier(.22,.8,.3,1);min-height:2px}
+.step1 .step-bar{background:#3f5c4e}
+.step2 .step-bar{background:var(--danger)}
+.step-label{font-size:13px;color:var(--muted);text-align:center}
+.step-val{font-weight:600;color:var(--ink);font-size:14.5px}
+.mixbar{display:flex;height:30px;border-radius:8px;overflow:hidden;margin:6px 0 10px;background:#2a2724}
+.mixseg{height:100%;transition:width .4s cubic-bezier(.22,.8,.3,1)}
+.stat{display:flex;justify-content:space-between;font-size:15.5px;padding:7px 0;border-bottom:1px solid var(--line)}
+.stat:last-child{border-bottom:none}
+.stat b{font-variant-numeric:tabular-nums;color:var(--accent)}
+@media(max-width:520px){
+  body{font-size:16px;padding:20px 14px 60px}
+  h1{font-size:25px}
+  .card,.calc{padding:16px}
+}
+
+/* โครงสร้างสิทธิเรียกร้อง / แถบสัดส่วน (ใช้ต่อจาก Day 20) */
+.wf{margin:18px 0 6px}
+.wf-track{display:flex;height:44px;border-radius:10px;overflow:hidden;background:#2a2724;border:1px solid var(--line)}
+.wf-seg{height:100%;display:flex;align-items:center;justify-content:center;font-size:12.5px;color:#12130f;font-weight:600;overflow:hidden;white-space:nowrap;transition:width .5s cubic-bezier(.22,.8,.3,1)}
+.wf-debt{background:#4a7fa0;color:#0f1b22}
+.wf-eq{background:var(--accent)}
+.wf-gap{background:#7a3d2c;color:#f0ded8}
+.wf-axis{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:6px;font-variant-numeric:tabular-nums}
+.ladder{list-style:none;padding:0;margin:16px 0}
+.ladder li{display:flex;gap:12px;align-items:baseline;padding:9px 14px;border:1px solid var(--line);border-radius:9px;margin-bottom:7px;background:var(--card);font-size:15.5px}
+.ladder li:last-child{background:var(--accent-soft);border-color:#2c4a3c}
+.ladder .rank{font-variant-numeric:tabular-nums;font-size:13px;color:var(--muted);min-width:20px;flex-shrink:0}
+
+/* Day 21 — เส้นทางคำสั่งซื้อ */
+.pipe{margin:16px 0 4px}
+.pnode{display:flex;gap:12px;align-items:flex-start;padding:11px 14px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;background:var(--card);transition:background .3s,border-color .3s,transform .3s}
+.pnode.on{background:var(--accent-soft);border-color:#2c4a3c;transform:translateX(7px)}
+.pnum{width:25px;height:25px;border-radius:50%;background:#2a2724;color:var(--muted);font-size:12.5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:3px;font-variant-numeric:tabular-nums;transition:background .3s,color .3s}
+.pnode.on .pnum{background:var(--accent);color:#12130f;font-weight:700}
+.pttl{font-weight:600;font-size:15.5px;margin-bottom:2px}
+.pdesc{font-size:14px;color:var(--muted);line-height:1.6}
+.pbtn{background:var(--accent-soft);color:var(--accent);border:1px solid #2c4a3c;border-radius:99px;padding:8px 22px;font-size:15px;font-family:inherit;font-weight:600;cursor:pointer;transition:opacity .2s}
+.pbtn:disabled{opacity:.45;cursor:default}
+.regbar{margin-top:10px;padding:10px 14px;border:1px dashed var(--line);border-radius:10px;font-size:14px;color:var(--muted)}
+.scalebar{background:#2a2724;border-radius:8px;height:22px;overflow:hidden;margin-bottom:5px}
+.scalefill{height:100%;border-radius:8px}
+
+/* Day 22 — กระดานราคา (order book) และปฏิทิน T+2 */
+.book{font-variant-numeric:tabular-nums;font-size:15px;margin:4px 0 2px}
+.brow{display:grid;grid-template-columns:1fr 84px 1fr;gap:8px;align-items:center;padding:3px 0}
+.bqty{display:flex;height:24px;border-radius:6px;overflow:hidden;background:transparent}
+.bqty i{height:100%;border-radius:6px;display:block;transition:width .4s ease,opacity .4s ease}
+.bqty.l{justify-content:flex-end}
+.bprice{text-align:center;font-weight:600;padding:2px 0;border-radius:6px;transition:background .3s,color .3s}
+.bprice.ask{color:var(--danger)}
+.bprice.bid{color:var(--accent)}
+.bprice.hit{background:var(--warn-soft);color:var(--warn)}
+.bqty span{font-size:12.5px;color:var(--muted);padding:0 6px;line-height:24px;white-space:nowrap}
+.bhead{display:grid;grid-template-columns:1fr 84px 1fr;gap:8px;font-size:12.5px;color:var(--muted);padding-bottom:5px;border-bottom:1px solid var(--line);margin-bottom:6px}
+.bhead span:nth-child(1){text-align:right}
+.bhead span:nth-child(2){text-align:center}
+.spreadrow{text-align:center;font-size:13px;color:var(--warn);padding:5px 0;border-top:1px dashed var(--line);border-bottom:1px dashed var(--line);margin:5px 0}
+.cal{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin:16px 0 6px}
+.cday{border:1px solid var(--line);border-radius:10px;padding:9px 6px;text-align:center;background:var(--card);transition:background .35s,border-color .35s}
+.cday .cn{font-size:12px;color:var(--muted)}
+.cday .cv{font-size:14px;font-weight:600;margin-top:3px;min-height:20px}
+.cday.t{background:var(--accent-soft);border-color:#2c4a3c}
+.cday.s{background:var(--warn-soft);border-color:#4a3722}
+.cday.off{opacity:.4}
+
+/* Day 23 — โครงเงินปันผล */
+.split{display:flex;height:34px;border-radius:9px;overflow:hidden;background:#2a2724;border:1px solid var(--line);margin:10px 0 4px}
+.split i{height:100%;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;transition:width .45s cubic-bezier(.22,.8,.3,1)}
+.sp-pay{background:var(--accent);color:#12130f}
+.sp-ret{background:#3f5c4e;color:#dfe8e2}
+.idcard{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin:14px 0;font-variant-numeric:tabular-nums;font-size:15.5px;text-align:center}
+.idcard b{color:var(--accent)}
+.tax2{display:flex;gap:14px;align-items:flex-end;height:170px;margin:16px 0 4px}
+.tax2 .col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px}
+.tax2 .cb{width:100%;border-radius:9px 9px 0 0;transition:height .5s cubic-bezier(.22,.8,.3,1);min-height:3px}
+.tax2 .c1 .cb{background:#3f5c4e}
+.tax2 .c2 .cb{background:var(--accent)}
+.tax2 .c2.lose .cb{background:var(--danger)}
+.verdict{text-align:center;font-size:15px;padding:9px 12px;border-radius:9px;margin-top:12px;background:var(--accent-soft);color:var(--accent);border:1px solid #2c4a3c}
+.verdict.bad{background:var(--warn-soft);color:var(--warn);border-color:#4a3722}
+</style>
+<style>
+/* Day 24 — น้ำตกงบกำไรขาดทุน */
+.wfall{margin:16px 0 6px;font-variant-numeric:tabular-nums}
+.wrow{display:grid;grid-template-columns:112px 1fr 92px;gap:10px;align-items:center;margin-bottom:6px;font-size:14.5px}
+.wrow .wlab{color:var(--muted);font-size:13.5px;line-height:1.4}
+.wrow.tot .wlab{color:var(--ink);font-weight:600}
+.wtrack{position:relative;height:26px;background:#2a2724;border-radius:7px;overflow:hidden}
+.wseg{position:absolute;top:0;height:100%;border-radius:7px;transition:left .5s cubic-bezier(.22,.8,.3,1),width .5s cubic-bezier(.22,.8,.3,1)}
+.w-rev{background:#3f5c4e}
+.w-gp{background:#4d7a63}
+.w-ebit{background:#5aa47e}
+.w-np{background:var(--accent)}
+.w-cut{background:var(--danger);opacity:.85}
+.wval{text-align:right;font-weight:600;font-size:14.5px}
+.wrow.cut .wval{color:var(--danger)}
+.wrow.tot .wval{color:var(--accent)}
+.mgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0 4px}
+.mbox{background:var(--code);border:1px solid var(--line);border-radius:11px;padding:11px 8px;text-align:center}
+.mbox .mv{font-size:20px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums;line-height:1.3}
+.mbox .mn{font-size:12px;color:var(--muted);line-height:1.45;margin-top:2px}
+.mbox.neg .mv{color:var(--danger)}
+@media(max-width:520px){
+  .wrow{grid-template-columns:92px 1fr 78px;gap:7px;font-size:13.5px}
+  .wrow .wlab{font-size:12.5px}
+  .mbox .mv{font-size:17px}
+}
+</style>
+<style>
+/* Day 25 — งบดุลสองฝั่ง และวงจรเงินสด */
+.bswrap{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0 6px}
+.bscol{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:11px;overflow:hidden;min-height:230px}
+.bshead{font-size:12.5px;color:var(--muted);text-align:center;margin-bottom:6px;letter-spacing:.02em}
+.bsseg{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:0 9px;font-size:12px;font-weight:600;color:#12130f;overflow:hidden;white-space:nowrap;transition:height .5s cubic-bezier(.22,.8,.3,1);min-height:0}
+.bsseg span:last-child{font-variant-numeric:tabular-nums}
+.a-cash{background:#6cc394}.a-ar{background:#4d7a63;color:#e8f2ec}.a-inv{background:#3f5c4e;color:#e8f2ec}
+.a-ppe{background:#4a7fa0;color:#0f1b22}.a-int{background:#5b6b7a;color:#e6edf3}
+.l-cl{background:#e0a86f;color:#241a0d}.l-ltd{background:#a8703f;color:#f6e8da}
+.e-eq{background:#6cc394}.e-re{background:#3f5c4e;color:#e8f2ec}
+.bsseg.neg{background:var(--danger);color:#fff}
+.eqline{display:flex;justify-content:center;gap:10px;font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums;margin-top:4px}
+.eqline b{color:var(--accent)}
+.gantt{margin:16px 0 6px}
+.grow{display:grid;grid-template-columns:116px 1fr;gap:10px;align-items:center;margin-bottom:7px;font-size:13.5px;color:var(--muted)}
+.gtrack{position:relative;height:25px;background:#2a2724;border-radius:7px;overflow:hidden}
+.gbar{position:absolute;top:0;height:100%;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;overflow:hidden;white-space:nowrap;transition:left .5s cubic-bezier(.22,.8,.3,1),width .5s cubic-bezier(.22,.8,.3,1)}
+.g-dio{background:#3f5c4e;color:#e8f2ec}
+.g-dso{background:#4a7fa0;color:#0f1b22}
+.g-dpo{background:var(--warn);color:#241a0d}
+.g-ccc{background:var(--danger);color:#fff}
+@media(max-width:520px){
+  .bswrap{gap:8px}
+  .bsseg{font-size:11px;padding:0 6px}
+  .grow{grid-template-columns:92px 1fr;gap:7px;font-size:12.5px}
+}
+</style>
+<style>
+/* Day 26 — สามกระแสเงินสด (แท่งบวก/ลบรอบเส้นศูนย์) */
+.zwrap{margin:18px 0 4px}
+.zbar{position:relative;height:150px;display:flex;gap:16px}
+.zaxis{position:absolute;left:0;right:0;top:75px;border-top:1px dashed #4a453f;z-index:0}
+.zc{flex:1;position:relative;z-index:1}
+.zfill{position:absolute;left:0;right:0;border-radius:7px;transition:top .5s cubic-bezier(.22,.8,.3,1),height .5s cubic-bezier(.22,.8,.3,1);min-height:3px}
+.zfill.p{background:var(--accent)}
+.zfill.n{background:var(--danger)}
+.zv{position:absolute;left:0;right:0;text-align:center;font-size:13.5px;font-weight:700;font-variant-numeric:tabular-nums;transition:top .5s cubic-bezier(.22,.8,.3,1)}
+.zv.p{color:var(--accent)} .zv.n{color:var(--danger)}
+.zlab{display:flex;gap:16px;margin-top:8px}
+.zlab div{flex:1;text-align:center;font-size:12.5px;color:var(--muted);line-height:1.45}
+.tax2 .c3 .cb{background:#4a7fa0}
+.sign{display:inline-block;min-width:18px;font-weight:700;font-variant-numeric:tabular-nums}
+.sign.p{color:var(--accent)} .sign.n{color:var(--danger)}
+.cfs td:first-child{padding-left:12px}
+.cfs tr.head td{color:var(--muted);font-size:13.5px;font-weight:600;padding-top:16px}
+.cfs tr.sum td{font-weight:700;border-top:1px solid var(--line);border-bottom:2px solid var(--line)}
+.cfs tr.sum td.num{color:var(--accent)}
+.cfs tr.sum.neg td.num{color:var(--danger)}
+.cfs td.ind{padding-left:26px;color:#cdc7be;font-size:14.5px}
+@media(max-width:520px){
+  .zbar{gap:9px;height:135px}
+  .zaxis{top:67px}
+  .zlab{gap:9px}
+  .zlab div{font-size:11.5px}
+  .cfs td.ind{padding-left:14px;font-size:13.5px}
+}
+</style>
+<style>
+/* Day 27 — DuPont และห้องทดลองเลเวอเรจ */
+.dp{margin:16px 0 4px}
+.dprow{display:grid;grid-template-columns:136px 1fr 74px;gap:10px;align-items:center;margin-bottom:8px;font-size:14px}
+.dprow .dlab{color:var(--muted);font-size:13.5px;line-height:1.45}
+.dtrack{height:24px;background:#2a2724;border-radius:7px;overflow:hidden}
+.dfill{height:100%;border-radius:7px;transition:width .5s cubic-bezier(.22,.8,.3,1);min-width:3px}
+.d-nm{background:var(--accent)}
+.d-at{background:#4a7fa0}
+.d-em{background:var(--warn)}
+.dval{text-align:right;font-weight:600;font-variant-numeric:tabular-nums;font-size:14.5px}
+.dprod{text-align:center;font-size:15.5px;padding:10px 12px;border-radius:9px;background:var(--accent-soft);
+  border:1px solid #2c4a3c;color:var(--accent);margin-top:6px;font-variant-numeric:tabular-nums}
+.dnote{font-size:14px;color:var(--muted);margin-top:10px;line-height:1.65}
+.rid{display:grid;grid-template-columns:1fr 1fr;gap:8px 18px;margin:16px 0 4px}
+.rid .r{display:flex;justify-content:space-between;gap:8px;font-size:15px;padding:7px 0;border-bottom:1px solid var(--line)}
+.rid .r b{font-variant-numeric:tabular-nums;color:var(--accent);white-space:nowrap}
+.rid .r.warnv b{color:var(--warn)}
+.rid .r.badv b{color:var(--danger)}
+.tax2 .c3.lose .cb{background:var(--danger)}
+@media(max-width:520px){
+  .dprow{grid-template-columns:104px 1fr 62px;gap:7px;font-size:13px}
+  .dprow .dlab{font-size:12.5px}
+  .rid{grid-template-columns:1fr;gap:0 0}
+}
+</style>
+<style>
+/* Day 28 — DCF: แถบมูลค่าปลายทาง ตารางความไว และมาตรวัดราคา */
+.d-y{background:#4d7a63}
+.d-tv{background:var(--warn)}
+.heat{font-variant-numeric:tabular-nums;font-size:14.5px}
+.heat th,.heat td{padding:8px 6px;text-align:center}
+.heat td.rowh,.heat th{color:var(--muted);font-size:13px}
+.heat td.v{border-radius:7px;font-weight:600}
+.h0{background:#241f1c;color:#c9b7ad}
+.h1{background:#2b2a20;color:#d4c59f}
+.h2{background:#26302a;color:#9fd0b4}
+.h3{background:#1f3b2c;color:#8ee0b0}
+.heat td.mid{outline:2px solid var(--accent);outline-offset:-2px}
+.gauge{position:relative;height:56px;margin:18px 0 6px}
+.gtrk{position:absolute;left:0;right:0;top:22px;height:14px;border-radius:7px;background:linear-gradient(90deg,#1f3b2c,#2b2a20,#4a2b22)}
+.gmk{position:absolute;top:8px;width:2px;height:42px;background:var(--ink);transition:left .5s cubic-bezier(.22,.8,.3,1)}
+.gmk.price{background:var(--danger)}
+.gmk i{position:absolute;top:-16px;left:50%;transform:translateX(-50%);font-size:12px;font-style:normal;white-space:nowrap;color:var(--muted)}
+.gscale{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+@media(max-width:520px){
+  .heat{font-size:12.5px}
+  .heat th,.heat td{padding:6px 3px}
+}
+</style>
+<style>
+/* Day 29 — Growth vs Value: การ์ดสองฝั่ง ทฤษฎีบท และแถบแยกผลตอบแทน */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0 6px}
+.duo .dcard{border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:var(--card)}
+.duo .dcard.g{border-color:#4a3722;background:var(--warn-soft)}
+.duo .dcard.v{border-color:#2c4a3c;background:var(--accent-soft)}
+.duo .dh{font-size:13px;color:var(--muted);letter-spacing:.02em;margin-bottom:8px;font-weight:600}
+.duo .dl{display:flex;justify-content:space-between;gap:8px;font-size:14.5px;padding:5px 0;border-bottom:1px solid var(--line)}
+.duo .dl:last-child{border-bottom:none}
+.duo .dl b{font-variant-numeric:tabular-nums;white-space:nowrap}
+.duo .dcard.g .dl b{color:var(--warn)}
+.duo .dcard.v .dl b{color:var(--accent)}
+.sp-a{background:#4a7fa0;color:#0f1b22}
+.sp-b{background:var(--accent);color:#12130f}
+.sp-c{background:var(--warn);color:#241a0d}
+.sp-neg{background:var(--danger);color:#fff}
+.thm{background:var(--accent-soft);border:1px solid #2c4a3c;border-radius:12px;padding:16px 18px;margin:18px 0;text-align:center;font-size:16px}
+.thm .eq{font-size:18.5px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums;margin-bottom:7px;line-height:1.5}
+.thm .note{font-size:13.5px;color:var(--muted);line-height:1.65}
+@media(max-width:520px){ .duo{grid-template-columns:1fr} .thm .eq{font-size:16px} }
+</style>
+<style>
+/* Day 30 — วงล้อวัฏจักร และการ์ดสี่ช่วงเศรษฐกิจ */
+.cyc{margin:14px 0 4px}
+.cyc svg{width:100%;height:auto;display:block}
+.phgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0 14px}
+.ph{border:1px solid var(--line);border-radius:10px;padding:9px 8px;background:var(--card);text-align:center;transition:background .3s,border-color .3s,transform .3s}
+.ph.on{background:var(--accent-soft);border-color:#2c4a3c;transform:translateY(-3px)}
+.ph b{display:block;font-size:14px;color:var(--ink);margin-bottom:2px}
+.ph span{display:block;color:var(--muted);font-size:12px;line-height:1.5}
+.ph.on b{color:var(--accent)}
+@media(max-width:520px){ .phgrid{grid-template-columns:1fr 1fr} }
+</style>
+<style>
+/* Day 47 — ตารางสูตรสรุปเฟส และกล่อง IPS */
+.ips{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:14px 0 4px;font-size:14.5px;line-height:1.8}
+.ips b{color:var(--accent)}
+.fx td:first-child{white-space:nowrap;color:var(--muted);font-size:13.5px}
+</style>
+<style>
+/* Day 48 — จุดแทนเทรดเดอร์ 100 คน และตารางเทียบ */
+.dots48{display:grid;grid-template-columns:repeat(20,1fr);gap:5px;margin:14px 0 6px}
+.dots48 i{aspect-ratio:1;border-radius:50%;background:var(--danger);opacity:.75;transition:background .3s,opacity .3s}
+.dots48 i.w{background:var(--accent);opacity:1}
+.cmp td:first-child{white-space:nowrap;color:var(--muted);font-size:13.5px}
+.fn{font-size:14px;color:var(--muted);text-align:center;margin-top:6px}
+</style>
+<style>
+/* Day 49 — กระดานราคาเชิงโต้ตอบ และตารางขั้นราคา */
+.obctl{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.obnote{font-size:14px;color:var(--muted);margin-top:10px;line-height:1.65}
+.tickout{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0 4px}
+.fillnote{font-size:12.5px;color:var(--warn);padding:0 6px;line-height:24px;white-space:nowrap}
+</style>
+<style>
+/* Day 50 — เครื่องมือเทียบประเภทคำสั่ง */
+.cmp td{font-size:14.5px;vertical-align:top}
+.cmp td:first-child{font-weight:600;color:var(--ink)}
+</style>
+<style>
+/* Day 51 — แท่งเทียน: SVG, กล่องสถิติ และปุ่ม preset */
+.cndl{margin:12px 0 4px}
+.cndl svg{width:100%;height:auto;display:block;background:var(--code);border:1px solid var(--line);border-radius:12px}
+.cndl .gl{stroke:#2e2a26;stroke-width:1}
+.cndl .gt{fill:var(--muted);font-size:10px;font-family:inherit}
+.cndl .lb{fill:var(--ink);font-size:10.5px;font-family:inherit;font-variant-numeric:tabular-nums}
+.cndl .up{fill:var(--accent);stroke:var(--accent)}
+.cndl .dn{fill:var(--danger);stroke:var(--danger)}
+.cndl .wk{stroke-width:2.5}
+.cndl .path{fill:none;stroke:var(--muted);stroke-width:1.6}
+.cndl .dot{fill:var(--warn)}
+.tkline{font-size:13.5px;color:var(--muted);font-variant-numeric:tabular-nums;margin:8px 0 0;line-height:1.7}
+.tkline b{color:var(--warn)}
+@media(max-width:520px){ .cndl .lb{font-size:11px} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="nav"><a href="../index.html">← สารบัญ</a></div>
+
+<header>
+  <div class="kicker">
+    <span class="pill">Day 51 / 90</span>
+    <span>Phase 3 · การเทรด</span>
+    <span>·</span>
+    <span>อ่าน 8 นาที</span>
+  </div>
+  <h1>กราฟแท่งเทียน (candlestick)</h1>
+  <p class="sub">แท่งเทียนหนึ่งแท่งสรุปราคาทั้งช่วงเวลาไว้ด้วยตัวเลขสี่ตัว วันนี้เรียนวิธีอ่านมัน และทดสอบด้วยการจำลองว่ารูปทรงสวยๆ ที่ตำราตั้งชื่อให้ ทำนายอะไรได้จริงหรือเปล่า</p>
+</header>
+
+<h2>ตัวเลขสี่ตัวใน 1 แท่ง</h2>
+
+<p>แท่งเทียนคือการบีบข้อมูลราคาทั้งช่วงเวลา (1 นาที 1 ชั่วโมง 1 วัน) ให้เหลือสี่ค่า เรียกรวมว่า <strong>OHLC</strong>: ราคาเปิด (<strong>O</strong>pen) ราคาสูงสุด (<strong>H</strong>igh) ราคาต่ำสุด (<strong>L</strong>ow) และราคาปิด (<strong>C</strong>lose) ส่วนที่เป็นกล่อง เรียกว่า <strong>ตัวเทียน (body)</strong> ครอบระหว่างราคาเปิดกับปิด ส่วนเส้นบางที่ยื่นออกไปคือ <strong>เงา (shadow หรือ wick)</strong> ไปจนถึงราคาสูงสุดและต่ำสุด ถ้าปิดสูงกว่าเปิดเรียกแท่งขึ้น (ในบทนี้ใช้สีเขียว) ถ้าปิดต่ำกว่าเปิดเป็นแท่งลง (สีแดง) สีเป็นแค่ธรรมเนียมของแต่ละแพลตฟอร์ม ตลาดแถบเอเชียตะวันออกบางแห่งใช้กลับกัน ให้ตรวจการตั้งค่าของกราฟที่ใช้เสมอ</p>
+
+<p>แท่งเทียนต่างจากกราฟเส้นปิดรายวันตรงที่มี<strong>ข้อมูลเพิ่มสามตัว</strong> (เปิด สูง ต่ำ) ที่เล่าว่าระหว่างวันราคาเดินไปไหนมาบ้าง ลองดูการประกอบแท่งจาก tick จริงทีละครั้งของหุ้น ก. (หุ้นสมมติ) เลื่อนสไลเดอร์แล้วดูว่า H และ L เปลี่ยนเมื่อไร:</p>
+
+<div class="calc">
+  <div class="row"><label>เห็นราคาซื้อขายไปแล้ว <span class="val" id="t_n">4</span> ครั้งจากทั้งหมด 10 ครั้ง</label><input type="range" id="t_r" min="1" max="10" step="1" value="4"></div>
+  <div class="cndl"><svg id="t_svg" viewBox="0 0 320 210" role="img" aria-label="เส้นราคาและแท่งเทียนที่กำลังก่อตัว"></svg></div>
+  <p class="tkline" id="t_l"></p>
+  <div class="mgrid">
+    <div class="mbox"><div class="mv" id="t_o">50.00</div><div class="mn">Open<br>(tick แรก)</div></div>
+    <div class="mbox"><div class="mv" id="t_h">—</div><div class="mn">High / Low<br>(สูง / ต่ำสุดจนถึงตอนนี้)</div></div>
+    <div class="mbox"><div class="mv" id="t_c">—</div><div class="mn">Close<br>(tick ล่าสุด)</div></div>
+  </div>
+</div>
+
+<p>แท่งจะ "ปิด" จริงก็ต่อเมื่อช่วงเวลานั้นจบ ระหว่างทางตัวเทียนและเงายังขยับได้ กราฟสดที่เห็นแท่งสุดท้ายกระดิกไปมาจึงเป็นเรื่องปกติ และเป็นเหตุผลว่าทำไมสัญญาณจากแท่งที่ยังไม่ปิดถึงเชื่อถือไม่ได้</p>
+
+<h2>อ่านรูปร่าง: สัดส่วนตัวเทียนต่อเงา</h2>
+
+<p>ข้อมูลที่ใช้ได้จริงมีไม่กี่ตัว: <strong>ช่วงราคา (range)</strong> = H − L, <strong>ตัวเทียน</strong> = |C − O|, <strong>เงาบน</strong> = H − max(O, C), <strong>เงาล่าง</strong> = min(O, C) − L และ<strong>สัดส่วนตัวเทียน</strong> = ตัวเทียน ÷ range ตัวเลขนี้บอกว่าราคาที่ไปถึงระหว่างวันถูก "ยอมรับ" ที่ราคาปิดมากแค่ไหน ตัวเทียนยาวแปลว่าปิดใกล้ขอบของ range เงายาวแปลว่าราคาไปถึงแล้วถูกดันกลับ ลองปรับรูปร่างเองหรือกด preset:</p>
+
+<div class="calc">
+  <div class="seg" id="e_seg">
+    <button class="active" data-p="norm">แท่งทั่วไป</button>
+    <button data-p="doji">โดจิ</button>
+    <button data-p="ham">ทรงค้อน</button>
+    <button data-p="star">ทรงดาวตก</button>
+    <button data-p="maru">ไม่มีเงา</button>
+  </div>
+  <div class="row"><label>ราคาเปิด <span class="val" id="e_ov">50.00</span></label><input type="range" id="e_o" min="46" max="54" step="0.25" value="50"></div>
+  <div class="row"><label>ราคาปิด <span class="val" id="e_cv">51.50</span></label><input type="range" id="e_c" min="46" max="54" step="0.25" value="51.5"></div>
+  <div class="row"><label>เงาบน <span class="val" id="e_uv">0.50</span></label><input type="range" id="e_u" min="0" max="3" step="0.25" value="0.5"></div>
+  <div class="row"><label>เงาล่าง <span class="val" id="e_lv">1.00</span></label><input type="range" id="e_l" min="0" max="3" step="0.25" value="1"></div>
+  <div class="cndl"><svg id="e_svg" viewBox="0 0 320 250" role="img" aria-label="แท่งเทียนที่ปรับรูปร่างได้"></svg></div>
+  <div class="mgrid">
+    <div class="mbox"><div class="mv" id="e_chg">+3.00%</div><div class="mn">เปลี่ยนจากราคาเปิด<br>ถึงราคาปิด</div></div>
+    <div class="mbox"><div class="mv" id="e_body">50%</div><div class="mn">ตัวเทียนต่อ range<br>(body ÷ (H−L))</div></div>
+    <div class="mbox"><div class="mv" id="e_sh">0.50 / 1.00</div><div class="mn">เงาบน / เงาล่าง<br>(บาท)</div></div>
+  </div>
+  <div class="verdict" id="e_v"></div>
+</div>
+
+<h2>รูปทรงที่มีชื่อ และสิ่งที่ตำราไม่ค่อยบอก</h2>
+
+<table class="cmp">
+  <thead><tr><th>ชื่อ</th><th>หน้าตา</th><th>ตำราเล่าว่า</th></tr></thead>
+  <tbody>
+    <tr><td>โดจิ (doji)</td><td>เปิด ≈ ปิด ตัวเทียนบางเป็นเส้น</td><td>ตลาดลังเล อาจกลับตัว</td></tr>
+    <tr><td>ค้อน (hammer)</td><td>ตัวเทียนเล็ก เงาล่างยาวอย่างน้อย 2 เท่าของตัว แทบไม่มีเงาบน</td><td>ราคาถูกกดลงแล้วถูกดันกลับ ลงสุดแล้ว</td></tr>
+    <tr><td>ดาวตก (shooting star)</td><td>กลับด้านกับค้อน เงาบนยาว</td><td>ราคาถูกดันขึ้นแล้วถูกกดกลับ ขึ้นสุดแล้ว</td></tr>
+    <tr><td>แท่งไม่มีเงา (marubozu)</td><td>ตัวเทียนเกือบเท่า range</td><td>ฝั่งเดียวคุมตลอดวัน</td></tr>
+    <tr><td>กลืนกิน (engulfing)</td><td>ตัวเทียนวันนี้คลุมตัวเทียนเมื่อวานทั้งแท่ง ทิศตรงข้ามกัน</td><td>แรงฝั่งใหม่ชนะ กลับตัว</td></tr>
+  </tbody>
+</table>
+
+<p>รูปทรงพวกนี้เป็นเครื่องมือ<strong>บรรยาย</strong> ที่ดีมาก (เห็นปุ๊บรู้ว่าวันนั้นราคาถูกปฏิเสธที่ระดับไหน) แต่สิ่งที่ตำราเล่าต่อคือมัน<strong>ทำนาย</strong>ได้ ข้อหลังต้องพิสูจน์ วิธีทดสอบที่ตรงที่สุดคือสร้างโลกที่รู้แน่ว่าไม่มีอะไรทำนายได้ แล้วดูว่ารูปทรงยังโผล่หรือไม่ ผมจำลอง 400,000 วันของหุ้นที่เดินแบบสุ่มล้วนๆ (แต่ละวันมี 20 ก้าว ก้าวละ ±0.25% ความผันผวนรายวันราว 1.12% ไม่มี gap) แล้วตรวจว่าหลังเจอรูปทรงนั้น วันถัดไปเป็นแท่งขึ้นกี่ %:</p>
+
+<table>
+  <thead><tr><th>รูปทรงที่ตรวจเจอ</th><th class="num">จำนวนครั้ง</th><th class="num">วันถัดไปเป็นแท่งขึ้น</th></tr></thead>
+  <tbody>
+    <tr><td>ค้อน (เงาล่าง ≥ 2× ตัว, เงาบน ≤ 10% ของ range)</td><td class="num">18,074</td><td class="num">49.9%</td></tr>
+    <tr><td>กลืนกินขาขึ้น</td><td class="num">41,148</td><td class="num">50.5%</td></tr>
+    <tr><td>โดจิ (ตัว ≤ 10% ของ range)</td><td class="num">32,366</td><td class="num">49.8%</td></tr>
+    <tr><td>ทุกวัน (ฐานเปรียบเทียบ)</td><td class="num">400,000</td><td class="num">50.1%</td></tr>
+  </tbody>
+</table>
+<p class="src">ที่มา: การจำลองของบทเรียนนี้ (Python, numpy, seed 51, ดูกล่องโค้ด) ไม่ใช่ข้อมูลตลาดจริง · ผลนี้ไม่ได้พิสูจน์ว่าตลาดจริงไม่มีรูปแบบใดเลย พิสูจน์แค่ว่า<em>รูปทรงเกิดขึ้นเองจากความสุ่มได้บ่อยมาก</em> และการเห็นรูปทรงสวยๆ ไม่ใช่หลักฐาน · ผมไม่อ้างอัตราชนะของรูปทรงใดในตลาดจริง เพราะไม่ได้ตรวจแหล่งข้อมูลที่เชื่อถือได้ในรอบนี้</p>
+
+<p>ใครอ้างว่ารูปทรงใดทำนายได้ ต้องแสดงสามอย่าง: อัตราขึ้นหลังเจอ<strong>สูงกว่าฐาน</strong>อย่างมีนัยสำคัญ ใน<strong>ข้อมูลที่ไม่ได้ใช้ตอนค้นหารูปแบบ</strong> และยัง<strong>เหนือต้นทุน</strong>หลังหักค่าธรรมเนียมกับ spread (Day 22, 49) ไม่งั้นก็คือเหรียญที่ออกหัวครึ่งหนึ่ง แล้วจ่ายค่าธรรมเนียมทุกครั้งที่เล่น</p>
+
+<h2>ตัวอย่าง: เต้นเห็น "ค้อน" แล้วอยากซื้อ</h2>
+
+<p>สมมติเต้นเห็นหุ้น ก. ปิดเป็นค้อนที่ 50.50 หลังลงมาสามวัน (O 50.00 H 50.50 L 48.00 C 50.50) เลยซื้อ 50,000 บาทเพราะ "ราคาถูกปฏิเสธที่ 48" จากการจำลองข้างบน โอกาสที่วันถัดไปขึ้นยังราว 50% แต่ต้นทุนรอบซื้อ-ขายรอบหนึ่งตามสมมติฐาน Day 22 ราว 0.35% = <strong>175 บาท</strong> ต่อ 50,000 บาท ถ้าทำแบบนี้ 100 รอบ ต้นทุนสะสมกัดผลตอบแทนไป 1 − (1 − 0.0035)<sup>100</sup> = <strong>29.57%</strong> (ตัวเลขเดียวกับ Day 48) นอกจากนี้ตัวเทียนแท่งเดียวไม่บอก<strong>ช่องว่าง (gap)</strong> จากวันก่อนหน้า ซึ่งมักเป็นส่วนใหญ่ของการเคลื่อนไหวในวันที่ข่าวออก (ดูข้อ 3 ในควิซ)</p>
+
+<div class="card accent">
+  <h3>ใช้แท่งเทียนอย่างไรให้ไม่หลอกตัวเอง</h3>
+  <p style="margin-bottom:6px"><strong>ใช้อ่านเรื่องราว:</strong> วันนั้นราคาไปถึงไหน ถูกปฏิเสธที่ไหน ปิดใกล้ขอบไหน (บทต่อไปจะใช้กับแนวรับแนวต้าน)</p>
+  <p style="margin-bottom:6px"><strong>อย่าใช้เป็นสัญญาณซื้อขายเดี่ยวๆ:</strong> รูปทรงเดียวไม่ใช่หลักฐาน ต้องมีสมมติฐานและทดสอบย้อนหลังข้ามข้อมูลชุดอื่น</p>
+  <p style="margin-bottom:0"><strong>ระวัง pattern-seeking:</strong> สมองเราหารูปในความสุ่มเก่งมาก (Day 45) กราฟสุ่มหน้าตาเหมือนกราฟจริง</p>
+</div>
+
+<details>
+  <summary>กล่องโค้ด (ข้ามได้ ไม่นับในเวลาอ่าน)</summary>
+  <div class="ans">
+<pre><code>import numpy as np
+
+# 1) สร้าง OHLC จาก tick
+ticks = [50.00, 50.50, 51.25, 52.00, 51.00, 49.00, 49.75, 50.50, 51.00, 51.50]
+O, H, L, C = ticks[0], max(ticks), min(ticks), ticks[-1]
+rng, body = H - L, abs(C - O)
+up, lo = H - max(O, C), min(O, C) - L
+print(O, H, L, C, rng, body, body / rng, up, lo)
+# 50.0 52.0 49.0 51.5 3.0 1.5 0.5 0.5 1.0
+
+# 2) จำลองเดินสุ่ม 400,000 วัน แล้วเช็กหลังเจอ "ค้อน"
+rs = np.random.default_rng(51)
+D, T = 400_000, 20
+rel = np.exp(np.concatenate([np.zeros((D, 1)),
+        np.cumsum(rs.normal(0, 0.0025, (D, T)), axis=1)], axis=1))
+cum = np.concatenate([[1.0], np.cumprod(rel[:, -1])[:-1]]) * 50   # ไม่มี gap
+O, H, L, C = cum, cum * rel.max(1), cum * rel.min(1), cum * rel[:, -1]
+r, b = H - L, abs(C - O)
+lo, up = np.minimum(O, C) - L, H - np.maximum(O, C)
+hammer = (lo &gt;= 2 * b) &amp; (up &lt;= 0.1 * r) &amp; (b &gt; 0)
+next_up = np.r_[C[1:] &gt; O[1:], False]
+hammer[-1] = False
+print(hammer.sum(), next_up[hammer].mean())   # ~18,074 ครั้ง, ~0.499</code></pre>
+  </div>
+</details>
+
+<h2>ทดสอบความเข้าใจ</h2>
+
+<p class="q">1. แท่งวันหนึ่ง O 50.00, H 52.00, L 49.00, C 51.50 คำนวณ range, ตัวเทียน, เงาบน, เงาล่าง, สัดส่วนตัวเทียน และ % เปลี่ยนจากเปิดถึงปิด</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">range = 52 − 49 = <strong>3.00</strong> · ตัวเทียน = 51.50 − 50.00 = <strong>1.50</strong> (สัดส่วน 1.5/3 = <strong>50%</strong>) · เงาบน = 52 − 51.5 = <strong>0.50</strong> · เงาล่าง = 50 − 49 = <strong>1.00</strong> · เปลี่ยน = 1.5/50 = <strong>+3.00%</strong> เป็นแท่งขึ้น</div>
+</details>
+
+<p class="q">2. แท่ง O 50.00, H 50.50, L 48.00, C 50.50 เป็นรูปทรงอะไร และถ้าจำลองสุ่มแล้ววันถัดไปขึ้นราว 50% การซื้อเพราะรูปนี้ควรคิดอย่างไร</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">ตัวเทียน 0.50 (20% ของ range 2.50) เงาล่าง 2.00 = 4 เท่าของตัว ≥ 2 เท่า และเงาบน 0 → <strong>ทรงค้อน</strong> · แต่รูปทรงนี้เกิดจากความสุ่มได้ ในการจำลองหลังค้อนวันถัดไปขึ้น 49.9% ไม่ต่างจากฐาน 50.1% จึงยังไม่มีหลักฐานว่าได้เปรียบ ขณะที่ต้นทุนจ่ายแน่นอนทุกรอบ</div>
+</details>
+
+<p class="q">3. วันก่อนปิด 51.50 วันนี้ gap ลงเปิด 49.50 สูงสุด 50.00 ต่ำสุด 48.00 ปิด 48.50 ตัวเทียนวันนี้บอกว่าลงกี่ % แต่จริงๆ จากวันก่อนหน้าลงกี่ %</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">ตัวเทียนวัดจากเปิดถึงปิด: (48.50 − 49.50)/49.50 = <strong>−2.02%</strong> · แต่ปิดต่อปิด (close-to-close): (48.50 − 51.50)/51.50 = <strong>−5.83%</strong> ส่วนต่าง 2.00 บาท (3.88%) หายไปในช่อง gap ที่ตัวเทียนไม่ได้วาด ดังนั้นแท่งเดียวมักประเมินการเคลื่อนไหวจริงต่ำไป</div>
+</details>
+
+<p class="q"><strong>ทวน:</strong> Day 48 · ถ้าต้นทุนรอบละ 0.35% และเทรด 100 รอบ ต้นทุนสะสมกัดเงินทุนไปกี่ %</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">1 − (1 − 0.0035)<sup>100</sup> = 1 − 0.7043 = <strong>29.57%</strong> ต้องหารูปแบบที่ชนะฐานมากกว่านี้ก่อนหักต้นทุน ถึงจะเริ่มมีกำไรจริง<br>ตอบผิดหรือลังเล? → <a href="finance-day-48-trading-vs-investing-stats.html">ทบทวน Day 48: เทรดกับลงทุนต่างกันอย่างไร + ความจริงเชิงสถิติ</a></div>
+</details>
+
+<p class="q"><strong>ทวน:</strong> Day 45 · เพื่อนในกลุ่มแชตโพสต์กราฟว่า "ค้อนสามครั้งติด ขึ้นทุกครั้ง!" แล้วทุกคนเริ่มซื้อ นี่คืออคติอะไรบ้างที่ทำงานอยู่ และมีกฎเชิงระบบอะไรที่ช่วยกัน</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans"><strong>ตามฝูง (herding/FOMO)</strong> ทำให้ซื้อตามกลุ่ม · <strong>มั่นใจเกินเหตุ (overconfidence)</strong> และ <strong>อคติจากเหตุการณ์ล่าสุด (recency)</strong> ทำให้เอา 3 ครั้งมาเป็นกฎ ทั้งที่การจำลองบอกว่าครึ่งต่อครึ่งก็เกิดแบบนี้ได้ · กฎกัน: กฎ 48 ชั่วโมงก่อนซื้ออะไรที่ไม่อยู่ในแผน และ Investment Policy Statement ที่เขียนไว้ก่อน<br>ตอบผิดหรือลังเล? → <a href="finance-day-45-behavioral-biases.html">ทบทวน Day 45: อคติทางพฤติกรรม (behavioral biases)</a></div>
+</details>
+
+<div class="summary-box">
+  <h2 style="margin-top:0">สรุป 3 บรรทัด</h2>
+  <p>1. แท่งเทียนบีบราคาทั้งช่วงเวลาเป็น OHLC: ตัวเทียนคือเปิดถึงปิด เงาคือสุดขอบที่ราคาไปถึงแล้วถูกดันกลับ ตัวเลขที่ใช้ได้จริงคือ range, ตัวเทียน, เงา และสัดส่วนตัวเทียนต่อ range</p>
+  <p>2. รูปทรงมีชื่อ (ค้อน โดจิ กลืนกิน) บรรยายวันนั้นได้ดี แต่ในโลกสุ่มล้วนๆ มันยังเกิดบ่อยและวันถัดไปขึ้นราว 50% เท่ากับฐาน จึงไม่ใช่หลักฐานการทำนาย</p>
+  <p style="margin-bottom:0">3. แท่งเดียวไม่มี gap ระหว่างวัน และสัญญาณใดๆ ต้องผ่านการทดสอบนอกตัวอย่างและเหนือต้นทุน ก่อนจะเอาเงินจริงไปเสี่ยง</p>
+</div>
+
+<footer>
+  <p><strong>พรุ่งนี้ Day 52 — Timeframe และการวิเคราะห์หลาย timeframe</strong> · แท่งเดียวกันในกราฟรายวันกับรายชั่วโมงเล่าคนละเรื่อง พรุ่งนี้ดูว่าเปลี่ยนมุมมองเวลาแล้วภาพเปลี่ยนอย่างไร และทำไมการเลือก timeframe ก็เป็นการตัดสินใจที่ต้องมีเหตุผล</p>
+  <p class="disclaimer">บทเรียนนี้เป็นความรู้เชิงการศึกษา ไม่ใช่คำแนะนำทางการเงินเฉพาะบุคคล และไม่ใช่การชี้ชวนให้ซื้อหรือขายหลักทรัพย์ใด · หุ้น ก. และข้อมูล tick เป็นข้อมูลสมมติเพื่อการสอน ผลการจำลองมาจากแบบจำลองเดินสุ่มซึ่งไม่ใช่ตลาดจริง ต้นทุน 0.35% เป็นสมมติฐานอ้างอิงจาก Day 22 · ผลตอบแทนในอดีตไม่ได้บ่งชี้ผลตอบแทนในอนาคต</p>
+</footer>
+
+</div>
+<script>
+(function(){
+  var $=function(id){ return document.getElementById(id); };
+  var fmt=function(n,d){ return n.toLocaleString('th-TH',{minimumFractionDigits:d,maximumFractionDigits:d}); };
+  var NS='http://www.w3.org/2000/svg';
+  function r2(x){ return Math.round(x*100)/100; }
+
+  /* ---------- 1) ประกอบแท่งจาก tick ---------- */
+  var TICKS=[50.00,50.50,51.25,52.00,51.00,49.00,49.75,50.50,51.00,51.50];
+  var TLO=48.5, THI=52.5;
+  function ty(p){ return 12+(THI-p)/(THI-TLO)*186; }
+  function candleSvg(o,h,l,c,x,w,ymap){
+    var up=c>=o, cls=up?'up':'dn', yt=ymap(Math.max(o,c)), yb=ymap(Math.min(o,c));
+    var bh=Math.max(yb-yt,2);
+    return '<line class="'+cls+' wk" x1="'+(x+w/2)+'" x2="'+(x+w/2)+'" y1="'+ymap(h)+'" y2="'+ymap(l)+'"/>'+
+           '<rect class="'+cls+'" x="'+x+'" y="'+yt+'" width="'+w+'" height="'+bh+'" rx="2"/>';
+  }
+  function trender(){
+    var n=+$('t_r').value, s=TICKS.slice(0,n), i, o=s[0], c=s[n-1], h=Math.max.apply(null,s), l=Math.min.apply(null,s);
+    $('t_n').textContent=n;
+    var g='', k;
+    for(k=48.5;k<=52.5;k+=1){ g+='<line class="gl" x1="30" x2="310" y1="'+ty(k)+'" y2="'+ty(k)+'"/><text class="gt" x="2" y="'+(ty(k)+3)+'">'+fmt(k,2)+'</text>'; }
+    var pts=[], dots='';
+    for(i=0;i<n;i++){ var px=40+i*14; pts.push(px+','+ty(s[i])); dots+='<circle class="dot" cx="'+px+'" cy="'+ty(s[i])+'" r="'+(i===n-1?3.6:2.4)+'"/>'; }
+    var svg=g+'<polyline class="path" points="'+pts.join(' ')+'"/>'+dots+
+      candleSvg(o,h,l,c,236,32,ty)+
+      '<text class="lb" x="252" y="'+(ty(h)-5)+'" text-anchor="middle">H '+fmt(h,2)+'</text>'+
+      '<text class="lb" x="252" y="'+(ty(l)+13)+'" text-anchor="middle">L '+fmt(l,2)+'</text>';
+    $('t_svg').innerHTML=svg;
+    $('t_o').textContent=fmt(o,2);
+    $('t_h').textContent=fmt(h,2)+' / '+fmt(l,2);
+    $('t_c').textContent=fmt(c,2);
+    var line='', j;
+    for(j=0;j<TICKS.length;j++){ line+=(j<n?(j===n-1?'<b>'+fmt(TICKS[j],2)+'</b>':fmt(TICKS[j],2)):'<span style="opacity:.35">'+fmt(TICKS[j],2)+'</span>')+(j<TICKS.length-1?' → ':''); }
+    $('t_l').innerHTML='tick: '+line+(n===TICKS.length?'<br>แท่งปิดแล้ว: ช่วงราคา '+fmt(h-l,2)+' ตัวเทียน '+fmt(Math.abs(c-o),2)+' ('+fmt(Math.abs(c-o)/(h-l)*100,0)+'% ของ range)':'<br>แท่งยังไม่ปิด ตัวเทียนและเงายังเปลี่ยนได้');
+  }
+  $('t_r').addEventListener('input',trender);
+  trender();
+
+  /* ---------- 2) ปรับรูปร่างแท่ง ---------- */
+  var PMIN=43, PMAX=58;
+  function ey(p){ return 12+(PMAX-p)/(PMAX-PMIN)*226; }
+  function classify(o,c,h,l){
+    var rg=h-l, b=Math.abs(c-o), up=h-Math.max(o,c), lo=Math.min(o,c)-l;
+    if(rg<=0) return {t:'ไม่มีการเคลื่อนไหวเลย',bad:true};
+    if(b<=0.1*rg) return {t:'โดจิ (doji): เปิด ≈ ปิด ตัวเทียนบางมาก — บอกแค่ว่าราคาไปแล้วกลับมาที่เดิม'};
+    if(b>=0.9*rg) return {t:'แท่งไม่มีเงา (marubozu): ปิดอยู่ขอบ range ฝั่งเดียวคุมตลอดช่วงนี้'};
+    if(lo>=2*b && up<=0.1*rg) return {t:'ทรงค้อน (hammer-shaped): เงาล่างยาว ≥ 2 เท่าของตัว — ราคาถูกกดลงแล้วถูกดันกลับ (จำลองสุ่มแล้ววันถัดไปขึ้นราว 50%)',warn:true};
+    if(up>=2*b && lo<=0.1*rg) return {t:'ทรงดาวตก (shooting-star-shaped): เงาบนยาว ≥ 2 เท่าของตัว — ราคาถูกดันขึ้นแล้วถูกกดกลับ',warn:true};
+    return {t:'แท่งทั่วไป: ไม่เข้ารูปทรงที่มีชื่อ'};
+  }
+  function erender(){
+    var o=+$('e_o').value, c=+$('e_c').value, u=+$('e_u').value, lw=+$('e_l').value;
+    var h=r2(Math.max(o,c)+u), l=r2(Math.min(o,c)-lw), rg=h-l, b=Math.abs(c-o);
+    $('e_ov').textContent=fmt(o,2); $('e_cv').textContent=fmt(c,2); $('e_uv').textContent=fmt(u,2); $('e_lv').textContent=fmt(lw,2);
+    var g='', k;
+    for(k=44;k<=58;k+=2){ g+='<line class="gl" x1="34" x2="310" y1="'+ey(k)+'" y2="'+ey(k)+'"/><text class="gt" x="2" y="'+(ey(k)+3)+'">'+fmt(k,2)+'</text>'; }
+    $('e_svg').innerHTML=g+candleSvg(o,h,l,c,142,44,ey)+
+      '<text class="lb" x="200" y="'+(ey(h)+4)+'">H '+fmt(h,2)+'</text>'+
+      '<text class="lb" x="200" y="'+(ey(l)+4)+'">L '+fmt(l,2)+'</text>'+
+      '<text class="lb" x="92" y="'+(ey(o)+4)+'" text-anchor="end">O '+fmt(o,2)+'</text>'+
+      '<text class="lb" x="92" y="'+(ey(c)+(Math.abs(ey(c)-ey(o))<14?(c>=o?-6:16):4))+'" text-anchor="end">C '+fmt(c,2)+'</text>';
+    var chg=(c-o)/o*100;
+    $('e_chg').textContent=(chg>0?'+':'')+fmt(chg,2)+'%';
+    $('e_chg').parentNode.className='mbox'+(chg<0?' neg':'');
+    $('e_body').textContent=rg>0?fmt(b/rg*100,0)+'%':'—';
+    $('e_sh').textContent=fmt(u,2)+' / '+fmt(lw,2);
+    var cl=classify(o,c,h,l), v=$('e_v');
+    v.className='verdict'+(cl.warn||cl.bad?' bad':''); v.textContent=cl.t;
+  }
+  var PRE={norm:[50,51.5,0.5,1],doji:[50,50,1.5,1.5],ham:[50,50.5,0,2.5],star:[50,49.5,2.5,0],maru:[50,53,0,0]};
+  var ids=['e_o','e_c','e_u','e_l'], q;
+  for(q=0;q<ids.length;q++){ $(ids[q]).addEventListener('input',function(){ var bs=$('e_seg').querySelectorAll('button'),z; for(z=0;z<bs.length;z++) bs[z].className=''; erender(); }); }
+  var pb=$('e_seg').querySelectorAll('button'), m;
+  for(m=0;m<pb.length;m++){ pb[m].addEventListener('click',function(){
+    var v=PRE[this.getAttribute('data-p')], z, bs=$('e_seg').querySelectorAll('button');
+    for(z=0;z<bs.length;z++) bs[z].className=''; this.className='active';
+    for(z=0;z<4;z++) $(ids[z]).value=v[z];
+    erender();
+  }); }
+  erender();
+})();
+</script>
+</body>
+</html>
