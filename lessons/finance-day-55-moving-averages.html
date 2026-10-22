@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day 55 — Moving averages: SMA, EMA, golden/death cross | Finance101</title>
+<style>
+:root{
+  --bg:#191816; --card:#211f1d; --ink:#e8e4dd; --muted:#a09a91;
+  --line:#332f2b; --accent:#6cc394; --accent-soft:#1c2f26;
+  --warn:#e0a86f; --warn-soft:#2e2419; --code:#201e1b; --danger:#e0785c;
+  color-scheme: dark;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; padding:28px 18px 80px; background:var(--bg); color:var(--ink);
+  font-family:"Sarabun","Noto Sans Thai",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:17px; line-height:1.75; -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:720px;margin:0 auto}
+header{margin-bottom:34px}
+.kicker{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--muted);letter-spacing:.02em}
+.pill{background:var(--accent-soft);color:var(--accent);padding:3px 11px;border-radius:99px;font-weight:600}
+h1{font-size:29px;line-height:1.3;margin:12px 0 6px;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:16px;margin:0}
+h2{font-size:21px;margin:38px 0 12px;letter-spacing:-.005em}
+h3{font-size:17px;margin:26px 0 8px}
+p{margin:0 0 15px}
+ul,ol{margin:0 0 15px;padding-left:22px}
+li{margin-bottom:7px}
+strong{font-weight:600}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin:22px 0}
+.card.accent{background:var(--accent-soft);border-color:#2c4a3c}
+.card.warn{background:var(--warn-soft);border-color:#4a3722}
+.card h3{margin-top:0}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15.5px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-weight:600;font-size:13.5px;letter-spacing:.02em}
+td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.calc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;margin:22px 0}
+.calc label{display:block;font-size:14px;color:var(--muted);margin-bottom:6px}
+.calc .row{margin-bottom:18px}
+input[type=range]{width:100%;accent-color:var(--accent);height:24px}
+.val{font-weight:600;color:var(--accent);font-variant-numeric:tabular-nums}
+.bars{margin-top:6px}
+.bar-row{margin-bottom:12px}
+.bar-label{display:flex;justify-content:space-between;font-size:14px;margin-bottom:5px;gap:10px}
+.bar-track{background:#2a2724;border-radius:8px;height:26px;overflow:hidden;position:relative}
+.bar-fill{height:100%;border-radius:8px;transition:width .55s cubic-bezier(.22,.8,.3,1)}
+.bar-principal{background:#3f5c4e}
+.bar-growth{background:var(--accent)}
+.bar-negative{background:#a34a34}
+.bar-bond{background:#4a7fa0}
+.bar-stock{background:var(--accent)}
+.bar-gold{background:var(--warn)}
+.legend{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-top:10px;flex-wrap:wrap}
+.swatch{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:middle}
+.seg{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+.seg button{
+  background:var(--code);color:var(--muted);border:1px solid var(--line);border-radius:99px;
+  padding:6px 16px;font-size:14px;font-family:inherit;cursor:pointer;transition:all .2s;
+}
+.seg button.active{background:var(--accent-soft);color:var(--accent);border-color:#2c4a3c;font-weight:600}
+details{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:12px 16px;margin:10px 0}
+details[open]{background:#1d1b19}
+summary{cursor:pointer;font-weight:600;font-size:15.5px;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"▸ ";color:var(--accent)}
+details[open] summary::before{content:"▾ "}
+.ans{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font-size:15.5px;color:#d6d1c9}
+.q{font-weight:600;margin:22px 0 8px}
+pre{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:14px;line-height:1.6}
+code{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+.summary-box{border-left:3px solid var(--accent);padding-left:18px;margin:26px 0}
+.summary-box p{margin-bottom:8px}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
+footer a{color:var(--accent)}
+.disclaimer{font-size:13px;color:var(--muted);margin-top:18px;line-height:1.6}
+.nav{margin-bottom:20px;font-size:14px}
+.nav a{color:var(--accent);text-decoration:none}
+.src{font-size:12.5px;color:var(--muted);margin-top:8px}
+.steps{display:flex;align-items:flex-end;gap:14px;margin:18px 0 6px;height:150px}
+.step{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px}
+.step-bar{width:100%;border-radius:8px 8px 0 0;transition:height .55s cubic-bezier(.22,.8,.3,1);min-height:2px}
+.step1 .step-bar{background:#3f5c4e}
+.step2 .step-bar{background:var(--danger)}
+.step-label{font-size:13px;color:var(--muted);text-align:center}
+.step-val{font-weight:600;color:var(--ink);font-size:14.5px}
+.mixbar{display:flex;height:30px;border-radius:8px;overflow:hidden;margin:6px 0 10px;background:#2a2724}
+.mixseg{height:100%;transition:width .4s cubic-bezier(.22,.8,.3,1)}
+.stat{display:flex;justify-content:space-between;font-size:15.5px;padding:7px 0;border-bottom:1px solid var(--line)}
+.stat:last-child{border-bottom:none}
+.stat b{font-variant-numeric:tabular-nums;color:var(--accent)}
+@media(max-width:520px){
+  body{font-size:16px;padding:20px 14px 60px}
+  h1{font-size:25px}
+  .card,.calc{padding:16px}
+}
+
+/* โครงสร้างสิทธิเรียกร้อง / แถบสัดส่วน (ใช้ต่อจาก Day 20) */
+.wf{margin:18px 0 6px}
+.wf-track{display:flex;height:44px;border-radius:10px;overflow:hidden;background:#2a2724;border:1px solid var(--line)}
+.wf-seg{height:100%;display:flex;align-items:center;justify-content:center;font-size:12.5px;color:#12130f;font-weight:600;overflow:hidden;white-space:nowrap;transition:width .5s cubic-bezier(.22,.8,.3,1)}
+.wf-debt{background:#4a7fa0;color:#0f1b22}
+.wf-eq{background:var(--accent)}
+.wf-gap{background:#7a3d2c;color:#f0ded8}
+.wf-axis{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:6px;font-variant-numeric:tabular-nums}
+.ladder{list-style:none;padding:0;margin:16px 0}
+.ladder li{display:flex;gap:12px;align-items:baseline;padding:9px 14px;border:1px solid var(--line);border-radius:9px;margin-bottom:7px;background:var(--card);font-size:15.5px}
+.ladder li:last-child{background:var(--accent-soft);border-color:#2c4a3c}
+.ladder .rank{font-variant-numeric:tabular-nums;font-size:13px;color:var(--muted);min-width:20px;flex-shrink:0}
+
+/* Day 21 — เส้นทางคำสั่งซื้อ */
+.pipe{margin:16px 0 4px}
+.pnode{display:flex;gap:12px;align-items:flex-start;padding:11px 14px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;background:var(--card);transition:background .3s,border-color .3s,transform .3s}
+.pnode.on{background:var(--accent-soft);border-color:#2c4a3c;transform:translateX(7px)}
+.pnum{width:25px;height:25px;border-radius:50%;background:#2a2724;color:var(--muted);font-size:12.5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:3px;font-variant-numeric:tabular-nums;transition:background .3s,color .3s}
+.pnode.on .pnum{background:var(--accent);color:#12130f;font-weight:700}
+.pttl{font-weight:600;font-size:15.5px;margin-bottom:2px}
+.pdesc{font-size:14px;color:var(--muted);line-height:1.6}
+.pbtn{background:var(--accent-soft);color:var(--accent);border:1px solid #2c4a3c;border-radius:99px;padding:8px 22px;font-size:15px;font-family:inherit;font-weight:600;cursor:pointer;transition:opacity .2s}
+.pbtn:disabled{opacity:.45;cursor:default}
+.regbar{margin-top:10px;padding:10px 14px;border:1px dashed var(--line);border-radius:10px;font-size:14px;color:var(--muted)}
+.scalebar{background:#2a2724;border-radius:8px;height:22px;overflow:hidden;margin-bottom:5px}
+.scalefill{height:100%;border-radius:8px}
+
+/* Day 22 — กระดานราคา (order book) และปฏิทิน T+2 */
+.book{font-variant-numeric:tabular-nums;font-size:15px;margin:4px 0 2px}
+.brow{display:grid;grid-template-columns:1fr 84px 1fr;gap:8px;align-items:center;padding:3px 0}
+.bqty{display:flex;height:24px;border-radius:6px;overflow:hidden;background:transparent}
+.bqty i{height:100%;border-radius:6px;display:block;transition:width .4s ease,opacity .4s ease}
+.bqty.l{justify-content:flex-end}
+.bprice{text-align:center;font-weight:600;padding:2px 0;border-radius:6px;transition:background .3s,color .3s}
+.bprice.ask{color:var(--danger)}
+.bprice.bid{color:var(--accent)}
+.bprice.hit{background:var(--warn-soft);color:var(--warn)}
+.bqty span{font-size:12.5px;color:var(--muted);padding:0 6px;line-height:24px;white-space:nowrap}
+.bhead{display:grid;grid-template-columns:1fr 84px 1fr;gap:8px;font-size:12.5px;color:var(--muted);padding-bottom:5px;border-bottom:1px solid var(--line);margin-bottom:6px}
+.bhead span:nth-child(1){text-align:right}
+.bhead span:nth-child(2){text-align:center}
+.spreadrow{text-align:center;font-size:13px;color:var(--warn);padding:5px 0;border-top:1px dashed var(--line);border-bottom:1px dashed var(--line);margin:5px 0}
+.cal{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin:16px 0 6px}
+.cday{border:1px solid var(--line);border-radius:10px;padding:9px 6px;text-align:center;background:var(--card);transition:background .35s,border-color .35s}
+.cday .cn{font-size:12px;color:var(--muted)}
+.cday .cv{font-size:14px;font-weight:600;margin-top:3px;min-height:20px}
+.cday.t{background:var(--accent-soft);border-color:#2c4a3c}
+.cday.s{background:var(--warn-soft);border-color:#4a3722}
+.cday.off{opacity:.4}
+
+/* Day 23 — โครงเงินปันผล */
+.split{display:flex;height:34px;border-radius:9px;overflow:hidden;background:#2a2724;border:1px solid var(--line);margin:10px 0 4px}
+.split i{height:100%;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;transition:width .45s cubic-bezier(.22,.8,.3,1)}
+.sp-pay{background:var(--accent);color:#12130f}
+.sp-ret{background:#3f5c4e;color:#dfe8e2}
+.idcard{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin:14px 0;font-variant-numeric:tabular-nums;font-size:15.5px;text-align:center}
+.idcard b{color:var(--accent)}
+.tax2{display:flex;gap:14px;align-items:flex-end;height:170px;margin:16px 0 4px}
+.tax2 .col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px}
+.tax2 .cb{width:100%;border-radius:9px 9px 0 0;transition:height .5s cubic-bezier(.22,.8,.3,1);min-height:3px}
+.tax2 .c1 .cb{background:#3f5c4e}
+.tax2 .c2 .cb{background:var(--accent)}
+.tax2 .c2.lose .cb{background:var(--danger)}
+.verdict{text-align:center;font-size:15px;padding:9px 12px;border-radius:9px;margin-top:12px;background:var(--accent-soft);color:var(--accent);border:1px solid #2c4a3c}
+.verdict.bad{background:var(--warn-soft);color:var(--warn);border-color:#4a3722}
+</style>
+<style>
+/* Day 24 — น้ำตกงบกำไรขาดทุน */
+.wfall{margin:16px 0 6px;font-variant-numeric:tabular-nums}
+.wrow{display:grid;grid-template-columns:112px 1fr 92px;gap:10px;align-items:center;margin-bottom:6px;font-size:14.5px}
+.wrow .wlab{color:var(--muted);font-size:13.5px;line-height:1.4}
+.wrow.tot .wlab{color:var(--ink);font-weight:600}
+.wtrack{position:relative;height:26px;background:#2a2724;border-radius:7px;overflow:hidden}
+.wseg{position:absolute;top:0;height:100%;border-radius:7px;transition:left .5s cubic-bezier(.22,.8,.3,1),width .5s cubic-bezier(.22,.8,.3,1)}
+.w-rev{background:#3f5c4e}
+.w-gp{background:#4d7a63}
+.w-ebit{background:#5aa47e}
+.w-np{background:var(--accent)}
+.w-cut{background:var(--danger);opacity:.85}
+.wval{text-align:right;font-weight:600;font-size:14.5px}
+.wrow.cut .wval{color:var(--danger)}
+.wrow.tot .wval{color:var(--accent)}
+.mgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0 4px}
+.mbox{background:var(--code);border:1px solid var(--line);border-radius:11px;padding:11px 8px;text-align:center}
+.mbox .mv{font-size:20px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums;line-height:1.3}
+.mbox .mn{font-size:12px;color:var(--muted);line-height:1.45;margin-top:2px}
+.mbox.neg .mv{color:var(--danger)}
+@media(max-width:520px){
+  .wrow{grid-template-columns:92px 1fr 78px;gap:7px;font-size:13.5px}
+  .wrow .wlab{font-size:12.5px}
+  .mbox .mv{font-size:17px}
+}
+</style>
+<style>
+/* Day 25 — งบดุลสองฝั่ง และวงจรเงินสด */
+.bswrap{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0 6px}
+.bscol{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:11px;overflow:hidden;min-height:230px}
+.bshead{font-size:12.5px;color:var(--muted);text-align:center;margin-bottom:6px;letter-spacing:.02em}
+.bsseg{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:0 9px;font-size:12px;font-weight:600;color:#12130f;overflow:hidden;white-space:nowrap;transition:height .5s cubic-bezier(.22,.8,.3,1);min-height:0}
+.bsseg span:last-child{font-variant-numeric:tabular-nums}
+.a-cash{background:#6cc394}.a-ar{background:#4d7a63;color:#e8f2ec}.a-inv{background:#3f5c4e;color:#e8f2ec}
+.a-ppe{background:#4a7fa0;color:#0f1b22}.a-int{background:#5b6b7a;color:#e6edf3}
+.l-cl{background:#e0a86f;color:#241a0d}.l-ltd{background:#a8703f;color:#f6e8da}
+.e-eq{background:#6cc394}.e-re{background:#3f5c4e;color:#e8f2ec}
+.bsseg.neg{background:var(--danger);color:#fff}
+.eqline{display:flex;justify-content:center;gap:10px;font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums;margin-top:4px}
+.eqline b{color:var(--accent)}
+.gantt{margin:16px 0 6px}
+.grow{display:grid;grid-template-columns:116px 1fr;gap:10px;align-items:center;margin-bottom:7px;font-size:13.5px;color:var(--muted)}
+.gtrack{position:relative;height:25px;background:#2a2724;border-radius:7px;overflow:hidden}
+.gbar{position:absolute;top:0;height:100%;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;overflow:hidden;white-space:nowrap;transition:left .5s cubic-bezier(.22,.8,.3,1),width .5s cubic-bezier(.22,.8,.3,1)}
+.g-dio{background:#3f5c4e;color:#e8f2ec}
+.g-dso{background:#4a7fa0;color:#0f1b22}
+.g-dpo{background:var(--warn);color:#241a0d}
+.g-ccc{background:var(--danger);color:#fff}
+@media(max-width:520px){
+  .bswrap{gap:8px}
+  .bsseg{font-size:11px;padding:0 6px}
+  .grow{grid-template-columns:92px 1fr;gap:7px;font-size:12.5px}
+}
+</style>
+<style>
+/* Day 26 — สามกระแสเงินสด (แท่งบวก/ลบรอบเส้นศูนย์) */
+.zwrap{margin:18px 0 4px}
+.zbar{position:relative;height:150px;display:flex;gap:16px}
+.zaxis{position:absolute;left:0;right:0;top:75px;border-top:1px dashed #4a453f;z-index:0}
+.zc{flex:1;position:relative;z-index:1}
+.zfill{position:absolute;left:0;right:0;border-radius:7px;transition:top .5s cubic-bezier(.22,.8,.3,1),height .5s cubic-bezier(.22,.8,.3,1);min-height:3px}
+.zfill.p{background:var(--accent)}
+.zfill.n{background:var(--danger)}
+.zv{position:absolute;left:0;right:0;text-align:center;font-size:13.5px;font-weight:700;font-variant-numeric:tabular-nums;transition:top .5s cubic-bezier(.22,.8,.3,1)}
+.zv.p{color:var(--accent)} .zv.n{color:var(--danger)}
+.zlab{display:flex;gap:16px;margin-top:8px}
+.zlab div{flex:1;text-align:center;font-size:12.5px;color:var(--muted);line-height:1.45}
+.tax2 .c3 .cb{background:#4a7fa0}
+.sign{display:inline-block;min-width:18px;font-weight:700;font-variant-numeric:tabular-nums}
+.sign.p{color:var(--accent)} .sign.n{color:var(--danger)}
+.cfs td:first-child{padding-left:12px}
+.cfs tr.head td{color:var(--muted);font-size:13.5px;font-weight:600;padding-top:16px}
+.cfs tr.sum td{font-weight:700;border-top:1px solid var(--line);border-bottom:2px solid var(--line)}
+.cfs tr.sum td.num{color:var(--accent)}
+.cfs tr.sum.neg td.num{color:var(--danger)}
+.cfs td.ind{padding-left:26px;color:#cdc7be;font-size:14.5px}
+@media(max-width:520px){
+  .zbar{gap:9px;height:135px}
+  .zaxis{top:67px}
+  .zlab{gap:9px}
+  .zlab div{font-size:11.5px}
+  .cfs td.ind{padding-left:14px;font-size:13.5px}
+}
+</style>
+<style>
+/* Day 27 — DuPont และห้องทดลองเลเวอเรจ */
+.dp{margin:16px 0 4px}
+.dprow{display:grid;grid-template-columns:136px 1fr 74px;gap:10px;align-items:center;margin-bottom:8px;font-size:14px}
+.dprow .dlab{color:var(--muted);font-size:13.5px;line-height:1.45}
+.dtrack{height:24px;background:#2a2724;border-radius:7px;overflow:hidden}
+.dfill{height:100%;border-radius:7px;transition:width .5s cubic-bezier(.22,.8,.3,1);min-width:3px}
+.d-nm{background:var(--accent)}
+.d-at{background:#4a7fa0}
+.d-em{background:var(--warn)}
+.dval{text-align:right;font-weight:600;font-variant-numeric:tabular-nums;font-size:14.5px}
+.dprod{text-align:center;font-size:15.5px;padding:10px 12px;border-radius:9px;background:var(--accent-soft);
+  border:1px solid #2c4a3c;color:var(--accent);margin-top:6px;font-variant-numeric:tabular-nums}
+.dnote{font-size:14px;color:var(--muted);margin-top:10px;line-height:1.65}
+.rid{display:grid;grid-template-columns:1fr 1fr;gap:8px 18px;margin:16px 0 4px}
+.rid .r{display:flex;justify-content:space-between;gap:8px;font-size:15px;padding:7px 0;border-bottom:1px solid var(--line)}
+.rid .r b{font-variant-numeric:tabular-nums;color:var(--accent);white-space:nowrap}
+.rid .r.warnv b{color:var(--warn)}
+.rid .r.badv b{color:var(--danger)}
+.tax2 .c3.lose .cb{background:var(--danger)}
+@media(max-width:520px){
+  .dprow{grid-template-columns:104px 1fr 62px;gap:7px;font-size:13px}
+  .dprow .dlab{font-size:12.5px}
+  .rid{grid-template-columns:1fr;gap:0 0}
+}
+</style>
+<style>
+/* Day 28 — DCF: แถบมูลค่าปลายทาง ตารางความไว และมาตรวัดราคา */
+.d-y{background:#4d7a63}
+.d-tv{background:var(--warn)}
+.heat{font-variant-numeric:tabular-nums;font-size:14.5px}
+.heat th,.heat td{padding:8px 6px;text-align:center}
+.heat td.rowh,.heat th{color:var(--muted);font-size:13px}
+.heat td.v{border-radius:7px;font-weight:600}
+.h0{background:#241f1c;color:#c9b7ad}
+.h1{background:#2b2a20;color:#d4c59f}
+.h2{background:#26302a;color:#9fd0b4}
+.h3{background:#1f3b2c;color:#8ee0b0}
+.heat td.mid{outline:2px solid var(--accent);outline-offset:-2px}
+.gauge{position:relative;height:56px;margin:18px 0 6px}
+.gtrk{position:absolute;left:0;right:0;top:22px;height:14px;border-radius:7px;background:linear-gradient(90deg,#1f3b2c,#2b2a20,#4a2b22)}
+.gmk{position:absolute;top:8px;width:2px;height:42px;background:var(--ink);transition:left .5s cubic-bezier(.22,.8,.3,1)}
+.gmk.price{background:var(--danger)}
+.gmk i{position:absolute;top:-16px;left:50%;transform:translateX(-50%);font-size:12px;font-style:normal;white-space:nowrap;color:var(--muted)}
+.gscale{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+@media(max-width:520px){
+  .heat{font-size:12.5px}
+  .heat th,.heat td{padding:6px 3px}
+}
+</style>
+<style>
+/* Day 29 — Growth vs Value: การ์ดสองฝั่ง ทฤษฎีบท และแถบแยกผลตอบแทน */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0 6px}
+.duo .dcard{border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:var(--card)}
+.duo .dcard.g{border-color:#4a3722;background:var(--warn-soft)}
+.duo .dcard.v{border-color:#2c4a3c;background:var(--accent-soft)}
+.duo .dh{font-size:13px;color:var(--muted);letter-spacing:.02em;margin-bottom:8px;font-weight:600}
+.duo .dl{display:flex;justify-content:space-between;gap:8px;font-size:14.5px;padding:5px 0;border-bottom:1px solid var(--line)}
+.duo .dl:last-child{border-bottom:none}
+.duo .dl b{font-variant-numeric:tabular-nums;white-space:nowrap}
+.duo .dcard.g .dl b{color:var(--warn)}
+.duo .dcard.v .dl b{color:var(--accent)}
+.sp-a{background:#4a7fa0;color:#0f1b22}
+.sp-b{background:var(--accent);color:#12130f}
+.sp-c{background:var(--warn);color:#241a0d}
+.sp-neg{background:var(--danger);color:#fff}
+.thm{background:var(--accent-soft);border:1px solid #2c4a3c;border-radius:12px;padding:16px 18px;margin:18px 0;text-align:center;font-size:16px}
+.thm .eq{font-size:18.5px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums;margin-bottom:7px;line-height:1.5}
+.thm .note{font-size:13.5px;color:var(--muted);line-height:1.65}
+@media(max-width:520px){ .duo{grid-template-columns:1fr} .thm .eq{font-size:16px} }
+</style>
+<style>
+/* Day 30 — วงล้อวัฏจักร และการ์ดสี่ช่วงเศรษฐกิจ */
+.cyc{margin:14px 0 4px}
+.cyc svg{width:100%;height:auto;display:block}
+.phgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0 14px}
+.ph{border:1px solid var(--line);border-radius:10px;padding:9px 8px;background:var(--card);text-align:center;transition:background .3s,border-color .3s,transform .3s}
+.ph.on{background:var(--accent-soft);border-color:#2c4a3c;transform:translateY(-3px)}
+.ph b{display:block;font-size:14px;color:var(--ink);margin-bottom:2px}
+.ph span{display:block;color:var(--muted);font-size:12px;line-height:1.5}
+.ph.on b{color:var(--accent)}
+@media(max-width:520px){ .phgrid{grid-template-columns:1fr 1fr} }
+</style>
+<style>
+/* Day 47 — ตารางสูตรสรุปเฟส และกล่อง IPS */
+.ips{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:14px 0 4px;font-size:14.5px;line-height:1.8}
+.ips b{color:var(--accent)}
+.fx td:first-child{white-space:nowrap;color:var(--muted);font-size:13.5px}
+</style>
+<style>
+/* Day 48 — จุดแทนเทรดเดอร์ 100 คน และตารางเทียบ */
+.dots48{display:grid;grid-template-columns:repeat(20,1fr);gap:5px;margin:14px 0 6px}
+.dots48 i{aspect-ratio:1;border-radius:50%;background:var(--danger);opacity:.75;transition:background .3s,opacity .3s}
+.dots48 i.w{background:var(--accent);opacity:1}
+.cmp td:first-child{white-space:nowrap;color:var(--muted);font-size:13.5px}
+.fn{font-size:14px;color:var(--muted);text-align:center;margin-top:6px}
+</style>
+<style>
+/* Day 49 — กระดานราคาเชิงโต้ตอบ และตารางขั้นราคา */
+.obctl{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.obnote{font-size:14px;color:var(--muted);margin-top:10px;line-height:1.65}
+.tickout{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0 4px}
+.fillnote{font-size:12.5px;color:var(--warn);padding:0 6px;line-height:24px;white-space:nowrap}
+</style>
+<style>
+/* Day 50 — เครื่องมือเทียบประเภทคำสั่ง */
+.cmp td{font-size:14.5px;vertical-align:top}
+.cmp td:first-child{font-weight:600;color:var(--ink)}
+</style>
+<style>
+/* Day 51 — แท่งเทียน: SVG, กล่องสถิติ และปุ่ม preset */
+.cndl{margin:12px 0 4px}
+.cndl svg{width:100%;height:auto;display:block;background:var(--code);border:1px solid var(--line);border-radius:12px}
+.cndl .gl{stroke:#2e2a26;stroke-width:1}
+.cndl .gt{fill:var(--muted);font-size:10px;font-family:inherit}
+.cndl .lb{fill:var(--ink);font-size:10.5px;font-family:inherit;font-variant-numeric:tabular-nums}
+.cndl .up{fill:var(--accent);stroke:var(--accent)}
+.cndl .dn{fill:var(--danger);stroke:var(--danger)}
+.cndl .wk{stroke-width:2.5}
+.cndl .path{fill:none;stroke:var(--muted);stroke-width:1.6}
+.cndl .dot{fill:var(--warn)}
+.tkline{font-size:13.5px;color:var(--muted);font-variant-numeric:tabular-nums;margin:8px 0 0;line-height:1.7}
+.tkline b{color:var(--warn)}
+@media(max-width:520px){ .cndl .lb{font-size:11px} }
+</style>
+<style>
+/* Day 52 — Timeframe: รวมแท่ง ตารางสเกล √T และบันไดหลาย timeframe */
+.tfwrap{overflow-x:auto;margin:12px 0 4px}
+.tft{min-width:520px;font-variant-numeric:tabular-nums;margin:0}
+.tft th{white-space:nowrap}
+.tft td{font-size:14.5px;white-space:nowrap}
+.tft td:first-child{font-weight:600;color:var(--ink)}
+.tft td.hot{color:var(--danger);font-weight:600}
+.tft td.good{color:var(--accent);font-weight:600}
+.tft td.mid{color:var(--warn);font-weight:600}
+.ladder.tfl li{align-items:flex-start;flex-direction:column;gap:2px}
+.ladder.tfl b{color:var(--accent)}
+.ladder.tfl span{font-size:14px;color:var(--muted);line-height:1.6}
+.cndl.wide svg{background:var(--code)}
+@media(max-width:520px){ .tft td{font-size:13.5px} }
+</style>
+<style>
+/* Day 53 — แนวรับแนวต้าน: โซนบนกราฟสุ่ม และเครื่องคิด stop/target */
+.cndl .band{fill:var(--warn);fill-opacity:.2;stroke:var(--warn);stroke-width:1;stroke-dasharray:4 3}
+.cndl .bl{fill:var(--warn);font-size:11px;font-weight:700;font-family:inherit}
+.cndl .pdh{fill:var(--danger)}
+.cndl .pdl{fill:var(--accent)}
+.cndl .path{stroke-width:1.5}
+.srbtn{margin:0 0 14px}
+.pbar{position:relative;height:30px;background:#2a2724;border-radius:8px;margin:8px 0 4px;overflow:hidden}
+.pbar .pw{position:absolute;left:0;top:0;height:100%;background:var(--accent);opacity:.85;transition:width .4s cubic-bezier(.22,.8,.3,1)}
+.pbar .pm{position:absolute;top:0;height:100%;width:3px;background:var(--danger);transition:left .4s cubic-bezier(.22,.8,.3,1)}
+.pleg{display:flex;justify-content:space-between;font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.pleg b{color:var(--accent)}
+</style>
+<style>
+/* Day 54 — เส้นแนวโน้ม: เส้นรับ/ต้าน เส้นตัดวันนี้ และจุดทะลุ */
+.cndl .tl-sup{stroke:var(--accent);stroke-width:2.2}
+.cndl .tl-res{stroke:var(--danger);stroke-width:2.2}
+.cndl .cut{stroke:var(--muted);stroke-width:1;stroke-dasharray:4 4}
+.cndl .path.fut{stroke:#7d766d;stroke-opacity:.55;stroke-dasharray:3 3}
+.cndl .brk{fill:none;stroke:var(--warn);stroke-width:2.5}
+</style>
+<style>
+/* Day 55 — Moving averages: เส้นราคา เส้น MA จุดตัด และแถบตอบสนอง */
+.cndl .pxl{fill:none;stroke:var(--muted);stroke-width:1.4;stroke-opacity:.8}
+.cndl .maf{fill:none;stroke:var(--warn);stroke-width:2.2}
+.cndl .mas{fill:none;stroke:#4a7fa0;stroke-width:2.2}
+.cndl .gc{fill:var(--accent);stroke:#12130f;stroke-width:1.2}
+.cndl .dc{fill:var(--danger);stroke:#12130f;stroke-width:1.2}
+.rsp{display:grid;grid-template-columns:70px 1fr 64px;gap:10px;align-items:center;margin-bottom:8px;font-size:14px}
+.rsp .dlab{color:var(--muted);font-size:13.5px}
+.rsp .dval{text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
+.d-sma{background:#4a7fa0}
+.d-ema{background:var(--warn)}
+@media(max-width:520px){ .rsp{grid-template-columns:54px 1fr 54px;gap:7px;font-size:13px} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="nav"><a href="../index.html">← สารบัญ</a></div>
+
+<header>
+  <div class="kicker">
+    <span class="pill">Day 55 / 90</span>
+    <span>Phase 3 · การเทรด</span>
+    <span>·</span>
+    <span>อ่าน 8 นาที</span>
+  </div>
+  <h1>Moving averages: SMA, EMA, golden/death cross</h1>
+  <p class="sub">เส้นค่าเฉลี่ยเคลื่อนที่ (moving average, MA) คือเครื่องมือที่พบบ่อยที่สุดบนกราฟ เรียบกว่าราคา อ่านง่าย และมีสัญญาณ "ตัดกัน" ให้ แต่ความเรียบมีราคาที่ต้องจ่ายเป็นความล่าช้า (lag) วันนี้คำนวณทั้งสองแบบด้วยมือ แล้วนับว่าจุดตัดในกราฟเหรียญเกิดถี่แค่ไหนและกินค่าธรรมเนียมเท่าไร</p>
+</header>
+
+<h2>SMA และ EMA คำนวณอย่างไร</h2>
+
+<p><strong>ค่าเฉลี่ยเคลื่อนที่อย่างง่าย (simple moving average, SMA)</strong> ช่วง n แท่ง คือค่าเฉลี่ยของราคาปิด n แท่งล่าสุด ให้น้ำหนักเท่ากันทุกแท่ง (1/n) และแท่งที่เก่าเกิน n แท่งหลุดออกไปทันที: SMA<sub>t</sub> = (P<sub>t</sub> + P<sub>t−1</sub> + … + P<sub>t−n+1</sub>) ÷ n</p>
+
+<p><strong>ค่าเฉลี่ยเคลื่อนที่แบบถ่วงน้ำหนักเอกซ์โพเนนเชียล (exponential moving average, EMA)</strong> ใช้ราคาทุกแท่งในอดีต โดยน้ำหนักลดลงเป็นสัดส่วนคงที่ทุกแท่ง คำนวณแบบเรียกซ้ำ: EMA<sub>t</sub> = EMA<sub>t−1</sub> + α (P<sub>t</sub> − EMA<sub>t−1</sub>) โดย <strong>α = 2 ÷ (n + 1)</strong> ซึ่งเป็นแบบแผนที่นิยม ทำให้ EMA ช่วง n เทียบกับ SMA ช่วง n ได้ในเชิงอายุเฉลี่ยของข้อมูล น้ำหนักของแท่งที่เก่ากว่า i แท่งคือ α(1−α)<sup>i</sup> ที่ n = 10, α = 2/11 = 0.1818 น้ำหนักแท่งล่าสุด 0.1818 ถัดไป 0.1488, 0.1217, 0.0996, 0.0815 … รวม 10 แท่งแรก 86.6% อีก 13.4% กระจายอยู่กับข้อมูลที่เก่ากว่านั้น</p>
+
+<div class="card">
+  <h3>ตัวอย่างด้วยมือ (เลขกลมๆ)</h3>
+  <p style="margin-bottom:6px">ราคาปิด 5 แท่งล่าสุดของหุ้น ก.: 50, 52, 51, 53, 54 ⇒ SMA5 = 260 ÷ 5 = <strong>52.00</strong></p>
+  <p style="margin-bottom:6px">แท่งใหม่ปิด 56: SMA5 ใหม่ = (52 + 51 + 53 + 54 + 56) ÷ 5 = 266 ÷ 5 = <strong>53.20</strong> (แท่ง 50 หลุดออก ราคาเพิ่ม +2 จากค่าเดิม = (56 − 50) ÷ 5 = 1.20)</p>
+  <p style="margin-bottom:0">EMA5: α = 2/6 = 1/3 ถ้า EMA เดิม = 52.00 แล้วราคาปิด 56 ⇒ EMA ใหม่ = 52 + (56 − 52) ÷ 3 = <strong>53.33</strong> ขยับไปตามราคาใหม่แรงกว่า SMA เล็กน้อย</p>
+</div>
+
+<h2>ความล่าช้า (lag): ราคาที่เรียบต้องจ่ายด้วยเวลา</h2>
+
+<p>MA ไม่ได้ทำนายอะไร มันคือ "ราคาย้อนหลังที่ถูกเกลี่ย" ลองวัดความล่าช้าด้วยการทดลองแบบขั้นบันได: ราคาเดินอยู่ที่ระดับหนึ่งแล้วกระโดดขึ้น 100% ของขนาดขั้นทันที (เช่น 50 → 60) และอยู่ที่ระดับใหม่ต่อ ถามว่า MA ตามขึ้นไปได้กี่ % ของขั้นหลังผ่านไป k แท่ง</p>
+<ul>
+  <li><strong>SMA ช่วง n:</strong> หลัง k แท่ง ตามได้ k ÷ n (เส้นตรง) จนครบ 100% ที่ k = n</li>
+  <li><strong>EMA ช่วง n:</strong> หลัง k แท่ง ตามได้ 1 − (1 − α)<sup>k</sup> เข้าใกล้ 100% เรื่อยๆ แต่ไม่ครบจริง</li>
+</ul>
+
+<p>ที่น่าสนใจคือ ความล่าช้าเฉลี่ย (อายุเฉลี่ยของข้อมูลที่ใช้) ของทั้งสองแบบ<strong>เท่ากัน = (n − 1) ÷ 2 แท่ง</strong> (n = 10 ⇒ 4.5 แท่ง สำหรับ SMA ตรวจจากค่าเฉลี่ยของอายุ 0, 1, …, 9; สำหรับ EMA คือ (1−α) ÷ α = (9/11) ÷ (2/11) = 4.5) ต่างกันที่รูปร่าง: EMA ตอบสนองเร็วกว่าในช่วงแรก (ครึ่งหนึ่งของขั้นภายใน 3.45 แท่ง เทียบกับ SMA 5 แท่ง) แต่ปลายหางยาวกว่า เพราะข้อมูลเก่ายังมีน้ำหนักเหลืออยู่ ลองปรับดู:</p>
+
+<div class="calc">
+  <div class="row"><label>ช่วง n = <span class="val" id="r_nv">10</span> แท่ง</label><input type="range" id="r_n" min="3" max="50" step="1" value="10"></div>
+  <div class="row"><label>ผ่านไปหลังราคากระโดด k = <span class="val" id="r_kv">5</span> แท่ง</label><input type="range" id="r_k" min="1" max="60" step="1" value="5"></div>
+  <div class="rsp"><span class="dlab">SMA</span><div class="dtrack"><div class="dfill d-sma" id="r_sf" style="width:50%"></div></div><span class="dval" id="r_sv">50.0%</span></div>
+  <div class="rsp"><span class="dlab">EMA</span><div class="dtrack"><div class="dfill d-ema" id="r_ef" style="width:63%"></div></div><span class="dval" id="r_ev">63.3%</span></div>
+  <div class="mgrid">
+    <div class="mbox"><div class="mv" id="r_lag">4.5</div><div class="mn">ล่าช้าเฉลี่ย (n−1)/2<br>แท่ง (เท่ากันทั้งสองแบบ)</div></div>
+    <div class="mbox"><div class="mv" id="r_hs">5</div><div class="mn">SMA ตามครึ่งขั้น<br>ใน (แท่ง)</div></div>
+    <div class="mbox"><div class="mv" id="r_he">3.45</div><div class="mn">EMA ตามครึ่งขั้น<br>ใน (แท่ง)</div></div>
+  </div>
+  <div class="verdict" id="r_v"></div>
+</div>
+
+<h2>Golden cross และ death cross</h2>
+
+<p>เมื่อใช้ MA สองเส้น (เส้นเร็ว fast ช่วงสั้น และเส้นช้า slow ช่วงยาว) การตัดกันถูกตีความเป็นสัญญาณ: <strong>golden cross</strong> = เส้นเร็วตัดขึ้นเหนือเส้นช้า (มองเป็นขาขึ้น) และ <strong>death cross</strong> = เส้นเร็วตัดลงใต้เส้นช้า (มองเป็นขาลง) คู่ที่คนพูดถึงมากคือ 50 กับ 200 แท่ง (วัน)</p>
+
+<p>ในทางคณิตศาสตร์ เส้นเร็วลบเส้นช้า คือ "โมเมนตัมแบบเกลี่ยแล้ว" ค่าเป็นบวกเมื่อราคาล่าสุดเฉลี่ยสูงกว่าราคาช่วงยาว ดังนั้นจุดตัดคือจุดที่ค่านั้นเปลี่ยนเครื่องหมาย ถ้าราคาเป็นเดินสุ่ม ค่านี้เปลี่ยนเครื่องหมายไปมาตามสัญญาณรบกวน ไม่ต้องมีเทรนด์ก็ตัดได้ ลองสุ่มกราฟ 160 แท่ง (หุ้น ก. สมมติ ผลตอบแทนรายแท่งสุ่มล้วน ไม่มี drift) เลือกคู่ช่วงและชนิด MA แล้วดูจุดตัด: วงกลมเขียว = golden, แดง = death กลยุทธ์ที่ใช้นับคือ "ถือเมื่อเส้นเร็วอยู่เหนือเส้นช้า ไม่ถือเมื่ออยู่ใต้" และคิดต้นทุน 0.35% ต่อหนึ่งรอบซื้อ-ขาย (ตัวเลขอ้างอิง Day 22 และ Day 48)</p>
+
+<div class="calc">
+  <div class="seg" id="c_type"><button class="active" data-t="sma">SMA</button><button data-t="ema">EMA</button></div>
+  <div class="srbtn"><button class="pbtn" id="c_new">สุ่มกราฟใหม่</button> <span class="fn" id="c_seed" style="margin-left:8px"></span></div>
+  <div class="row"><label>ช่วงเส้นเร็ว = <span class="val" id="c_fv">10</span> แท่ง</label><input type="range" id="c_f" min="3" max="30" step="1" value="10"></div>
+  <div class="row"><label>ช่วงเส้นช้า = <span class="val" id="c_sv">30</span> แท่ง</label><input type="range" id="c_s" min="10" max="60" step="1" value="30"></div>
+  <div class="cndl wide"><svg id="c_svg" viewBox="0 0 640 240" role="img" aria-label="กราฟราคาเดินสุ่มพร้อมเส้นค่าเฉลี่ยเคลื่อนที่สองเส้นและจุดตัด"></svg></div>
+  <div class="legend"><span><i class="swatch" style="background:var(--muted)"></i>ราคา</span><span><i class="swatch" style="background:var(--warn)"></i>เส้นเร็ว</span><span><i class="swatch" style="background:#4a7fa0"></i>เส้นช้า</span><span><i class="swatch" style="background:var(--accent)"></i>golden</span><span><i class="swatch" style="background:var(--danger)"></i>death</span></div>
+  <div class="mgrid">
+    <div class="mbox"><div class="mv" id="c_nx">0</div><div class="mn">จำนวนจุดตัด<br>(golden + death)</div></div>
+    <div class="mbox"><div class="mv" id="c_nt">0</div><div class="mn">รอบซื้อ-ขาย<br>ที่เสร็จแล้ว</div></div>
+    <div class="mbox"><div class="mv" id="c_cost">0.00%</div><div class="mn">ต้นทุนรวม<br>(0.35% ต่อรอบ)</div></div>
+  </div>
+  <div class="verdict bad" id="c_v"></div>
+</div>
+
+<p>สังเกตว่าเส้นช้ายิ่งยาว จุดตัดยิ่งน้อย แต่ทุกจุดตัดมาช้ากว่าการกลับตัวจริงมากขึ้นด้วย เป็นการแลกกันระหว่าง "สัญญาณหลอกน้อย" กับ "รู้ช้า" ไม่มีค่าที่ดีที่สุดโดยไม่ต้องมองย้อนหลัง</p>
+
+<h2>นับจุดตัดในโลกสุ่มยาว 400,000 แท่ง</h2>
+
+<p>ผมจำลองราคาเดินสุ่มแบบ log (σ = 1.2% ต่อแท่ง ตามสมมติฐาน Day 52, seed 55, 400,000 แท่ง) แล้วนับจุดตัดของแต่ละคู่ ถือเมื่อเส้นเร็วอยู่เหนือเส้นช้า ต้นทุน 0.35% ต่อรอบ:</p>
+
+<table>
+  <thead><tr><th>คู่ (เร็ว/ช้า)</th><th class="num">จุดตัดต่อ 250 แท่ง</th><th class="num">แท่งเฉลี่ยระหว่างจุดตัด</th><th class="num">รอบซื้อ-ขายต่อ 250 แท่ง</th><th class="num">ต้นทุนต่อปี</th></tr></thead>
+  <tbody>
+    <tr><td>SMA 5/20</td><td class="num">15.74</td><td class="num">15.9</td><td class="num">7.87</td><td class="num">2.75%</td></tr>
+    <tr><td>SMA 10/30</td><td class="num">9.61</td><td class="num">26.0</td><td class="num">4.80</td><td class="num">1.68%</td></tr>
+    <tr><td>SMA 20/50</td><td class="num">5.69</td><td class="num">43.9</td><td class="num">2.85</td><td class="num">1.00%</td></tr>
+    <tr><td>SMA 50/200</td><td class="num">1.55</td><td class="num">161.0</td><td class="num">0.78</td><td class="num">0.27%</td></tr>
+    <tr><td>EMA 50/200</td><td class="num">1.57</td><td class="num">159.4</td><td class="num">0.78</td><td class="num">0.27%</td></tr>
+  </tbody>
+</table>
+<p class="src">ที่มา: การจำลองของบทเรียนนี้ (Python, numpy, seed 55, ดูกล่องโค้ด) ไม่ใช่ข้อมูลตลาดจริง · ต้นทุน 0.35% ต่อรอบเป็นสมมติฐานอ้างอิง Day 22 · ผลตอบแทนก่อนต้นทุนของกลยุทธ์ในโลกสุ่มแกว่งรอบ buy-and-hold อย่างไม่มีนัยสำคัญ (ความคลาดเคลื่อนมาตรฐานราว 0.5 จุดต่อปีเมื่อเทียบกับค่า 0.5% ที่วัดได้) จึงไม่รายงานเป็นข้อสรุป · ผมไม่ได้ตรวจงานวิจัยเรื่อง MA crossover ในตลาดจริงรอบนี้ จึงไม่อ้างว่าตลาดจริงให้ผลเช่นนี้หรือไม่</p>
+
+<p>อ่านตารางได้ว่า คู่ 5/20 ตัดทุก 16 แท่งเฉลี่ย ต้นทุนเดียวก็กิน 2.75% ต่อปีโดยไม่มีอะไรการันตีว่าเส้นช่วยหาเงินคืน ส่วน 50/200 ตัดน้อยจน golden cross ครั้งหนึ่งเกิดห่างกันราว 2 × 161 = 322 แท่ง (ราว 1.3 ปีของปีซื้อขาย 250 วัน) ต้นทุนต่ำ แต่แต่ละสัญญาณมาช้าเพราะเส้นช้ามีความล่าช้าเฉลี่ย (200 − 1) ÷ 2 = 99.5 แท่ง</p>
+
+<div class="card warn">
+  <h3>ความหมายของผลนี้</h3>
+  <p style="margin-bottom:6px">ในโลกสุ่ม จุดตัดเกิดได้เองตามสัญญาณรบกวน จำนวนจุดตัดและต้นทุนจึงคำนวณล่วงหน้าได้ โดยไม่ขึ้นกับว่ามีเทรนด์หรือไม่</p>
+  <p style="margin-bottom:0">กฎจะมีกำไรสุทธิได้ก็ต่อเมื่อราคา<strong>มีความต่อเนื่องของทิศทาง (positive autocorrelation) มากพอที่จะเกินต้นทุน</strong> นี่คือสมมติฐานที่ต้องทดสอบด้วยข้อมูลนอกตัวอย่าง (out-of-sample) ไม่ใช่สิ่งที่ตำราหรือรูปกราฟสวยๆ พิสูจน์ให้</p>
+</div>
+
+<details>
+  <summary>กล่องโค้ด (ข้ามได้ ไม่นับในเวลาอ่าน)</summary>
+  <div class="ans">
+<pre><code>import numpy as np
+
+def sma(x, n):
+    c = np.cumsum(np.insert(x, 0, 0.0))
+    out = np.full(len(x), np.nan)
+    out[n - 1:] = (c[n:] - c[:-n]) / n
+    return out
+
+def ema(x, n):
+    a = 2 / (n + 1)
+    out = np.empty(len(x)); out[0] = x[0]
+    for i in range(1, len(x)):
+        out[i] = out[i - 1] + a * (x[i] - out[i - 1])
+    return out
+
+# ตัวอย่างด้วยมือ
+p = [50, 52, 51, 53, 54]
+print(sum(p) / 5, (52 + 51 + 53 + 54 + 56) / 5, 52 + (56 - 52) / 3)  # 52.0 53.2 53.33
+
+# ตอบสนองต่อขั้นบันได n = 10, k = 5
+n, k = 10, 5; a = 2 / (n + 1)
+print(min(k / n, 1), 1 - (1 - a) ** k)       # 0.5  0.6334
+
+# จำลองจุดตัด (random walk แบบ log, sigma = 1.2% ต่อแท่ง)
+rng = np.random.default_rng(55)
+price = 100 * np.exp(np.cumsum(rng.normal(0, 0.012, 400_000)))
+f, s = sma(price, 50), sma(price, 200)
+up = (f &gt; s)[199:]
+crosses = np.flatnonzero(up[1:] != up[:-1]).size
+print(crosses / len(up) * 250)               # ~1.55 จุดตัดต่อ 250 แท่ง</code></pre>
+  </div>
+</details>
+
+<h2>ทดสอบความเข้าใจ</h2>
+
+<p class="q">1. ราคาปิด 5 แท่งล่าสุดคือ 50, 52, 51, 53, 54 แล้วแท่งใหม่ปิดที่ 56 ถ้า EMA5 ก่อนหน้า = 52.00 (α = 1/3) จงคำนวณ SMA5 และ EMA5 ใหม่</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">SMA5 = (52 + 51 + 53 + 54 + 56) ÷ 5 = <strong>53.20</strong> · EMA5 = 52 + (56 − 52) ÷ 3 = <strong>53.33</strong> EMA ขยับตามราคาใหม่แรงกว่า เพราะให้น้ำหนักแท่งล่าสุด 1/3 ส่วน SMA ให้ 1/5 (และตัดแท่ง 50 ออกพร้อมกัน)</div>
+</details>
+
+<p class="q">2. EMA ช่วง 20 แท่ง (α = 2/21 = 0.0952) ราคากระโดดขึ้นหนึ่งขั้นแล้วอยู่ที่ระดับใหม่ หลัง 10 แท่ง EMA ตามได้กี่ % ของขั้น และ SMA ช่วง 50 แท่งมีความล่าช้าเฉลี่ยกี่แท่ง</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">EMA: 1 − (19/21)<sup>10</sup> = 1 − 0.3676 = <strong>63.2%</strong> · SMA50 ล่าช้าเฉลี่ย (50 − 1) ÷ 2 = <strong>24.5 แท่ง</strong> (SMA20 ที่ k = 10 จะตามได้ 50% พอดี ต่างจาก EMA20 ที่ 63.2% แต่ล่าช้าเฉลี่ยเท่ากันที่ 9.5 แท่ง)</div>
+</details>
+
+<p class="q">3. ตามตารางจำลอง เทียบ SMA 5/20 (7.87 รอบต่อ 250 แท่ง) กับ SMA 50/200 (0.78 รอบ) ที่ต้นทุน 0.35% ต่อรอบ ต้นทุนต่อปีของแต่ละคู่คือเท่าไร และต่างกันกี่เท่า</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">5/20: 7.87 × 0.35% = <strong>2.75%</strong> ต่อปี · 50/200: 0.78 × 0.35% = <strong>0.27%</strong> ต่อปี · ต่างกัน 7.87 ÷ 0.78 ≈ <strong>10.1 เท่า</strong> คู่ที่ตัดถี่เสียต้นทุนมาก แต่เส้นช้าก็มาช้ากว่าการกลับตัวจริงเช่นกัน</div>
+</details>
+
+<p class="q"><strong>ทวน:</strong> Day 52 · ถ้าความผันผวนรายแท่ง (รายวัน) σ = 1.2% และราคาเดินสุ่ม ความผันผวนของการเปลี่ยนราคา 16 วัน (σ<sub>T</sub>) เท่าไร และเป็นกี่เท่าของ σ รายวัน</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">σ<sub>T</sub> = σ√T = 1.2% × √16 = 1.2% × 4 = <strong>4.8%</strong> = 4 เท่าของ σ รายวัน (ไม่ใช่ 16 เท่า เพราะความแปรปรวนบวกกัน ไม่ใช่ส่วนเบี่ยงเบนมาตรฐาน)<br>ตอบผิดหรือลังเล? → <a href="finance-day-52-timeframe-multi-timeframe.html">ทบทวน Day 52: Timeframe และการวิเคราะห์หลาย timeframe</a></div>
+</details>
+
+<p class="q"><strong>ทวน:</strong> Day 49 · กระดานมี bid ดีที่สุด 49.90 ask ดีที่สุด 50.10 เต้นซื้อ 1,000 หุ้นตามราคาตลาดแล้วขายทันทีตามราคาตลาด (ซื้อที่ ask ขายที่ bid ปริมาณพอไม่เลื่อนราคา) ขาดทุนเท่าไรจากส่วนต่างราคา คิดเป็นกี่ % ของราคากลาง</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">spread = 50.10 − 49.90 = 0.20 บาท · ขาดทุน = 0.20 × 1,000 = <strong>200 บาท</strong> (ยังไม่รวมค่าคอมมิชชัน) · ราคากลาง = 50.00 ⇒ 0.20 ÷ 50.00 = <strong>0.40%</strong> ต้นทุนแฝงนี้เกิดทุกครั้งที่ MA ส่งสัญญาณเข้าและออก<br>ตอบผิดหรือลังเล? → <a href="finance-day-49-market-structure-order-book.html">ทบทวน Day 49: โครงสร้างตลาด: order book, spread, liquidity</a></div>
+</details>
+
+<div class="summary-box">
+  <h2 style="margin-top:0">สรุป 3 บรรทัด</h2>
+  <p>1. SMA เฉลี่ยน้ำหนักเท่ากัน n แท่ง ส่วน EMA ใช้ α = 2/(n+1) ถ่วงน้ำหนักลดลงแบบเอกซ์โพเนนเชียล ทั้งคู่ล่าช้าเฉลี่ย (n−1)/2 แท่ง ต่างกันที่ EMA ตอบสนองเร็วช่วงแรก แต่มีหางยาว</p>
+  <p>2. Golden/death cross คือเส้นเร็วตัดเส้นช้า ในโลกสุ่มเกิดถี่ตามช่วงที่เลือก (5/20 ราว 16 จุดตัดต่อ 250 แท่ง, 50/200 ราว 1.6) และกินต้นทุน 2.75% กับ 0.27% ต่อปีตามลำดับ</p>
+  <p style="margin-bottom:0">3. กฎ MA มีกำไรสุทธิได้เมื่อราคามีทิศทางต่อเนื่องเกินต้นทุน ซึ่งต้องทดสอบนอกตัวอย่าง อย่าตัดสินจากกราฟที่ดูสวยย้อนหลัง</p>
+</div>
+
+<footer>
+  <p><strong>พรุ่งนี้ Day 56 — Momentum indicators: RSI และ Stochastic</strong> · ตัวชี้วัดที่วัด "แรงขึ้น-ลง" ของราคาในกรอบ 0–100 คำว่า overbought/oversold ต้องแปลว่าอะไร และสูตรเหล่านี้ต่างจากความชันของ MA อย่างไร</p>
+  <p class="disclaimer">บทเรียนนี้เป็นความรู้เชิงการศึกษา ไม่ใช่คำแนะนำทางการเงินเฉพาะบุคคล และไม่ใช่การชี้ชวนให้ซื้อหรือขายหลักทรัพย์ใด · หุ้น ก. กราฟ และราคาทั้งหมดเป็นข้อมูลสมมติ ผลการจำลองมาจากแบบจำลองเดินสุ่มซึ่งไม่ใช่ตลาดจริง ไม่ได้พิสูจน์ว่ากลยุทธ์ MA ใช้ได้หรือไม่ได้ในตลาดจริง · ผลตอบแทนในอดีตไม่ได้บ่งชี้ผลตอบแทนในอนาคต</p>
+</footer>
+
+</div>
+<script>
+(function(){
+  var $=function(id){ return document.getElementById(id); };
+  var fmt=function(n,d){ return n.toLocaleString('th-TH',{minimumFractionDigits:d,maximumFractionDigits:d}); };
+  var f1=function(n){ return (Math.round(n*10)/10).toString(); };
+  function mulberry(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+
+  /* ---------- 1) ตอบสนองต่อขั้นบันได ---------- */
+  function rrender(){
+    var n=+$('r_n').value, k=+$('r_k').value, a=2/(n+1);
+    var s=Math.min(k/n,1), e=1-Math.pow(1-a,k);
+    $('r_nv').textContent=n; $('r_kv').textContent=k;
+    $('r_sf').style.width=(s*100)+'%'; $('r_ef').style.width=(e*100)+'%';
+    $('r_sv').textContent=fmt(s*100,1)+'%'; $('r_ev').textContent=fmt(e*100,1)+'%';
+    $('r_lag').textContent=fmt((n-1)/2,1);
+    $('r_hs').textContent=Math.ceil(n/2);
+    $('r_he').textContent=fmt(Math.log(0.5)/Math.log(1-a),2);
+    $('r_v').textContent='n = '+n+', k = '+k+' · SMA ตามได้ '+fmt(s*100,1)+'% · EMA ตามได้ '+fmt(e*100,1)+'% · ล่าช้าเฉลี่ยเท่ากันที่ '+fmt((n-1)/2,1)+' แท่ง';
+  }
+  $('r_n').addEventListener('input',rrender);
+  $('r_k').addEventListener('input',rrender);
+  rrender();
+
+  /* ---------- 2) MA สองเส้นบนกราฟเดินสุ่ม ---------- */
+  var NB=160, seed=55, type='sma';
+  function series(sd){
+    var r=mulberry(sd),x=[50],i,u1,u2,z;
+    for(i=1;i<NB;i++){u1=r()||1e-9;u2=r();z=Math.sqrt(-2*Math.log(u1))*Math.cos(2*Math.PI*u2);x.push(x[i-1]*Math.exp(0.012*z));}
+    return x;
+  }
+  function sma(x,n){ var o=[],i,s=0; for(i=0;i<x.length;i++){ s+=x[i]; if(i>=n) s-=x[i-n]; o.push(i>=n-1?s/n:null); } return o; }
+  function ema(x,n){ var a=2/(n+1),o=[x[0]],i; for(i=1;i<x.length;i++) o.push(o[i-1]+a*(x[i]-o[i-1])); return o; }
+  function ay(p,lo,hi){ return 10+(hi-p)/(hi-lo)*210; }
+  function crender(){
+    var f=+$('c_f').value, s=+$('c_s').value;
+    if(s<=f){ s=f+1; $('c_s').value=s; }
+    $('c_fv').textContent=f; $('c_sv').textContent=s; $('c_seed').textContent='ชุดที่ '+seed;
+    var x=series(seed), n=x.length, i;
+    var F=type==='sma'?sma(x,f):ema(x,f), S=type==='sma'?sma(x,s):ema(x,s);
+    var start=type==='sma'?s-1:s; /* EMA เริ่มนับสัญญาณหลังอุ่นเครื่อง s แท่ง */
+    var mn=x[0],mx=x[0];
+    for(i=1;i<n;i++){ if(x[i]<mn) mn=x[i]; if(x[i]>mx) mx=x[i]; }
+    var lo=mn-0.8, hi=mx+0.8, step=(hi-lo)>12?2:1, sx=function(t){ return 40+t*(592/(n-1)); }, g='', p;
+    for(p=Math.ceil(lo/step)*step;p<=hi;p+=step){ g+='<line class="gl" x1="40" x2="632" y1="'+f1(ay(p,lo,hi))+'" y2="'+f1(ay(p,lo,hi))+'"/><text class="gt" x="2" y="'+f1(ay(p,lo,hi)+3)+'">'+fmt(p,0)+'</text>'; }
+    var a1='',a2='',a3='';
+    for(i=0;i<n;i++){ a1+=(i?' ':'')+f1(sx(i))+','+f1(ay(x[i],lo,hi)); }
+    var pf=[],ps=[];
+    for(i=start;i<n;i++){ pf.push(f1(sx(i))+','+f1(ay(F[i],lo,hi))); ps.push(f1(sx(i))+','+f1(ay(S[i],lo,hi))); }
+    g+='<polyline class="pxl" points="'+a1+'"/>';
+    if(pf.length>1){ g+='<polyline class="mas" points="'+ps.join(' ')+'"/><polyline class="maf" points="'+pf.join(' ')+'"/>'; }
+    var nx=0,trades=0,entry=-1,pos=false,prev=null,cur,ret=0,bh=0;
+    for(i=start;i<n;i++){
+      cur=F[i]>S[i];
+      if(prev!==null && cur!==prev){
+        nx++;
+        g+='<circle class="'+(cur?'gc':'dc')+'" cx="'+f1(sx(i))+'" cy="'+f1(ay(x[i],lo,hi))+'" r="5.2"/>';
+        if(cur){ entry=i; pos=true; } else if(pos){ trades++; ret+=Math.log(x[i]/x[entry]); pos=false; }
+      }
+      prev=cur;
+    }
+    var openPos=pos;
+    $('c_svg').innerHTML=g;
+    $('c_nx').textContent=nx; $('c_nt').textContent=trades;
+    var cost=trades*0.35;
+    $('c_cost').textContent=fmt(cost,2)+'%';
+    var per=nx>0?(n-start)/nx:0;
+    $('c_v').textContent= nx===0 ? 'กราฟนี้ไม่มีจุดตัดเลยหลังช่วงอุ่นเครื่อง' :
+      nx+' จุดตัดใน '+(n-start)+' แท่ง (เฉลี่ยทุก '+fmt(per,1)+' แท่ง) · '+trades+' รอบซื้อ-ขายที่เสร็จ ต้นทุน '+fmt(cost,2)+'% · ผลตอบแทนของรอบที่เสร็จ (ก่อนต้นทุน) '+fmt(ret*100,2)+'%'+(openPos?' · ยังถืออยู่ 1 รอบ':'')+' · กราฟนี้สุ่มล้วน ไม่มีเทรนด์';
+  }
+  $('c_f').addEventListener('input',crender);
+  $('c_s').addEventListener('input',crender);
+  $('c_new').addEventListener('click',function(){ seed=seed+1+Math.floor(Math.random()*97); crender(); });
+  var btns=$('c_type').getElementsByTagName('button'), bi;
+  for(bi=0;bi<btns.length;bi++){ btns[bi].addEventListener('click',function(){
+    var j; for(j=0;j<btns.length;j++) btns[j].className=''; this.className='active'; type=this.getAttribute('data-t'); crender(); }); }
+  crender();
+})();
+</script>
+
+</body>
+</html>
