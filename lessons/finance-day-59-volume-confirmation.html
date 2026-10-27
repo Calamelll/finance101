@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day 59 — Volume และการยืนยันสัญญาณ | Finance101</title>
+<style>
+:root{
+  --bg:#191816; --card:#211f1d; --ink:#e8e4dd; --muted:#a09a91;
+  --line:#332f2b; --accent:#6cc394; --accent-soft:#1c2f26;
+  --warn:#e0a86f; --warn-soft:#2e2419; --code:#201e1b; --danger:#e0785c;
+  color-scheme: dark;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; padding:28px 18px 80px; background:var(--bg); color:var(--ink);
+  font-family:"Sarabun","Noto Sans Thai",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:17px; line-height:1.75; -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:720px;margin:0 auto}
+header{margin-bottom:34px}
+.kicker{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--muted);letter-spacing:.02em}
+.pill{background:var(--accent-soft);color:var(--accent);padding:3px 11px;border-radius:99px;font-weight:600}
+h1{font-size:29px;line-height:1.3;margin:12px 0 6px;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:16px;margin:0}
+h2{font-size:21px;margin:38px 0 12px;letter-spacing:-.005em}
+h3{font-size:17px;margin:26px 0 8px}
+p{margin:0 0 15px}
+ul,ol{margin:0 0 15px;padding-left:22px}
+li{margin-bottom:7px}
+strong{font-weight:600}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin:22px 0}
+.card.accent{background:var(--accent-soft);border-color:#2c4a3c}
+.card.warn{background:var(--warn-soft);border-color:#4a3722}
+.card h3{margin-top:0}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15.5px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-weight:600;font-size:13.5px;letter-spacing:.02em}
+td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.calc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;margin:22px 0}
+.calc label{display:block;font-size:14px;color:var(--muted);margin-bottom:6px}
+.calc .row{margin-bottom:18px}
+input[type=range]{width:100%;accent-color:var(--accent);height:24px}
+.val{font-weight:600;color:var(--accent);font-variant-numeric:tabular-nums}
+.bars{margin-top:6px}
+.bar-row{margin-bottom:12px}
+.bar-label{display:flex;justify-content:space-between;font-size:14px;margin-bottom:5px;gap:10px}
+.bar-track{background:#2a2724;border-radius:8px;height:26px;overflow:hidden;position:relative}
+.bar-fill{height:100%;border-radius:8px;transition:width .55s cubic-bezier(.22,.8,.3,1)}
+.bar-principal{background:#3f5c4e}
+.bar-growth{background:var(--accent)}
+.bar-negative{background:#a34a34}
+.bar-bond{background:#4a7fa0}
+.bar-stock{background:var(--accent)}
+.bar-gold{background:var(--warn)}
+.legend{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-top:10px;flex-wrap:wrap}
+.swatch{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:middle}
+.seg{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+.seg button{
+  background:var(--code);color:var(--muted);border:1px solid var(--line);border-radius:99px;
+  padding:6px 16px;font-size:14px;font-family:inherit;cursor:pointer;transition:all .2s;
+}
+.seg button.active{background:var(--accent-soft);color:var(--accent);border-color:#2c4a3c;font-weight:600}
+details{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:12px 16px;margin:10px 0}
+details[open]{background:#1d1b19}
+summary{cursor:pointer;font-weight:600;font-size:15.5px;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"▸ ";color:var(--accent)}
+details[open] summary::before{content:"▾ "}
+.ans{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font-size:15.5px;color:#d6d1c9}
+.q{font-weight:600;margin:22px 0 8px}
+pre{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:14px;line-height:1.6}
+code{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+.summary-box{border-left:3px solid var(--accent);padding-left:18px;margin:26px 0}
+.summary-box p{margin-bottom:8px}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
+footer a{color:var(--accent)}
+.disclaimer{font-size:13px;color:var(--muted);margin-top:18px;line-height:1.6}
+.nav{margin-bottom:20px;font-size:14px}
+.nav a{color:var(--accent);text-decoration:none}
+.src{font-size:12.5px;color:var(--muted);margin-top:8px}
+.steps{display:flex;align-items:flex-end;gap:14px;margin:18px 0 6px;height:150px}
+.step{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px}
+.step-bar{width:100%;border-radius:8px 8px 0 0;transition:height .55s cubic-bezier(.22,.8,.3,1);min-height:2px}
+.step1 .step-bar{background:#3f5c4e}
+.step2 .step-bar{background:var(--danger)}
+.step-label{font-size:13px;color:var(--muted);text-align:center}
+.step-val{font-weight:600;color:var(--ink);font-size:14.5px}
+.mixbar{display:flex;height:30px;border-radius:8px;overflow:hidden;margin:6px 0 10px;background:#2a2724}
+.mixseg{height:100%;transition:width .4s cubic-bezier(.22,.8,.3,1)}
+.stat{display:flex;justify-content:space-between;font-size:15.5px;padding:7px 0;border-bottom:1px solid var(--line)}
+.stat:last-child{border-bottom:none}
+.stat b{font-variant-numeric:tabular-nums;color:var(--accent)}
+@media(max-width:520px){
+  body{font-size:16px;padding:20px 14px 60px}
+  h1{font-size:25px}
+  .card,.calc{padding:16px}
+}
+
+/* โครงสร้างสิทธิเรียกร้อง / แถบสัดส่วน (ใช้ต่อจาก Day 20) */
+.wf{margin:18px 0 6px}
+.wf-track{display:flex;height:44px;border-radius:10px;overflow:hidden;background:#2a2724;border:1px solid var(--line)}
+.wf-seg{height:100%;display:flex;align-items:center;justify-content:center;font-size:12.5px;color:#12130f;font-weight:600;overflow:hidden;white-space:nowrap;transition:width .5s cubic-bezier(.22,.8,.3,1)}
+.wf-debt{background:#4a7fa0;color:#0f1b22}
+.wf-eq{background:var(--accent)}
+.wf-gap{background:#7a3d2c;color:#f0ded8}
+.wf-axis{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:6px;font-variant-numeric:tabular-nums}
+.ladder{list-style:none;padding:0;margin:16px 0}
+.ladder li{display:flex;gap:12px;align-items:baseline;padding:9px 14px;border:1px solid var(--line);border-radius:9px;margin-bottom:7px;background:var(--card);font-size:15.5px}
+.ladder li:last-child{background:var(--accent-soft);border-color:#2c4a3c}
+.ladder .rank{font-variant-numeric:tabular-nums;font-size:13px;color:var(--muted);min-width:20px;flex-shrink:0}
+
+/* Day 21 — เส้นทางคำสั่งซื้อ */
+.pipe{margin:16px 0 4px}
+.pnode{display:flex;gap:12px;align-items:flex-start;padding:11px 14px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;background:var(--card);transition:background .3s,border-color .3s,transform .3s}
+.pnode.on{background:var(--accent-soft);border-color:#2c4a3c;transform:translateX(7px)}
+.pnum{width:25px;height:25px;border-radius:50%;background:#2a2724;color:var(--muted);font-size:12.5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:3px;font-variant-numeric:tabular-nums;transition:background .3s,color .3s}
+.pnode.on .pnum{background:var(--accent);color:#12130f;font-weight:700}
+.pttl{font-weight:600;font-size:15.5px;margin-bottom:2px}
+.pdesc{font-size:14px;color:var(--muted);line-height:1.6}
+.pbtn{background:var(--accent-soft);color:var(--accent);border:1px solid #2c4a3c;border-radius:99px;padding:8px 22px;font-size:15px;font-family:inherit;font-weight:600;cursor:pointer;transition:opacity .2s}
+.pbtn:disabled{opacity:.45;cursor:default}
+.regbar{margin-top:10px;padding:10px 14px;border:1px dashed var(--line);border-radius:10px;font-size:14px;color:var(--muted)}
+.scalebar{background:#2a2724;border-radius:8px;height:22px;overflow:hidden;margin-bottom:5px}
+.scalefill{height:100%;border-radius:8px}
+
+/* Day 22 — กระดานราคา (order book) และปฏิทิน T+2 */
+.book{font-variant-numeric:tabular-nums;font-size:15px;margin:4px 0 2px}
+.brow{display:grid;grid-template-columns:1fr 84px 1fr;gap:8px;align-items:center;padding:3px 0}
+.bqty{display:flex;height:24px;border-radius:6px;overflow:hidden;background:transparent}
+.bqty i{height:100%;border-radius:6px;display:block;transition:width .4s ease,opacity .4s ease}
+.bqty.l{justify-content:flex-end}
+.bprice{text-align:center;font-weight:600;padding:2px 0;border-radius:6px;transition:background .3s,color .3s}
+.bprice.ask{color:var(--danger)}
+.bprice.bid{color:var(--accent)}
+.bprice.hit{background:var(--warn-soft);color:var(--warn)}
+.bqty span{font-size:12.5px;color:var(--muted);padding:0 6px;line-height:24px;white-space:nowrap}
+.bhead{display:grid;grid-template-columns:1fr 84px 1fr;gap:8px;font-size:12.5px;color:var(--muted);padding-bottom:5px;border-bottom:1px solid var(--line);margin-bottom:6px}
+.bhead span:nth-child(1){text-align:right}
+.bhead span:nth-child(2){text-align:center}
+.spreadrow{text-align:center;font-size:13px;color:var(--warn);padding:5px 0;border-top:1px dashed var(--line);border-bottom:1px dashed var(--line);margin:5px 0}
+.cal{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin:16px 0 6px}
+.cday{border:1px solid var(--line);border-radius:10px;padding:9px 6px;text-align:center;background:var(--card);transition:background .35s,border-color .35s}
+.cday .cn{font-size:12px;color:var(--muted)}
+.cday .cv{font-size:14px;font-weight:600;margin-top:3px;min-height:20px}
+.cday.t{background:var(--accent-soft);border-color:#2c4a3c}
+.cday.s{background:var(--warn-soft);border-color:#4a3722}
+.cday.off{opacity:.4}
+
+/* Day 23 — โครงเงินปันผล */
+.split{display:flex;height:34px;border-radius:9px;overflow:hidden;background:#2a2724;border:1px solid var(--line);margin:10px 0 4px}
+.split i{height:100%;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;transition:width .45s cubic-bezier(.22,.8,.3,1)}
+.sp-pay{background:var(--accent);color:#12130f}
+.sp-ret{background:#3f5c4e;color:#dfe8e2}
+.idcard{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin:14px 0;font-variant-numeric:tabular-nums;font-size:15.5px;text-align:center}
+.idcard b{color:var(--accent)}
+.tax2{display:flex;gap:14px;align-items:flex-end;height:170px;margin:16px 0 4px}
+.tax2 .col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px}
+.tax2 .cb{width:100%;border-radius:9px 9px 0 0;transition:height .5s cubic-bezier(.22,.8,.3,1);min-height:3px}
+.tax2 .c1 .cb{background:#3f5c4e}
+.tax2 .c2 .cb{background:var(--accent)}
+.tax2 .c2.lose .cb{background:var(--danger)}
+.verdict{text-align:center;font-size:15px;padding:9px 12px;border-radius:9px;margin-top:12px;background:var(--accent-soft);color:var(--accent);border:1px solid #2c4a3c}
+.verdict.bad{background:var(--warn-soft);color:var(--warn);border-color:#4a3722}
+</style>
+<style>
+/* Day 24 — น้ำตกงบกำไรขาดทุน */
+.wfall{margin:16px 0 6px;font-variant-numeric:tabular-nums}
+.wrow{display:grid;grid-template-columns:112px 1fr 92px;gap:10px;align-items:center;margin-bottom:6px;font-size:14.5px}
+.wrow .wlab{color:var(--muted);font-size:13.5px;line-height:1.4}
+.wrow.tot .wlab{color:var(--ink);font-weight:600}
+.wtrack{position:relative;height:26px;background:#2a2724;border-radius:7px;overflow:hidden}
+.wseg{position:absolute;top:0;height:100%;border-radius:7px;transition:left .5s cubic-bezier(.22,.8,.3,1),width .5s cubic-bezier(.22,.8,.3,1)}
+.w-rev{background:#3f5c4e}
+.w-gp{background:#4d7a63}
+.w-ebit{background:#5aa47e}
+.w-np{background:var(--accent)}
+.w-cut{background:var(--danger);opacity:.85}
+.wval{text-align:right;font-weight:600;font-size:14.5px}
+.wrow.cut .wval{color:var(--danger)}
+.wrow.tot .wval{color:var(--accent)}
+.mgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0 4px}
+.mbox{background:var(--code);border:1px solid var(--line);border-radius:11px;padding:11px 8px;text-align:center}
+.mbox .mv{font-size:20px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums;line-height:1.3}
+.mbox .mn{font-size:12px;color:var(--muted);line-height:1.45;margin-top:2px}
+.mbox.neg .mv{color:var(--danger)}
+@media(max-width:520px){
+  .wrow{grid-template-columns:92px 1fr 78px;gap:7px;font-size:13.5px}
+  .wrow .wlab{font-size:12.5px}
+  .mbox .mv{font-size:17px}
+}
+</style>
+<style>
+/* Day 25 — งบดุลสองฝั่ง และวงจรเงินสด */
+.bswrap{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0 6px}
+.bscol{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:11px;overflow:hidden;min-height:230px}
+.bshead{font-size:12.5px;color:var(--muted);text-align:center;margin-bottom:6px;letter-spacing:.02em}
+.bsseg{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:0 9px;font-size:12px;font-weight:600;color:#12130f;overflow:hidden;white-space:nowrap;transition:height .5s cubic-bezier(.22,.8,.3,1);min-height:0}
+.bsseg span:last-child{font-variant-numeric:tabular-nums}
+.a-cash{background:#6cc394}.a-ar{background:#4d7a63;color:#e8f2ec}.a-inv{background:#3f5c4e;color:#e8f2ec}
+.a-ppe{background:#4a7fa0;color:#0f1b22}.a-int{background:#5b6b7a;color:#e6edf3}
+.l-cl{background:#e0a86f;color:#241a0d}.l-ltd{background:#a8703f;color:#f6e8da}
+.e-eq{background:#6cc394}.e-re{background:#3f5c4e;color:#e8f2ec}
+.bsseg.neg{background:var(--danger);color:#fff}
+.eqline{display:flex;justify-content:center;gap:10px;font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums;margin-top:4px}
+.eqline b{color:var(--accent)}
+.gantt{margin:16px 0 6px}
+.grow{display:grid;grid-template-columns:116px 1fr;gap:10px;align-items:center;margin-bottom:7px;font-size:13.5px;color:var(--muted)}
+.gtrack{position:relative;height:25px;background:#2a2724;border-radius:7px;overflow:hidden}
+.gbar{position:absolute;top:0;height:100%;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;overflow:hidden;white-space:nowrap;transition:left .5s cubic-bezier(.22,.8,.3,1),width .5s cubic-bezier(.22,.8,.3,1)}
+.g-dio{background:#3f5c4e;color:#e8f2ec}
+.g-dso{background:#4a7fa0;color:#0f1b22}
+.g-dpo{background:var(--warn);color:#241a0d}
+.g-ccc{background:var(--danger);color:#fff}
+@media(max-width:520px){
+  .bswrap{gap:8px}
+  .bsseg{font-size:11px;padding:0 6px}
+  .grow{grid-template-columns:92px 1fr;gap:7px;font-size:12.5px}
+}
+</style>
+<style>
+/* Day 26 — สามกระแสเงินสด (แท่งบวก/ลบรอบเส้นศูนย์) */
+.zwrap{margin:18px 0 4px}
+.zbar{position:relative;height:150px;display:flex;gap:16px}
+.zaxis{position:absolute;left:0;right:0;top:75px;border-top:1px dashed #4a453f;z-index:0}
+.zc{flex:1;position:relative;z-index:1}
+.zfill{position:absolute;left:0;right:0;border-radius:7px;transition:top .5s cubic-bezier(.22,.8,.3,1),height .5s cubic-bezier(.22,.8,.3,1);min-height:3px}
+.zfill.p{background:var(--accent)}
+.zfill.n{background:var(--danger)}
+.zv{position:absolute;left:0;right:0;text-align:center;font-size:13.5px;font-weight:700;font-variant-numeric:tabular-nums;transition:top .5s cubic-bezier(.22,.8,.3,1)}
+.zv.p{color:var(--accent)} .zv.n{color:var(--danger)}
+.zlab{display:flex;gap:16px;margin-top:8px}
+.zlab div{flex:1;text-align:center;font-size:12.5px;color:var(--muted);line-height:1.45}
+.tax2 .c3 .cb{background:#4a7fa0}
+.sign{display:inline-block;min-width:18px;font-weight:700;font-variant-numeric:tabular-nums}
+.sign.p{color:var(--accent)} .sign.n{color:var(--danger)}
+.cfs td:first-child{padding-left:12px}
+.cfs tr.head td{color:var(--muted);font-size:13.5px;font-weight:600;padding-top:16px}
+.cfs tr.sum td{font-weight:700;border-top:1px solid var(--line);border-bottom:2px solid var(--line)}
+.cfs tr.sum td.num{color:var(--accent)}
+.cfs tr.sum.neg td.num{color:var(--danger)}
+.cfs td.ind{padding-left:26px;color:#cdc7be;font-size:14.5px}
+@media(max-width:520px){
+  .zbar{gap:9px;height:135px}
+  .zaxis{top:67px}
+  .zlab{gap:9px}
+  .zlab div{font-size:11.5px}
+  .cfs td.ind{padding-left:14px;font-size:13.5px}
+}
+</style>
+<style>
+/* Day 27 — DuPont และห้องทดลองเลเวอเรจ */
+.dp{margin:16px 0 4px}
+.dprow{display:grid;grid-template-columns:136px 1fr 74px;gap:10px;align-items:center;margin-bottom:8px;font-size:14px}
+.dprow .dlab{color:var(--muted);font-size:13.5px;line-height:1.45}
+.dtrack{height:24px;background:#2a2724;border-radius:7px;overflow:hidden}
+.dfill{height:100%;border-radius:7px;transition:width .5s cubic-bezier(.22,.8,.3,1);min-width:3px}
+.d-nm{background:var(--accent)}
+.d-at{background:#4a7fa0}
+.d-em{background:var(--warn)}
+.dval{text-align:right;font-weight:600;font-variant-numeric:tabular-nums;font-size:14.5px}
+.dprod{text-align:center;font-size:15.5px;padding:10px 12px;border-radius:9px;background:var(--accent-soft);
+  border:1px solid #2c4a3c;color:var(--accent);margin-top:6px;font-variant-numeric:tabular-nums}
+.dnote{font-size:14px;color:var(--muted);margin-top:10px;line-height:1.65}
+.rid{display:grid;grid-template-columns:1fr 1fr;gap:8px 18px;margin:16px 0 4px}
+.rid .r{display:flex;justify-content:space-between;gap:8px;font-size:15px;padding:7px 0;border-bottom:1px solid var(--line)}
+.rid .r b{font-variant-numeric:tabular-nums;color:var(--accent);white-space:nowrap}
+.rid .r.warnv b{color:var(--warn)}
+.rid .r.badv b{color:var(--danger)}
+.tax2 .c3.lose .cb{background:var(--danger)}
+@media(max-width:520px){
+  .dprow{grid-template-columns:104px 1fr 62px;gap:7px;font-size:13px}
+  .dprow .dlab{font-size:12.5px}
+  .rid{grid-template-columns:1fr;gap:0 0}
+}
+</style>
+<style>
+/* Day 28 — DCF: แถบมูลค่าปลายทาง ตารางความไว และมาตรวัดราคา */
+.d-y{background:#4d7a63}
+.d-tv{background:var(--warn)}
+.heat{font-variant-numeric:tabular-nums;font-size:14.5px}
+.heat th,.heat td{padding:8px 6px;text-align:center}
+.heat td.rowh,.heat th{color:var(--muted);font-size:13px}
+.heat td.v{border-radius:7px;font-weight:600}
+.h0{background:#241f1c;color:#c9b7ad}
+.h1{background:#2b2a20;color:#d4c59f}
+.h2{background:#26302a;color:#9fd0b4}
+.h3{background:#1f3b2c;color:#8ee0b0}
+.heat td.mid{outline:2px solid var(--accent);outline-offset:-2px}
+.gauge{position:relative;height:56px;margin:18px 0 6px}
+.gtrk{position:absolute;left:0;right:0;top:22px;height:14px;border-radius:7px;background:linear-gradient(90deg,#1f3b2c,#2b2a20,#4a2b22)}
+.gmk{position:absolute;top:8px;width:2px;height:42px;background:var(--ink);transition:left .5s cubic-bezier(.22,.8,.3,1)}
+.gmk.price{background:var(--danger)}
+.gmk i{position:absolute;top:-16px;left:50%;transform:translateX(-50%);font-size:12px;font-style:normal;white-space:nowrap;color:var(--muted)}
+.gscale{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+@media(max-width:520px){
+  .heat{font-size:12.5px}
+  .heat th,.heat td{padding:6px 3px}
+}
+</style>
+<style>
+/* Day 29 — Growth vs Value: การ์ดสองฝั่ง ทฤษฎีบท และแถบแยกผลตอบแทน */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0 6px}
+.duo .dcard{border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:var(--card)}
+.duo .dcard.g{border-color:#4a3722;background:var(--warn-soft)}
+.duo .dcard.v{border-color:#2c4a3c;background:var(--accent-soft)}
+.duo .dh{font-size:13px;color:var(--muted);letter-spacing:.02em;margin-bottom:8px;font-weight:600}
+.duo .dl{display:flex;justify-content:space-between;gap:8px;font-size:14.5px;padding:5px 0;border-bottom:1px solid var(--line)}
+.duo .dl:last-child{border-bottom:none}
+.duo .dl b{font-variant-numeric:tabular-nums;white-space:nowrap}
+.duo .dcard.g .dl b{color:var(--warn)}
+.duo .dcard.v .dl b{color:var(--accent)}
+.sp-a{background:#4a7fa0;color:#0f1b22}
+.sp-b{background:var(--accent);color:#12130f}
+.sp-c{background:var(--warn);color:#241a0d}
+.sp-neg{background:var(--danger);color:#fff}
+.thm{background:var(--accent-soft);border:1px solid #2c4a3c;border-radius:12px;padding:16px 18px;margin:18px 0;text-align:center;font-size:16px}
+.thm .eq{font-size:18.5px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums;margin-bottom:7px;line-height:1.5}
+.thm .note{font-size:13.5px;color:var(--muted);line-height:1.65}
+@media(max-width:520px){ .duo{grid-template-columns:1fr} .thm .eq{font-size:16px} }
+</style>
+<style>
+/* Day 30 — วงล้อวัฏจักร และการ์ดสี่ช่วงเศรษฐกิจ */
+.cyc{margin:14px 0 4px}
+.cyc svg{width:100%;height:auto;display:block}
+.phgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0 14px}
+.ph{border:1px solid var(--line);border-radius:10px;padding:9px 8px;background:var(--card);text-align:center;transition:background .3s,border-color .3s,transform .3s}
+.ph.on{background:var(--accent-soft);border-color:#2c4a3c;transform:translateY(-3px)}
+.ph b{display:block;font-size:14px;color:var(--ink);margin-bottom:2px}
+.ph span{display:block;color:var(--muted);font-size:12px;line-height:1.5}
+.ph.on b{color:var(--accent)}
+@media(max-width:520px){ .phgrid{grid-template-columns:1fr 1fr} }
+</style>
+<style>
+/* Day 47 — ตารางสูตรสรุปเฟส และกล่อง IPS */
+.ips{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:14px 0 4px;font-size:14.5px;line-height:1.8}
+.ips b{color:var(--accent)}
+.fx td:first-child{white-space:nowrap;color:var(--muted);font-size:13.5px}
+</style>
+<style>
+/* Day 48 — จุดแทนเทรดเดอร์ 100 คน และตารางเทียบ */
+.dots48{display:grid;grid-template-columns:repeat(20,1fr);gap:5px;margin:14px 0 6px}
+.dots48 i{aspect-ratio:1;border-radius:50%;background:var(--danger);opacity:.75;transition:background .3s,opacity .3s}
+.dots48 i.w{background:var(--accent);opacity:1}
+.cmp td:first-child{white-space:nowrap;color:var(--muted);font-size:13.5px}
+.fn{font-size:14px;color:var(--muted);text-align:center;margin-top:6px}
+</style>
+<style>
+/* Day 49 — กระดานราคาเชิงโต้ตอบ และตารางขั้นราคา */
+.obctl{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.obnote{font-size:14px;color:var(--muted);margin-top:10px;line-height:1.65}
+.tickout{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0 4px}
+.fillnote{font-size:12.5px;color:var(--warn);padding:0 6px;line-height:24px;white-space:nowrap}
+</style>
+<style>
+/* Day 50 — เครื่องมือเทียบประเภทคำสั่ง */
+.cmp td{font-size:14.5px;vertical-align:top}
+.cmp td:first-child{font-weight:600;color:var(--ink)}
+</style>
+<style>
+/* Day 51 — แท่งเทียน: SVG, กล่องสถิติ และปุ่ม preset */
+.cndl{margin:12px 0 4px}
+.cndl svg{width:100%;height:auto;display:block;background:var(--code);border:1px solid var(--line);border-radius:12px}
+.cndl .gl{stroke:#2e2a26;stroke-width:1}
+.cndl .gt{fill:var(--muted);font-size:10px;font-family:inherit}
+.cndl .lb{fill:var(--ink);font-size:10.5px;font-family:inherit;font-variant-numeric:tabular-nums}
+.cndl .up{fill:var(--accent);stroke:var(--accent)}
+.cndl .dn{fill:var(--danger);stroke:var(--danger)}
+.cndl .wk{stroke-width:2.5}
+.cndl .path{fill:none;stroke:var(--muted);stroke-width:1.6}
+.cndl .dot{fill:var(--warn)}
+.tkline{font-size:13.5px;color:var(--muted);font-variant-numeric:tabular-nums;margin:8px 0 0;line-height:1.7}
+.tkline b{color:var(--warn)}
+@media(max-width:520px){ .cndl .lb{font-size:11px} }
+</style>
+<style>
+/* Day 52 — Timeframe: รวมแท่ง ตารางสเกล √T และบันไดหลาย timeframe */
+.tfwrap{overflow-x:auto;margin:12px 0 4px}
+.tft{min-width:520px;font-variant-numeric:tabular-nums;margin:0}
+.tft th{white-space:nowrap}
+.tft td{font-size:14.5px;white-space:nowrap}
+.tft td:first-child{font-weight:600;color:var(--ink)}
+.tft td.hot{color:var(--danger);font-weight:600}
+.tft td.good{color:var(--accent);font-weight:600}
+.tft td.mid{color:var(--warn);font-weight:600}
+.ladder.tfl li{align-items:flex-start;flex-direction:column;gap:2px}
+.ladder.tfl b{color:var(--accent)}
+.ladder.tfl span{font-size:14px;color:var(--muted);line-height:1.6}
+.cndl.wide svg{background:var(--code)}
+@media(max-width:520px){ .tft td{font-size:13.5px} }
+</style>
+<style>
+/* Day 53 — แนวรับแนวต้าน: โซนบนกราฟสุ่ม และเครื่องคิด stop/target */
+.cndl .band{fill:var(--warn);fill-opacity:.2;stroke:var(--warn);stroke-width:1;stroke-dasharray:4 3}
+.cndl .bl{fill:var(--warn);font-size:11px;font-weight:700;font-family:inherit}
+.cndl .pdh{fill:var(--danger)}
+.cndl .pdl{fill:var(--accent)}
+.cndl .path{stroke-width:1.5}
+.srbtn{margin:0 0 14px}
+.pbar{position:relative;height:30px;background:#2a2724;border-radius:8px;margin:8px 0 4px;overflow:hidden}
+.pbar .pw{position:absolute;left:0;top:0;height:100%;background:var(--accent);opacity:.85;transition:width .4s cubic-bezier(.22,.8,.3,1)}
+.pbar .pm{position:absolute;top:0;height:100%;width:3px;background:var(--danger);transition:left .4s cubic-bezier(.22,.8,.3,1)}
+.pleg{display:flex;justify-content:space-between;font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.pleg b{color:var(--accent)}
+</style>
+<style>
+/* Day 54 — เส้นแนวโน้ม: เส้นรับ/ต้าน เส้นตัดวันนี้ และจุดทะลุ */
+.cndl .tl-sup{stroke:var(--accent);stroke-width:2.2}
+.cndl .tl-res{stroke:var(--danger);stroke-width:2.2}
+.cndl .cut{stroke:var(--muted);stroke-width:1;stroke-dasharray:4 4}
+.cndl .path.fut{stroke:#7d766d;stroke-opacity:.55;stroke-dasharray:3 3}
+.cndl .brk{fill:none;stroke:var(--warn);stroke-width:2.5}
+</style>
+<style>
+/* Day 55 — Moving averages: เส้นราคา เส้น MA จุดตัด และแถบตอบสนอง */
+.cndl .pxl{fill:none;stroke:var(--muted);stroke-width:1.4;stroke-opacity:.8}
+.cndl .maf{fill:none;stroke:var(--warn);stroke-width:2.2}
+.cndl .mas{fill:none;stroke:#4a7fa0;stroke-width:2.2}
+.cndl .gc{fill:var(--accent);stroke:#12130f;stroke-width:1.2}
+.cndl .dc{fill:var(--danger);stroke:#12130f;stroke-width:1.2}
+.rsp{display:grid;grid-template-columns:70px 1fr 64px;gap:10px;align-items:center;margin-bottom:8px;font-size:14px}
+.rsp .dlab{color:var(--muted);font-size:13.5px}
+.rsp .dval{text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
+.d-sma{background:#4a7fa0}
+.d-ema{background:var(--warn)}
+@media(max-width:520px){ .rsp{grid-template-columns:54px 1fr 54px;gap:7px;font-size:13px} }
+</style>
+<style>
+/* Day 56 — RSI/Stochastic: มาตรวัด 0-100 โซนบน/ล่าง และเส้นตัวชี้วัด */
+.rzone{position:relative;height:30px;background:#2a2724;border-radius:8px;margin:8px 0 4px;overflow:hidden}
+.rzone .zlo{position:absolute;left:0;top:0;height:100%;width:30%;background:var(--accent-soft);border-right:1px dashed #2c4a3c}
+.rzone .zhi{position:absolute;right:0;top:0;height:100%;width:30%;background:var(--warn-soft);border-left:1px dashed #4a3722}
+.rzone .zmk{position:absolute;top:0;height:100%;width:3px;background:var(--danger);margin-left:-1px;transition:left .35s cubic-bezier(.22,.8,.3,1)}
+.cndl .ind{fill:none;stroke:var(--warn);stroke-width:2}
+.cndl .zl{stroke:var(--muted);stroke-width:1;stroke-dasharray:4 4}
+.cndl .zb{fill:var(--warn);fill-opacity:.12}
+.cndl .zb2{fill:var(--accent);fill-opacity:.12}
+</style>
+<style>
+/* Day 57 — MACD: ฮิสโทแกรม เส้น MACD/signal และมาตรวัดสัญญาณ */
+.cndl .macd{fill:none;stroke:var(--warn);stroke-width:2}
+.cndl .sig{fill:none;stroke:#4a7fa0;stroke-width:2}
+.cndl .hp{fill:var(--accent);fill-opacity:.55}
+.cndl .hn{fill:var(--danger);fill-opacity:.55}
+.cndl .zero{stroke:var(--muted);stroke-width:1;stroke-dasharray:4 4}
+.mgrid.m4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:520px){ .mgrid.m4{grid-template-columns:repeat(2,1fr)} }
+</style>
+<style>
+/* Day 58 — Bollinger Bands: แถบ เส้นกลาง BandWidth และจุดนอกแถบ */
+.cndl .bbfill{fill:var(--accent);fill-opacity:.09}
+.cndl .bbl{fill:none;stroke:var(--accent);stroke-width:1.6}
+.cndl .bbm{fill:none;stroke:var(--warn);stroke-width:1.8}
+.cndl .bwl{fill:none;stroke:#4a7fa0;stroke-width:2}
+.cndl .dhi{fill:var(--warn);stroke:#12130f;stroke-width:1.2}
+.cndl .dlo{fill:var(--accent);stroke:#12130f;stroke-width:1.2}
+</style>
+<style>
+/* Day 59 — Volume: แท่งปริมาณ OBV มาร์กเกอร์เบรกเอาต์ และเครื่องคิด VWAP */
+.cndl .vb{fill:#4a7fa0;fill-opacity:.75}
+.cndl .vbh{fill:var(--accent);fill-opacity:.9}
+.cndl .obvl{fill:none;stroke:var(--accent);stroke-width:1.8}
+.cndl .bk1{fill:var(--accent);stroke:#12130f;stroke-width:1.2}
+.cndl .bk0{fill:none;stroke:var(--warn);stroke-width:2}
+.cndl .thl{stroke:var(--warn);stroke-width:1;stroke-dasharray:4 4}
+.vw td.num{font-variant-numeric:tabular-nums}
+.vw td{font-size:15px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="nav"><a href="../index.html">← สารบัญ</a></div>
+
+<header>
+  <div class="kicker">
+    <span class="pill">Day 59 / 90</span>
+    <span>Phase 3 · การเทรด</span>
+    <span>·</span>
+    <span>อ่าน 8 นาที</span>
+  </div>
+  <h1>Volume และการยืนยันสัญญาณ</h1>
+  <p class="sub">ปริมาณซื้อขาย (volume) คือข้อมูลชิ้นเดียวนอกจากราคาที่ตลาดบอกเราได้ฟรี วันนี้คำนวณ OBV, RVOL และ VWAP ด้วยมือ แล้วทดสอบข้อกล่าวอ้างยอดนิยมว่า "เบรกเอาต์พร้อม volume สูงเชื่อถือได้กว่า" ในโลกจำลอง ผลคือ volume บอก<em>ขนาด</em>ของการเคลื่อนไหวได้ดีมาก แต่แทบไม่บอก<em>ทิศทางถัดไป</em></p>
+</header>
+
+<h2>สามเครื่องมือจาก volume</h2>
+
+<p>Volume คือจำนวนหุ้นที่ซื้อขายกันในแท่งนั้น (ไม่ใช่จำนวนเงิน; มูลค่าซื้อขาย = ราคา × volume) ทุกการซื้อมีผู้ขายอยู่อีกฝั่งเสมอ จึงไม่มี "volume ฝั่งซื้อ" หรือ "ฝั่งขาย" ที่วัดตรงๆ จากตัวเลขนี้ ตัวชี้วัดที่ใช้กันมีสามตัว:</p>
+
+<div class="thm">
+  <div class="eq">OBV<sub>t</sub> = OBV<sub>t−1</sub> + sign(C<sub>t</sub> − C<sub>t−1</sub>) · V<sub>t</sub></div>
+  <div class="note">On-Balance Volume (Joseph Granville) · ปิดขึ้น บวก volume ทั้งแท่ง ปิดลง ลบทั้งแท่ง ปิดเท่าเดิม ไม่เปลี่ยน · ค่าสัมบูรณ์ไม่มีความหมาย ดูแค่ "รูปร่าง" ว่าทำจุดสูง/ต่ำใหม่พร้อมราคาหรือไม่</div>
+</div>
+
+<div class="thm">
+  <div class="eq">RVOL = V<sub>t</sub> ÷ SMA<sub>20</sub>(V) &nbsp;·&nbsp; VWAP = Σ(P<sub>i</sub>·V<sub>i</sub>) ÷ ΣV<sub>i</sub></div>
+  <div class="note">RVOL (relative volume) บอกว่าแท่งนี้หนาแน่นกี่เท่าของปกติ (ใช้ค่าเฉลี่ย 20 แท่ง<strong>ก่อนหน้า</strong>) · VWAP (volume-weighted average price) คือราคาเฉลี่ยถ่วงน้ำหนักด้วยปริมาณ ใช้เป็นเกณฑ์ว่าซื้อของได้ถูกหรือแพงเทียบกับตลาดทั้งวัน</div>
+</div>
+
+<div class="card">
+  <h3>ตัวอย่าง OBV ด้วยมือ</h3>
+  <p style="margin-bottom:6px">ปิด 50, 51, 50.5, 52, 52, 51 · volume 1,000, 1,500, 800, 2,000, 900, 1,200 หุ้น (แท่งแรกเริ่มที่ 0)</p>
+  <p style="margin-bottom:0">OBV = 0 → <strong>+1,500</strong> = 1,500 → <strong>−800</strong> = 700 → <strong>+2,000</strong> = 2,700 → ปิดเท่าเดิม <strong>2,700</strong> → <strong>−1,200</strong> = <strong>1,500</strong> · สังเกต: แท่งที่ 5 ปิดเท่าเดิม volume 900 หุ้นถูกทิ้งไปทั้งหมด</p>
+</div>
+
+<h2>VWAP: เกณฑ์วัดว่าซื้อแพงไหม</h2>
+
+<p>นักลงทุนสถาบันมักประเมินการซื้อขายของตัวเองด้วยการเทียบราคาเฉลี่ยที่ทำได้กับ VWAP ของวัน (เชื่อมกับ Day 49: ผลกระทบด้านราคาและ slippage) ตัวอย่างหุ้นสมมติ วันนี้มีการซื้อขาย 3 ช่วง ปรับตัวเลขของช่วงที่สามแล้วดูว่า VWAP ต่างจากค่าเฉลี่ยราคาธรรมดาอย่างไร:</p>
+
+<table class="vw">
+  <thead><tr><th>ช่วง</th><th class="num">ราคา (บาท)</th><th class="num">volume (หุ้น)</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td class="num">50.00</td><td class="num">1,000</td></tr>
+    <tr><td>2</td><td class="num">50.50</td><td class="num">3,000</td></tr>
+    <tr><td>3 (ปรับได้)</td><td class="num" id="w_pv">49.75</td><td class="num" id="w_vv">2,000</td></tr>
+  </tbody>
+</table>
+
+<div class="calc">
+  <div class="row"><label>ราคาช่วงที่ 3 = <span class="val" id="w_pl">49.75</span> บาท</label><input type="range" id="w_p" min="4900" max="5100" step="25" value="4975"></div>
+  <div class="row"><label>volume ช่วงที่ 3 = <span class="val" id="w_vl">2,000</span> หุ้น</label><input type="range" id="w_v" min="0" max="10000" step="500" value="2000"></div>
+  <div class="mgrid">
+    <div class="mbox"><div class="mv" id="w_vw">50.17</div><div class="mn">VWAP (บาท)</div></div>
+    <div class="mbox"><div class="mv" id="w_av">50.08</div><div class="mn">เฉลี่ยราคาธรรมดา</div></div>
+    <div class="mbox"><div class="mv" id="w_sl">+1,400</div><div class="mn">ซื้อ 6,000 หุ้น เฉลี่ย 50.40<br>จ่ายเกิน VWAP (บาท)</div></div>
+  </div>
+  <div class="verdict" id="w_vd"></div>
+</div>
+
+<p>ค่าเริ่มต้น: Σ(P·V) = 50,000 + 151,500 + 99,500 = 301,000 บาท ÷ 6,000 หุ้น = <strong>VWAP 50.1667</strong> ส่วนเฉลี่ยธรรมดา (50 + 50.5 + 49.75) ÷ 3 = 50.0833 ต่างกันเพราะช่วงที่ 2 มี volume มากสุดจึงดึง VWAP เข้าหา 50.50 ถ้าคุณซื้อ 6,000 หุ้นได้เฉลี่ย 50.40 คุณจ่ายเกิน VWAP หุ้นละ 0.2333 บาท รวม <strong>1,400 บาท (0.465%)</strong></p>
+
+<h2>เบรกเอาต์ที่มี volume ยืนยัน เชื่อได้แค่ไหน</h2>
+
+<p>ตำราให้ไว้ว่า ถ้าราคาปิดทะลุจุดสูงสุด 20 แท่ง <em>และ</em> RVOL สูง (เช่น ≥ 1.5) แปลว่า "มีแรงจริง" ลองสุ่มกราฟดู วงกลมเขียวคือเบรกเอาต์ที่ RVOL ผ่านเกณฑ์ วงกลมกลวงเหลืองคือเบรกเอาต์ที่ volume ไม่ถึง โหมด "ผูกกับขนาดแท่ง" คือ volume สูงเมื่อราคาเคลื่อนแรง (ตามที่ตลาดจริงมักเป็น) โหมด "อิสระ" คือ volume สุ่มไม่เกี่ยวกับราคาเลย:</p>
+
+<div class="calc">
+  <div class="srbtn"><button class="pbtn" id="c_new">สุ่มกราฟใหม่</button> <span class="fn" id="c_seed" style="margin-left:8px"></span></div>
+  <div class="seg" id="c_mode">
+    <button data-m="1" class="active">volume ผูกกับขนาดแท่ง</button>
+    <button data-m="0">volume อิสระ</button>
+  </div>
+  <div class="row"><label>เกณฑ์ RVOL ≥ <span class="val" id="c_tv">1.5</span></label><input type="range" id="c_t" min="10" max="30" step="1" value="15"></div>
+  <div class="cndl wide"><svg id="c_svg" viewBox="0 0 640 330" role="img" aria-label="กราฟราคาเดินสุ่ม แท่ง volume และ OBV พร้อมจุดเบรกเอาต์"></svg></div>
+  <div class="legend"><span><i class="swatch" style="background:var(--muted)"></i>ราคา</span><span><i class="swatch" style="background:#4a7fa0"></i>volume</span><span><i class="swatch" style="background:var(--accent)"></i>OBV / เบรกเอาต์ที่ผ่านเกณฑ์</span><span><i class="swatch" style="background:var(--warn)"></i>เบรกเอาต์ไม่ผ่าน</span></div>
+  <div class="mgrid">
+    <div class="mbox"><div class="mv" id="c_nb">0</div><div class="mn">เบรกเอาต์ 20 แท่ง</div></div>
+    <div class="mbox"><div class="mv" id="c_nc">0</div><div class="mn">ผ่านเกณฑ์ RVOL</div></div>
+    <div class="mbox"><div class="mv" id="c_cor">0</div><div class="mn">สหสัมพันธ์<br>volume กับ |ผลตอบแทน|</div></div>
+  </div>
+  <div class="verdict bad" id="c_v"></div>
+</div>
+
+<p>ผมจำลอง log-return แบบ GARCH(1,1) (α = 0.10, β = 0.88, σ ระยะยาว 1.2%) และ σ คงที่ ยาว 400,000 แท่งต่อโลก โดยสมมติ volume<sub>t</sub> ∝ (0.5 + |r<sub>t</sub>| ÷ σ̄) × ตัวคูณสุ่มลอการิทึมปกติ (ค่านี้เป็นสมมติฐานของบทเรียน) เบรกเอาต์ = ปิดสูงกว่าปิดสูงสุด 20 แท่งก่อนหน้า ผ่านเกณฑ์ = RVOL ≥ 1.5:</p>
+
+<table>
+  <thead><tr><th>รายการ</th><th class="num">σ คงที่ (iid)</th><th class="num">GARCH</th></tr></thead>
+  <tbody>
+    <tr><td>สหสัมพันธ์ volume กับ |r| / กับ r</td><td class="num">0.81 / −0.00</td><td class="num">0.83 / 0.00</td></tr>
+    <tr><td>แท่งที่เป็นเบรกเอาต์ · ในนั้นผ่านเกณฑ์ RVOL</td><td class="num">12.6% · 27.0%</td><td class="num">12.6% · 25.8%</td></tr>
+    <tr><td>|r| ในวันเบรกเอาต์ ผ่านเกณฑ์ / ไม่ผ่าน</td><td class="num">2.05% / 0.93%</td><td class="num">1.96% / 0.89%</td></tr>
+    <tr><td>10 แท่งถัดไป หลังเบรกเอาต์ผ่านเกณฑ์ (ค่าเฉลี่ย · ขึ้น)</td><td class="num">−0.015% · 49.8%</td><td class="num">+0.063% · 50.7%</td></tr>
+    <tr><td>10 แท่งถัดไป หลังเบรกเอาต์ไม่ผ่าน</td><td class="num">−0.007% · 50.1%</td><td class="num">+0.002% · 49.8%</td></tr>
+    <tr><td>ฐานเปรียบเทียบ: ทุกแท่ง</td><td class="num">+0.002% · 50.1%</td><td class="num">−0.004% · 50.0%</td></tr>
+    <tr><td>เบรกเอาต์ที่ OBV ทำจุดสูงใหม่ด้วย (ยืนยัน) · 10 แท่งถัดไป</td><td class="num">+0.005% · 50.3%</td><td class="num">+0.028% · 50.3%</td></tr>
+    <tr><td>เบรกเอาต์ที่ OBV ไม่ยืนยัน · 10 แท่งถัดไป</td><td class="num">−0.066% · 49.1%</td><td class="num">−0.018% · 49.4%</td></tr>
+    <tr><td>ค่าเฉลี่ย |r| 10 แท่งถัดไป หลังเบรกเอาต์ผ่านเกณฑ์ / ฐาน</td><td class="num">0.956% / 0.956%</td><td class="num">0.988% / 0.912%</td></tr>
+  </tbody>
+</table>
+<p class="src">ที่มา: การจำลองของบทเรียนนี้ (Python, numpy, seed 59 และ 159, ดูกล่องโค้ด) ไม่ใช่ข้อมูลตลาดจริง · σ ของผลตอบแทน 10 แท่งราว 3.8% จึงทำให้ค่าเฉลี่ยของ 13,000 เหตุการณ์มีความคลาดเคลื่อนมาตรฐานอย่างน้อย 0.033 จุดเปอร์เซ็นต์ (มากกว่านี้เพราะเหตุการณ์ติดกันซ้อนทับ) ผลต่างระดับ 0.01–0.07 จึงอยู่ในช่วงสัญญาณรบกวน · ความสัมพันธ์ volume–|r| เป็นสมมติฐานที่ใส่ไว้ในแบบจำลอง ตลาดจริงมักแสดงความสัมพันธ์ทิศเดียวกันแต่ขนาดไม่เท่ากัน · OBV อ้างอิง Joseph Granville</p>
+
+<p>อ่านตารางได้สามข้อ (1) <strong>volume เกือบเท่ากับขนาดแท่ง</strong> สหสัมพันธ์กับ |r| สูง 0.81–0.83 แต่กับ r (ทิศทาง) เป็นศูนย์ เบรกเอาต์ที่ผ่านเกณฑ์จึงเป็นแท่งที่เคลื่อนแรงอยู่แล้ว (2.05% เทียบ 0.93%, ราว 2.2 เท่า) "volume ยืนยัน" ส่วนใหญ่คือการพูดซ้ำว่าแท่งนี้ใหญ่ (2) <strong>ราคา 10 แท่งหลังเบรกเอาต์ไม่ต่างจากฐาน</strong> ไม่ว่ามี volume ยืนยันหรือไม่ และไม่ว่า OBV ยืนยันหรือไม่ ผลต่างทุกแถวอยู่ในช่วงสัญญาณรบกวน (3) ข้อมูลที่ volume เพิ่มให้จริงคือ<strong>ขนาด</strong> ใน GARCH หลังเบรกเอาต์ผ่านเกณฑ์ |r| ถัดไปสูงกว่าฐาน 8.3% (0.988 ÷ 0.912) ซึ่งเป็นผลของความผันผวนกระจุกตัวแบบ Day 58 ไม่ใช่ทิศทาง</p>
+
+<div class="card warn">
+  <h3>ความหมายของผลนี้</h3>
+  <p style="margin-bottom:6px">ใช้ volume เพื่อ<strong>ประเมินสภาพคล่องและความเสี่ยง</strong>: เบรกเอาต์ที่ RVOL ต่ำออกยากกว่าและ slippage สูงกว่า (Day 49) ส่วนการใช้ volume ทำนายว่าราคาจะไปต่อ ต้องทดสอบนอกตัวอย่างหลังหักต้นทุน (0.35% ต่อรอบ จาก Day 48) ก่อนเชื่อ</p>
+  <p style="margin-bottom:0">OBV ที่ "ไม่ยืนยัน" (divergence) เกิดกับเบรกเอาต์ราว 20% ในโลกจำลอง ทั้งที่ไม่มีข้อมูลใดซ่อนอยู่เลย การเห็น divergence ในกราฟจริงจึงเป็นเหตุการณ์ธรรมดา</p>
+</div>
+
+<details>
+  <summary>กล่องโค้ด (ข้ามได้ ไม่นับในเวลาอ่าน)</summary>
+  <div class="ans">
+<pre><code>import numpy as np
+from numpy.lib.stride_tricks import sliding_window_view as sw
+
+# ตัวอย่างมือ
+c = np.array([50, 51, 50.5, 52, 52, 51]); v = np.array([1000, 1500, 800, 2000, 900, 1200])
+obv = np.cumsum(np.sign(np.diff(c, prepend=c[0])) * v)
+print(obv)                                    # [0 1500 700 2700 2700 1500]
+
+P = np.array([50.00, 50.50, 49.75]); V = np.array([1000, 3000, 2000])
+vwap = (P * V).sum() / V.sum()
+print(vwap, P.mean(), (50.40 - vwap) * 6000)  # 50.1667 50.0833 1400.0
+
+# จำลอง GARCH + volume ผูกกับ |r|
+def world(seed, n=400_000, s0=0.012):
+    rng = np.random.default_rng(seed); z, e = rng.normal(size=n), rng.normal(size=n)
+    r = np.empty(n); var = s0 * s0; w = (1 - 0.10 - 0.88) * s0 * s0
+    for i in range(n):
+        r[i] = np.sqrt(var) * z[i]; var = w + 0.10 * r[i]**2 + 0.88 * var
+    vol = (0.5 + np.abs(r) / s0) * np.exp(0.3 * e)
+    return r, vol / vol.mean() * 1e6, 100 * np.exp(np.cumsum(r))
+
+r, vol, p = world(159); n, H = 20, 10
+hi20 = np.full(len(p), np.inf); hi20[n:] = sw(p[:-1], n).max(axis=1)
+avgv = np.full(len(p), np.nan); avgv[n:] = sw(vol[:-1], n).mean(axis=1)
+brk = p &gt; hi20; rvol = vol / avgv
+print(np.corrcoef(vol, np.abs(r))[0, 1])      # ~0.83
+print((brk &amp; (rvol &gt;= 1.5)).sum() / brk.sum())  # ~0.26</code></pre>
+  </div>
+</details>
+
+<h2>ทดสอบความเข้าใจ</h2>
+
+<p class="q">1. ปิด 20, 21, 20.5, 20.5, 22 · volume 1,000, 2,000, 500, 800, 1,500 หุ้น จงหา OBV แท่งสุดท้าย (แท่งแรกเริ่มที่ 0)</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">0 → +2,000 = 2,000 → −500 = 1,500 → ปิดเท่าเดิม (20.5 = 20.5) ไม่เปลี่ยน 1,500 → +1,500 = <strong>3,000</strong> volume 800 หุ้นของแท่งที่ 4 ไม่ถูกนับเพราะราคาปิดเท่าเดิม</div>
+</details>
+
+<p class="q">2. ซื้อขายวันนี้ 2,000 หุ้นที่ 40.00 · 1,000 หุ้นที่ 40.60 · 3,000 หุ้นที่ 39.90 จงหา VWAP และถ้าคุณซื้อ 6,000 หุ้นได้เฉลี่ย 40.20 จ่ายเกิน VWAP กี่บาท กี่ %</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">Σ(P·V) = 80,000 + 40,600 + 119,700 = 240,300 ÷ 6,000 = <strong>VWAP 40.05</strong> (เฉลี่ยธรรมดา 40.1667) · จ่ายเกิน (40.20 − 40.05) × 6,000 = <strong>900 บาท</strong> = 0.15 ÷ 40.05 = <strong>0.375%</strong></div>
+</details>
+
+<p class="q">3. วันนี้หุ้นปิดทะลุจุดสูงสุด 20 วัน volume 4.5 ล้านหุ้น ค่าเฉลี่ย 20 วันก่อนหน้า 3.0 ล้านหุ้น คำนวณ RVOL และตามตารางจำลอง การที่ผ่านเกณฑ์ ≥ 1.5 ช่วยทำนายผลตอบแทน 10 แท่งถัดไปหรือไม่</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">RVOL = 4.5 ÷ 3.0 = <strong>1.5</strong> (ผ่านเกณฑ์พอดี) · ในตาราง ค่าเฉลี่ย 10 แท่งถัดไปหลังผ่านเกณฑ์เป็น −0.015% (iid) และ +0.063% (GARCH) เทียบไม่ผ่านเกณฑ์ −0.007% และ +0.002% ผลต่างน้อยกว่าสัญญาณรบกวนมาก จึง<strong>ไม่ช่วย</strong>ทำนายทิศทาง ที่ต่างกันจริงคือ |r| ของวันเบรกเอาต์ (ราว 2.2 เท่า)</div>
+</details>
+
+<p class="q"><strong>ทวน:</strong> Day 49 · bid 49.75 / ask 50.00 ซื้อ 4,000 หุ้นด้วย market แล้วขายคืนทันทีด้วย market (ราคาไม่ขยับ) เสียเงินกี่บาท คิดเป็นกี่ % ของมูลค่าที่ซื้อ</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">ซื้อที่ 50.00 ขายที่ 49.75 เสียหุ้นละ 0.25 × 4,000 = <strong>1,000 บาท</strong> · มูลค่าซื้อ 200,000 บาท ⇒ 1,000 ÷ 200,000 = <strong>0.50%</strong> (เทียบ mid 49.875 ได้ spread 0.5013%) เป็นต้นทุนก้อนเดียวกับที่ VWAP วัดเมื่อเทียบราคาเฉลี่ยกับตลาด<br>ตอบผิดหรือลังเล? → <a href="finance-day-49-market-structure-order-book.html">ทบทวน Day 49: โครงสร้างตลาด: order book, spread, liquidity</a></div>
+</details>
+
+<p class="q"><strong>ทวน:</strong> Day 53 · วางแผนซื้อด้วย stop 1 บาท และ target 2.5 บาท (R:R = 2.5) ไม่คิดต้นทุน อัตราชนะขั้นต่ำเท่าไรจึงเท่าทุน</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">จุดเท่าทุน: p × 2.5 = (1 − p) × 1 ⇒ p = 1 ÷ (1 + R:R) = 1 ÷ 3.5 = <strong>28.57%</strong> ต้นทุนจริงจะดันตัวเลขนี้สูงขึ้น เบรกเอาต์ที่ขาดสภาพคล่องมี slippage มากขึ้นด้วย<br>ตอบผิดหรือลังเล? → <a href="finance-day-53-support-resistance.html">ทบทวน Day 53: แนวรับแนวต้าน (support/resistance)</a></div>
+</details>
+
+<div class="summary-box">
+  <h2 style="margin-top:0">สรุป 3 บรรทัด</h2>
+  <p>1. OBV = สะสม ±volume ตามทิศปิด, RVOL = V ÷ SMA<sub>20</sub>(V), VWAP = Σ(P·V) ÷ ΣV ใช้เทียบว่าซื้อขายได้ดีกว่าตลาดทั้งวันหรือไม่ (ตัวอย่าง VWAP 50.17 จ่ายเกิน 1,400 บาท)</p>
+  <p>2. Volume สัมพันธ์กับ <em>ขนาด</em> ของแท่ง (0.81–0.83) แต่แทบไม่สัมพันธ์กับ <em>ทิศทาง</em> (≈ 0) เบรกเอาต์ที่ "volume ยืนยัน" ส่วนใหญ่คือแท่งใหญ่ ราคา 10 แท่งถัดไปไม่ต่างจากฐาน</p>
+  <p style="margin-bottom:0">3. ใช้ volume วัดสภาพคล่อง ความเสี่ยง และต้นทุนการเข้า-ออก ดีกว่าใช้ทำนายทิศ ส่วน divergence ของ OBV เกิดราว 20% ของเบรกเอาต์ในโลกที่ไม่มีข้อมูลซ่อนอยู่เลย</p>
+</div>
+
+<footer>
+  <p><strong>พรุ่งนี้ Day 60 — รูปแบบราคาคลาสสิก: head &amp; shoulders, triangle, flag</strong> · รูปแบบที่ตำราเทรดวาดไว้จากสายตา พรุ่งนี้ลองนิยามด้วยกฎที่โปรแกรมตรวจได้ แล้วนับในโลกสุ่มว่ารูปแบบเหล่านี้เกิดถี่แค่ไหนโดยไม่มีข้อมูลซ่อนอยู่</p>
+  <p class="disclaimer">บทเรียนนี้เป็นความรู้เชิงการศึกษา ไม่ใช่คำแนะนำทางการเงินเฉพาะบุคคล และไม่ใช่การชี้ชวนให้ซื้อหรือขายหลักทรัพย์ใด · หุ้นและกราฟทั้งหมดเป็นข้อมูลสมมติ ผลการจำลองไม่รับประกันผลในตลาดจริง</p>
+</footer>
+
+</div>
+<script>
+(function(){
+  var $=function(id){ return document.getElementById(id); };
+  var fmt=function(n,d){ return n.toLocaleString('th-TH',{minimumFractionDigits:d,maximumFractionDigits:d}); };
+  var f1=function(n){ return (Math.round(n*10)/10).toString(); };
+  function mulberry(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+
+  /* ---------- 1) VWAP ---------- */
+  function wrender(){
+    var p3=(+$('w_p').value)/100, v3=+$('w_v').value;
+    var P=[50,50.5,p3], V=[1000,3000,v3], tv=0, tp=0, i;
+    for(i=0;i<3;i++){ tv+=V[i]; tp+=P[i]*V[i]; }
+    var vw=tp/tv, av=(P[0]+P[1]+P[2])/3, sl=(50.4-vw)*6000;
+    $('w_pl').textContent=fmt(p3,2); $('w_vl').textContent=fmt(v3,0);
+    $('w_pv').textContent=fmt(p3,2); $('w_vv').textContent=fmt(v3,0);
+    $('w_vw').textContent=fmt(vw,2); $('w_av').textContent=fmt(av,2);
+    $('w_sl').textContent=(sl>=0?'+':'−')+fmt(Math.abs(sl),0);
+    $('w_vd').textContent='Σ(P·V) = '+fmt(tp,0)+' ÷ '+fmt(tv,0)+' หุ้น ⇒ VWAP = '+fmt(vw,4)+' · เฉลี่ยธรรมดา '+fmt(av,4)+' · ซื้อเฉลี่ย 50.40 '+(sl>=0?'แพงกว่า':'ถูกกว่า')+' VWAP '+fmt(Math.abs(50.4-vw),4)+' บาท/หุ้น';
+  }
+  $('w_p').addEventListener('input',wrender);
+  $('w_v').addEventListener('input',wrender);
+  wrender();
+
+  /* ---------- 2) เบรกเอาต์ + volume + OBV ---------- */
+  var NB=130, seed=59, mode=1, W=20;
+  function series(sd,md){
+    var r=mulberry(sd), x=[50], vol=[], rets=[0], i, u1, u2, z, z2, v=0.012*0.012, w=(1-0.10-0.88)*0.012*0.012, ret, s;
+    function gauss(){ u1=r()||1e-9; u2=r(); return Math.sqrt(-2*Math.log(u1))*Math.cos(2*Math.PI*u2); }
+    var raw=[0];
+    for(i=1;i<NB;i++){
+      z=gauss(); s=Math.sqrt(v); ret=s*z; v=w+0.10*ret*ret+0.88*v;
+      x.push(x[i-1]*Math.exp(ret)); rets.push(ret);
+      z2=gauss();
+      raw.push(md?(0.5+Math.abs(ret)/0.012)*Math.exp(0.3*z2):Math.exp(0.6*z2));
+    }
+    raw[0]=raw[1];
+    var m=0; for(i=0;i<NB;i++) m+=raw[i]; m/=NB;
+    for(i=0;i<NB;i++) vol.push(raw[i]/m);
+    return {x:x,v:vol,r:rets};
+  }
+  function corr(a,b){
+    var n=a.length,i,ma=0,mb=0,sa=0,sb=0,sab=0;
+    for(i=0;i<n;i++){ma+=a[i];mb+=b[i];}
+    ma/=n;mb/=n;
+    for(i=0;i<n;i++){sa+=(a[i]-ma)*(a[i]-ma);sb+=(b[i]-mb)*(b[i]-mb);sab+=(a[i]-ma)*(b[i]-mb);}
+    return sab/Math.sqrt(sa*sb);
+  }
+  function crender(){
+    var thr=(+$('c_t').value)/10;
+    $('c_tv').textContent=fmt(thr,1); $('c_seed').textContent='ชุดที่ '+seed;
+    var S=series(seed,mode), x=S.x, V=S.v, N=x.length, i, j;
+    var obv=[0]; for(i=1;i<N;i++){ obv.push(obv[i-1]+(x[i]>x[i-1]?V[i]:(x[i]<x[i-1]?-V[i]:0))); }
+    var mn=Infinity,mx=-Infinity,vmax=0,omn=Infinity,omx=-Infinity;
+    for(i=0;i<N;i++){ if(x[i]<mn)mn=x[i]; if(x[i]>mx)mx=x[i]; if(V[i]>vmax)vmax=V[i]; if(obv[i]<omn)omn=obv[i]; if(obv[i]>omx)omx=obv[i]; }
+    var lov=mn-0.4, hiv=mx+0.4; if(omx-omn<1e-6) omx=omn+1;
+    var sx=function(t){ return 40+t*(592/(N-1)); };
+    var py=function(p){ return 8+(hiv-p)/(hiv-lov)*140; };
+    var vy=function(v){ return 232-(v/vmax)*62; };
+    var oy=function(o){ return 322-(o-omn)/(omx-omn)*60; };
+    var g='', step=(hiv-lov)>14?5:2, p;
+    for(p=Math.ceil(lov/step)*step;p<=hiv;p+=step){ g+='<line class="gl" x1="40" x2="632" y1="'+f1(py(p))+'" y2="'+f1(py(p))+'"/><text class="gt" x="2" y="'+f1(py(p)+3)+'">'+fmt(p,0)+'</text>'; }
+    g+='<text class="gt" x="2" y="'+f1(vy(vmax)+3)+'">Vol</text><text class="gt" x="2" y="'+f1(oy(omx)+3)+'">OBV</text>';
+    var bw=Math.max(1.6,592/N*0.7), thy=vy(thr);
+    var nb=0,nc=0,pts=[],opts=[],mk='',rv=[],ar=[];
+    for(i=0;i<N;i++){
+      var hiB=false;
+      if(i>=W){
+        var pm=-Infinity,sv=0;
+        for(j=i-W;j<i;j++){ if(x[j]>pm)pm=x[j]; sv+=V[j]; }
+        var rvol=V[i]/(sv/W);
+        if(x[i]>pm){
+          nb++; var ok=rvol>=thr; if(ok){ nc++; hiB=true; }
+          mk+='<circle class="'+(ok?'bk1':'bk0')+'" cx="'+f1(sx(i))+'" cy="'+f1(py(x[i]))+'" r="4.6"/>';
+        }
+        rv.push(V[i]); ar.push(Math.abs(S.r[i]));
+      }
+      g+='<rect class="'+(hiB?'vbh':'vb')+'" x="'+f1(sx(i)-bw/2)+'" y="'+f1(vy(V[i]))+'" width="'+f1(bw)+'" height="'+f1(232-vy(V[i]))+'"/>';
+      pts.push(f1(sx(i))+','+f1(py(x[i]))); opts.push(f1(sx(i))+','+f1(oy(obv[i])));
+    }
+    g+='<polyline class="pxl" points="'+pts.join(' ')+'"/><polyline class="obvl" points="'+opts.join(' ')+'"/>'+mk;
+    $('c_svg').innerHTML=g;
+    var cr=corr(rv,ar);
+    $('c_nb').textContent=nb; $('c_nc').textContent=nc; $('c_cor').textContent=fmt(cr,2);
+    $('c_v').textContent=(mode?'volume ผูกกับขนาดแท่ง':'volume อิสระ')+' · '+N+' แท่ง · เบรกเอาต์ '+nb+' ครั้ง ผ่านเกณฑ์ RVOL ≥ '+fmt(thr,1)+' อยู่ '+nc+' ครั้ง · สหสัมพันธ์ volume–|r| = '+fmt(cr,2)+(mode?' ⇒ จุดเขียวคือแท่งที่เคลื่อนแรง ไม่ได้แปลว่าจะไปต่อ':' ⇒ volume ไม่บอกอะไรเกี่ยวกับขนาดแท่งเลย "ยืนยัน" จึงเป็นแค่เหตุบังเอิญ');
+  }
+  $('c_t').addEventListener('input',crender);
+  $('c_new').addEventListener('click',function(){ seed=seed+1+Math.floor(Math.random()*97); crender(); });
+  var btns=document.querySelectorAll('#c_mode button');
+  Array.prototype.forEach.call(btns,function(b){ b.addEventListener('click',function(){
+    mode=+b.getAttribute('data-m');
+    Array.prototype.forEach.call(btns,function(x){ x.classList.toggle('active',x===b); });
+    crender();
+  }); });
+  crender();
+})();
+</script>
+
+</body>
+</html>

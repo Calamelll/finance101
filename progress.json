@@ -1,9 +1,9 @@
 {
   "startDate": "2026-07-21",
   "totalDays": 90,
-  "lastCompletedDay": 58,
-  "nextDay": 59,
-  "lastRunDate": "2026-10-26",
+  "lastCompletedDay": 59,
+  "nextDay": 60,
+  "lastRunDate": "2026-10-27",
   "githubPushed": true,
   "pendingPush": [],
   "history": [
@@ -572,6 +572,16 @@
       "recallFrom": [
         52,
         55
+      ]
+    },
+    {
+      "day": 59,
+      "date": "2026-10-27",
+      "title": "Volume และการยืนยันสัญญาณ",
+      "file": "lessons/finance-day-59-volume-confirmation.html",
+      "recallFrom": [
+        49,
+        53
       ]
     }
   ],
