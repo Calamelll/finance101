@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day 61 — รูปแบบแท่งเทียนสำคัญ: engulfing, hammer, doji | Finance101</title>
+<style>
+:root{
+  --bg:#191816; --card:#211f1d; --ink:#e8e4dd; --muted:#a09a91;
+  --line:#332f2b; --accent:#6cc394; --accent-soft:#1c2f26;
+  --warn:#e0a86f; --warn-soft:#2e2419; --code:#201e1b; --danger:#e0785c;
+  color-scheme: dark;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; padding:28px 18px 80px; background:var(--bg); color:var(--ink);
+  font-family:"Sarabun","Noto Sans Thai",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:17px; line-height:1.75; -webkit-text-size-adjust:100%;
+}
+.wrap{max-width:720px;margin:0 auto}
+header{margin-bottom:34px}
+.kicker{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--muted);letter-spacing:.02em}
+.pill{background:var(--accent-soft);color:var(--accent);padding:3px 11px;border-radius:99px;font-weight:600}
+h1{font-size:29px;line-height:1.3;margin:12px 0 6px;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:16px;margin:0}
+h2{font-size:21px;margin:38px 0 12px;letter-spacing:-.005em}
+h3{font-size:17px;margin:26px 0 8px}
+p{margin:0 0 15px}
+ul,ol{margin:0 0 15px;padding-left:22px}
+li{margin-bottom:7px}
+strong{font-weight:600}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin:22px 0}
+.card.accent{background:var(--accent-soft);border-color:#2c4a3c}
+.card.warn{background:var(--warn-soft);border-color:#4a3722}
+.card h3{margin-top:0}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:15.5px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-weight:600;font-size:13.5px;letter-spacing:.02em}
+td.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.calc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px;margin:22px 0}
+.calc label{display:block;font-size:14px;color:var(--muted);margin-bottom:6px}
+.calc .row{margin-bottom:18px}
+input[type=range]{width:100%;accent-color:var(--accent);height:24px}
+.val{font-weight:600;color:var(--accent);font-variant-numeric:tabular-nums}
+.bars{margin-top:6px}
+.bar-row{margin-bottom:12px}
+.bar-label{display:flex;justify-content:space-between;font-size:14px;margin-bottom:5px;gap:10px}
+.bar-track{background:#2a2724;border-radius:8px;height:26px;overflow:hidden;position:relative}
+.bar-fill{height:100%;border-radius:8px;transition:width .55s cubic-bezier(.22,.8,.3,1)}
+.bar-principal{background:#3f5c4e}
+.bar-growth{background:var(--accent)}
+.bar-negative{background:#a34a34}
+.bar-bond{background:#4a7fa0}
+.bar-stock{background:var(--accent)}
+.bar-gold{background:var(--warn)}
+.legend{display:flex;gap:16px;font-size:13px;color:var(--muted);margin-top:10px;flex-wrap:wrap}
+.swatch{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:6px;vertical-align:middle}
+.seg{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+.seg button{
+  background:var(--code);color:var(--muted);border:1px solid var(--line);border-radius:99px;
+  padding:6px 16px;font-size:14px;font-family:inherit;cursor:pointer;transition:all .2s;
+}
+.seg button.active{background:var(--accent-soft);color:var(--accent);border-color:#2c4a3c;font-weight:600}
+details{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:12px 16px;margin:10px 0}
+details[open]{background:#1d1b19}
+summary{cursor:pointer;font-weight:600;font-size:15.5px;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"▸ ";color:var(--accent)}
+details[open] summary::before{content:"▾ "}
+.ans{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font-size:15.5px;color:#d6d1c9}
+.q{font-weight:600;margin:22px 0 8px}
+pre{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;font-size:14px;line-height:1.6}
+code{font-family:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace}
+.summary-box{border-left:3px solid var(--accent);padding-left:18px;margin:26px 0}
+.summary-box p{margin-bottom:8px}
+footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
+footer a{color:var(--accent)}
+.disclaimer{font-size:13px;color:var(--muted);margin-top:18px;line-height:1.6}
+.nav{margin-bottom:20px;font-size:14px}
+.nav a{color:var(--accent);text-decoration:none}
+.src{font-size:12.5px;color:var(--muted);margin-top:8px}
+.steps{display:flex;align-items:flex-end;gap:14px;margin:18px 0 6px;height:150px}
+.step{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px}
+.step-bar{width:100%;border-radius:8px 8px 0 0;transition:height .55s cubic-bezier(.22,.8,.3,1);min-height:2px}
+.step1 .step-bar{background:#3f5c4e}
+.step2 .step-bar{background:var(--danger)}
+.step-label{font-size:13px;color:var(--muted);text-align:center}
+.step-val{font-weight:600;color:var(--ink);font-size:14.5px}
+.mixbar{display:flex;height:30px;border-radius:8px;overflow:hidden;margin:6px 0 10px;background:#2a2724}
+.mixseg{height:100%;transition:width .4s cubic-bezier(.22,.8,.3,1)}
+.stat{display:flex;justify-content:space-between;font-size:15.5px;padding:7px 0;border-bottom:1px solid var(--line)}
+.stat:last-child{border-bottom:none}
+.stat b{font-variant-numeric:tabular-nums;color:var(--accent)}
+@media(max-width:520px){
+  body{font-size:16px;padding:20px 14px 60px}
+  h1{font-size:25px}
+  .card,.calc{padding:16px}
+}
+
+/* โครงสร้างสิทธิเรียกร้อง / แถบสัดส่วน (ใช้ต่อจาก Day 20) */
+.wf{margin:18px 0 6px}
+.wf-track{display:flex;height:44px;border-radius:10px;overflow:hidden;background:#2a2724;border:1px solid var(--line)}
+.wf-seg{height:100%;display:flex;align-items:center;justify-content:center;font-size:12.5px;color:#12130f;font-weight:600;overflow:hidden;white-space:nowrap;transition:width .5s cubic-bezier(.22,.8,.3,1)}
+.wf-debt{background:#4a7fa0;color:#0f1b22}
+.wf-eq{background:var(--accent)}
+.wf-gap{background:#7a3d2c;color:#f0ded8}
+.wf-axis{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:6px;font-variant-numeric:tabular-nums}
+.ladder{list-style:none;padding:0;margin:16px 0}
+.ladder li{display:flex;gap:12px;align-items:baseline;padding:9px 14px;border:1px solid var(--line);border-radius:9px;margin-bottom:7px;background:var(--card);font-size:15.5px}
+.ladder li:last-child{background:var(--accent-soft);border-color:#2c4a3c}
+.ladder .rank{font-variant-numeric:tabular-nums;font-size:13px;color:var(--muted);min-width:20px;flex-shrink:0}
+
+/* Day 21 — เส้นทางคำสั่งซื้อ */
+.pipe{margin:16px 0 4px}
+.pnode{display:flex;gap:12px;align-items:flex-start;padding:11px 14px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;background:var(--card);transition:background .3s,border-color .3s,transform .3s}
+.pnode.on{background:var(--accent-soft);border-color:#2c4a3c;transform:translateX(7px)}
+.pnum{width:25px;height:25px;border-radius:50%;background:#2a2724;color:var(--muted);font-size:12.5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:3px;font-variant-numeric:tabular-nums;transition:background .3s,color .3s}
+.pnode.on .pnum{background:var(--accent);color:#12130f;font-weight:700}
+.pttl{font-weight:600;font-size:15.5px;margin-bottom:2px}
+.pdesc{font-size:14px;color:var(--muted);line-height:1.6}
+.pbtn{background:var(--accent-soft);color:var(--accent);border:1px solid #2c4a3c;border-radius:99px;padding:8px 22px;font-size:15px;font-family:inherit;font-weight:600;cursor:pointer;transition:opacity .2s}
+.pbtn:disabled{opacity:.45;cursor:default}
+.regbar{margin-top:10px;padding:10px 14px;border:1px dashed var(--line);border-radius:10px;font-size:14px;color:var(--muted)}
+.scalebar{background:#2a2724;border-radius:8px;height:22px;overflow:hidden;margin-bottom:5px}
+.scalefill{height:100%;border-radius:8px}
+
+/* Day 22 — กระดานราคา (order book) และปฏิทิน T+2 */
+.book{font-variant-numeric:tabular-nums;font-size:15px;margin:4px 0 2px}
+.brow{display:grid;grid-template-columns:1fr 84px 1fr;gap:8px;align-items:center;padding:3px 0}
+.bqty{display:flex;height:24px;border-radius:6px;overflow:hidden;background:transparent}
+.bqty i{height:100%;border-radius:6px;display:block;transition:width .4s ease,opacity .4s ease}
+.bqty.l{justify-content:flex-end}
+.bprice{text-align:center;font-weight:600;padding:2px 0;border-radius:6px;transition:background .3s,color .3s}
+.bprice.ask{color:var(--danger)}
+.bprice.bid{color:var(--accent)}
+.bprice.hit{background:var(--warn-soft);color:var(--warn)}
+.bqty span{font-size:12.5px;color:var(--muted);padding:0 6px;line-height:24px;white-space:nowrap}
+.bhead{display:grid;grid-template-columns:1fr 84px 1fr;gap:8px;font-size:12.5px;color:var(--muted);padding-bottom:5px;border-bottom:1px solid var(--line);margin-bottom:6px}
+.bhead span:nth-child(1){text-align:right}
+.bhead span:nth-child(2){text-align:center}
+.spreadrow{text-align:center;font-size:13px;color:var(--warn);padding:5px 0;border-top:1px dashed var(--line);border-bottom:1px dashed var(--line);margin:5px 0}
+.cal{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin:16px 0 6px}
+.cday{border:1px solid var(--line);border-radius:10px;padding:9px 6px;text-align:center;background:var(--card);transition:background .35s,border-color .35s}
+.cday .cn{font-size:12px;color:var(--muted)}
+.cday .cv{font-size:14px;font-weight:600;margin-top:3px;min-height:20px}
+.cday.t{background:var(--accent-soft);border-color:#2c4a3c}
+.cday.s{background:var(--warn-soft);border-color:#4a3722}
+.cday.off{opacity:.4}
+
+/* Day 23 — โครงเงินปันผล */
+.split{display:flex;height:34px;border-radius:9px;overflow:hidden;background:#2a2724;border:1px solid var(--line);margin:10px 0 4px}
+.split i{height:100%;display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;transition:width .45s cubic-bezier(.22,.8,.3,1)}
+.sp-pay{background:var(--accent);color:#12130f}
+.sp-ret{background:#3f5c4e;color:#dfe8e2}
+.idcard{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:12px 16px;margin:14px 0;font-variant-numeric:tabular-nums;font-size:15.5px;text-align:center}
+.idcard b{color:var(--accent)}
+.tax2{display:flex;gap:14px;align-items:flex-end;height:170px;margin:16px 0 4px}
+.tax2 .col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px}
+.tax2 .cb{width:100%;border-radius:9px 9px 0 0;transition:height .5s cubic-bezier(.22,.8,.3,1);min-height:3px}
+.tax2 .c1 .cb{background:#3f5c4e}
+.tax2 .c2 .cb{background:var(--accent)}
+.tax2 .c2.lose .cb{background:var(--danger)}
+.verdict{text-align:center;font-size:15px;padding:9px 12px;border-radius:9px;margin-top:12px;background:var(--accent-soft);color:var(--accent);border:1px solid #2c4a3c}
+.verdict.bad{background:var(--warn-soft);color:var(--warn);border-color:#4a3722}
+</style>
+<style>
+/* Day 24 — น้ำตกงบกำไรขาดทุน */
+.wfall{margin:16px 0 6px;font-variant-numeric:tabular-nums}
+.wrow{display:grid;grid-template-columns:112px 1fr 92px;gap:10px;align-items:center;margin-bottom:6px;font-size:14.5px}
+.wrow .wlab{color:var(--muted);font-size:13.5px;line-height:1.4}
+.wrow.tot .wlab{color:var(--ink);font-weight:600}
+.wtrack{position:relative;height:26px;background:#2a2724;border-radius:7px;overflow:hidden}
+.wseg{position:absolute;top:0;height:100%;border-radius:7px;transition:left .5s cubic-bezier(.22,.8,.3,1),width .5s cubic-bezier(.22,.8,.3,1)}
+.w-rev{background:#3f5c4e}
+.w-gp{background:#4d7a63}
+.w-ebit{background:#5aa47e}
+.w-np{background:var(--accent)}
+.w-cut{background:var(--danger);opacity:.85}
+.wval{text-align:right;font-weight:600;font-size:14.5px}
+.wrow.cut .wval{color:var(--danger)}
+.wrow.tot .wval{color:var(--accent)}
+.mgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0 4px}
+.mbox{background:var(--code);border:1px solid var(--line);border-radius:11px;padding:11px 8px;text-align:center}
+.mbox .mv{font-size:20px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums;line-height:1.3}
+.mbox .mn{font-size:12px;color:var(--muted);line-height:1.45;margin-top:2px}
+.mbox.neg .mv{color:var(--danger)}
+@media(max-width:520px){
+  .wrow{grid-template-columns:92px 1fr 78px;gap:7px;font-size:13.5px}
+  .wrow .wlab{font-size:12.5px}
+  .mbox .mv{font-size:17px}
+}
+</style>
+<style>
+/* Day 25 — งบดุลสองฝั่ง และวงจรเงินสด */
+.bswrap{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0 6px}
+.bscol{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:11px;overflow:hidden;min-height:230px}
+.bshead{font-size:12.5px;color:var(--muted);text-align:center;margin-bottom:6px;letter-spacing:.02em}
+.bsseg{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:0 9px;font-size:12px;font-weight:600;color:#12130f;overflow:hidden;white-space:nowrap;transition:height .5s cubic-bezier(.22,.8,.3,1);min-height:0}
+.bsseg span:last-child{font-variant-numeric:tabular-nums}
+.a-cash{background:#6cc394}.a-ar{background:#4d7a63;color:#e8f2ec}.a-inv{background:#3f5c4e;color:#e8f2ec}
+.a-ppe{background:#4a7fa0;color:#0f1b22}.a-int{background:#5b6b7a;color:#e6edf3}
+.l-cl{background:#e0a86f;color:#241a0d}.l-ltd{background:#a8703f;color:#f6e8da}
+.e-eq{background:#6cc394}.e-re{background:#3f5c4e;color:#e8f2ec}
+.bsseg.neg{background:var(--danger);color:#fff}
+.eqline{display:flex;justify-content:center;gap:10px;font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums;margin-top:4px}
+.eqline b{color:var(--accent)}
+.gantt{margin:16px 0 6px}
+.grow{display:grid;grid-template-columns:116px 1fr;gap:10px;align-items:center;margin-bottom:7px;font-size:13.5px;color:var(--muted)}
+.gtrack{position:relative;height:25px;background:#2a2724;border-radius:7px;overflow:hidden}
+.gbar{position:absolute;top:0;height:100%;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;overflow:hidden;white-space:nowrap;transition:left .5s cubic-bezier(.22,.8,.3,1),width .5s cubic-bezier(.22,.8,.3,1)}
+.g-dio{background:#3f5c4e;color:#e8f2ec}
+.g-dso{background:#4a7fa0;color:#0f1b22}
+.g-dpo{background:var(--warn);color:#241a0d}
+.g-ccc{background:var(--danger);color:#fff}
+@media(max-width:520px){
+  .bswrap{gap:8px}
+  .bsseg{font-size:11px;padding:0 6px}
+  .grow{grid-template-columns:92px 1fr;gap:7px;font-size:12.5px}
+}
+</style>
+<style>
+/* Day 26 — สามกระแสเงินสด (แท่งบวก/ลบรอบเส้นศูนย์) */
+.zwrap{margin:18px 0 4px}
+.zbar{position:relative;height:150px;display:flex;gap:16px}
+.zaxis{position:absolute;left:0;right:0;top:75px;border-top:1px dashed #4a453f;z-index:0}
+.zc{flex:1;position:relative;z-index:1}
+.zfill{position:absolute;left:0;right:0;border-radius:7px;transition:top .5s cubic-bezier(.22,.8,.3,1),height .5s cubic-bezier(.22,.8,.3,1);min-height:3px}
+.zfill.p{background:var(--accent)}
+.zfill.n{background:var(--danger)}
+.zv{position:absolute;left:0;right:0;text-align:center;font-size:13.5px;font-weight:700;font-variant-numeric:tabular-nums;transition:top .5s cubic-bezier(.22,.8,.3,1)}
+.zv.p{color:var(--accent)} .zv.n{color:var(--danger)}
+.zlab{display:flex;gap:16px;margin-top:8px}
+.zlab div{flex:1;text-align:center;font-size:12.5px;color:var(--muted);line-height:1.45}
+.tax2 .c3 .cb{background:#4a7fa0}
+.sign{display:inline-block;min-width:18px;font-weight:700;font-variant-numeric:tabular-nums}
+.sign.p{color:var(--accent)} .sign.n{color:var(--danger)}
+.cfs td:first-child{padding-left:12px}
+.cfs tr.head td{color:var(--muted);font-size:13.5px;font-weight:600;padding-top:16px}
+.cfs tr.sum td{font-weight:700;border-top:1px solid var(--line);border-bottom:2px solid var(--line)}
+.cfs tr.sum td.num{color:var(--accent)}
+.cfs tr.sum.neg td.num{color:var(--danger)}
+.cfs td.ind{padding-left:26px;color:#cdc7be;font-size:14.5px}
+@media(max-width:520px){
+  .zbar{gap:9px;height:135px}
+  .zaxis{top:67px}
+  .zlab{gap:9px}
+  .zlab div{font-size:11.5px}
+  .cfs td.ind{padding-left:14px;font-size:13.5px}
+}
+</style>
+<style>
+/* Day 27 — DuPont และห้องทดลองเลเวอเรจ */
+.dp{margin:16px 0 4px}
+.dprow{display:grid;grid-template-columns:136px 1fr 74px;gap:10px;align-items:center;margin-bottom:8px;font-size:14px}
+.dprow .dlab{color:var(--muted);font-size:13.5px;line-height:1.45}
+.dtrack{height:24px;background:#2a2724;border-radius:7px;overflow:hidden}
+.dfill{height:100%;border-radius:7px;transition:width .5s cubic-bezier(.22,.8,.3,1);min-width:3px}
+.d-nm{background:var(--accent)}
+.d-at{background:#4a7fa0}
+.d-em{background:var(--warn)}
+.dval{text-align:right;font-weight:600;font-variant-numeric:tabular-nums;font-size:14.5px}
+.dprod{text-align:center;font-size:15.5px;padding:10px 12px;border-radius:9px;background:var(--accent-soft);
+  border:1px solid #2c4a3c;color:var(--accent);margin-top:6px;font-variant-numeric:tabular-nums}
+.dnote{font-size:14px;color:var(--muted);margin-top:10px;line-height:1.65}
+.rid{display:grid;grid-template-columns:1fr 1fr;gap:8px 18px;margin:16px 0 4px}
+.rid .r{display:flex;justify-content:space-between;gap:8px;font-size:15px;padding:7px 0;border-bottom:1px solid var(--line)}
+.rid .r b{font-variant-numeric:tabular-nums;color:var(--accent);white-space:nowrap}
+.rid .r.warnv b{color:var(--warn)}
+.rid .r.badv b{color:var(--danger)}
+.tax2 .c3.lose .cb{background:var(--danger)}
+@media(max-width:520px){
+  .dprow{grid-template-columns:104px 1fr 62px;gap:7px;font-size:13px}
+  .dprow .dlab{font-size:12.5px}
+  .rid{grid-template-columns:1fr;gap:0 0}
+}
+</style>
+<style>
+/* Day 28 — DCF: แถบมูลค่าปลายทาง ตารางความไว และมาตรวัดราคา */
+.d-y{background:#4d7a63}
+.d-tv{background:var(--warn)}
+.heat{font-variant-numeric:tabular-nums;font-size:14.5px}
+.heat th,.heat td{padding:8px 6px;text-align:center}
+.heat td.rowh,.heat th{color:var(--muted);font-size:13px}
+.heat td.v{border-radius:7px;font-weight:600}
+.h0{background:#241f1c;color:#c9b7ad}
+.h1{background:#2b2a20;color:#d4c59f}
+.h2{background:#26302a;color:#9fd0b4}
+.h3{background:#1f3b2c;color:#8ee0b0}
+.heat td.mid{outline:2px solid var(--accent);outline-offset:-2px}
+.gauge{position:relative;height:56px;margin:18px 0 6px}
+.gtrk{position:absolute;left:0;right:0;top:22px;height:14px;border-radius:7px;background:linear-gradient(90deg,#1f3b2c,#2b2a20,#4a2b22)}
+.gmk{position:absolute;top:8px;width:2px;height:42px;background:var(--ink);transition:left .5s cubic-bezier(.22,.8,.3,1)}
+.gmk.price{background:var(--danger)}
+.gmk i{position:absolute;top:-16px;left:50%;transform:translateX(-50%);font-size:12px;font-style:normal;white-space:nowrap;color:var(--muted)}
+.gscale{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+@media(max-width:520px){
+  .heat{font-size:12.5px}
+  .heat th,.heat td{padding:6px 3px}
+}
+</style>
+<style>
+/* Day 29 — Growth vs Value: การ์ดสองฝั่ง ทฤษฎีบท และแถบแยกผลตอบแทน */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0 6px}
+.duo .dcard{border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:var(--card)}
+.duo .dcard.g{border-color:#4a3722;background:var(--warn-soft)}
+.duo .dcard.v{border-color:#2c4a3c;background:var(--accent-soft)}
+.duo .dh{font-size:13px;color:var(--muted);letter-spacing:.02em;margin-bottom:8px;font-weight:600}
+.duo .dl{display:flex;justify-content:space-between;gap:8px;font-size:14.5px;padding:5px 0;border-bottom:1px solid var(--line)}
+.duo .dl:last-child{border-bottom:none}
+.duo .dl b{font-variant-numeric:tabular-nums;white-space:nowrap}
+.duo .dcard.g .dl b{color:var(--warn)}
+.duo .dcard.v .dl b{color:var(--accent)}
+.sp-a{background:#4a7fa0;color:#0f1b22}
+.sp-b{background:var(--accent);color:#12130f}
+.sp-c{background:var(--warn);color:#241a0d}
+.sp-neg{background:var(--danger);color:#fff}
+.thm{background:var(--accent-soft);border:1px solid #2c4a3c;border-radius:12px;padding:16px 18px;margin:18px 0;text-align:center;font-size:16px}
+.thm .eq{font-size:18.5px;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums;margin-bottom:7px;line-height:1.5}
+.thm .note{font-size:13.5px;color:var(--muted);line-height:1.65}
+@media(max-width:520px){ .duo{grid-template-columns:1fr} .thm .eq{font-size:16px} }
+</style>
+<style>
+/* Day 30 — วงล้อวัฏจักร และการ์ดสี่ช่วงเศรษฐกิจ */
+.cyc{margin:14px 0 4px}
+.cyc svg{width:100%;height:auto;display:block}
+.phgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0 14px}
+.ph{border:1px solid var(--line);border-radius:10px;padding:9px 8px;background:var(--card);text-align:center;transition:background .3s,border-color .3s,transform .3s}
+.ph.on{background:var(--accent-soft);border-color:#2c4a3c;transform:translateY(-3px)}
+.ph b{display:block;font-size:14px;color:var(--ink);margin-bottom:2px}
+.ph span{display:block;color:var(--muted);font-size:12px;line-height:1.5}
+.ph.on b{color:var(--accent)}
+@media(max-width:520px){ .phgrid{grid-template-columns:1fr 1fr} }
+</style>
+<style>
+/* Day 47 — ตารางสูตรสรุปเฟส และกล่อง IPS */
+.ips{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin:14px 0 4px;font-size:14.5px;line-height:1.8}
+.ips b{color:var(--accent)}
+.fx td:first-child{white-space:nowrap;color:var(--muted);font-size:13.5px}
+</style>
+<style>
+/* Day 48 — จุดแทนเทรดเดอร์ 100 คน และตารางเทียบ */
+.dots48{display:grid;grid-template-columns:repeat(20,1fr);gap:5px;margin:14px 0 6px}
+.dots48 i{aspect-ratio:1;border-radius:50%;background:var(--danger);opacity:.75;transition:background .3s,opacity .3s}
+.dots48 i.w{background:var(--accent);opacity:1}
+.cmp td:first-child{white-space:nowrap;color:var(--muted);font-size:13.5px}
+.fn{font-size:14px;color:var(--muted);text-align:center;margin-top:6px}
+</style>
+<style>
+/* Day 49 — กระดานราคาเชิงโต้ตอบ และตารางขั้นราคา */
+.obctl{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.obnote{font-size:14px;color:var(--muted);margin-top:10px;line-height:1.65}
+.tickout{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0 4px}
+.fillnote{font-size:12.5px;color:var(--warn);padding:0 6px;line-height:24px;white-space:nowrap}
+</style>
+<style>
+/* Day 50 — เครื่องมือเทียบประเภทคำสั่ง */
+.cmp td{font-size:14.5px;vertical-align:top}
+.cmp td:first-child{font-weight:600;color:var(--ink)}
+</style>
+<style>
+/* Day 51 — แท่งเทียน: SVG, กล่องสถิติ และปุ่ม preset */
+.cndl{margin:12px 0 4px}
+.cndl svg{width:100%;height:auto;display:block;background:var(--code);border:1px solid var(--line);border-radius:12px}
+.cndl .gl{stroke:#2e2a26;stroke-width:1}
+.cndl .gt{fill:var(--muted);font-size:10px;font-family:inherit}
+.cndl .lb{fill:var(--ink);font-size:10.5px;font-family:inherit;font-variant-numeric:tabular-nums}
+.cndl .up{fill:var(--accent);stroke:var(--accent)}
+.cndl .dn{fill:var(--danger);stroke:var(--danger)}
+.cndl .wk{stroke-width:2.5}
+.cndl .path{fill:none;stroke:var(--muted);stroke-width:1.6}
+.cndl .dot{fill:var(--warn)}
+.tkline{font-size:13.5px;color:var(--muted);font-variant-numeric:tabular-nums;margin:8px 0 0;line-height:1.7}
+.tkline b{color:var(--warn)}
+@media(max-width:520px){ .cndl .lb{font-size:11px} }
+</style>
+<style>
+/* Day 52 — Timeframe: รวมแท่ง ตารางสเกล √T และบันไดหลาย timeframe */
+.tfwrap{overflow-x:auto;margin:12px 0 4px}
+.tft{min-width:520px;font-variant-numeric:tabular-nums;margin:0}
+.tft th{white-space:nowrap}
+.tft td{font-size:14.5px;white-space:nowrap}
+.tft td:first-child{font-weight:600;color:var(--ink)}
+.tft td.hot{color:var(--danger);font-weight:600}
+.tft td.good{color:var(--accent);font-weight:600}
+.tft td.mid{color:var(--warn);font-weight:600}
+.ladder.tfl li{align-items:flex-start;flex-direction:column;gap:2px}
+.ladder.tfl b{color:var(--accent)}
+.ladder.tfl span{font-size:14px;color:var(--muted);line-height:1.6}
+.cndl.wide svg{background:var(--code)}
+@media(max-width:520px){ .tft td{font-size:13.5px} }
+</style>
+<style>
+/* Day 53 — แนวรับแนวต้าน: โซนบนกราฟสุ่ม และเครื่องคิด stop/target */
+.cndl .band{fill:var(--warn);fill-opacity:.2;stroke:var(--warn);stroke-width:1;stroke-dasharray:4 3}
+.cndl .bl{fill:var(--warn);font-size:11px;font-weight:700;font-family:inherit}
+.cndl .pdh{fill:var(--danger)}
+.cndl .pdl{fill:var(--accent)}
+.cndl .path{stroke-width:1.5}
+.srbtn{margin:0 0 14px}
+.pbar{position:relative;height:30px;background:#2a2724;border-radius:8px;margin:8px 0 4px;overflow:hidden}
+.pbar .pw{position:absolute;left:0;top:0;height:100%;background:var(--accent);opacity:.85;transition:width .4s cubic-bezier(.22,.8,.3,1)}
+.pbar .pm{position:absolute;top:0;height:100%;width:3px;background:var(--danger);transition:left .4s cubic-bezier(.22,.8,.3,1)}
+.pleg{display:flex;justify-content:space-between;font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.pleg b{color:var(--accent)}
+</style>
+<style>
+/* Day 54 — เส้นแนวโน้ม: เส้นรับ/ต้าน เส้นตัดวันนี้ และจุดทะลุ */
+.cndl .tl-sup{stroke:var(--accent);stroke-width:2.2}
+.cndl .tl-res{stroke:var(--danger);stroke-width:2.2}
+.cndl .cut{stroke:var(--muted);stroke-width:1;stroke-dasharray:4 4}
+.cndl .path.fut{stroke:#7d766d;stroke-opacity:.55;stroke-dasharray:3 3}
+.cndl .brk{fill:none;stroke:var(--warn);stroke-width:2.5}
+</style>
+<style>
+/* Day 55 — Moving averages: เส้นราคา เส้น MA จุดตัด และแถบตอบสนอง */
+.cndl .pxl{fill:none;stroke:var(--muted);stroke-width:1.4;stroke-opacity:.8}
+.cndl .maf{fill:none;stroke:var(--warn);stroke-width:2.2}
+.cndl .mas{fill:none;stroke:#4a7fa0;stroke-width:2.2}
+.cndl .gc{fill:var(--accent);stroke:#12130f;stroke-width:1.2}
+.cndl .dc{fill:var(--danger);stroke:#12130f;stroke-width:1.2}
+.rsp{display:grid;grid-template-columns:70px 1fr 64px;gap:10px;align-items:center;margin-bottom:8px;font-size:14px}
+.rsp .dlab{color:var(--muted);font-size:13.5px}
+.rsp .dval{text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
+.d-sma{background:#4a7fa0}
+.d-ema{background:var(--warn)}
+@media(max-width:520px){ .rsp{grid-template-columns:54px 1fr 54px;gap:7px;font-size:13px} }
+</style>
+<style>
+/* Day 56 — RSI/Stochastic: มาตรวัด 0-100 โซนบน/ล่าง และเส้นตัวชี้วัด */
+.rzone{position:relative;height:30px;background:#2a2724;border-radius:8px;margin:8px 0 4px;overflow:hidden}
+.rzone .zlo{position:absolute;left:0;top:0;height:100%;width:30%;background:var(--accent-soft);border-right:1px dashed #2c4a3c}
+.rzone .zhi{position:absolute;right:0;top:0;height:100%;width:30%;background:var(--warn-soft);border-left:1px dashed #4a3722}
+.rzone .zmk{position:absolute;top:0;height:100%;width:3px;background:var(--danger);margin-left:-1px;transition:left .35s cubic-bezier(.22,.8,.3,1)}
+.cndl .ind{fill:none;stroke:var(--warn);stroke-width:2}
+.cndl .zl{stroke:var(--muted);stroke-width:1;stroke-dasharray:4 4}
+.cndl .zb{fill:var(--warn);fill-opacity:.12}
+.cndl .zb2{fill:var(--accent);fill-opacity:.12}
+</style>
+<style>
+/* Day 57 — MACD: ฮิสโทแกรม เส้น MACD/signal และมาตรวัดสัญญาณ */
+.cndl .macd{fill:none;stroke:var(--warn);stroke-width:2}
+.cndl .sig{fill:none;stroke:#4a7fa0;stroke-width:2}
+.cndl .hp{fill:var(--accent);fill-opacity:.55}
+.cndl .hn{fill:var(--danger);fill-opacity:.55}
+.cndl .zero{stroke:var(--muted);stroke-width:1;stroke-dasharray:4 4}
+.mgrid.m4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:520px){ .mgrid.m4{grid-template-columns:repeat(2,1fr)} }
+</style>
+<style>
+/* Day 58 — Bollinger Bands: แถบ เส้นกลาง BandWidth และจุดนอกแถบ */
+.cndl .bbfill{fill:var(--accent);fill-opacity:.09}
+.cndl .bbl{fill:none;stroke:var(--accent);stroke-width:1.6}
+.cndl .bbm{fill:none;stroke:var(--warn);stroke-width:1.8}
+.cndl .bwl{fill:none;stroke:#4a7fa0;stroke-width:2}
+.cndl .dhi{fill:var(--warn);stroke:#12130f;stroke-width:1.2}
+.cndl .dlo{fill:var(--accent);stroke:#12130f;stroke-width:1.2}
+</style>
+<style>
+/* Day 59 — Volume: แท่งปริมาณ OBV มาร์กเกอร์เบรกเอาต์ และเครื่องคิด VWAP */
+.cndl .vb{fill:#4a7fa0;fill-opacity:.75}
+.cndl .vbh{fill:var(--accent);fill-opacity:.9}
+.cndl .obvl{fill:none;stroke:var(--accent);stroke-width:1.8}
+.cndl .bk1{fill:var(--accent);stroke:#12130f;stroke-width:1.2}
+.cndl .bk0{fill:none;stroke:var(--warn);stroke-width:2}
+.cndl .thl{stroke:var(--warn);stroke-width:1;stroke-dasharray:4 4}
+.vw td.num{font-variant-numeric:tabular-nums}
+.vw td{font-size:15px}
+</style>
+<style>
+/* Day 60 — รูปแบบราคาคลาสสิก: ตรวจด้วยกฎ จุด pivot เส้นคอ เส้นสามเหลี่ยม */
+.cndl .pv{fill:var(--muted);fill-opacity:.55}
+.cndl .hsm{fill:var(--warn);stroke:#12130f;stroke-width:1.2}
+.cndl .nk{stroke:var(--warn);stroke-width:2}
+.cndl .tru{stroke:var(--danger);stroke-width:2}
+.cndl .trl{stroke:var(--accent);stroke-width:2}
+.cndl .ptx{fill:var(--warn);font-size:11px;font-weight:700;font-family:inherit}
+.cndl .bku{fill:var(--accent);stroke:#12130f;stroke-width:1.4}
+.cndl .bkd{fill:var(--danger);stroke:#12130f;stroke-width:1.4}
+.pbar .pm.be{background:var(--warn)}
+.defs td{font-size:14.5px;vertical-align:top}
+.defs td:first-child{white-space:nowrap;font-weight:600}
+</style>
+<style>
+/* Day 61 — แท่งเทียน: เครื่องจำแนกแท่งเดี่ยว และมาร์กเกอร์รูปแบบ */
+.cndl.one svg{max-width:420px;margin:0 auto}
+.cndl .mk{font-size:11px;font-weight:700;font-family:inherit}
+.cndl .mk-d{fill:var(--warn)}
+.cndl .mk-h{fill:var(--accent)}
+.cndl .mk-s{fill:var(--danger)}
+.cndl .mk-e{fill:#4a7fa0}
+.cndl .hl{fill:none;stroke:var(--warn);stroke-width:1.6;stroke-dasharray:3 3}
+.cndl .gwk{stroke-width:2}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="nav"><a href="../index.html">← สารบัญ</a></div>
+
+<header>
+  <div class="kicker">
+    <span class="pill">Day 61 / 90</span>
+    <span>Phase 3 · การเทรด</span>
+    <span>·</span>
+    <span>อ่าน 8 นาที</span>
+  </div>
+  <h1>รูปแบบแท่งเทียนสำคัญ: engulfing, hammer, doji</h1>
+  <p class="sub">Day 51 เรียนอ่าน 1 แท่งเป็น O-H-L-C วันนี้เขียนนิยามของ doji, hammer และ engulfing เป็นกฎที่โปรแกรมตรวจได้ แล้วนับในโลกสุ่ม 400,000 แท่งที่ไม่มีข้อมูลซ่อนอยู่ ผลคือรูปเหล่านี้ <em>เกิดบ่อยมาก</em> และราคาหลังจากนั้นไม่ต่างจากแท่งทั่วไป</p>
+</header>
+
+<h2>นิยามที่วัดได้</h2>
+
+<p>ให้ range = H − L, ตัวเทียน (body) = |C − O|, เงาบน = H − max(O, C), เงาล่าง = min(O, C) − L ตำราใช้คำว่า "ตัวเล็ก" หรือ "เงายาว" ซึ่งเถียงกันได้ เราจึงแปลงเป็นอสมการ:</p>
+
+<table class="defs">
+  <thead><tr><th>รูป</th><th>กฎ (ตัวเลขเป็นค่าตั้งต้นของบทนี้)</th><th>ตำราตีความ</th></tr></thead>
+  <tbody>
+    <tr><td>Doji</td><td>body ≤ 10% ของ range</td><td>ตลาดลังเล</td></tr>
+    <tr><td>Hammer</td><td>เงาล่าง ≥ 2 × body, เงาบน ≤ 10% ของ range, ไม่ใช่ doji และ ปิดแท่งก่อนหน้า (t−1) ต่ำกว่าปิดเมื่อ 5 แท่งก่อนหน้านั้น (ขาลง)</td><td>กลับตัวขึ้น</td></tr>
+    <tr><td>Shooting star</td><td>กฎกลับด้านของ hammer ในขาขึ้น</td><td>กลับตัวลง</td></tr>
+    <tr><td>Bullish engulfing</td><td>แท่งก่อนหน้าแดง แท่งนี้เขียว O ≤ C ก่อนหน้า, C ≥ O ก่อนหน้า (body กลืน body เดิม) ในขาลง</td><td>กลับตัวขึ้น</td></tr>
+    <tr><td>Bearish engulfing</td><td>กระจกเงาของข้อบน ในขาขึ้น</td><td>กลับตัวลง</td></tr>
+  </tbody>
+</table>
+
+<h2>ตัวอย่างตัวเลข: หุ้นสมมติราคา 50 บาท</h2>
+
+<div class="card">
+  <p style="margin-bottom:8px"><strong>Hammer:</strong> O 49.50 H 50.00 L 47.00 C 49.90 ⇒ range 3.00, body 0.40 (13.3%), เงาล่าง 49.50 − 47.00 = 2.50 (6.25 เท่าของ body), เงาบน 0.10 (3.3% ของ range) ผ่านกฎทุกข้อ</p>
+  <p style="margin-bottom:8px"><strong>Doji:</strong> O 50.00 H 51.50 L 48.80 C 50.10 ⇒ range 2.70, body 0.10 (3.7%) ผ่านกฎ แต่ถ้าปิด 50.40 body เป็น 14.8% ก็ไม่ใช่ doji แล้ว เส้นแบ่งอยู่ที่ตัวเลขที่เราตั้งเอง</p>
+  <p style="margin-bottom:8px"><strong>Bullish engulfing:</strong> วันแรก O 50.00 C 49.00 (แดง body 1.00) วันถัดมา O 48.90 C 50.40 (เขียว body 1.50) ⇒ 48.90 ≤ 49.00 และ 50.40 ≥ 50.00 body ใหญ่ขึ้น 1.50 ÷ 1.00 = 1.5 เท่า</p>
+  <p style="margin-bottom:0"><strong>ถ้าซื้อที่ 50.40 เพราะรูปนี้:</strong> สมมติเข้าด้วย 10,000 บาท ผลเฉลี่ยของ engulfing ใน 5 แท่งถัดไปในโลกสุ่มคือ +0.023% (ตารางด้านล่าง) = +2.30 บาท แต่ต้นทุนไป-กลับ 0.35% (Day 48) = 35.00 บาท สุทธิเฉลี่ย <strong>−32.70 บาท</strong></p>
+</div>
+
+<h2>เครื่องจำแนกแท่งเทียน</h2>
+
+<p>ปรับ O, C และความยาวเงา แล้วดูว่ากฎข้างบนจัดแท่งนี้เป็นอะไร ลองเลื่อน C ให้ใกล้ O ทีละน้อย ตัวเทียนจะเล็กลงจน "ข้าม" เส้น 10% ของ range กลายเป็น doji ทันที ขอบเขตของรูปแบบเป็นเส้นที่คนขีด ไม่ใช่ธรรมชาติของตลาด</p>
+
+<div class="calc">
+  <div class="row"><label>ราคาเปิด O = <span class="val" id="k_ov">49.5</span> บาท</label><input type="range" id="k_o" min="460" max="540" step="1" value="495"></div>
+  <div class="row"><label>ราคาปิด C = <span class="val" id="k_cv">49.9</span> บาท</label><input type="range" id="k_c" min="460" max="540" step="1" value="499"></div>
+  <div class="row"><label>เงาบน = <span class="val" id="k_uv">0.1</span> บาท</label><input type="range" id="k_u" min="0" max="40" step="1" value="1"></div>
+  <div class="row"><label>เงาล่าง = <span class="val" id="k_lv">2.5</span> บาท</label><input type="range" id="k_l" min="0" max="40" step="1" value="25"></div>
+  <div class="cndl one"><svg id="k_svg" viewBox="0 0 640 210" role="img" aria-label="แท่งเทียนเดี่ยวที่ปรับค่าได้"></svg></div>
+  <div class="mgrid m4">
+    <div class="mbox"><div class="mv" id="k_rg">3.00</div><div class="mn">range<br>(H − L)</div></div>
+    <div class="mbox"><div class="mv" id="k_bd">0.40</div><div class="mn">body<br>(|C − O|)</div></div>
+    <div class="mbox"><div class="mv" id="k_bp">13.3%</div><div class="mn">body ÷ range</div></div>
+    <div class="mbox"><div class="mv" id="k_lr">6.3×</div><div class="mn">เงาล่าง ÷ body</div></div>
+  </div>
+  <div class="verdict" id="k_v"></div>
+</div>
+
+<h2>ห้องทดลอง: สุ่มกราฟแล้วให้โปรแกรมหา</h2>
+
+<p>กราฟนี้คือการเดินสุ่ม 60 แท่ง (σ 1.2% ต่อแท่ง, เปิดที่ราคาปิดเดิม ไม่มี gap) ไม่มีข้อมูลซ่อนอยู่เลย ปุ่ม "หา engulfing ที่ได้ผล" จะสุ่มกราฟไปเรื่อยๆ จนเจอ bullish engulfing ที่ตามด้วยราคาขึ้นเกิน 3% ใน 5 แท่ง นั่นคือการเลือกเฉพาะตัวอย่างที่ถูก ซึ่งเป็นวิธีที่ตำราส่วนใหญ่ได้รูปสวยมาโชว์</p>
+
+<div class="calc">
+  <div class="srbtn"><button class="pbtn" id="e_new">สุ่มกราฟใหม่</button> <button class="pbtn" id="e_find">หา engulfing ที่ได้ผล</button> <span class="fn" id="e_seed" style="margin-left:8px"></span></div>
+  <div class="seg" id="e_mode">
+    <button data-m="all" class="active">ทุกรูป</button>
+    <button data-m="doji">Doji</button>
+    <button data-m="ham">Hammer / Shooting star</button>
+    <button data-m="eng">Engulfing</button>
+  </div>
+  <div class="row"><label>เกณฑ์ doji: body ไม่เกิน = <span class="val" id="e_tv">10</span>% ของ range</label><input type="range" id="e_t" min="2" max="20" step="1" value="10"></div>
+  <div class="cndl wide"><svg id="e_svg" viewBox="0 0 640 300" role="img" aria-label="กราฟแท่งเทียนสุ่มพร้อมรูปแบบที่ตรวจพบ"></svg></div>
+  <div class="mgrid">
+    <div class="mbox"><div class="mv" id="e_nd">0</div><div class="mn">Doji (D)</div></div>
+    <div class="mbox"><div class="mv" id="e_nh">0</div><div class="mn">Hammer (H) +<br>Shooting star (S)</div></div>
+    <div class="mbox"><div class="mv" id="e_ne">0</div><div class="mn">Engulfing<br>ขึ้น ▲ / ลง ▼</div></div>
+  </div>
+  <div class="verdict bad" id="e_v"></div>
+</div>
+
+<h2>นับในโลกสุ่ม 400,000 แท่ง</h2>
+
+<table>
+  <thead><tr><th>รายการ</th><th class="num">ผล</th></tr></thead>
+  <tbody>
+    <tr><td>Doji ต่อ 250 แท่ง (≈ 1 ปีซื้อขาย) ที่เกณฑ์ body 2% / 5% / 10% / 20%</td><td class="num">4.0 / 9.9 / 20.0 / 40.8</td></tr>
+    <tr><td>Hammer · Shooting star ต่อ 250 แท่ง (มีเงื่อนไขแนวโน้ม)</td><td class="num">4.24 · 4.55</td></tr>
+    <tr><td>Hammer ต่อ 250 แท่ง ถ้าไม่ดูแนวโน้มเลย</td><td class="num">8.69</td></tr>
+    <tr><td>Bullish · Bearish engulfing ต่อ 250 แท่ง</td><td class="num">18.50 · 18.38</td></tr>
+    <tr><td>กราฟ 130 แท่งสุ่มที่มี hammer อย่างน้อย 1 ครั้ง</td><td class="num">87.3%</td></tr>
+    <tr><td>5 แท่งหลัง doji (n = 32,035): ค่าเฉลี่ย · ราคาขึ้น</td><td class="num">+0.019% · 50.4%</td></tr>
+    <tr><td>5 แท่งหลัง hammer (n = 6,788): ค่าเฉลี่ย · ราคาขึ้น</td><td class="num">+0.020% · 50.4%</td></tr>
+    <tr><td>5 แท่งหลัง shooting star (n = 7,272): ค่าเฉลี่ย · ราคาขึ้น</td><td class="num">+0.002% · 49.9%</td></tr>
+    <tr><td>5 แท่งหลัง bullish engulfing (n = 29,604): ค่าเฉลี่ย · ราคาขึ้น</td><td class="num">+0.023% · 50.3%</td></tr>
+    <tr><td>5 แท่งหลัง bearish engulfing (n = 29,401): ค่าเฉลี่ย · ราคาขึ้น</td><td class="num">+0.015% · 50.6%</td></tr>
+    <tr><td>ฐานเปรียบเทียบ: ทุกแท่ง 5 แท่งข้างหน้า (σ 2.69%)</td><td class="num">+0.015% · ขึ้น 50.3%</td></tr>
+    <tr><td>Bullish engulfing หลังหักต้นทุน 0.35% ต่อรอบ</td><td class="num">−0.327%</td></tr>
+  </tbody>
+</table>
+<p class="src">ที่มา: การจำลองของบทเรียนนี้ (Python numpy seed 61, แต่ละแท่งสร้างจากการเดิน 20 ก้าว σ รวม 1.2% เปิดที่ปิดเดิม, trend = ปิดแท่ง t−1 เทียบ 5 แท่งก่อนหน้า) ไม่ใช่ข้อมูลตลาดจริง · ความคลาดเคลื่อนมาตรฐานของค่าเฉลี่ย 5 แท่งราว 0.016% (engulfing) ถึง 0.033% (hammer)</p>
+
+<p>อ่านตารางได้สามข้อ (1) <strong>รูปเหล่านี้ไม่หายาก</strong> engulfing เกิดทุกราว 13-14 แท่ง และ hammer โผล่ใน 87% ของกราฟ 130 แท่ง ดังนั้นการ "เจอรูป" ไม่ใช่สัญญาณพิเศษ (2) <strong>ทิศหลังรูปไม่ต่างจากฐาน</strong> ค่าเฉลี่ยทุกแถวห่างจากฐาน +0.015% ไม่เกิน 1 เท่าของความคลาดเคลื่อน และ hammer ที่ "ควรขึ้น" ไม่ต่างจาก shooting star ที่ "ควรลง" (3) <strong>แรงกลืนมีราคา</strong> ต้นทุน 0.35% มากกว่าส่วนต่างที่มองเห็นราว 15 เท่า</p>
+
+<div class="card warn">
+  <h3>ข้อควรระวังก่อนเอาไปใช้กับตลาดจริง</h3>
+  <p style="margin-bottom:6px">นี่คือโลกที่ราคาเดินสุ่ม ไม่ได้พิสูจน์ว่าตลาดจริงเป็นเช่นนั้นเสมอ และโลกจำลองไม่มี gap ซึ่งทำให้ engulfing เกิดง่ายกว่าตลาดที่มีช่องว่างตอนเปิด ถ้าจะอ้างว่ารูปไหนได้ผล ต้องกำหนดกฎก่อน ทดสอบนอกตัวอย่าง และหักต้นทุนทุกครั้ง</p>
+  <p style="margin-bottom:0">ภาพ hammer สวยๆ ในตำราคือตัวอย่างที่เลือกมาแล้ว (survivorship) เหมือนปุ่ม "หา engulfing ที่ได้ผล" ด้านบน ที่สุ่มไม่กี่กราฟก็เจอ</p>
+</div>
+
+<details>
+  <summary>กล่องโค้ด (ข้ามได้ ไม่นับในเวลาอ่าน)</summary>
+  <div class="ans">
+<pre><code>import numpy as np
+rng = np.random.default_rng(61)
+N, S, sig = 400_000, 20, 0.012
+steps = rng.normal(0, sig/np.sqrt(S), (N, S))
+lp = np.cumsum(steps.ravel()).reshape(N, S) + np.log(100)
+cl = np.exp(lp[:, -1]); op = np.r_[100.0, cl[:-1]]
+paths = np.exp(lp)
+hi = np.maximum(paths.max(1), op); lo = np.minimum(paths.min(1), op)
+rg, body = hi-lo, np.abs(cl-op)
+up_sh = hi - np.maximum(op, cl); lo_sh = np.minimum(op, cl) - lo
+
+k = 5
+down = np.zeros(N, bool); down[k+1:] = cl[k:N-1] &lt; cl[:N-k-1]
+doji   = body &lt;= 0.10*rg
+hammer = ~doji &amp; (lo_sh &gt;= 2*body) &amp; (up_sh &lt;= 0.10*rg) &amp; down
+
+pc, po = np.r_[0, cl[:-1]], np.r_[0, op[:-1]]
+prev_red = np.r_[False, cl[:-1] &lt; op[:-1]]
+bull = prev_red &amp; (cl &gt; op) &amp; (op &lt;= pc) &amp; (cl &gt;= po) &amp; (body &gt; np.abs(pc-po)) &amp; down
+
+fwd = np.full(N, np.nan); fwd[:N-5] = np.log(cl[5:]/cl[:N-5])
+print(bull.sum()/N*250)                  # 18.5 ต่อ 250 แท่ง
+print(np.nanmean(fwd[bull]), np.nanmean(fwd))   # +0.023% เทียบฐาน +0.015%</code></pre>
+  </div>
+</details>
+
+<h2>ทดสอบความเข้าใจ</h2>
+
+<p class="q">1. แท่งหนึ่ง O 120, H 126, L 108, C 122 ตามกฎของบทนี้เป็น doji หรือ hammer หรือไม่ (ไม่ต้องดูแนวโน้ม)</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">range = 126 − 108 = 18 · body = 122 − 120 = 2 ⇒ 2 ÷ 18 = 11.1% &gt; 10% <strong>ไม่ใช่ doji</strong> · เงาล่าง = 120 − 108 = 12 = 6 เท่าของ body ผ่านข้อแรก แต่เงาบน = 126 − 122 = 4 = 22.2% ของ range &gt; 10% <strong>ไม่ผ่าน hammer</strong> สรุปเป็นแท่งทั่วไป ทั้งที่ตาเห็นว่า "คล้าย" เพราะขอบเขตของกฎกำหนดผล</div>
+</details>
+
+<p class="q">2. วันแรก O 80.00 C 77.00 วันถัดมา O 76.50 C 80.50 (หลังขาลง) เป็น bullish engulfing หรือไม่ และ body ของวันที่สองใหญ่กว่าวันแรกกี่เท่า</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">วันแรกแดง (C &lt; O) วันสองเขียว · O₂ = 76.50 ≤ C₁ = 77.00 ✓ · C₂ = 80.50 ≥ O₁ = 80.00 ✓ · <strong>เป็น bullish engulfing</strong> · body₁ = 3.00, body₂ = 4.00 ⇒ 4 ÷ 3 = <strong>1.33 เท่า</strong></div>
+</details>
+
+<p class="q">3. จากตาราง bullish engulfing ให้ผลเฉลี่ย +0.023% ใน 5 แท่ง ถ้าเข้า 20,000 บาทต่อครั้ง และต้นทุนไป-กลับ 0.35% ผลสุทธิเฉลี่ยต่อครั้งเป็นเท่าไร</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">ผลก่อนต้นทุน = 20,000 × 0.00023 = <strong>+4.60 บาท</strong> · ต้นทุน = 20,000 × 0.0035 = <strong>70.00 บาท</strong> · สุทธิ = 4.60 − 70.00 = <strong>−65.40 บาท</strong> (−0.327%)</div>
+</details>
+
+<p class="q"><strong>ทวน:</strong> Day 51 · วันก่อนปิด 40.00 วันนี้เปิด 39.00 สูงสุด 40.20 ต่ำสุด 38.80 ปิด 39.50 แท่งเทียนบอกว่าเปลี่ยนกี่ % และปิดต่อปิดเปลี่ยนกี่ %</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">แท่งเทียนวัดเปิดถึงปิด: (39.50 − 39.00) ÷ 39.00 = <strong>+1.28%</strong> (แท่งเขียว) · ปิดต่อปิด: (39.50 − 40.00) ÷ 40.00 = <strong>−1.25%</strong> ต่างเครื่องหมายเพราะ gap ลง 1.00 บาทตอนเปิดไม่ถูกนับในตัวเทียน<br>ตอบผิดหรือลังเล? → <a href="finance-day-51-candlestick.html">ทบทวน Day 51: กราฟแท่งเทียน (candlestick)</a></div>
+</details>
+
+<p class="q"><strong>ทวน:</strong> Day 55 · EMA 19 วัน (α = 2 ÷ (n + 1)) ค่าเดิม 60.00 ราคาปิดวันนี้ 63.00 EMA ใหม่เป็นเท่าไร</p>
+<details>
+  <summary>ดูเฉลย</summary>
+  <div class="ans">α = 2 ÷ 20 = 0.10 · EMA ใหม่ = 0.10 × 63.00 + 0.90 × 60.00 = 6.30 + 54.00 = <strong>60.30</strong> ขยับไปเพียง 0.30 จากราคาที่กระโดด 3.00 นี่คือความล่าช้าของค่าเฉลี่ย<br>ตอบผิดหรือลังเล? → <a href="finance-day-55-moving-averages.html">ทบทวน Day 55: Moving averages: SMA, EMA, golden/death cross</a></div>
+</details>
+
+<div class="summary-box">
+  <h2 style="margin-top:0">สรุป 3 บรรทัด</h2>
+  <p>1. Doji, hammer และ engulfing ต้องนิยามเป็นอสมการ (เช่น body ≤ 10% ของ range) จึงตรวจด้วยโปรแกรมได้ และขอบเขตที่ตั้งเองเปลี่ยนผลได้ทันที doji เกิด 4.0 ถึง 40.8 ครั้งต่อ 250 แท่ง ตามเกณฑ์ 2% ถึง 20%</p>
+  <p>2. ในโลกสุ่ม 400,000 แท่ง ราคา 5 แท่งหลัง engulfing ขึ้น 50.3% เทียบฐาน 50.3% และ hammer ไม่ต่างจาก shooting star รูปที่เจอบ่อย (engulfing 18.5 ครั้งต่อ 250 แท่ง) จึงไม่ใช่สัญญาณหายาก</p>
+  <p style="margin-bottom:0">3. ผลเฉลี่ย +0.023% เทียบต้นทุน 0.35% ได้สุทธิ −0.327% ต่อรอบ ภาพสวยในตำราคือตัวอย่างที่เลือกแล้ว ต้องมีกฎล่วงหน้า ทดสอบนอกตัวอย่าง และหักต้นทุนเสมอ</p>
+</div>
+
+<footer>
+  <p><strong>พรุ่งนี้ Day 62 — Breakout trading vs mean reversion</strong> · สองปรัชญาตรงข้ามคือ "ทะลุแล้วตาม" กับ "ไกลเกินแล้วกลับ" พรุ่งนี้นิยามทั้งคู่เป็นกฎ แล้วดูว่าในโลกสุ่มและโลกที่มีโมเมนตัมต่างกันอย่างไร</p>
+  <p class="disclaimer">บทเรียนนี้เป็นความรู้เชิงการศึกษา ไม่ใช่คำแนะนำทางการเงินเฉพาะบุคคล และไม่ใช่การชี้ชวนให้ซื้อหรือขายหลักทรัพย์ใด · หุ้นและกราฟทั้งหมดเป็นข้อมูลสมมติ ผลการจำลองไม่รับประกันผลในตลาดจริง</p>
+</footer>
+
+</div>
+<script>
+(function(){
+  var $=function(id){ return document.getElementById(id); };
+  var fmt=function(n,d){ return n.toLocaleString('th-TH',{minimumFractionDigits:d,maximumFractionDigits:d}); };
+  var f1=function(n){ return (Math.round(n*10)/10).toString(); };
+  function mulberry(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+  var EPS=1e-9;
+
+  /* ---------- 1) เครื่องจำแนกแท่งเดี่ยว ---------- */
+  function krender(){
+    var O=(+$('k_o').value)/10, C=(+$('k_c').value)/10, u=(+$('k_u').value)/10, l=(+$('k_l').value)/10;
+    var top=Math.max(O,C), bot=Math.min(O,C), H=top+u, L=bot-l;
+    var rg=H-L, bd=Math.abs(C-O), bp=rg>EPS?bd/rg:0;
+    $('k_ov').textContent=fmt(O,1); $('k_cv').textContent=fmt(C,1); $('k_uv').textContent=fmt(u,1); $('k_lv').textContent=fmt(l,1);
+    $('k_rg').textContent=fmt(rg,2); $('k_bd').textContent=fmt(bd,2); $('k_bp').textContent=fmt(bp*100,1)+'%';
+    $('k_lr').textContent=bd>EPS?fmt(l/bd,1)+'×':'—';
+    var txt, cls='verdict';
+    if(rg<EPS){ txt='ไม่มีช่วงราคา (H = L)'; cls='verdict bad'; }
+    else if(bd<=0.10*rg+EPS){ txt='Doji · body '+fmt(bp*100,1)+'% ≤ 10% ของ range'; }
+    else if(l>=2*bd-EPS && u<=0.10*rg+EPS){ txt='ทรง Hammer · เงาล่าง '+fmt(l/bd,1)+' เท่าของ body เงาบน '+fmt(u/rg*100,1)+'% ของ range (ต้องมีขาลงนำหน้าด้วยจึงนับ)'; }
+    else if(u>=2*bd-EPS && l<=0.10*rg+EPS){ txt='ทรง Shooting star · เงาบน '+fmt(u/bd,1)+' เท่าของ body เงาล่าง '+fmt(l/rg*100,1)+'% ของ range (ต้องมีขาขึ้นนำหน้าด้วยจึงนับ)'; }
+    else { txt='แท่งทั่วไป · ไม่เข้ากฎ doji / hammer / shooting star'; cls='verdict bad'; }
+    $('k_v').className=cls; $('k_v').textContent=txt;
+    var lo=L-0.6, hi=H+0.6, py=function(p){ return 10+(hi-p)/(hi-lo)*190; };
+    var g='', step=(hi-lo)>8?2:1, p;
+    for(p=Math.ceil(lo/step)*step;p<=hi;p+=step) g+='<line class="gl" x1="40" x2="632" y1="'+f1(py(p))+'" y2="'+f1(py(p))+'"/><text class="gt" x="2" y="'+f1(py(p)+3)+'">'+fmt(p,0)+'</text>';
+    var cls2=C>=O?'up':'dn', x=336, w=44;
+    g+='<line class="'+cls2+' wk" x1="'+x+'" x2="'+x+'" y1="'+f1(py(H))+'" y2="'+f1(py(L))+'"/>';
+    g+='<rect class="'+cls2+'" x="'+(x-w/2)+'" y="'+f1(py(top))+'" width="'+w+'" height="'+f1(Math.max(2,py(bot)-py(top)))+'" rx="2"/>';
+    g+='<text class="lb" x="'+(x+w/2+8)+'" y="'+f1(py(H)+4)+'">H '+fmt(H,2)+'</text>';
+    g+='<text class="lb" x="'+(x+w/2+8)+'" y="'+f1(py(L)+4)+'">L '+fmt(L,2)+'</text>';
+    g+='<text class="lb" x="'+(x-w/2-8)+'" y="'+f1(py(O)+4)+'" text-anchor="end">O '+fmt(O,2)+'</text>';
+    g+='<text class="lb" x="'+(x-w/2-8)+'" y="'+f1(py(C)+(Math.abs(py(C)-py(O))<14?(C>=O?-6:14):4))+'" text-anchor="end">C '+fmt(C,2)+'</text>';
+    $('k_svg').innerHTML=g;
+  }
+  ['k_o','k_c','k_u','k_l'].forEach(function(id){ $(id).addEventListener('input',krender); });
+  krender();
+
+  /* ---------- 2) ห้องทดลองแท่งเทียนสุ่ม ---------- */
+  var NB=60, S=20, SIG=0.012, TK=5, seed=61, mode='all';
+  function gen(sd){
+    var r=mulberry(sd), bars=[], pc=50, i, s, p, hi, lo, g;
+    function gs(){ var u1=r()||1e-9, u2=r(); return Math.sqrt(-2*Math.log(u1))*Math.cos(2*Math.PI*u2); }
+    for(i=0;i<NB;i++){
+      p=pc; hi=pc; lo=pc;
+      for(s=0;s<S;s++){ p=p*Math.exp(SIG/Math.sqrt(S)*gs()); if(p>hi)hi=p; if(p<lo)lo=p; }
+      bars.push({o:pc,h:hi,l:lo,c:p}); pc=p;
+    }
+    return bars;
+  }
+  function detect(b,dt){
+    var out=[], t, x, rg, bd, up, lo, down, upt, p, dj;
+    for(t=0;t<b.length;t++){
+      x=b[t]; rg=x.h-x.l; bd=Math.abs(x.c-x.o); up=x.h-Math.max(x.o,x.c); lo=Math.min(x.o,x.c)-x.l;
+      down=(t>=TK+1)&&(b[t-1].c<b[t-1-TK].c); upt=(t>=TK+1)&&(b[t-1].c>b[t-1-TK].c);
+      dj=bd<=dt*rg;
+      if(dj) out.push({t:t,k:'D'});
+      else if(lo>=2*bd&&up<=0.10*rg&&down) out.push({t:t,k:'H'});
+      else if(up>=2*bd&&lo<=0.10*rg&&upt) out.push({t:t,k:'S'});
+      if(t>=1){
+        p=b[t-1];
+        if(p.c<p.o&&x.c>x.o&&x.o<=p.c&&x.c>=p.o&&bd>Math.abs(p.c-p.o)&&down) out.push({t:t,k:'B'});
+        if(p.c>p.o&&x.c<x.o&&x.o>=p.c&&x.c<=p.o&&bd>Math.abs(p.c-p.o)&&upt) out.push({t:t,k:'E'});
+      }
+    }
+    return out;
+  }
+  function erender(){
+    var dt=(+$('e_t').value)/100;
+    $('e_tv').textContent=Math.round(dt*100); $('e_seed').textContent='ชุดที่ '+seed;
+    var b=gen(seed), ev=detect(b,dt), N=b.length, i, mn=Infinity, mx=-Infinity;
+    for(i=0;i<N;i++){ if(b[i].l<mn)mn=b[i].l; if(b[i].h>mx)mx=b[i].h; }
+    var lo=mn-0.6, hi=mx+1.2;
+    var sx=function(t){ return 46+(t+0.5)*(586/N); }, py=function(p){ return 10+(hi-p)/(hi-lo)*270; };
+    var g='', step=(hi-lo)>14?5:2, p, w=586/N*0.62;
+    for(p=Math.ceil(lo/step)*step;p<=hi;p+=step) g+='<line class="gl" x1="40" x2="632" y1="'+f1(py(p))+'" y2="'+f1(py(p))+'"/><text class="gt" x="2" y="'+f1(py(p)+3)+'">'+fmt(p,0)+'</text>';
+    for(i=0;i<N;i++){
+      var x=b[i], c=x.c>=x.o?'up':'dn', top=Math.max(x.o,x.c), bot=Math.min(x.o,x.c);
+      g+='<line class="'+c+' gwk" x1="'+f1(sx(i))+'" x2="'+f1(sx(i))+'" y1="'+f1(py(x.h))+'" y2="'+f1(py(x.l))+'"/>';
+      g+='<rect class="'+c+'" x="'+f1(sx(i)-w/2)+'" y="'+f1(py(top))+'" width="'+f1(w)+'" height="'+f1(Math.max(1.5,py(bot)-py(top)))+'"/>';
+    }
+    var nd=0, nh=0, nb=0, ne=0, j, e, show, cl, lab, y;
+    for(j=0;j<ev.length;j++){
+      e=ev[j];
+      if(e.k==='D') nd++; else if(e.k==='H'||e.k==='S') nh++; else if(e.k==='B') nb++; else ne++;
+      show=mode==='all'||(mode==='doji'&&e.k==='D')||(mode==='ham'&&(e.k==='H'||e.k==='S'))||(mode==='eng'&&(e.k==='B'||e.k==='E'));
+      if(!show) continue;
+      cl=e.k==='D'?'mk-d':e.k==='H'?'mk-h':e.k==='S'?'mk-s':'mk-e';
+      lab=e.k==='B'?'▲':e.k==='E'?'▼':e.k;
+      y=py(b[e.t].h)-5;
+      g+='<text class="mk '+cl+'" x="'+f1(sx(e.t))+'" y="'+f1(y)+'" text-anchor="middle">'+lab+'</text>';
+    }
+    $('e_svg').innerHTML=g;
+    $('e_nd').textContent=nd; $('e_nh').textContent=nh; $('e_ne').textContent=(nb+ne)+' ('+nb+' ▲ / '+ne+' ▼)';
+    $('e_v').className='verdict bad';
+    $('e_v').textContent='เดินสุ่ม '+N+' แท่ง ไม่มีข้อมูลซ่อนอยู่ แต่โปรแกรมพบ doji '+nd+' hammer/shooting star '+nh+' engulfing '+(nb+ne)+' ครั้ง · ค่าคาดหวังต่อ 60 แท่งที่เกณฑ์ 10% ≈ 4.8 / 2.1 / 8.9';
+  }
+  function fwd(b,t){ return t+TK<b.length?Math.log(b[t+TK].c/b[t].c):null; }
+  $('e_t').addEventListener('input',erender);
+  $('e_new').addEventListener('click',function(){ seed=seed+1+Math.floor(Math.random()*97); erender(); });
+  $('e_find').addEventListener('click',function(){
+    var dt=(+$('e_t').value)/100, k, s, b, ev, j, f, hit, found=false;
+    for(k=1;k<=500&&!found;k++){
+      s=seed+k; b=gen(s); ev=detect(b,dt);
+      for(j=0;j<ev.length;j++){ if(ev[j].k==='B'){ f=fwd(b,ev[j].t); if(f!==null&&f>=0.03){ found=true; hit=ev[j]; break; } } }
+    }
+    if(found){
+      seed=s; mode='eng';
+      Array.prototype.forEach.call(document.querySelectorAll('#e_mode button'),function(x){ x.classList.toggle('active',x.getAttribute('data-m')==='eng'); });
+      erender();
+      var bb=gen(seed), evs=detect(bb,dt), sum=0, n=0;
+      evs.forEach(function(q){ if(q.k==='B'){ var ff=fwd(bb,q.t); if(ff!==null){ sum+=ff; n++; } } });
+      $('e_v').textContent='สุ่มไป '+k+' กราฟจึงเจอ bullish engulfing ที่แท่ง '+(hit.t+1)+' แล้วขึ้น '+fmt(fwd(bb,hit.t)*100,1)+'% ใน 5 แท่ง · แต่ค่าเฉลี่ยของ engulfing ขาขึ้นทั้ง '+n+' ครั้งในกราฟนี้คือ '+fmt(sum/n*100,2)+'% ตัวอย่างที่เลือกมาแล้วไม่ใช่หลักฐาน';
+    } else { $('e_v').textContent='สุ่ม 500 กราฟแล้วไม่เจอ ลองกดอีกครั้ง'; }
+  });
+  var btns=document.querySelectorAll('#e_mode button');
+  Array.prototype.forEach.call(btns,function(b){ b.addEventListener('click',function(){
+    mode=b.getAttribute('data-m');
+    Array.prototype.forEach.call(btns,function(x){ x.classList.toggle('active',x===b); });
+    erender();
+  }); });
+  erender();
+})();
+</script>
+</body>
+</html>
